@@ -4,3 +4,10 @@
     width: 425px;
     height: 375px;
 }
+@media (max-width:992px) {
+    .slider-image{
+        padding-top: 75px;
+        padding-left: 0;
+        width: 425px;
+        height: 375px;
+    }}

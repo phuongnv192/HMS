@@ -623,6 +623,12 @@ pre code {
     .container {
         max-width: 960px
     }
+    .display-3{
+        width: 315px;
+    }
+    .pl-4 .w-50 p{
+        width: 250px;
+    }
 }
 
 @media (min-width:1200px) {
