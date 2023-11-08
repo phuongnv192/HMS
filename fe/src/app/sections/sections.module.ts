@@ -7,7 +7,7 @@ import { JwBootstrapSwitchNg2Module } from 'jw-bootstrap-switch-ng2';
 import { RouterModule } from '@angular/router';
 
 import { SectionsComponent } from './sections.component';
-import { ButtonsSectionComponent } from './buttons-section/buttons-section.component';
+import { ButtonsSectionComponent } from './home-section/home-section.component';
 import { InputsSectionComponent } from './inputs-section/inputs-section.component';
 import { CrsSectionComponent } from './crs-section/crs-section.component';
 import { NavigationSectionComponent } from './navigation-section/navigation-section.component';

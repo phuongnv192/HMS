@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ButtonsSectionComponent } from './buttons-section.component';
+import { ButtonsSectionComponent } from './home-section.component';
 
 describe('ButtonsSectionComponent', () => {
   let component: ButtonsSectionComponent;

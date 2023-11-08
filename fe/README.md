@@ -121,11 +121,11 @@ argon-design-system-angular
 │   │   │   │   ├── angular-section.component.html
 │   │   │   │   ├── angular-section.component.spec.ts
 │   │   │   │   └── angular-section.component.ts
-│   │   │   ├── buttons-section
-│   │   │   │   ├── buttons-section.component.css
-│   │   │   │   ├── buttons-section.component.html
-│   │   │   │   ├── buttons-section.component.spec.ts
-│   │   │   │   └── buttons-section.component.ts
+│   │   │   ├── home-section
+│   │   │   │   ├── home-section.component.css
+│   │   │   │   ├── home-section.component.html
+│   │   │   │   ├── home-section.component.spec.ts
+│   │   │   │   └── home-section.component.ts
 │   │   │   ├── crs-section
 │   │   │   │   ├── crs-section.component.css
 │   │   │   │   ├── crs-section.component.html
