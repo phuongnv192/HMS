@@ -43,44 +43,80 @@
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="ni ni-hat-3"></i></span>
                     </div>
-                    <input class="form-control" placeholder="Name" type="text" (focus)="focus=true" (blur)="focus=false">
+                    <input #account id="account" 
+                    (keypress)="omit_special_char_email($event)"
+                    (blur)="changeHandler('account')" (focus)="focusAccount()"
+                    placeholder="name@email.com" type="text" aria-describedby="email-help" maxlength="50"
+                    [(ngModel)]="account_name">
                   </div>
+                  <div *ngIf="account_name" class="delete" (click)="clearEmail()">
+                    <img style="float: right;" src="assets/img/bnpl/Close.svg" />
+                  </div>
+                    <span *ngIf="password.value && !validatePassword(password.value)" class="error"> Mật khẩu tối thiểu tám ký tự, ít nhất một chữ cái, một số và một ký tự đặc biệt.</span>
+
                 </div>
                 <div class="form-group" [ngClass]="{'focused':focus1===true}">
                   <div class="input-group input-group-alternative mb-3">
                     <div class="input-group-prepend">
-                      <span class="input-group-text"><i class="ni ni-email-83"></i></span>
+                      <span class="input-group-text"><i class="ni ni-phone"></i></span>
                     </div>
-                    <input class="form-control" placeholder="Email" type="email" (focus)="focus1=true" (blur)="focus1=false">
+                    <input class="form-control" placeholder="Phone Number" type="text" (focus)="focus=true" (blur)="focus1=false">
                   </div>
                 </div>
                 <div class="form-group" [ngClass]="{'focused':focus2===true}">
+                  <div class="input-group input-group-alternative mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="ni ni-email-83"></i></span>
+                    </div>
+                    <input #email id="email" 
+                    (keypress)="omit_special_char_email($event)"
+                    (blur)="changeHandler('email')" (focus)="focusEmail()"
+                    placeholder="name@email.com" type="text" aria-describedby="email-help" maxlength="50"
+                    [(ngModel)]="account_email">
+                  </div>
+                  <div *ngIf="account_email" class="delete" (click)="clearEmail()">
+                    <img style="float: right;" src="assets/img/bnpl/Close.svg" />
+                  </div>
+                <span *ngIf="emailExist" class="error"> Email đã được đăng ký.</span>
+                </div>
+                <div class="form-group" [ngClass]="{'focused':focus3===true}">
                   <div class="input-group input-group-alternative">
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
                     </div>
-                    <input class="form-control" placeholder="Password" type="password" (focus)="focus2=true" (blur)="focus2=false">
+                    <input class="form-control" placeholder="Password" type="password" [(ngModel)]="pwd" type="password" name="password" #password  id="password" (focus)="focus2=true" (blur)="focus3=false">
                   </div>
                 </div>
+                <span *ngIf="password.value && !validatePassword(password.value)" class="error"> Mật khẩu tối thiểu tám ký tự, ít nhất một chữ cái, một số và một ký tự đặc biệt.</span>
                 <div class="text-muted font-italic">
                   <small>password strength:
                     <span class="text-success font-weight-700">strong</span>
                   </small>
                 </div>
+                <div class="form-group" [ngClass]="{'focused':focus4===true}">
+                  <div class="input-group input-group-alternative">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
+                    </div>
+                    <input class="form-control" placeholder="Password" type="password" [(ngModel)]="repwd" type="password" name="repassword" #repassword id="repassword"  (focus)="focus2=true" (blur)="focus4=false">
+                  </div>
+                </div>
+                <span *ngIf="reinput" class="error"> Mật khẩu nhập lại không khớp</span>
+                
                 <div class="row my-4">
                   <div class="col-12">
                     <div class="custom-control custom-control-alternative custom-checkbox">
                       <input class="custom-control-input" id="customCheckRegister" type="checkbox">
-                      <label class="custom-control-label" for="customCheckRegister">
-                        <span>I agree with the
-                          <a href="javascript:void(0)">Privacy Policy</a>
-                        </span>
+                      <label class="custom-control-label" for="customCheckRegister" (change)="checkCheckBoxvalue($event)">
+                        Tôi đồng ý với
+                        <a href="javascript:void(0)" class="text-red-600">
+                          Điều khoản </a>
                       </label>
                     </div>
                   </div>
                 </div>
                 <div class="text-center">
-                  <button type="button" class="btn btn-primary mt-4">Create account</button>
+                  <button type="button" class="btn btn-primary mt-4" (click)="signUp()">Tạo tài khoản</button>
                 </div>
               </form>
             </div>

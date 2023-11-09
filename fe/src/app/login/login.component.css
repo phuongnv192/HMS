@@ -1,0 +1,36 @@
+.delete {
+    cursor: pointer;
+    float: right;
+    margin-top: -25px;
+    margin-right: 10px;
+  }
+  label {
+    margin: 0px 0px 5px;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 17px;
+    color: #373737;
+  }
+  input {
+    background: #ffffff;
+    border: 1px solid #dcdcdc;
+    box-sizing: border-box;
+    border-radius: 4px;
+    width: 100%;
+    height: 36px;
+    padding: 8px 12px 8px;
+    font-size: 14px;
+    line-height: 20px;
+  }
+  input:focus {
+    border-color: #5cb3fd;
+  }
+  .no-border {
+    border-color: #dcdcdc !important;
+  }
+  input.no-border:focus {
+    border-color: #5cb3fd !important;
+  }
+  .ng-invalid.ng-dirty {
+    border-color: #f44336;
+  }
