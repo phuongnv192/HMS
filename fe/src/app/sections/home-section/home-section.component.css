@@ -1,8 +1,8 @@
 .slider-image{
     padding-top: 75px;
-    padding-left: 65px;
+    padding-left: 75px;
     width: 425px;
-    height: 375px;
+    height: 315px;
 }
 @media (max-width:992px) {
     .slider-image{
