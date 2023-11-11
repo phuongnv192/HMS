@@ -23,11 +23,11 @@
               <p class="lead  text-white">Dịch vụ vệ sinh của HSM có đa dạng các loại hình tiện ích, hình thức phù hợp
                 cho nhu cầu dọn dẹp của khách hàng.</p>
               <div class="btn-wrapper">
-                <a href="" class="btn btn-info btn-icon mb-3 mb-sm-0">
+                <a [routerLink]="['/booking']" class="btn btn-info btn-icon mb-3 mb-sm-0">
                   <span class="btn-inner--icon"><i class="fa fa-task"></i></span>
                   <span class="btn-inner--text">Đặt dịch vụ vệ sinh</span>
                 </a>
-                <a href="" class="btn btn-white btn-icon mb-3 mb-sm-0">
+                <a [routerLink]="['/booking']" class="btn btn-white btn-icon mb-3 mb-sm-0">
                   <span class="btn-inner--icon"><i class="ni ni-calendar-grid-58"></i></span>
                   <span class="btn-inner--text">Sử dụng định kỳ</span>
                 </a>
@@ -275,7 +275,105 @@
       </div>
     </div>
   </section>
-  <section class="section pb-0" style="padding-top: 0 !important;">
+  <section class="section pb-0" style="padding-top: 0 !important; padding-bottom: 5rem !important;">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="d-flex" style="color: #000">
+          <div>
+            <h4 class="display-3">Bảng giá dịch vụ</h4>
+            <p>Bảng giá chỉ tính dựa trên số diện tích dọn dẹp và số nhân viên</p>
+            <p style="font-size: 12px; color: gray;"> Mang tính chất tham khảo không bao gồm
+              các dịch vụ hỗ trợ, tiện ích bổ sung.</p>
+          </div>
+        </div>
+        <div class="d-flex">
+          <div class="rounded overflow-hidden bootstrap-slider-price">
+            <ngb-carousel class="abc">
+              <ng-template ngbSlide>
+                <div style="display: flex !important;">
+                  <div class="card-body slider-price" style="padding-left: 0 !important;">
+                    <div class="pl-4">
+                      <h5 class="title text-warning">Nhỏ hơn 20m2</h5>
+                      <p>Nhân viên dọn dẹp được đào tạo về chuyên môn, cách ứng xử và giao tiếp với khách hàng để
+                        thời gian dọn dẹp tại nhà khách hàng luôn thoải mái và vui vẻ nhất.</p>
+                    </div>
+                  </div>
+                  <div class="card-body slider-price" style="padding-left: 0 !important;">
+                    <div class="pl-4">
+                      <h5 class="title text-warning">20-30m2</h5>
+                      <p>Nhân viên dọn dẹp được đào tạo về chuyên môn, cách ứng xử và giao tiếp với khách hàng để
+                        thời gian dọn dẹp tại nhà khách hàng luôn thoải mái và vui vẻ nhất.</p>
+                    </div>
+                  </div>
+                  <div class="card-body slider-price" style="padding-left: 0 !important;">
+                    <div class="pl-4">
+                      <h5 class="title text-warning">30-40m2</h5>
+                      <p>Nhân viên dọn dẹp được đào tạo về chuyên môn, cách ứng xử và giao tiếp với khách hàng để
+                        thời gian dọn dẹp tại nhà khách hàng luôn thoải mái và vui vẻ nhất.</p>
+                    </div>
+                  </div>
+                </div>
+
+              </ng-template>
+              <ng-template ngbSlide>
+                <div style="display: flex !important;">
+                  <div class="card-body slider-price" style="padding-left: 0 !important;">
+                    <div class="pl-4">
+                      <h5 class="title text-warning">40-60m2</h5>
+                      <p>Nhân viên dọn dẹp được đào tạo về chuyên môn, cách ứng xử và giao tiếp với khách hàng để
+                        thời gian dọn dẹp tại nhà khách hàng luôn thoải mái và vui vẻ nhất.</p>
+                    </div>
+                  </div>
+                  <div class="card-body slider-price" style="padding-left: 0 !important;">
+                    <div class="pl-4">
+                      <h5 class="title text-warning">60-80m2</h5>
+                      <p>Nhân viên dọn dẹp được đào tạo về chuyên môn, cách ứng xử và giao tiếp với khách hàng để
+                        thời gian dọn dẹp tại nhà khách hàng luôn thoải mái và vui vẻ nhất.</p>
+                    </div>
+                  </div>
+                  <div class="card-body slider-price" style="padding-left: 0 !important;">
+                    <div class="pl-4">
+                      <h5 class="title text-warning">80-100m2</h5>
+                      <p>Nhân viên dọn dẹp được đào tạo về chuyên môn, cách ứng xử và giao tiếp với khách hàng để
+                        thời gian dọn dẹp tại nhà khách hàng luôn thoải mái và vui vẻ nhất.</p>
+                    </div>
+                  </div>
+                </div>
+              </ng-template>
+
+              <ng-template ngbSlide>
+                <div style="display: flex !important;">
+                  <div class="card-body slider-price" style="padding-left: 0 !important;">
+                    <div class="pl-4">
+                      <h5 class="title text-warning">100m2</h5>
+                      <p>Nhân viên dọn dẹp được đào tạo về chuyên môn, cách ứng xử và giao tiếp với khách hàng để
+                        thời gian dọn dẹp tại nhà khách hàng luôn thoải mái và vui vẻ nhất.</p>
+                    </div>
+                  </div>
+                  <div class="card-body slider-price" style="padding-left: 0 !important;">
+                    <div class="pl-4">
+                      <h5 class="title text-warning">100-130m2</h5>
+                      <p>Nhân viên dọn dẹp được đào tạo về chuyên môn, cách ứng xử và giao tiếp với khách hàng để
+                        thời gian dọn dẹp tại nhà khách hàng luôn thoải mái và vui vẻ nhất.</p>
+                    </div>
+                  </div>
+                  <div class="card-body slider-price" style="padding-left: 0 !important;">
+                    <div class="pl-4">
+                      <h5 class="title text-warning">Trên 130m2</h5>
+                      <p>Nhân viên dọn dẹp được đào tạo về chuyên môn, cách ứng xử và giao tiếp với khách hàng để
+                        thời gian dọn dẹp tại nhà khách hàng luôn thoải mái và vui vẻ nhất.</p>
+                    </div>
+                  </div>
+                </div>
+              </ng-template>
+
+            </ngb-carousel>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="section pb-0" style="padding-top: 0 !important; padding-bottom: 5rem !important;">
     <div class="container">
       <div class="row align-items-center">
         <div class="d-flex" style="color: #000">
@@ -355,39 +453,14 @@
         </div>
       </div>
     </div>
-    <!-- SVG separator -->
-    <!-- <div class="separator separator-bottom separator-skew zindex-100">
-    <svg x="0" y="0" viewBox="0 0 2560 100" preserveAspectRatio="none" version="1.1" xmlns="http://www.w3.org/2000/svg">
-      <polygon class="fill-white" points="2560 0 2560 100 0 100"></polygon>
-    </svg>
-  </div> -->
-  </section>
-  <section class="section section-lg pt-0">
-    <div class="container">
-      <div class="card bg-gradient-warning shadow-lg border-0">
-        <div class="p-5">
-          <div class="row align-items-center">
-            <div class="col-lg-8">
-              <h3 class="text-white">We made website building easier for you.</h3>
-              <p class="lead text-white mt-3">I will be the leader of a company that ends up being worth billions of
-                dollars, because I got the answers. I understand culture.</p>
-            </div>
-            <div class="col-lg-3 ml-lg-auto">
-              <a href="https://www.creative-tim.com/product/argon-design-system-angular?ref=adsa-landing-page"
-                class="btn btn-lg btn-block btn-white">Download Angular</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
   </section>
   <section class="section section-lg bg-gradient-default">
-    <div class="container pt-lg pb-300">
+    <div class="container">
       <div class="row text-center justify-content-center">
         <div class="col-lg-10">
-          <h2 class="display-3 text-white">Build something</h2>
-          <p class="lead text-white">According to the National Oceanic and Atmospheric Administration, Ted, Scambos,
-            NSIDClead scentist, puts the potentially record low maximum sea ice extent tihs year down to low ice.</p>
+          <h2 class="display-3 text-white">Phản hồi và đánh giá</h2>
+          <p class="lead text-white">Sau đây là những phản hồi đánh giá chung của các khách hàng đã và đang tiếp tục sử
+            dụng dịch vụ của HSM.</p>
         </div>
       </div>
       <div class="row row-grid mt-5">
@@ -395,7 +468,7 @@
           <div class="icon icon-lg icon-shape bg-gradient-white shadow rounded-circle text-primary">
             <i class="ni ni-settings text-primary"></i>
           </div>
-          <h5 class="text-white mt-3">Building tools</h5>
+          <h5 class="text-white mt-3">Đánh giá 1</h5>
           <p class="text-white mt-3">Some quick example text to build on the card title and make up the bulk of the
             card's content.</p>
         </div>
@@ -403,7 +476,7 @@
           <div class="icon icon-lg icon-shape bg-gradient-white shadow rounded-circle text-primary">
             <i class="ni ni-ruler-pencil text-primary"></i>
           </div>
-          <h5 class="text-white mt-3">Grow your market</h5>
+          <h5 class="text-white mt-3">Đánh giá 2</h5>
           <p class="text-white mt-3">Some quick example text to build on the card title and make up the bulk of the
             card's content.</p>
         </div>
@@ -411,7 +484,7 @@
           <div class="icon icon-lg icon-shape bg-gradient-white shadow rounded-circle text-primary">
             <i class="ni ni-atom text-primary"></i>
           </div>
-          <h5 class="text-white mt-3">Launch time</h5>
+          <h5 class="text-white mt-3">Đánh giá 3</h5>
           <p class="text-white mt-3">Some quick example text to build on the card title and make up the bulk of the
             card's content.</p>
         </div>
@@ -425,105 +498,19 @@
       </svg>
     </div>
   </section>
-  <section class="section section-lg pt-lg-0 section-contact-us">
+
+  <section class="section pt-lg">
     <div class="container">
-      <div class="row justify-content-center mt--300">
-        <div class="col-lg-8">
-          <div class="card bg-gradient-secondary shadow">
-            <div class="card-body p-lg-5">
-              <h4 class="mb-1">Want to work with us?</h4>
-              <p class="mt-0">Your project is very important to us.</p>
-              <div class="form-group mt-5" [ngClass]="{'focused':focus===true}">
-                <div class="input-group input-group-alternative">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text"><i class="ni ni-user-run"></i></span>
-                  </div>
-                  <input class="form-control" placeholder="Your name" type="text" (focus)="focus=true"
-                    (blur)="focus=false">
-                </div>
-              </div>
-              <div class="form-group" [ngClass]="{'focused':focus1===true}">
-                <div class="input-group input-group-alternative">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text"><i class="ni ni-email-83"></i></span>
-                  </div>
-                  <input class="form-control" placeholder="Email address" type="email" (focus)="focus1=true"
-                    (blur)="focus1=false">
-                </div>
-              </div>
-              <div class="form-group mb-4">
-                <textarea class="form-control form-control-alternative" name="name" rows="4" cols="80"
-                  placeholder="Type a message..."></textarea>
-              </div>
-              <div>
-                <button type="button" class="btn btn-default btn-round btn-block btn-lg">Send Message</button>
-              </div>
+      <div class="card bg-gradient-warning shadow-lg border-0">
+        <div class="p-5">
+          <div class="row align-items-center">
+            <div class="col-lg-8">
+              <h3 class="text-white">Bạn đã sẵn sàng để trải nghiệm dịch vụ?</h3>
+              <p class="lead text-white mt-3">Chúng tôi sẽ cung cấp cho khách hàng 1 trải nghiệm về dịch vụ vệ sinh
+                tuyệt vời nhất.</p>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-  <section class="section section-lg">
-    <div class="container">
-      <div class="row row-grid justify-content-center">
-        <div class="col-lg-8 text-center">
-          <h2 class="display-3">Do you love this awesome
-            <span class="text-success">Design System for Angular?</span>
-          </h2>
-          <p class="lead">Cause if you do, it can be yours for FREE. Hit the button below to navigate to Creative Tim
-            where you can find the Design System in Angular. Start a new project or give an old Angular project a new
-            look!</p>
-          <div class="btn-wrapper">
-            <a href="https://www.creative-tim.com/product/argon-design-system-angular?ref=adsa-landing-page"
-              class="btn btn-primary mb-3 mb-sm-0">Download Angular</a>
-          </div>
-          <div class="text-center">
-            <h4 class="display-4 mb-5 mt-5">Available on these technologies</h4>
-            <div class="row justify-content-center">
-              <div class="col-lg-2 col-4">
-                <a href="https://www.creative-tim.com/product/argon-design-system?ref=adsa-landing-page" target="_blank"
-                  placement="top" ngbTooltip="Bootstrap 4 - Most popular front-end component library">
-                  <img
-                    src="https://s3.amazonaws.com/creativetim_bucket/tim_static_images/presentation-page/bootstrap.jpg"
-                    class="img-fluid">
-                </a>
-              </div>
-              <div class="col-lg-2 col-4">
-                <a href="https://www.creative-tim.com/product/argon-design-system-angular?ref=adsa-landing-page"
-                  target="_blank" placement="top" ngbTooltip="Angular - One framework. Mobile &amp; desktop">
-                  <img src="https://s3.amazonaws.com/creativetim_bucket/tim_static_images/presentation-page/angular.jpg"
-                    class="img-fluid">
-                </a>
-              </div>
-              <div class="col-lg-2 col-4">
-                <a href="https://www.creative-tim.com/product/vue-argon-design-system?ref=adsa-landing-page"
-                  target="_blank" placement="top" ngbTooltip="Vue.js - The progressive javascript framework">
-                  <img src="https://s3.amazonaws.com/creativetim_bucket/tim_static_images/presentation-page/vue.jpg"
-                    class="img-fluid">
-                </a>
-              </div>
-              <div class="col-lg-2 col-4">
-                <a href="https://www.sketchapp.com/?ref=creative-tim" target="_blank" placement="top"
-                  ngbTooltip="[Coming Soon] Sketch - Digital design toolkit">
-                  <img src="https://s3.amazonaws.com/creativetim_bucket/tim_static_images/presentation-page/sketch.jpg"
-                    class="img-fluid opacity-3">
-                </a>
-              </div>
-              <div class="col-lg-2 col-4">
-                <a href="https://www.adobe.com/products/photoshop.html?ref=creative-tim" target="_blank" placement="top"
-                  ngbTooltip="[Coming Soon] Adobe Photoshop - Software for digital images manipulation">
-                  <img src="https://s3.amazonaws.com/creativetim_bucket/tim_static_images/presentation-page/ps.jpg"
-                    class="img-fluid opacity-3">
-                </a>
-              </div>
-              <div class="col-lg-2 col-4">
-                <a href="https://reactjs.org/?ref=creative-tim" target="_blank" placement="top"
-                  ngbTooltip="[Coming Soon] React - A JavaScript library for building user interfaces">
-                  <img src="https://s3.amazonaws.com/creativetim_bucket/tim_static_images/presentation-page/react.jpg"
-                    class="img-fluid opacity-3">
-                </a>
-              </div>
+            <div class="col-lg-3 ml-lg-auto">
+              <a [routerLink]="['/booking']" class="btn btn-lg btn-block btn-white">Đặt dịch vụ ngay</a>
             </div>
           </div>
         </div>

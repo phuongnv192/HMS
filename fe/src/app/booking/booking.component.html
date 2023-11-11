@@ -1,91 +1,169 @@
 <main>
-    <div class="position-relative">
-      <!-- shape Hero -->
-      <section class="section section-lg section-shaped pb-250">
-        <div class="shape shape-style-1 shape-default">
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
-        <div class="container py-lg-md d-flex">
-          <div class="col px-0">
-            <div class="row">
-              <div class="col-lg-6">
-                <h1 class="display-3  text-white">Đặt dịch vụ
-                </h1>
-                <p class="lead  text-white">Khách hàng vui lòng điền và kiểm tra lại các thông tin cần thiết để có thể đặt và sử dụng dịch vụ một cách tốt nhất.</p>
-  
-              </div>
+  <div class="position-relative">
+    <!-- shape Hero -->
+    <section class="section section-lg section-shaped pb-250">
+      <div class="shape shape-style-1 shape-default">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <div class="container py-lg-md d-flex">
+        <div class="col px-0">
+          <div class="row">
+            <div class="col-lg-6">
+              <h1 class="display-3  text-white">Đặt dịch vụ
+              </h1>
+              <p class="lead  text-white">Khách hàng vui lòng điền và kiểm tra lại các thông tin cần thiết để có thể đặt
+                và sử dụng dịch vụ một cách tốt nhất.</p>
+
             </div>
           </div>
         </div>
-      </section>
-      <!-- 1st Hero Variation -->
-    </div>
-    <section class="section section-lg pt-lg-0 mt--200">
-      <div class="container">
-        <div class="row justify-content-center">
-          <div class="col-lg-12">
-            <div class="row row-grid">
-              <div class="col-lg-12">
-                <div class="card card-lift--hover shadow border-0">
-                  <div class="card-body py-5">
-                    <div class="icon icon-shape icon-shape-primary rounded-circle mb-4">
-                      <i class="ni ni-check-bold"></i>
-                    </div>
-                    <h6 class="text-primary text-uppercase">Thông tin cá nhân</h6>
-                    <p class="description mt-3">Dịch vụ được lựa chọn theo các tiêu chí liên quan tới diện tích, khu vực
-                      dọn dẹp.</p>
-                      <h6 class="text-primary text-uppercase">Thông tin nhà/khu vực vệ sinh</h6>
-                    <p class="description mt-3">Dịch vụ được lựa chọn theo các tiêu chí liên quan tới diện tích, khu vực
-                      dọn dẹp.</p>
-                      <h6 class="text-primary text-uppercase">Thời gian</h6>
-                    <p class="description mt-3">Dịch vụ được lựa chọn theo các tiêu chí liên quan tới diện tích, khu vực
-                      dọn dẹp.</p>
-                      <h6 class="text-primary text-uppercase">Nhân viên dọn dẹp</h6>
-                    <p class="description mt-3">Dịch vụ được lựa chọn theo các tiêu chí liên quan tới diện tích, khu vực
-                      dọn dẹp.</p>
-                    <h6 class="text-primary text-uppercase">Tiện ích bổ sung</h6>
-                    <p class="description mt-3">Dịch vụ được lựa chọn theo các tiêu chí liên quan tới diện tích, khu vực
-                      dọn dẹp.</p>
-                    <div>
-                      <span class="badge badge-pill badge-primary">Tổng vệ sinh</span>
-                      <span class="badge badge-pill badge-primary">Phòng ngủ</span>
-                      <span class="badge badge-pill badge-primary">Phòng khách</span>
-                      <span class="badge badge-pill badge-primary">Phòng bếp</span>
-                      <span class="badge badge-pill badge-primary">Phòng thờ</span>
-                      <span class="badge badge-pill badge-primary">Nhà vệ sinh</span>
-                      <span class="badge badge-pill badge-primary">. . .</span>
-                    </div>
-                    <a href="javascript:void(0)" class="btn btn-primary mt-4">Thông tin chi tiết</a>
+      </div>
+    </section>
+    <!-- 1st Hero Variation -->
+  </div>
+  <section class="section section-lg pt-lg-0 mt--200">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-12">
+          <div class="row row-grid">
+            <div class="col-lg-12">
+              <div class="card shadow border-0">
+                <div class="card-body py-5">
+                  <div class="icon icon-shape icon-shape-primary rounded-circle mb-4">
+                    <i class="ni ni-check-bold"></i>
                   </div>
+                  <h6 class="text-primary text-uppercase">Thông tin cá nhân</h6>
+
+                  <div class="input-group">
+                    <p>Tên chủ nhà(*): </p>
+                    <!-- (keypress)="omit_special_char_email($event)" [(ngModel)]="account_name" -->
+                    <!-- (blur)="changeHandler('account')" (focus)="focusAccount()" -->
+                    <input #account id="account" placeholder="Nguyen Van A" type="text" aria-describedby="account-help"
+                      maxlength="50">
+
+                  </div>
+                  <div class="input-group">
+                    <p>Số điện thoại(*): </p>
+                    <input #phonenumber id="phonenumber" placeholder="0987654321" type="text"
+                      aria-describedby="phone-help" maxlength="12">
+                  </div>
+                  <!-- <div *ngIf="account_name" class="delete" (click)="clearEmail()">
+                    <img style="float: right;" src="assets/img/bnpl/Close.svg" />
+                  </div> -->
+
+                  <h6 class="text-primary text-uppercase">Thông tin nhà/khu vực vệ sinh</h6>
+                  <div class="input-group">
+                    <p>Nơi làm việc: </p>
+                    <button type="button" class="btn btn-primary">Nhập địa chỉ</button>
+
+
+                  </div>
+                  <p class="takenote">*Free phí di chuyển từ cơ sở gần nhất khi khoảng cách dưới 3km. Trên 3km, phí
+                    dịch vụ và di
+                    chuyển sẽ được tính 10.000đ/km</p>
+                  <div class="input-group">
+                    <p>Loại hình nhà(*): </p>
+                    <select [(ngModel)]="selectedHouseType" id="houseType" aria-describedby="houseType-help"
+                      title="Loại hình nhà">
+                      <option *ngFor="let type of houseTypes" [value]="type">{{ type }}</option>
+                    </select>
+                  </div>
+                  <div class="input-group">
+                    <p>Loại dịch vụ(*): </p>
+                    <select [(ngModel)]="selectedServiceType" id="serviceType" aria-describedby="serviceType-help"
+                      title="Loại dịch vụ">
+                      <option *ngFor="let service of serviceTypes" [value]="service">{{ service }}</option>
+                    </select>
+                  </div>
+                  <div class="input-group">
+                    <p>Số tầng(*): </p>
+                    <select [(ngModel)]="selectedFloors" id="floors" aria-describedby="floors-help" title="Số tầng">
+                      <option *ngFor="let floor of floors" [value]="floor">{{ floor }}</option>
+                    </select>
+                  </div>
+                  <div class="input-group">
+                    <p>Diện tích sàn(*): </p>
+                    <!-- <input #area id="area" placeholder="50m2" type="text" aria-describedby="area-help" maxlength="12">
+                      <span style="margin-left: 5px ;"> mét vuông </span> -->
+                    <select [(ngModel)]="selectedAreaType" id="area" aria-describedby="areaType-help"
+                      title="Diện tích sàn">
+                      <option *ngFor="let area of areaTypes" [value]="area">{{ area }}</option>
+                    </select>
+                  </div>
+                  <h6 class="text-primary text-uppercase">Tiện ích bổ sung</h6>
+                  <p class="description" style="margin-bottom: 5px;">Các loại hình dịch vụ tiện ích bổ sung là bao gồm
+                    các khu vực và thiết bị không bao gồm trong dịch vụ dọn dẹp.</p>
+                  <div class="extension-service">
+                    <span *ngFor="let extends of serviceExtend" [value]="extends"
+                      class="badge badge-pill badge-primary">{{extends.name}}</span>
+                    <!-- <span class="badge badge-pill badge-primary">Làm sạch tủ lạnh</span>
+                    <span class="badge badge-pill badge-primary">Lò nướng các loại</span>
+                    <span class="badge badge-pill badge-primary">Dọn/ tỉa sân vườn</span>
+                    <span class="badge badge-pill badge-primary">Gác xép</span> -->
+                    <!-- <span class="badge badge-pill badge-primary">. . .</span> -->
+                  </div>
+
+                  <h6 class="text-primary text-uppercase">Thời gian</h6>
+                  <p class="description" style="margin-bottom: 5px;">Có 2 sự lựa chọn cho khách hàng khi sử dụng dịch vụ
+                    dọn dẹp đó là: <b>Sử dụng duy nhất</b> và <b>định kỳ</b></p>
+                  <div class="input-group">
+                    <p>Loại dịch vụ(*): </p>
+                    <select [(ngModel)]="selectedServiceType" id="serviceType" aria-describedby="serviceType-help"
+                      title="Loại dịch vụ">
+                      <option *ngFor="let service of serviceTypes" [value]="service">{{ service }}</option>
+                    </select>
+                  </div>
+                  <p *ngIf="true" class="takenote">*Đối với dịch vụ định kỳ, khách hàng nên lưu ý về thời gian đặt lịch
+                    cũng như các tiện ích đính kèm trong đơn đăng ký</p>
+                  <h6 class="text-primary text-uppercase">Nhân viên dọn dẹp</h6>
+                  <p class="description mt-3">Dịch vụ được lựa chọn theo các tiêu chí liên quan tới diện tích, khu vực
+                    dọn dẹp.</p>
+                  <h6 class="text-primary text-uppercase">Phương thức thanh toán</h6>
+                  <h6 class="text-primary text-uppercase">Ghi chú</h6>
+                  <!-- <h6 class="text-primary text-uppercase">Điều khoản</h6> -->
+                  <!-- <p class="description mt-3">Dịch vụ được lựa chọn theo các tiêu chí liên quan tới diện tích, khu vực
+                    dọn dẹp.</p> -->
+
+                  <div style="padding-top: 30px; display: flex;">
+                    <div
+                      style="text-align: end; justify-content: center; margin-right: 3rem; width: 80%; padding-top: 10px;">
+                      Tổng tiền:
+                      1,500,000
+                      VNĐ</div>
+                    <div style="width: 20%; text-align: end; margin-right: 3rem;"><a href="" class="btn btn-primary">Đặt
+                        lịch</a></div>
+                  </div>
+
                 </div>
               </div>
-  
             </div>
+
           </div>
         </div>
       </div>
-    </section>
-  
-  
-    <section class="section pt-lg">
-      <div class="container">
-            <div class="row align-items-center">
-              <div class="col-lg-8" style="text-align: end;">
-                <h3>Thành tiền: 1,500,000 VNĐ</h3>
-              </div>
-              <div class="col-lg-3 ml-lg-auto">
-                <a href="https://www.creative-tim.com/product/argon-design-system-angular?ref=adsa-landing-page"
-                  class="btn btn-lg btn-block btn-white">Đặt dịch vụ ngay</a>
-              </div>
+    </div>
+  </section>
+
+
+  <!-- <section class="section pt-lg">
+    <div class="container">
+          <div class="row align-items-center">
+            <div class="col-lg-8" style="text-align: end;">
+              <h3>Thành tiền: 1,500,000 VNĐ</h3>
             </div>
-      </div>
-    </section>
-  </main>
+            <div class="col-lg-3 ml-lg-auto">
+              <a href="https://www.creative-tim.com/product/argon-design-system-angular?ref=adsa-landing-page"
+                class="btn btn-lg btn-block btn-white">Đặt dịch vụ ngay</a>
+            </div>
+          </div>
+    </div>
+  </section> -->
+</main>
