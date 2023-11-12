@@ -115,13 +115,28 @@
                   <p class="description" style="margin-bottom: 5px;">Có 2 sự lựa chọn cho khách hàng khi sử dụng dịch vụ
                     dọn dẹp đó là: <b>Sử dụng duy nhất</b> và <b>định kỳ</b></p>
                   <div class="input-group">
-                    <p>Loại dịch vụ(*): </p>
-                    <select [(ngModel)]="selectedServiceType" id="serviceType" aria-describedby="serviceType-help"
-                      title="Loại dịch vụ">
-                      <option *ngFor="let service of serviceTypes" [value]="service">{{ service }}</option>
+                    <p style="width: 25%;">Hình thức sử dụng: </p>
+                    <select [(ngModel)]="selectedTimeType" id="timeType" aria-describedby="timeType-help"
+                      title="Loại hình thức thời gian">
+                      <option *ngFor="let time of timeTypes" [value]="time">{{ time }}</option>
                     </select>
+                    <div>
+
+                    </div>
                   </div>
-                  <p *ngIf="true" class="takenote">*Đối với dịch vụ định kỳ, khách hàng nên lưu ý về thời gian đặt lịch
+
+                  <div class="date-pickertime" *ngIf="selectedTimeType == 'Sử dụng 1 lần'">
+                    <button type="button" class="btn btn-primary pickday" (click)="pickDate()">Chọn ngày
+                      <i></i></button>
+                    <ngb-datepicker class="calendar" *ngIf="showDatePicker" #dp [(ngModel)]="selectedDate"
+                      (dateSelect)="hideDatePicker()" (navigate)="datePickerNavigate($event)"
+                      [minDate]="minSelectableDate" [maxDate]="maxSelectableDate"></ngb-datepicker>
+                    <p class="showTime" *ngIf="!showDatePicker && datePickerShow">* Lịch ngày dọn: <span>{{
+                        datePickerShow
+                        }}</span></p>
+                  </div>
+                  <p *ngIf="selectedTimeType != 'Sử dụng 1 lần'" class="takenote">*Đối với dịch vụ định kỳ, khách hàng
+                    nên lưu ý về thời gian đặt lịch
                     cũng như các tiện ích đính kèm trong đơn đăng ký</p>
                   <h6 class="text-primary text-uppercase">Nhân viên dọn dẹp</h6>
                   <p class="description mt-3">Dịch vụ được lựa chọn theo các tiêu chí liên quan tới diện tích, khu vực

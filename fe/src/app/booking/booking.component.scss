@@ -36,6 +36,12 @@ h6 {
     text-align: center;
 }
 
+#timeType {
+    height: 35px;
+    width: 20%;
+    text-align: center;
+}
+
 #floors {
     height: 35px;
     width: 5%;
@@ -48,44 +54,66 @@ h6 {
     text-align: center;
 }
 
-.extension-service{
+.extension-service {
     width: 45%;
 }
 
-@media (max-width: 992px){
+.date-pickertime {
+    display: flex;
+    margin-top: 1rem;
+
+    .pickday {
+        width: 15%;
+        height: 36px;
+        font-size: 11px;
+        margin-right: 5rem;
+    }
+
+
+
+    .showTime {
+        width: 40%;
+
+        span {
+            font-weight: 700;
+        }
+    }
+}
+
+@media (max-width: 992px) {
     .slider-price {
         margin-left: 30px !important;
         width: 55%;
     }
-    
+
     .input-group input {
         height: 35px !important;
         width: 55%;
     }
-    
+
     .input-group p {
         padding-top: 5px;
         padding-right: 15px;
         width: 40%;
         font-size: 12px;
     }
-    
+
     .takenote {
         color: red;
         font-size: 12px;
         margin-top: 5px;
     }
-    
+
     h6 {
         margin-top: 1.5rem;
     }
-    
+
     #houseType {
         height: 35px;
         width: 35%;
         text-align: center;
     }
-    
+
     #floors {
         height: 35px;
         width: 25%;
@@ -97,13 +125,20 @@ h6 {
         width: 35%;
         text-align: center;
     }
-    
+
+    #timeType {
+        height: 35px;
+        width: 25%;
+        text-align: center;
+    }
+
     #area {
         height: 35px;
         width: 50%;
         text-align: center;
     }
-    .extension-service{
+
+    .extension-service {
         width: 85%;
     }
 }
