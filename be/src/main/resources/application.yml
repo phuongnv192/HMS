@@ -1,0 +1,23 @@
+server:
+  port: 8888
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres?currentSchema=hms
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate: 
+        format-sql: true
+      database: postgresql
+      database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+application:
+  security:
+    jwt:
+      secret-key: e893d203a96a80a688c1c61d6fab849bb999516b6d3af3f7d4f0c188ffae21bc
+      expiration: 30 # minutes
