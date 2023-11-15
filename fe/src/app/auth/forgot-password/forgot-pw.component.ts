@@ -1,13 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  selector: 'app-forgot-pw',
+  templateUrl: './forgot-pw.component.html',
+  styleUrls: ['./forgot-pw.component.css']
 })
-export class LoginComponent implements OnInit {
+export class ForgotPWComponent implements OnInit {
   @ViewChild('account') accountElement: any;
 
   focus;
@@ -24,8 +24,8 @@ export class LoginComponent implements OnInit {
 
   }
 
-  login() {
-    // this.authService.signin(this.account_name, this.password).subscribe(
+  getNewPassword() {
+    // this.authService.forgotPass(this.account_name, this.password).subscribe(
     //   res => {
     //     // Nếu đăng nhập thành công, chuyển hướng đến trang chủ
     //     if (res) {

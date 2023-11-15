@@ -1,71 +1,46 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { AuthService } from '../services/auth.service';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-signup',
-  templateUrl: './signup.component.html',
-  styleUrls: ['./signup.component.scss']
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css']
 })
-export class SignupComponent implements OnInit {
-  @ViewChild('telephone', { static: false }) telephone: ElementRef;
-  @ViewChild('password', { static: false }) password: ElementRef;
-  @ViewChild('repassword', { static: false }) re_password: ElementRef;
-  @ViewChild('email', { static: false }) emailElement: ElementRef;
-//   @ViewChild('email') emailElement: any;
+export class LoginComponent implements OnInit {
   @ViewChild('account') accountElement: any;
 
-  isChecked: boolean = false;
-  isRegistered: boolean = false;
-  errorMessage = '';
-  tel: string;
-  pwd: string;
-  repwd: string;
-  reinput: any;
-  test: Date = new Date();
   focus;
   focus1;
-  focus2;
-  focus4;
-  focus3;
   account_name: any;
-  account_email: any;
-  accountBlur: boolean;
-  emailBlur: boolean;
-  emailExist = false;
+  accountBlur = false;
+  password: string;
   constructor(
     // private authService: AuthService
     // , private router: Router
   ) { }
 
-  ngOnInit() { }
+  ngOnInit() {
 
-  verifyPassword(): boolean {
-    const password = this.pwd;
-    const repassword = this.repwd;
-    return password === repassword;
   }
 
-  signUp() {
-    // const tel = this.tel;
-    // // const account_name = this.account_name;
-    // // const email = this.account_email;
-    // const password = this.pwd;
-    // console.log(this.verifyPassword());
-    // if (!this.verifyPassword()) {
-    //   this.reinput = true;
-    // }
-    // this.authService.register(tel, password).subscribe(
-    //   response => {
-    //     // Đăng ký thành công
-    //     this.isRegistered = true;
-    //     // Chuyển hướng sang trang Home và truyền thông báo thành công
-    //     this.router.navigate(['/home'], { queryParams: { success: true } });
+  login() {
+    // this.authService.signin(this.account_name, this.password).subscribe(
+    //   res => {
+    //     // Nếu đăng nhập thành công, chuyển hướng đến trang chủ
+    //     if (res) {
+    //       this.router.navigate(['/home']);
+    //       // if(res.data.role == 'admin'){
+    //       //   this.router.navigate(['deatail/dashboard']);
+    //       // } else {
+    //       //   this.router.navigate(['/home']);
+    //       // }
+
+    //     }
     //   },
     //   error => {
-    //     // Đăng ký thất bại
-    //     this.errorMessage = error.message;
-    //     // Hiển thị thông báo lỗi
+    //     // Xử lý lỗi đăng nhập
+    //     console.log(error);
     //   }
     // );
   }
@@ -82,9 +57,6 @@ export class SignupComponent implements OnInit {
     if (name == 'account') {
       this.account_name = this.change_specific_alias_email(this.account_name ? this.account_name.toString().trim().replace(/  +/g, ' ') : '');
     }
-    if (name == 'email') {
-      this.account_email = this.change_specific_alias_email(this.account_email ? this.account_email.toString().trim().replace(/  +/g, ' ') : '');
-    }
 
   }
 
@@ -96,16 +68,6 @@ export class SignupComponent implements OnInit {
 
   focusAccount() {
     this.accountBlur = false;
-  }
-
-  clearEmail() {
-    this.emailBlur = false;
-    this.account_email = '';
-    this.emailElement.nativeElement.focus();
-  }
-
-  focusEmail() {
-    this.emailBlur = false;
   }
 
   change_specific_alias_email(alias) {
@@ -150,13 +112,4 @@ export class SignupComponent implements OnInit {
     return str;
   }
 
-  validatePassword(password: string): boolean {
-    const pattern = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$";
-    const regex = new RegExp(pattern);
-    return regex.test(password);
-  }
-
-  checkCheckBoxvalue(event: any) {
-    this.isChecked = event.target.checked;
-  }
 }
