@@ -91,8 +91,6 @@
                   </div>
                   <div class="input-group">
                     <p>Diện tích sàn(*): </p>
-                    <!-- <input #area id="area" placeholder="50m2" type="text" aria-describedby="area-help" maxlength="12">
-                      <span style="margin-left: 5px ;"> mét vuông </span> -->
                     <select [(ngModel)]="selectedAreaType" id="area" aria-describedby="areaType-help"
                       title="Diện tích sàn">
                       <option *ngFor="let area of areaTypes" [value]="area">{{ area }}</option>
@@ -102,13 +100,12 @@
                   <p class="description" style="margin-bottom: 5px;">Các loại hình dịch vụ tiện ích bổ sung là bao gồm
                     các khu vực và thiết bị không bao gồm trong dịch vụ dọn dẹp.</p>
                   <div class="extension-service">
-                    <span *ngFor="let extends of serviceExtend" [value]="extends"
-                      class="badge badge-pill badge-primary">{{extends.name}}</span>
-                    <!-- <span class="badge badge-pill badge-primary">Làm sạch tủ lạnh</span>
-                    <span class="badge badge-pill badge-primary">Lò nướng các loại</span>
-                    <span class="badge badge-pill badge-primary">Dọn/ tỉa sân vườn</span>
-                    <span class="badge badge-pill badge-primary">Gác xép</span> -->
-                    <!-- <span class="badge badge-pill badge-primary">. . .</span> -->
+                    <span *ngFor="let extends of serviceExtend" [value]="extends" class="badge badge-pill badge-primary"
+                      (click)="extendsDialog()">{{extends.name}}</span>
+                    <p class="listAdvanceService" style="padding-top: 1rem;" *ngIf="true">* Danh sách tiện ích đã đăng
+                      ký: <span style="font-weight: 700; font-size: 13px; color: blue;">{{
+                        listAdvanceService
+                        }}</span></p>
                   </div>
 
                   <h6 class="text-primary text-uppercase">Thời gian</h6>
@@ -120,9 +117,6 @@
                       title="Loại hình thức thời gian">
                       <option *ngFor="let time of timeTypes" [value]="time">{{ time }}</option>
                     </select>
-                    <div>
-
-                    </div>
                   </div>
 
                   <div class="date-pickertime" *ngIf="selectedTimeType == 'Sử dụng 1 lần'">
@@ -135,50 +129,93 @@
                         datePickerShow
                         }}</span></p>
                   </div>
+                  <div class="date-pickertime" *ngIf="selectedTimeType != 'Sử dụng 1 lần'">
+                    <button type="button" class="btn btn-primary pickday" (click)="pickCalendar()">Chọn lịch
+                      <i></i></button>
+                  </div>
                   <p *ngIf="selectedTimeType != 'Sử dụng 1 lần'" class="takenote">*Đối với dịch vụ định kỳ, khách hàng
                     nên lưu ý về thời gian đặt lịch
                     cũng như các tiện ích đính kèm trong đơn đăng ký</p>
                   <h6 class="text-primary text-uppercase">Nhân viên dọn dẹp</h6>
                   <p class="description mt-3">Dịch vụ được lựa chọn theo các tiêu chí liên quan tới diện tích, khu vực
-                    dọn dẹp.</p>
+                    dọn dẹp, HSM sẽ cung cấp những người dọn dẹp thích hợp và tốt nhất tới khách hàng.<span>Người dùng
+                      cũng có thể </span><span class="action-cleaner" (click)="pickCleaner()"> <u>chọn người dọn dẹp</u>
+                    </span></p>
+
                   <h6 class="text-primary text-uppercase">Phương thức thanh toán</h6>
-                  <h6 class="text-primary text-uppercase">Ghi chú</h6>
-                  <!-- <h6 class="text-primary text-uppercase">Điều khoản</h6> -->
-                  <!-- <p class="description mt-3">Dịch vụ được lựa chọn theo các tiêu chí liên quan tới diện tích, khu vực
-                    dọn dẹp.</p> -->
-
-                  <div style="padding-top: 30px; display: flex;">
-                    <div
-                      style="text-align: end; justify-content: center; margin-right: 3rem; width: 80%; padding-top: 10px;">
-                      Tổng tiền:
-                      1,500,000
-                      VNĐ</div>
-                    <div style="width: 20%; text-align: end; margin-right: 3rem;"><a href="" class="btn btn-primary">Đặt
-                        lịch</a></div>
+                  <div class="payment-method">
+                    <label>
+                      <input type="radio" [(ngModel)]="selectedPaymentMethod" value="cash">
+                      Thanh toán bằng tiền mặt
+                    </label>
                   </div>
-
+                  <div class="payment-method">
+                    <label>
+                      <input type="radio" [disabled]="true" [(ngModel)]="selectedPaymentMethod" value="bankTransfer">
+                      Chuyển khoản ngân hàng (Hiện chức năng chưa được triển khai)
+                    </label>
+                  </div>
+                  <h6 class="text-primary text-uppercase">Ghi chú</h6>
+                  <div class="note-section">
+                    <textarea [(ngModel)]="note" rows="4"
+                      placeholder="Nhập ghi chú của bạn cho dịch vụ đăng ký"></textarea>
+                  </div>
+                  <div class="term-and-conditions">
+                    <h6>Điều kiện thanh toán</h6>
+                    <p (click)="openTermAndConditions()" #termsDiv class="term">
+                      Mở rộng
+                    </p>
+                    <div class="payment_review">
+                      <div class="payment-form-iframe">
+                        <term-and-conditions></term-and-conditions>
+                      </div>
+                      <div class="center">
+                        <div class="m_row">
+                          <div class="col-xs-12">
+                            <p class="box_title2">
+                              Lưu ý: Vui lòng đồng ý với Điều khoản trước khi thanh toán
+                            </p>
+                          </div>
+                        </div>
+                        <div class="term-payment">
+                          <div class="term-payment-box">
+                            <label class="fontsize14">
+                              Tôi đồng ý với Điều khoản thanh toán <input type="checkbox" id="cbagree"
+                                autocomplete="off" (change)="FieldsChangeTermAndCondition($event)" />
+                              <span class="checkmark"></span>
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
+                <div style="padding-top: 30px; display: flex;">
+                  <div
+                    style="text-align: end; justify-content: center; margin-right: 3rem; width: 80%; padding-top: 10px;">
+                    Tổng tiền:
+                    1,500,000
+                    <!-- {{totalAmount}} -->
+                    VNĐ
+                  </div>
+                  <button style="width: 20%; text-align: end; margin-right: 3rem;" (click)="Order()" [disabled]="
+                    !validPayment ||
+                    !termAndCondition
+                  " [class.disabled]="
+                    !validPayment ||
+                    !termAndCondition">
+                    <a href="" class="btn btn-primary">Đặt
+                      lịch</a>
+                  </button>
+                </div>
+
               </div>
             </div>
-
           </div>
+
         </div>
       </div>
     </div>
   </section>
 
-
-  <!-- <section class="section pt-lg">
-    <div class="container">
-          <div class="row align-items-center">
-            <div class="col-lg-8" style="text-align: end;">
-              <h3>Thành tiền: 1,500,000 VNĐ</h3>
-            </div>
-            <div class="col-lg-3 ml-lg-auto">
-              <a href="https://www.creative-tim.com/product/argon-design-system-angular?ref=adsa-landing-page"
-                class="btn btn-lg btn-block btn-white">Đặt dịch vụ ngay</a>
-            </div>
-          </div>
-    </div>
-  </section> -->
 </main>
