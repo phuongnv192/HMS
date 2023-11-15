@@ -1,7 +1,28 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, Inject, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { NgbDateStruct, NgbDate } from '@ng-bootstrap/ng-bootstrap';
 import { format, isAfter, isBefore, subMonths } from 'date-fns';
+import { DialogService } from 'src/app/services/dialog.service';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { CalendarDialog } from './calendar-dialog/calendar-dialog';
+import { PickCleanerDialog } from './pick-cleaner-dialog/pick-cleaner-dialog';
 
+export interface DialogData {
+  data: string;
+}
+
+export interface CleanerData {
+  data: string;
+}
+
+export interface PickCleanerData {
+  data: any;
+}
+
+export interface CalendarNoteData {
+  _type: any;
+  listDay: any;
+}
 @Component({
   selector: 'app-booking',
   templateUrl: './booking.component.html',
@@ -9,12 +30,14 @@ import { format, isAfter, isBefore, subMonths } from 'date-fns';
 })
 
 export class BookingComponent implements OnInit {
+
   focus: any;
   focus1: any;
+  note: any;
 
   showDatePicker = false;
   selectedDate: NgbDateStruct;
-
+  listAdvanceService = "Vệ sinh máy giặt không tháo lồng x 2, Vệ sinh tủ lạnh dung tích 90-160 lít x 3"
   floors: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; // Mảng từ 1 đến 10
   houseTypes: string[] = ['Nhà đất', 'Chung cư'];
   serviceTypes: string[] = ['Tổng vệ sinh', 'Theo khu vực/Diện tích'];
@@ -29,8 +52,8 @@ export class BookingComponent implements OnInit {
     {
       name: 'Vệ sinh máy giặt',
       value: [
-        { description: 'Vệ sinh máy giặt không tháo lồng', price: 100 },
-        { description: 'Vệ sinh và bảo trì máy giặt lồng', price: 150 }
+        { description: 'không tháo lồng', price: 100 },
+        { description: 'có lồng', price: 150 }
       ]
     },
     {
@@ -64,9 +87,34 @@ export class BookingComponent implements OnInit {
   maxSelectableDate: NgbDate;
   datePicker: string;
   datePickerShow: any;
+  type: any;
+  listDay: any;
+  selectedPaymentMethod: any;
+  termAndCondition: boolean;
+  private TermsDialogRef: any;
+  private termCondition: any;
+  totalAmount: any;
+  validPayment: any;
+  @ViewChild("termsDiv") termsDiv: ElementRef<HTMLElement>;
+  data: any;
+  dataCleaner: any;
 
 
-  constructor() {
+  onResize(event) {
+    if (this.TermsDialogRef) {
+      this.TermsDialogRef.close();
+      let el: HTMLElement = this.termsDiv.nativeElement;
+      el.click();
+    }
+  }
+
+  constructor(
+    private router: Router,
+    public dialog: MatDialog, private renderer: Renderer2,
+    private dialogService: DialogService,
+    public dialogRef: MatDialogRef<CalendarDialog>,
+    public cleanerDialogRef: MatDialogRef<PickCleanerDialog>
+  ) {
     const today = new Date();
     this.minSelectableDate = new NgbDate(today.getFullYear(), today.getMonth() + 1, today.getDate());
     this.maxSelectableDate = new NgbDate(today.getFullYear(), today.getMonth() + 2, today.getDate());
@@ -75,6 +123,7 @@ export class BookingComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.selectedPaymentMethod = 'cash';
     this.selectedFloors = this.floors[0];
     this.selectedHouseType = this.houseTypes[0];
     this.selectedAreaType = this.areaTypes[0];
@@ -172,5 +221,88 @@ export class BookingComponent implements OnInit {
     const result = `Ngày ${day} ${monthNames[month - 1]} năm ${year}`;
 
     return result;
+  }
+
+  extendsDialog() {
+  }
+
+  pickCalendar(): void {
+    this.dialogService.sendDataDialog(true);
+    this.renderer.addClass(document.body, 'modal-open');
+    this.dialogRef = this.dialog.open(CalendarDialog, {
+      width: '600px',
+      maxHeight: '80%',
+      data: {
+        type: this.type,
+        listDay: this.listDay,
+      },
+      panelClass: ['bank-note']
+    });
+
+    this.dialogRef.afterClosed().subscribe(result => {
+      // console.log('The dialog was closed');
+      this.renderer.removeClass(document.body, 'modal-open');
+      this.dialogService.sendDataDialog(false);
+    });
+  }
+
+  FieldsChangeTermAndCondition(values: any) {
+    this.termAndCondition = true;
+  }
+
+  openTermAndConditions() {
+    this.TermsDialogRef = this.dialog.open(TermAndConditionDialog, {
+      width: "800px",
+      // height: '90%',
+      maxHeight: "80vh",
+      data: { data: "ahihi" },
+    });
+    this.TermsDialogRef.afterClosed().subscribe((result) => {
+      this.TermsDialogRef = null;
+    });
+  }
+
+  pickCleaner() {
+    this.dialogService.sendDataDialog(true);
+    this.renderer.addClass(document.body, 'modal-open');
+    this.cleanerDialogRef = this.dialog.open(PickCleanerDialog, {
+      width: '600px',
+      maxHeight: '80%',
+      data: {
+        data: this.dataCleaner
+      },
+      panelClass: ['pick-cleaner']
+    });
+
+    this.cleanerDialogRef.afterClosed().subscribe(result => {
+      // console.log('The dialog was closed');
+      this.renderer.removeClass(document.body, 'modal-open');
+      this.dialogService.sendDataDialog(false);
+    });
+  }
+
+  Order() {
+
+  }
+
+}
+
+@Component({
+  selector: "term-and-condition-dialog",
+  templateUrl: "term-condition-dialog/term-and-condition.html",
+  styleUrls: ["term-condition-dialog/term-and-condition.scss"],
+})
+
+export class TermAndConditionDialog {
+  cancel_description = "";
+
+  constructor(
+    public DialogRef: MatDialogRef<TermAndConditionDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+  ) {
+  }
+
+  onNoClick(): void {
+    this.DialogRef.close();
   }
 }

@@ -1,0 +1,28 @@
+ol, ul {
+    font-size: 12px;
+    padding-left: 0;
+}
+p {
+    font-size: 12px;
+}
+.non-list-style {
+    list-style: none;
+}
+.i-diamon:before 
+{
+    content: '❖';
+    margin: 0 10px 0px 0px;    /* any design */
+}
+
+.i-square:before 
+{
+    content: '■';
+    margin: 0 10px 0px 0px;    /* any design */
+}
+
+.i-minus:before 
+{
+    content: '−';
+    margin: 0 10px 0px 0px;    /* any design */
+    padding-left: 15px;
+}
