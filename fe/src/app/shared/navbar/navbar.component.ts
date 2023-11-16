@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd, NavigationStart } from '@angular/router';
 import { Location, PopStateEvent } from '@angular/common';
+import { ROUTES } from '../sidebar/sidebar.component';
+
 
 @Component({
     selector: 'app-navbar',
@@ -9,13 +11,17 @@ import { Location, PopStateEvent } from '@angular/common';
 })
 export class NavbarComponent implements OnInit {
     public isCollapsed = true;
+    public focus;
     private lastPoppedUrl: string;
     private yScrollStack: number[] = [];
+    listTitles: any[];
 
     constructor(public location: Location, private router: Router) {
     }
 
     ngOnInit() {
+    this.listTitles = ROUTES.filter(listTitle => listTitle);
+
       this.router.events.subscribe((event) => {
         this.isCollapsed = true;
         if (event instanceof NavigationStart) {
@@ -53,4 +59,18 @@ export class NavbarComponent implements OnInit {
             return false;
         }
     }
+
+    getTitle(){
+        var titlee = this.location.prepareExternalUrl(this.location.path());
+        if(titlee.charAt(0) === '#'){
+            titlee = titlee.slice( 1 );
+        }
+    
+        for(var item = 0; item < this.listTitles.length; item++){
+            if(this.listTitles[item].path === titlee){
+                return this.listTitles[item].title;
+            }
+        }
+        return 'Dashboard';
+      }
 }
