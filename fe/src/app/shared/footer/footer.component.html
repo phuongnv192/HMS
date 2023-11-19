@@ -1,22 +1,4 @@
-<footer class="footer" [ngClass]="{'has-cards': getPath()!=='/user-profile' && getPath()!=='/register' && getPath()!=='/login'}">
-  <!-- <div class="container container-lg" *ngIf="getPath()!=='/user-profile' && getPath()!=='/register' && getPath()!=='/login'">
-    <div class="row">
-      <div class="col-md-6 mb-5 mb-md-0">
-        <div class="card card-lift--hover shadow border-0">
-          <a [routerLink]="['/introduction']" title="Introduction Page">
-            <img src="./assets/img/theme/introduction.jpg" class="card-img">
-          </a>
-        </div>
-      </div>
-      <div class="col-md-6 mb-5 mb-lg-0">
-        <div class="card card-lift--hover shadow border-0">
-          <a [routerLink]="['/user-profile']" title="Profile Page">
-            <img src="./assets/img/theme/profile.jpg" class="card-img">
-          </a>
-        </div>
-      </div>
-    </div>
-  </div> -->
+<footer *ngIf="footerUser" class="footer" [ngClass]="{'has-cards': getPath()!=='/user-profile' && getPath()!=='/register' && getPath()!=='/login'}">
   <div class="container">
     <div class="row row-grid align-items-center" [ngClass]="{'my-md': getPath()!=='/user-profile' && getPath()!=='/register' && getPath()!=='/login', 'mb-5':getPath()==='/user-profile' || getPath()==='/register' || getPath()==='/login'}">
       <div class="col-lg-6">
@@ -63,6 +45,30 @@
           </li>
         </ul>
       </div>
+    </div>
+  </div>
+</footer>
+
+<footer *ngIf="!footerUser" class="footer">
+  <div class="row align-items-center justify-content-xl-between">
+    <div class="col-xl-6">
+      <div class="copyright text-center text-xl-left text-muted">
+        &copy; {{ test | date: "yyyy" }} <a href="" class="font-weight-bold ml-1" target="_blank">Dịch vụ dọn dẹp chất lượng hàng đầu</a>
+      </div>
+    </div>
+    <div class="col-xl-6">
+      <ul class="nav nav-footer justify-content-center justify-content-xl-end">
+        <li class="nav-item">
+          <a href="" class="nav-link" target="_blank">H.S.M</a>
+        </li>
+        <li class="nav-item">
+          <a href="" class="nav-link" target="_blank">Giới thiệu</a>
+        </li>
+        <li class="nav-item">
+          <a href="" class="nav-link" target="_blank">Blog</a>
+        </li>
+        
+      </ul>
     </div>
   </div>
 </footer>

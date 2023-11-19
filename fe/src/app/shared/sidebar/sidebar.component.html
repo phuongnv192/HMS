@@ -1,119 +1,329 @@
-<nav class="navbar navbar-vertical navbar-expand-md navbar-light bg-white" id="sidenav-main">
-  <div class="container-fluid">
-    <!-- Toggler -->
-    <button class="navbar-toggler" type="button" (click)="isCollapsed=!isCollapsed"
-       aria-controls="sidenav-collapse-main">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <!-- Brand -->
-    <a class="navbar-brand pt-0" routerLinkActive="active" [routerLink]="['/dashboard']">
-      <img src="./assets/img/brand/red.png" class="navbar-brand-img" alt="...">
-    </a>
-    <!-- User -->
-    <ul class="nav align-items-center d-md-none">
-      <li class="nav-item" ngbDropdown placement="bottom-right">
-        <a class="nav-link nav-link-icon" role="button" ngbDropdownToggle>
-          <i class="ni ni-bell-55"></i>
-        </a>
-        <div class="dropdown-menu-arrow dropdown-menu-right" ngbDropdownMenu>
-          <a class="dropdown-item" href="javascript:void(0)">Action</a>
-          <a class="dropdown-item" href="javascript:void(0)">Another action</a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="javascript:void(0)">Something else here</a>
-        </div>
-      </li>
-      <li class="nav-item" ngbDropdown placement="bottom-right">
-        <a class="nav-link" role="button" ngbDropdownToggle>
-          <div class="media align-items-center">
-            <span class="avatar avatar-sm rounded-circle">
-              <img alt="Image placeholder" src="./assets/img/theme/team-1-800x800.jpg">
-            </span>
-          </div>
-        </a>
-        <div class="dropdown-menu-arrow dropdown-menu-right" ngbDropdownMenu>
-          <div class=" dropdown-header noti-title">
-            <h6 class="text-overflow m-0">Welcome!</h6>
-          </div>
-          <a routerLinkActive="active" [routerLink]="['/user-profile']" class="dropdown-item">
-            <i class="ni ni-single-02"></i>
-            <span>Xem thông tin</span>
-          </a>
-          <a routerLinkActive="active" [routerLink]="['/user-profile']" class="dropdown-item">
-            <i class="ni ni-calendar-grid-58"></i>
-            <span>Đổi mật khẩu</span>
-          </a>
-          <a routerLinkActive="active" [routerLink]="['/user-profile']" class="dropdown-item">
-            <i class="ni ni-support-16"></i>
-            <span>Liên hệ & Hỗ trợ</span>
-          </a>
-          <div class="dropdown-divider"></div>
-          <a href="#!" class="dropdown-item">
-            <i class="ni ni-user-run"></i>
-            <span>Đăng xuất</span>
-          </a>
-        </div>
-      </li>
-    </ul>
-    <!-- Collapse -->
-    <div class="collapse navbar-collapse"  [ngbCollapse]="isCollapsed" id="sidenav-collapse-main">
-      <!-- Collapse header -->
-      <div class="navbar-collapse-header d-md-none">
-        <div class="row">
-          <div class="col-6 collapse-brand">
-            <a  routerLinkActive="active" [routerLink]="['/dashboard']">
-              <img src="./assets/img/brand/blue.png">
-            </a>
-          </div>
-          <div class="col-6 collapse-close">
-            <button type="button" class="navbar-toggler" (click)="isCollapsed=!isCollapsed">
-              <span></span>
-              <span></span>
-            </button>
-          </div>
-        </div>
-      </div>
-      <!-- Form -->
-      <form class="mt-4 mb-3 d-md-none">
-        <div class="input-group input-group-rounded input-group-merge">
-          <input type="search" class="form-control form-control-rounded form-control-prepended" placeholder="Search" aria-label="Search">
-          <div class="input-group-prepend">
-            <div class="input-group-text">
-              <span class="fa fa-search"></span>
-            </div>
-          </div>
-        </div>
-      </form>
-      <!-- Navigation -->
-      <ul class="navbar-nav">
-          <li *ngFor="let menuItem of menuItems" class="{{menuItem.class}} nav-item">
-              <a routerLinkActive="active" [routerLink]="[menuItem.path]" class="nav-link">
-                  <i class="ni {{menuItem.icon}}"></i>
-                  {{menuItem.title}}
-              </a>
-          </li>
-      </ul>
-      <!-- Divider -->
-      <hr class="my-3">
-      <!-- Heading -->
-      <h6 class="navbar-heading text-muted">Documentation</h6>
-      <!-- Navigation -->
-      <ul class="navbar-nav mb-md-3">
-        <li class="nav-item">
-          <a class="nav-link" href="https://demos.creative-tim.com/argon-dashboard-angular/documentation/tutorial">
-            <i class="ni ni-spaceship"></i> Getting started
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="https://demos.creative-tim.com/argon-dashboard-angular/documentation/colors">
-            <i class="ni ni-palette"></i> Foundation
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="https://demos.creative-tim.com/argon-dashboard-angular/documentation/alerts">
-            <i class="ni ni-ui-04"></i> Components
-          </a>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
+
+.navbar-search .input-group
+{
+    border: 2px solid;
+    border-radius: 2rem;
+    background-color: transparent;
+}
+.navbar-search .input-group .input-group-text
+{
+    padding-left: 1rem;
+
+    background-color: transparent;
+}
+
+.navbar-search .form-control
+{
+    width: 270px;
+
+    background-color: transparent;
+}
+
+.navbar-search-dark .input-group
+{
+    border-color: rgba(255, 255, 255, .6);
+}
+
+.navbar-search-dark .input-group-text
+{
+    color: rgba(255, 255, 255, .6);
+}
+
+.navbar-search-dark .form-control
+{
+    color: rgba(255, 255, 255, .9);
+}
+.navbar-search-dark .form-control:-ms-input-placeholder
+{
+    color: rgba(255, 255, 255, .6);
+}
+.navbar-search-dark .form-control::-ms-input-placeholder
+{
+    color: rgba(255, 255, 255, .6);
+}
+.navbar-search-dark .form-control::placeholder
+{
+    color: rgba(255, 255, 255, .6);
+}
+
+.navbar-search-dark .focused .input-group
+{
+    border-color: rgba(255, 255, 255, .9);
+}
+
+.navbar-search-light .input-group
+{
+    border-color: rgba(0, 0, 0, .6);
+}
+
+.navbar-search-light .input-group-text
+{
+    color: rgba(0, 0, 0, .6);
+}
+
+.navbar-search-light .form-control
+{
+    color: rgba(0, 0, 0, .9);
+}
+.navbar-search-light .form-control:-ms-input-placeholder
+{
+    color: rgba(0, 0, 0, .6);
+}
+.navbar-search-light .form-control::-ms-input-placeholder
+{
+    color: rgba(0, 0, 0, .6);
+}
+.navbar-search-light .form-control::placeholder
+{
+    color: rgba(0, 0, 0, .6);
+}
+
+.navbar-search-light .focused .input-group
+{
+    border-color: rgba(0, 0, 0, .9);
+}
+
+@media (min-width: 768px)
+{
+    .navbar .dropdown-menu
+    {
+        margin: 0;
+
+        pointer-events: none;
+
+        opacity: 0;
+    }
+    .navbar .dropdown-menu-arrow:before
+    {
+        position: absolute;
+        z-index: -5;
+        bottom: 100%;
+        left: 20px;
+
+        display: block;
+
+        width: 12px;
+        height: 12px;
+
+        content: '';
+        transform: rotate(-45deg) translateY(12px);
+
+        border-radius: 2px;
+        background: #fff;
+        box-shadow: none;
+    }
+    .navbar .dropdown-menu-right:before
+    {
+        right: 20px;
+        left: auto;
+    }
+    .navbar:not(.navbar-nav-hover) .dropdown-menu.show
+    {
+        animation: show-navbar-dropdown .25s ease forwards;
+        pointer-events: auto;
+
+        opacity: 1;
+    }
+    .navbar:not(.navbar-nav-hover) .dropdown-menu.close
+    {
+        display: block;
+
+        animation: hide-navbar-dropdown .15s ease backwards;
+    }
+    .navbar.navbar-nav-hover .dropdown-menu
+    {
+        display: block;
+
+        transition: visibility .25s, opacity .25s, transform .25s;
+        transform: translate(0, 10px) perspective(200px) rotateX(-2deg);
+        pointer-events: none;
+
+        opacity: 0;
+    }
+    .navbar.navbar-nav-hover .nav-item.dropdown:hover > .dropdown-menu
+    {
+        display: block;
+        visibility: visible;
+
+        transform: translate(0, 0);
+        animation: none;
+        pointer-events: auto;
+
+        opacity: 1;
+    }
+    .navbar .dropdown-menu-inner
+    {
+        position: relative;
+
+        padding: 1rem;
+    }
+    @keyframes show-navbar-dropdown
+    {
+        0%
+        {
+            transition: visibility .25s, opacity .25s, transform .25s;
+            transform: translate(0, 10px) perspective(200px) rotateX(-2deg);
+
+            opacity: 0;
+        }
+        100%
+        {
+            transform: translate(0, 0);
+
+            opacity: 1;
+        }
+    }
+    @keyframes hide-navbar-dropdown
+    {
+        from
+        {
+            opacity: 1;
+        }
+        to
+        {
+            transform: translate(0, 10px);
+
+            opacity: 0;
+        }
+    }
+}
+
+.navbar-collapse-header
+{
+    display: none;
+}
+
+@media (max-width: 767.98px)
+{
+    .navbar-nav .nav-link
+    {
+        padding: .625rem 0;
+
+        color: #172b4d !important;
+    }
+    .navbar-nav .dropdown-menu
+    {
+        min-width: auto;
+
+        box-shadow: none;
+    }
+    .navbar-nav .dropdown-menu .media svg
+    {
+        width: 30px;
+    }
+    .navbar-collapse
+    {
+        position: absolute;
+        z-index: 1050;
+        top: 0;
+        right: 0;
+        left: 0;
+
+        overflow-y: auto;
+
+        width: calc(100% - 1.4rem);
+        height: auto !important;
+        margin: .7rem;
+
+        opacity: 0;
+    }
+    .navbar-collapse .navbar-toggler
+    {
+        position: relative;
+
+        display: inline-block;
+
+        width: 20px;
+        height: 20px;
+        padding: 0;
+
+        cursor: pointer;
+    }
+    .navbar-collapse .navbar-toggler span
+    {
+        position: absolute;
+
+        display: block;
+
+        width: 100%;
+        height: 2px;
+
+        opacity: 1;
+        border-radius: 2px;
+        background: #283448;
+    }
+    .navbar-collapse .navbar-toggler :nth-child(1)
+    {
+        transform: rotate(135deg);
+    }
+    .navbar-collapse .navbar-toggler :nth-child(2)
+    {
+        transform: rotate(-135deg);
+    }
+    .navbar-collapse .navbar-collapse-header
+    {
+        display: block;
+
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+
+        border-bottom: 1px solid rgba(0, 0, 0, .1);
+    }
+    .navbar-collapse .collapse-brand img
+    {
+        height: 36px;
+    }
+    .navbar-collapse .collapse-close
+    {
+        text-align: right;
+    }
+    .navbar-collapse.collapsing,
+    .navbar-collapse.show
+    {
+        padding: 1.5rem;
+
+        animation: show-navbar-collapse .2s ease forwards;
+
+        border-radius: .375rem;
+        background: #fff;
+        box-shadow: 0 50px 100px rgba(50, 50, 93, .1), 0 15px 35px rgba(50, 50, 93, .15), 0 5px 15px rgba(0, 0, 0, .1);
+    }
+    .navbar-collapse.collapsing-out
+    {
+        animation: hide-navbar-collapse .2s ease forwards;
+    }
+}
+
+@keyframes show-navbar-collapse
+{
+    0%
+    {
+        transform: scale(.95);
+        transform-origin: 100% 0;
+
+        opacity: 0;
+    }
+    100%
+    {
+        transform: scale(1);
+
+        opacity: 1;
+    }
+}
+
+@keyframes hide-navbar-collapse
+{
+    from
+    {
+        transform: scale(1);
+        transform-origin: 100% 0;
+
+        opacity: 1;
+    }
+    to
+    {
+        transform: scale(.95);
+
+        opacity: 0;
+    }
+}

@@ -1,66 +1,57 @@
-<div class="header bg-gradient-danger pb-8 pt-5 pt-md-8">
+<div class="header bg-gradient-danger design-table pb-8 pt-md-8">
   <div class="container-fluid">
     <div class="header-body">
       <!-- Card stats -->
       <div class="row">
-        <div class="col-xl-3 col-lg-6">
+        <div class="col-xl-9 col-lg-6">
           <div class="card card-stats mb-4 mb-xl-0">
             <div class="card-body">
               <div class="row">
-                <div class="col">
-                  <h5 class="card-title text-uppercase text-muted mb-0">Tên nhân viên</h5>
-                  <span class="h2 font-weight-bold mb-0">350,897</span>
-                </div>
+                <div class="col search-emp">
+                  <div class="search-name">
+                    <h5 class="card-title text-uppercase text-muted mb-0 font14">Tên nhân viên</h5>
+                    <input #emp_name id="emp_name" placeholder="Nguyen Van A" [(ngModel)]="empName" type="text" aria-describedby="emp_name-help"
+                    maxlength="50">
+                  </div>
+                  <div class="search-age">
+                    <h5 class="card-title text-uppercase text-muted mb-0 font14">Tuổi</h5>
+                    <select [(ngModel)]="searchAge" id="houseType" aria-describedby="houseType-help"
+                      title="tuổi">
+                      <option *ngFor="let age of ageRange" [value]="age">{{ age }}</option>
+                    </select>
+                  </div>
+                  <div class="search-status">
+                    <h5 class="card-title text-uppercase text-muted mb-0 font14">Trạng thái</h5>
+                    <select [(ngModel)]="searchStatus" id="houseType" aria-describedby="houseType-help"
+                      title="trạng thái">
+                      <option *ngFor="let stt of statusRange" [value]="stt">{{ stt }}</option>
+                    </select>
+                  </div>
+                  <div class="search-rate">
+                    <h5 class="card-title text-uppercase text-muted mb-0 font14">Đánh giá</h5>
+                    <select [(ngModel)]="searchRate" id="houseType" aria-describedby="houseType-help"
+                      title="đánh giá">
+                      <option *ngFor="let rate of rateRange" [value]="rate">{{ rate }}</option>
+                    </select>
+                  </div>
+                  
+              </div>
+
                 <div class="col-auto">
-                  <div class="icon icon-shape bg-danger text-white rounded-circle shadow">
-                    <i class="fas fa-chart-bar"></i>
+                  <div class="icon icon-shape bg-danger text-white rounded-circle shadow" (click)="searchEmp()">
+                    <i class="fas fa-search"></i>
                   </div>
                 </div>
-              </div>
             </div>
           </div>
+        </div>
         </div>
         <div class="col-xl-3 col-lg-6">
           <div class="card card-stats mb-4 mb-xl-0">
             <div class="card-body">
               <div class="row">
                 <div class="col">
-                  <h5 class="card-title text-uppercase text-muted mb-0">Giới tính</h5>
-                  <span class="h2 font-weight-bold mb-0">2,356</span>
-                </div>
-                <div class="col-auto">
-                  <div class="icon icon-shape bg-warning text-white rounded-circle shadow">
-                    <i class="fas fa-chart-pie"></i>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-xl-3 col-lg-6">
-          <div class="card card-stats mb-4 mb-xl-0">
-            <div class="card-body">
-              <div class="row">
-                <div class="col">
-                  <h5 class="card-title text-uppercase text-muted mb-0">Tuổi</h5>
-                  <span class="h2 font-weight-bold mb-0">924</span>
-                </div>
-                <div class="col-auto">
-                  <div class="icon icon-shape bg-yellow text-white rounded-circle shadow">
-                    <i class="fas fa-users"></i>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-xl-3 col-lg-6">
-          <div class="card card-stats mb-4 mb-xl-0">
-            <div class="card-body">
-              <div class="row">
-                <div class="col">
-                  <h5 class="card-title text-uppercase text-muted mb-0"> Sắp xếp </h5>
-                  <span class="h2 font-weight-bold mb-0">49,65%</span>
+                  <h5 class="card-title text-uppercase text-muted mb-0 font14"> Sắp xếp </h5>
                 </div>
                 <div class="col-auto">
                   <div class="icon icon-shape bg-info text-white rounded-circle shadow">
@@ -82,7 +73,7 @@
     <div class="col">
       <div class="card shadow">
         <div class="card-header border-0">
-          <h3 class="mb-0">Danh sách nhân viên dọn dẹp</h3>
+          <h3 class="mb-0 font20">Danh sách nhân viên dọn dẹp</h3>
         </div>
         <div class="table-responsive">
           <table class="table align-items-center table-flush">

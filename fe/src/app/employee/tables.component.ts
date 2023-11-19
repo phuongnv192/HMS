@@ -7,10 +7,20 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TablesComponent implements OnInit {
   listCleaner: any;
+  searchAge: any;
+  searchRate: any;
+  searchStatus: any;
+  ageRange: any;
+  rateRange: any;
+  statusRange: any;
+  empName = '';
 
   constructor() { }
 
   ngOnInit() {
+    this.ageRange = ['18 - 25', '25 - 35', '35 - 45', '> 45'];
+    this.rateRange = ['0 - 1', '1 - 2', '2 - 3', '3 - 4', '4 - 5'];
+    this.statusRange = ['Đang làm việc', 'Nghỉ phép', 'Sẵn sàng'];
     this.listCleaner = [
       {
         cleanerId: 1,
@@ -49,6 +59,10 @@ export class TablesComponent implements OnInit {
     }
 
     return stars.join('');
+  }
+
+  searchEmp(){
+    
   }
 
 }
