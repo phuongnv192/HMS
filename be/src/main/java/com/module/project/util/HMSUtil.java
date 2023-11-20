@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -40,5 +41,16 @@ public class HMSUtil {
             log.warn("Exception when format date {} with detail: {}", date, ex.getMessage());
         }
         return rs;
+    }
+
+    public static int calculateActivityYear(Date from, Date to) {
+        if (from == null || to == null || to.before(from)) {
+            return 0;
+        }
+        Calendar toC = Calendar.getInstance();
+        toC.setTime(to);
+        Calendar fromC = Calendar.getInstance();
+        fromC.setTime(from);
+        return toC.get(Calendar.YEAR) - fromC.get(Calendar.YEAR);
     }
 }

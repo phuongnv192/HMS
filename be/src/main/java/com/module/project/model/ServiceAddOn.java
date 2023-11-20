@@ -1,5 +1,6 @@
 package com.module.project.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,6 +19,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "tb_service_addon")
+@JsonIgnoreProperties("service")
 public class ServiceAddOn {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -97,6 +97,8 @@ public class Main implements CommandLineRunner {
             branchRepository.save(branch);
 
             User user1 = User.builder()
+                    .firstName("Duong")
+                    .lastName("PL")
                     .username("test1")
                     .password("1")
                     .status(Constant.COMMON_STATUS.ACTIVE)
@@ -110,17 +112,53 @@ public class Main implements CommandLineRunner {
                     .build();
             userRepository.saveAll(Arrays.asList(user1, user2));
 
+            String review = "{\n" +
+                    "    \"1\": {\n" +
+                    "        \"cleanerActivities\": [\n" +
+                    "            {\n" +
+                    "                \"bookingScheduleId\": 1,\n" +
+                    "                \"workDate\": 1699882588882,\n" +
+                    "                \"ratingScore\": 5,\n" +
+                    "                \"review\": \"good\"\n" +
+                    "            },\n" +
+                    "            {\n" +
+                    "                \"bookingScheduleId\": 1,\n" +
+                    "                \"workDate\": 1699882588882,\n" +
+                    "                \"ratingScore\": 5,\n" +
+                    "                \"review\": \"good\"\n" +
+                    "            }\n" +
+                    "        ]\n" +
+                    "    },\n" +
+                    "    \"2\": {\n" +
+                    "        \"cleanerActivities\": [\n" +
+                    "            {\n" +
+                    "                \"bookingScheduleId\": 1,\n" +
+                    "                \"workDate\": 1699882588882,\n" +
+                    "                \"ratingScore\": 5,\n" +
+                    "                \"review\": \"good\"\n" +
+                    "            },\n" +
+                    "            {\n" +
+                    "                \"bookingScheduleId\": 1,\n" +
+                    "                \"workDate\": 1699882588882,\n" +
+                    "                \"ratingScore\": 5,\n" +
+                    "                \"review\": \"good\"\n" +
+                    "            }\n" +
+                    "        ]\n" +
+                    "    }\n" +
+                    "}";
             Cleaner cleaner1 = Cleaner.builder()
                     .user(user1)
                     .branch(branch)
                     .status(Constant.COMMON_STATUS.ACTIVE)
                     .idCard("1")
+                    .review(review)
                     .build();
             Cleaner cleaner2 = Cleaner.builder()
                     .user(user2)
                     .branch(branch)
                     .status(Constant.COMMON_STATUS.ACTIVE)
                     .idCard("2")
+                    .review(review)
                     .build();
             cleanerRepository.saveAll(Arrays.asList(cleaner1, cleaner2));
 
@@ -185,7 +223,7 @@ public class Main implements CommandLineRunner {
             serviceAddOnRepository.saveAll(Arrays.asList(serviceAddOn1, serviceAddOn2));
 
             Booking booking = Booking.builder()
-                    .hostName("DuongPL")
+                    .hostName("Booking guest name")
                     .houseType(Constant.HOUSE_TYPE.APARTMENT)
                     .floorNumber(12)
                     .floorArea(120f)

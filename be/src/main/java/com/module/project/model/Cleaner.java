@@ -1,5 +1,6 @@
 package com.module.project.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -14,7 +15,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.util.Date;
 import java.util.Set;
 
 @Data
@@ -43,5 +46,9 @@ public class Cleaner {
     @JoinColumn(name = "service_id")
     private Set<Service> services;
 
+    @Column(name = "review", length = 5000)
     private String review;
+
+    @CreationTimestamp
+    private Date createDate;
 }

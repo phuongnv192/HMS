@@ -11,6 +11,8 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 public class CleanerOverviewResponse {
     private Long cleanerId;
+    private String name;
+    private int activityYear;
     private Long averageRating;
     private int ratingNumber;
 }

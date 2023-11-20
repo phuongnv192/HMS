@@ -32,6 +32,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -90,7 +91,6 @@ public class CleanerService {
         Pageable pageable = PageRequest.of(page, size);
         List<Cleaner> cleaners = cleanerRepository.findAll(pageable).getContent();
         for (Cleaner cleaner : cleaners) {
-            // parse object with key is booking_id and value is list schedule
             Map<Long, CleanerReviewInfo> reviewList = JsonService.strToObject(cleaner.getReview(), new TypeReference<>() {
             });
             if (reviewList == null) {
@@ -100,6 +100,8 @@ public class CleanerService {
             int ratingNumber = 0;
             CleanerOverviewResponse history = CleanerOverviewResponse.builder()
                     .cleanerId(cleaner.getId())
+                    .name(HMSUtil.convertToFullName(cleaner.getUser().getFirstName(), cleaner.getUser().getLastName()))
+                    .activityYear(HMSUtil.calculateActivityYear(cleaner.getCreateDate(), new Date()))
                     .build();
             for (Long bookingId : reviewList.keySet()) {
                 Optional<Booking> bookingOptional = bookingRepository.findById(bookingId);
@@ -109,7 +111,7 @@ public class CleanerService {
                 CleanerReviewInfo cleanerReviewInfo = reviewList.get(bookingId);
                 if (cleanerReviewInfo != null
                         && cleanerReviewInfo.getCleanerActivities() != null
-                        && cleanerReviewInfo.getCleanerActivities().size() == 0) {
+                        && cleanerReviewInfo.getCleanerActivities().size() != 0) {
                     sumRating += cleanerReviewInfo.getCleanerActivities().stream().mapToDouble(CleanerActivity::getRatingScore).sum();
                     ratingNumber += cleanerReviewInfo.getCleanerActivities().size();
                 }
@@ -124,8 +126,11 @@ public class CleanerService {
     public CleanerDetailHistoryResponse getCleanerHistoryDetail(Long cleanerId) {
         Cleaner cleaner = cleanerRepository.findById(cleanerId)
                 .orElseThrow(() -> new InternalError("getCleanerDetailHistory: can't find any cleaner by id: ".concat(cleanerId.toString())));
-        Map<Long, CleanerReviewInfo> reviewList = JsonService.strToObject(cleaner.getReview(), new TypeReference<>() {
+        Map<Long, CleanerReviewInfo> reviewList = JsonService.strToObject(cleaner.getReview(), new TypeReference<Map<Long, CleanerReviewInfo>>() {
         });
+        if (reviewList == null) {
+            return null;
+        }
         double sumRating = 0;
         int ratingNumber = 0;
         List<CleanerHistoryResponse> history = new ArrayList<>();
@@ -137,7 +142,7 @@ public class CleanerService {
             CleanerReviewInfo cleanerReviewInfo = reviewList.get(bookingId);
             if (cleanerReviewInfo != null
                     && cleanerReviewInfo.getCleanerActivities() != null
-                    && cleanerReviewInfo.getCleanerActivities().size() == 0) {
+                    && cleanerReviewInfo.getCleanerActivities().size() != 0) {
                 CleanerHistoryResponse item = CleanerHistoryResponse.builder()
                         .name(bookingOptional.get().getHostName())
                         .houseType(bookingOptional.get().getHouseType())
@@ -156,6 +161,8 @@ public class CleanerService {
         }
         CleanerOverviewResponse ratingOverview = CleanerOverviewResponse.builder()
                 .cleanerId(cleanerId)
+                .name(HMSUtil.convertToFullName(cleaner.getUser().getFirstName(), cleaner.getUser().getLastName()))
+                .activityYear(HMSUtil.calculateActivityYear(cleaner.getCreateDate(), new Date()))
                 .averageRating(ratingNumber != 0 ? Math.round(sumRating / ratingNumber) : ratingNumber)
                 .ratingNumber(ratingNumber)
                 .build();

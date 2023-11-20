@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
@@ -31,6 +32,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Table(name = "tb_user")
+@ToString(exclude = {"bookings"})
 public class User implements UserDetails {
     @Id
     @GeneratedValue
