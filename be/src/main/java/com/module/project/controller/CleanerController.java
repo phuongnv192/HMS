@@ -21,8 +21,11 @@ import static com.module.project.dto.Constant.CHOOSE_CLEANER;
 import static com.module.project.dto.Constant.CLEANER;
 import static com.module.project.dto.Constant.CLEANERS;
 import static com.module.project.dto.Constant.CLEANER_HISTORY;
+<<<<<<< HEAD
 import static com.module.project.dto.Constant.CLEANER_HISTORY_DETAIL;
 import static com.module.project.dto.Constant.CLEANER_STATUS;
+=======
+>>>>>>> a962a2458dc2a334440eaa729e5ded3456655b55
 
 @RestController
 @RequestMapping(API_V1)

@@ -192,6 +192,8 @@ public class CleanerService {
         return cleanerRepository.save(cleaner);
     }
 
+<<<<<<< HEAD
+=======
     public Cleaner updateCleaner(CleanerUpdateRequest cleanerUpdateRequest) {
         Cleaner cleaner = cleanerRepository.findById(cleanerUpdateRequest.getId()).get();
 
@@ -225,12 +227,21 @@ public class CleanerService {
         return cleanerRepository.save(cleaner);
     }
 
+>>>>>>> 292f472a951892d6fc32f30271fea27170b52576
     private List<Cleaner> manualChooseCleaner() {
         return null;
     }
 
     private List<Cleaner> filterCleaners(List<Cleaner> cleaners, CleanerFilterRequest request) {
         // TODO: update later - filter by gender and sort by rating
+<<<<<<< HEAD
+//        List<BookingSchedule> bookingSchedules = bookingScheduleRepository.findAllById();
+//        cleaners.sort(Comparator.comparing(Clea));
+        return cleaners.stream()
+                .filter(cleaner -> StringUtils.isBlank(request.getGender()) || cleaner.getUser().getGender().equalsIgnoreCase(request.getGender()))
+//                .filter(cleaner -> StringUtils.isBlank(request.getAge()) || cleaner.getUser().getId() == Integer.parseInt(request.getAge()))
+//                .filter(cleaner -> StringUtils.isBlank(request.getRate()) || cleaner.getId() == Integer.parseInt(request.getRate()))
+=======
         // List<BookingSchedule> bookingSchedules =
         // bookingScheduleRepository.findAllById();
         // cleaners.sort(Comparator.comparing(Clea));
@@ -241,12 +252,17 @@ public class CleanerService {
                 // cleaner.getUser().getId() == Integer.parseInt(request.getAge()))
                 // .filter(cleaner -> StringUtils.isBlank(request.getRate()) || cleaner.getId()
                 // == Integer.parseInt(request.getRate()))
+>>>>>>> 292f472a951892d6fc32f30271fea27170b52576
                 .toList();
     }
 
     private List<Cleaner> filterOnlyAvailable(List<Cleaner> cleaners) {
+<<<<<<< HEAD
+        // TODO: check in booking schedule table that doesn't exist in with specific date
+=======
         // TODO: check in booking schedule table that doesn't exist in with specific
         // date
+>>>>>>> 292f472a951892d6fc32f30271fea27170b52576
         return cleaners;
     }
 }
