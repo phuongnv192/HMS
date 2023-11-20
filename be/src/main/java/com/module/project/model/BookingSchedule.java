@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
 
@@ -21,18 +22,13 @@ public class BookingSchedule {
     @Id
     @GeneratedValue
     private Integer scheduleId;
-
-//    @ManyToOne(cascade = CascadeType.ALL)
-//    @OnDelete(action = OnDeleteAction.CASCADE)
-//    @JoinColumn(name = "booking_id")
-//    private Booking booking;
     private Date workDate;
     private Date startTime;
     private Date endTime;
-//    private String scheduleProcess;
     private String status;
-//    private String addonData;
     private String ratingScore;
+
+    @UpdateTimestamp
     private Date updateDate;
     private Integer updateBy;
 
@@ -44,5 +40,8 @@ public class BookingSchedule {
     @JoinColumn(name = "add_on_id")
     private ServiceAddOn addonId;
 
-
+    @ManyToOne(cascade = CascadeType.ALL)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "transaction_id")
+    private BookingTransaction booking;
 }

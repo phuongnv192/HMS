@@ -27,8 +27,6 @@ public class Service {
     public Integer id;
     public String serviceName;
     public String serviceDescription;
-//    public String floorArea;
-//    public String houseType;
     public String serviceStatus;
     public String paymentMethod;
 
