@@ -5,6 +5,7 @@ import com.module.project.dto.Constant;
 import com.module.project.dto.request.ChooseCleanerRequest;
 import com.module.project.dto.request.CleanerFilterRequest;
 import com.module.project.dto.request.CleanerInfoRequest;
+import com.module.project.dto.request.CleanerUpdateRequest;
 import com.module.project.dto.response.CleanerHistoryResponse;
 import com.module.project.model.BookingSchedule;
 import com.module.project.model.Branch;
@@ -71,7 +72,8 @@ public class CleanerService {
 
     public List<CleanerHistoryResponse> getCleanerHistory(Integer cleanerId) {
         Cleaner cleaner = cleanerRepository.findById(cleanerId)
-                .orElseThrow(() -> new InternalError("getCleanerHistory: not found any cleaner by id ".concat(cleanerId.toString())));
+                .orElseThrow(() -> new InternalError(
+                        "getCleanerHistory: not found any cleaner by id ".concat(cleanerId.toString())));
         List<CleanerHistoryResponse> response = new ArrayList<>();
         Map<String, String> reviewList = JsonService.strToObject(cleaner.getReview(), new TypeReference<>() {
         });
@@ -81,10 +83,20 @@ public class CleanerService {
 
     public Cleaner insertCleaner(CleanerInfoRequest cleanerInfoRequest) {
         Branch branch = branchRepository.findById(Integer.parseInt(cleanerInfoRequest.getBranchId()))
+<<<<<<< HEAD
                 .orElseThrow(() -> new InternalError("insertCleaner: can't find any branch with id: ".concat(cleanerInfoRequest.getBranchId())));
         User user = userRepository.findById(Integer.parseInt(cleanerInfoRequest.getUserId()))
                 .orElseThrow(() -> new InternalError("insertCleaner: can't find any user with id".concat(cleanerInfoRequest.getUserId())));
         Set<com.module.project.model.Service> serviceIds = new HashSet<>(serviceRepository.findAllById((Iterable<Integer>) cleanerInfoRequest.getServiceIds().iterator()));
+=======
+                .orElseThrow(() -> new InternalError(
+                        "insertCleaner: can't find any branch with id: ".concat(cleanerInfoRequest.getBranchId())));
+        User user = userRepository.findById(Integer.parseInt(cleanerInfoRequest.getUserId()))
+                .orElseThrow(() -> new InternalError(
+                        "insertCleaner: can't find any user with id".concat(cleanerInfoRequest.getUserId())));
+        Set<com.module.project.model.Service> serviceIds = new HashSet<>(
+                serviceRepository.findAllById((Iterable<Integer>) cleanerInfoRequest.getServiceIds().iterator()));
+>>>>>>> 292f472a951892d6fc32f30271fea27170b52576
         Cleaner cleaner = Cleaner.builder()
                 .address(cleanerInfoRequest.getAddress())
                 .idCard(cleanerInfoRequest.getIdCard())
@@ -96,23 +108,77 @@ public class CleanerService {
         return cleanerRepository.save(cleaner);
     }
 
+<<<<<<< HEAD
+=======
+    public Cleaner updateCleaner(CleanerUpdateRequest cleanerUpdateRequest) {
+        Cleaner cleaner = cleanerRepository.findById(cleanerUpdateRequest.getId()).get();
+
+        Branch branch = branchRepository.findById(Integer.parseInt(cleanerUpdateRequest.getBranchId()))
+                .orElseThrow(() -> new InternalError(
+                        "insertCleaner: can't find any branch with id: ".concat(cleanerUpdateRequest.getBranchId())));
+        Set<com.module.project.model.Service> serviceIds = new HashSet<>(
+                serviceRepository.findAllById((Iterable<Integer>) cleanerUpdateRequest.getServiceIds().iterator()));
+
+        cleaner = Cleaner.builder()
+                .address(cleanerUpdateRequest.getAddress())
+                .idCard(cleanerUpdateRequest.getIdCard())
+                .branch(branch)
+                .status(Constant.COMMON_STATUS.ACTIVE.equals(cleanerUpdateRequest.getStatus().toUpperCase())
+                        ? Constant.COMMON_STATUS.ACTIVE
+                        : Constant.COMMON_STATUS.INACTIVE)
+                .services(serviceIds)
+                .build();
+
+        return cleanerRepository.save(cleaner);
+    }
+
+    public Cleaner changeStatusCleaner(CleanerUpdateRequest cleanerUpdateRequest) {
+        Cleaner cleaner = cleanerRepository.findById(cleanerUpdateRequest.getId()).get();
+        cleaner = Cleaner.builder()
+                .status(Constant.COMMON_STATUS.ACTIVE.equals(cleanerUpdateRequest.getStatus().toUpperCase())
+                        ? Constant.COMMON_STATUS.ACTIVE
+                        : Constant.COMMON_STATUS.INACTIVE)
+                .build();
+
+        return cleanerRepository.save(cleaner);
+    }
+
+>>>>>>> 292f472a951892d6fc32f30271fea27170b52576
     private List<Cleaner> manualChooseCleaner() {
         return null;
     }
 
     private List<Cleaner> filterCleaners(List<Cleaner> cleaners, CleanerFilterRequest request) {
         // TODO: update later - filter by gender and sort by rating
+<<<<<<< HEAD
 //        List<BookingSchedule> bookingSchedules = bookingScheduleRepository.findAllById();
 //        cleaners.sort(Comparator.comparing(Clea));
         return cleaners.stream()
                 .filter(cleaner -> StringUtils.isBlank(request.getGender()) || cleaner.getUser().getGender().equalsIgnoreCase(request.getGender()))
 //                .filter(cleaner -> StringUtils.isBlank(request.getAge()) || cleaner.getUser().getId() == Integer.parseInt(request.getAge()))
 //                .filter(cleaner -> StringUtils.isBlank(request.getRate()) || cleaner.getId() == Integer.parseInt(request.getRate()))
+=======
+        // List<BookingSchedule> bookingSchedules =
+        // bookingScheduleRepository.findAllById();
+        // cleaners.sort(Comparator.comparing(Clea));
+        return cleaners.stream()
+                .filter(cleaner -> StringUtils.isBlank(request.getGender())
+                        || cleaner.getUser().getGender().equalsIgnoreCase(request.getGender()))
+                // .filter(cleaner -> StringUtils.isBlank(request.getAge()) ||
+                // cleaner.getUser().getId() == Integer.parseInt(request.getAge()))
+                // .filter(cleaner -> StringUtils.isBlank(request.getRate()) || cleaner.getId()
+                // == Integer.parseInt(request.getRate()))
+>>>>>>> 292f472a951892d6fc32f30271fea27170b52576
                 .toList();
     }
 
     private List<Cleaner> filterOnlyAvailable(List<Cleaner> cleaners) {
+<<<<<<< HEAD
         // TODO: check in booking schedule table that doesn't exist in with specific date
+=======
+        // TODO: check in booking schedule table that doesn't exist in with specific
+        // date
+>>>>>>> 292f472a951892d6fc32f30271fea27170b52576
         return cleaners;
     }
 }

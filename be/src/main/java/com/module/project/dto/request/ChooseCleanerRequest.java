@@ -15,4 +15,8 @@ public class ChooseCleanerRequest {
     private String type;
     private int number;
     private Date bookingDate;
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 292f472a951892d6fc32f30271fea27170b52576
