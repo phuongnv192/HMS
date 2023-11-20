@@ -4,17 +4,22 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.module.project.dto.CleanerActivity;
 import com.module.project.dto.CleanerReviewInfo;
 import com.module.project.dto.Constant;
-import com.module.project.dto.request.ChooseCleanerRequest;
+import com.module.project.dto.ResponseCode;
 import com.module.project.dto.request.CleanerFilterRequest;
 import com.module.project.dto.request.CleanerInfoRequest;
 import com.module.project.dto.request.CleanerUpdateRequest;
 import com.module.project.dto.response.CleanerDetailHistoryResponse;
 import com.module.project.dto.response.CleanerHistoryResponse;
 import com.module.project.dto.response.CleanerOverviewResponse;
+import com.module.project.exception.HmsErrorCode;
+import com.module.project.exception.HmsException;
+import com.module.project.exception.HmsResponse;
 import com.module.project.model.Booking;
+import com.module.project.model.CleanerWorkingDate;
 import com.module.project.model.Branch;
 import com.module.project.model.Cleaner;
 import com.module.project.model.User;
+import com.module.project.repository.CleanerWorkingDateRepository;
 import com.module.project.repository.BookingHistoryRepository;
 import com.module.project.repository.BookingRepository;
 import com.module.project.repository.BookingScheduleRepository;
@@ -26,11 +31,11 @@ import com.module.project.util.HMSUtil;
 import com.module.project.util.JsonService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -39,6 +44,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -52,41 +58,33 @@ public class CleanerService {
     private final ServiceRepository serviceRepository;
     private final BookingScheduleRepository bookingScheduleRepository;
     private final BookingRepository bookingRepository;
+    private final CleanerWorkingDateRepository cleanerWorkingDateRepository;
 
     private final Random random = new Random();
 
     public List<Cleaner> getCleaners(CleanerFilterRequest request) {
         List<Cleaner> cleaners = cleanerRepository.findAll();
-        return filterCleaners(cleaners, request);
+        return cleaners;
     }
 
-    public List<Cleaner> chooseCleaner(ChooseCleanerRequest chooseCleanerRequest) {
-        if (Constant.CHOOSE_TYPE.AUTO.equals(chooseCleanerRequest.getType())) {
-            return autoChooseCleaner(chooseCleanerRequest);
-        } else if (Constant.CHOOSE_TYPE.MANUAL.equals(chooseCleanerRequest.getType())) {
-            return manualChooseCleaner();
-        } else {
-            throw new InternalError("type of choosing not found");
-        }
-    }
-
-    private List<Cleaner> autoChooseCleaner(ChooseCleanerRequest chooseCleanerRequest) {
-        int number = chooseCleanerRequest.getNumber();
+    public List<Cleaner> autoChooseCleaner(int number, List<LocalDate> workDate) {
         if (number <= 0 || number > 4) {
-            throw new InternalError("number of cleaner with auto type is invalid");
+            throw new HmsException(HmsErrorCode.INVALID_REQUEST, "number of cleaner is invalid");
         }
-        // TODO: pick randomly in pool of available cleaners
-        List<Cleaner> cleaners = filterOnlyAvailable(getCleaners(new CleanerFilterRequest()));
-        List<Cleaner> res = new ArrayList<>();
+        List<Long> cleaners = new ArrayList<>(filterOnlyAvailable(number, workDate));
+        if (cleaners.size() <= number) {
+            return cleanerRepository.findAllById(cleaners);
+        }
+        List<Long> res = new ArrayList<>();
         for (int i = 0; i < number; i++) {
-            Cleaner cleaner = cleaners.get(random.nextInt(cleaners.size()));
+            Long cleaner = cleaners.get(random.nextInt(cleaners.size()));
             res.add(cleaner);
             cleaners.remove(cleaner);
         }
-        return res;
+        return cleanerRepository.findAllById(res);
     }
 
-    public List<CleanerOverviewResponse> getCleanerHistory(Integer page, Integer size) {
+    public HmsResponse<List<CleanerOverviewResponse>> getCleanerHistory(Integer page, Integer size) {
         List<CleanerOverviewResponse> response = new ArrayList<>();
         Pageable pageable = PageRequest.of(page, size);
         List<Cleaner> cleaners = cleanerRepository.findAll(pageable).getContent();
@@ -101,6 +99,11 @@ public class CleanerService {
             CleanerOverviewResponse history = CleanerOverviewResponse.builder()
                     .cleanerId(cleaner.getId())
                     .name(HMSUtil.convertToFullName(cleaner.getUser().getFirstName(), cleaner.getUser().getLastName()))
+                    .idCard(cleaner.getIdCard())
+                    .email(cleaner.getUser().getEmail())
+                    .phoneNumber(cleaner.getUser().getPhoneNumber())
+                    .status(cleaner.getStatus())
+                    .branch(cleaner.getBranch())
                     .activityYear(HMSUtil.calculateActivityYear(cleaner.getCreateDate(), new Date()))
                     .build();
             for (Long bookingId : reviewList.keySet()) {
@@ -111,7 +114,7 @@ public class CleanerService {
                 CleanerReviewInfo cleanerReviewInfo = reviewList.get(bookingId);
                 if (cleanerReviewInfo != null
                         && cleanerReviewInfo.getCleanerActivities() != null
-                        && cleanerReviewInfo.getCleanerActivities().size() != 0) {
+                        && !cleanerReviewInfo.getCleanerActivities().isEmpty()) {
                     sumRating += cleanerReviewInfo.getCleanerActivities().stream().mapToDouble(CleanerActivity::getRatingScore).sum();
                     ratingNumber += cleanerReviewInfo.getCleanerActivities().size();
                 }
@@ -120,13 +123,13 @@ public class CleanerService {
             history.setRatingNumber(ratingNumber);
             response.add(history);
         }
-        return response;
+        return HMSUtil.buildResponse(ResponseCode.SUCCESS, response);
     }
 
-    public CleanerDetailHistoryResponse getCleanerHistoryDetail(Long cleanerId) {
+    public HmsResponse<CleanerDetailHistoryResponse> getCleanerHistoryDetail(Long cleanerId) {
         Cleaner cleaner = cleanerRepository.findById(cleanerId)
-                .orElseThrow(() -> new InternalError("getCleanerDetailHistory: can't find any cleaner by id: ".concat(cleanerId.toString())));
-        Map<Long, CleanerReviewInfo> reviewList = JsonService.strToObject(cleaner.getReview(), new TypeReference<Map<Long, CleanerReviewInfo>>() {
+                .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "getCleanerDetailHistory: can't find any cleaner by id: ".concat(cleanerId.toString())));
+        Map<Long, CleanerReviewInfo> reviewList = JsonService.strToObject(cleaner.getReview(), new TypeReference<>() {
         });
         if (reviewList == null) {
             return null;
@@ -142,7 +145,7 @@ public class CleanerService {
             CleanerReviewInfo cleanerReviewInfo = reviewList.get(bookingId);
             if (cleanerReviewInfo != null
                     && cleanerReviewInfo.getCleanerActivities() != null
-                    && cleanerReviewInfo.getCleanerActivities().size() != 0) {
+                    && !cleanerReviewInfo.getCleanerActivities().isEmpty()) {
                 CleanerHistoryResponse item = CleanerHistoryResponse.builder()
                         .name(bookingOptional.get().getHostName())
                         .houseType(bookingOptional.get().getHouseType())
@@ -166,18 +169,18 @@ public class CleanerService {
                 .averageRating(ratingNumber != 0 ? Math.round(sumRating / ratingNumber) : ratingNumber)
                 .ratingNumber(ratingNumber)
                 .build();
-        return CleanerDetailHistoryResponse.builder()
+        return HMSUtil.buildResponse(ResponseCode.SUCCESS, CleanerDetailHistoryResponse.builder()
                 .ratingOverview(ratingOverview)
                 .history(history)
-                .build();
+                .build());
     }
 
-    public Cleaner insertCleaner(CleanerInfoRequest cleanerInfoRequest) {
+    public HmsResponse<Cleaner> insertCleaner(CleanerInfoRequest cleanerInfoRequest) {
         Branch branch = branchRepository.findById(cleanerInfoRequest.getBranchId())
-                .orElseThrow(() -> new InternalError(
+                .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST,
                         "insertCleaner: can't find any branch with id: ".concat(cleanerInfoRequest.getBranchId().toString())));
         User user = userRepository.findById(cleanerInfoRequest.getUserId())
-                .orElseThrow(() -> new InternalError(
+                .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST,
                         "insertCleaner: can't find any user with id".concat(cleanerInfoRequest.getUserId().toString())));
         Set<com.module.project.model.Service> serviceIds = new HashSet<>(
                 serviceRepository.findAllById(cleanerInfoRequest.getServiceIds()));
@@ -189,16 +192,14 @@ public class CleanerService {
                 .user(user)
                 .services(serviceIds)
                 .build();
-        return cleanerRepository.save(cleaner);
+        return HMSUtil.buildResponse(ResponseCode.SUCCESS, cleanerRepository.save(cleaner));
     }
 
-<<<<<<< HEAD
-=======
-    public Cleaner updateCleaner(CleanerUpdateRequest cleanerUpdateRequest) {
+    public HmsResponse<Cleaner> updateCleaner(CleanerUpdateRequest cleanerUpdateRequest) {
         Cleaner cleaner = cleanerRepository.findById(cleanerUpdateRequest.getId()).get();
 
         Branch branch = branchRepository.findById(cleanerUpdateRequest.getBranchId())
-                .orElseThrow(() -> new InternalError(
+                .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST,
                         "insertCleaner: can't find any branch with id: ".concat(cleanerUpdateRequest.getBranchId().toString())));
         Set<com.module.project.model.Service> serviceIds = new HashSet<>(
                 serviceRepository.findAllById(cleanerUpdateRequest.getServiceIds()));
@@ -213,10 +214,10 @@ public class CleanerService {
                 .services(serviceIds)
                 .build();
 
-        return cleanerRepository.save(cleaner);
+        return HMSUtil.buildResponse(ResponseCode.SUCCESS, cleanerRepository.save(cleaner));
     }
 
-    public Cleaner changeStatusCleaner(CleanerUpdateRequest cleanerUpdateRequest) {
+    public HmsResponse<Cleaner> changeStatusCleaner(CleanerUpdateRequest cleanerUpdateRequest) {
         Cleaner cleaner = cleanerRepository.findById(cleanerUpdateRequest.getId()).get();
         cleaner = Cleaner.builder()
                 .status(Constant.COMMON_STATUS.ACTIVE.equals(cleanerUpdateRequest.getStatus().toUpperCase())
@@ -224,45 +225,33 @@ public class CleanerService {
                         : Constant.COMMON_STATUS.INACTIVE)
                 .build();
 
-        return cleanerRepository.save(cleaner);
-    }
-
->>>>>>> 292f472a951892d6fc32f30271fea27170b52576
-    private List<Cleaner> manualChooseCleaner() {
-        return null;
+        return HMSUtil.buildResponse(ResponseCode.SUCCESS, cleanerRepository.save(cleaner));
     }
 
     private List<Cleaner> filterCleaners(List<Cleaner> cleaners, CleanerFilterRequest request) {
         // TODO: update later - filter by gender and sort by rating
-<<<<<<< HEAD
-//        List<BookingSchedule> bookingSchedules = bookingScheduleRepository.findAllById();
-//        cleaners.sort(Comparator.comparing(Clea));
-        return cleaners.stream()
-                .filter(cleaner -> StringUtils.isBlank(request.getGender()) || cleaner.getUser().getGender().equalsIgnoreCase(request.getGender()))
-//                .filter(cleaner -> StringUtils.isBlank(request.getAge()) || cleaner.getUser().getId() == Integer.parseInt(request.getAge()))
-//                .filter(cleaner -> StringUtils.isBlank(request.getRate()) || cleaner.getId() == Integer.parseInt(request.getRate()))
-=======
         // List<BookingSchedule> bookingSchedules =
         // bookingScheduleRepository.findAllById();
         // cleaners.sort(Comparator.comparing(Clea));
         return cleaners.stream()
-                .filter(cleaner -> StringUtils.isBlank(request.getGender())
-                        || cleaner.getUser().getGender().equalsIgnoreCase(request.getGender()))
                 // .filter(cleaner -> StringUtils.isBlank(request.getAge()) ||
                 // cleaner.getUser().getId() == Integer.parseInt(request.getAge()))
                 // .filter(cleaner -> StringUtils.isBlank(request.getRate()) || cleaner.getId()
                 // == Integer.parseInt(request.getRate()))
->>>>>>> 292f472a951892d6fc32f30271fea27170b52576
                 .toList();
     }
 
-    private List<Cleaner> filterOnlyAvailable(List<Cleaner> cleaners) {
-<<<<<<< HEAD
-        // TODO: check in booking schedule table that doesn't exist in with specific date
-=======
-        // TODO: check in booking schedule table that doesn't exist in with specific
-        // date
->>>>>>> 292f472a951892d6fc32f30271fea27170b52576
-        return cleaners;
+    private Set<Long> filterOnlyAvailable(int num, List<LocalDate> workDate) {
+        List<CleanerWorkingDate> bookingSchedules = cleanerWorkingDateRepository.findAllByStatusEquals(Constant.COMMON_STATUS.ACTIVE);
+        Set<Long> cleanerIds = bookingSchedules.stream().map(CleanerWorkingDate::getCleanerId).collect(Collectors.toSet());
+        for (CleanerWorkingDate cleaner : bookingSchedules) {
+            if (workDate.contains(cleaner.getScheduleDate())) {
+                cleanerIds.remove(cleaner.getCleanerId());
+                if (cleanerIds.size() == 0 || cleanerIds.size() <= num) {
+                    return cleanerIds;
+                }
+            }
+        }
+        return cleanerIds;
     }
 }

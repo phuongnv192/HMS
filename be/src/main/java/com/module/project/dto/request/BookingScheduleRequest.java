@@ -5,14 +5,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.util.List;
 
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChooseCleanerRequest {
-    private String type;
-    private int number;
-    private Date bookingDate;
+public class BookingScheduleRequest {
+    private int floorNumber;
+    private List<Long> serviceAddOnIds;
 }

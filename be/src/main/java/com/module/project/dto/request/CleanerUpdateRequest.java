@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.NotBlank;
 
 import java.util.List;
-import java.util.Set;
 
 @Data
 @Builder

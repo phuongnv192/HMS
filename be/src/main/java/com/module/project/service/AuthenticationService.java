@@ -1,6 +1,8 @@
 package com.module.project.service;
 
 import com.module.project.dto.Constant;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,15 +23,15 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
-
         private final UserRepository repository;
         private final RoleRepository roleRepository;
         private final TokenRepository tokenRepository;
         private final PasswordEncoder passwordEncoder;
         private final JwtService jwtService;
+        // private final MailService mailService;
         private final AuthenticationManager authenticationManager;
 
-        public AuthenticationResponse register(RegisterRequest request) {
+        public AuthenticationResponse register(RegisterRequest request) throws Exception {
 
                 if (repository.existsByUsername(request.getUsername())) {
                         return AuthenticationResponse.builder()
@@ -59,9 +61,25 @@ public class AuthenticationService {
                                 .status(Constant.COMMON_STATUS.ACTIVE)
                                 .build();
                 repository.save(user);
-                var jwtToken = jwtService.generateToken(user);
+                // mailService.sendMailVerifyEmail(request.getEmail(), user.getPassword());
                 return AuthenticationResponse.builder()
-                                .token(jwtToken)
+                                .code(HttpStatus.CREATED.value())
+                                .message(HttpStatus.CREATED.getReasonPhrase())
+                                .build();
+        }
+
+        public AuthenticationResponse verify(RegisterRequest request) {
+
+                User user = repository.findByEmail(request.getEmail()).orElse(null);
+                if (user == null) {
+                        return AuthenticationResponse.builder()
+                                        .code(HttpStatus.BAD_REQUEST.value())
+                                        .message("Invalid email")
+                                        .build();
+                }
+                user.setStatus(Constant.COMMON_STATUS.ACTIVE);
+                repository.save(user);
+                return AuthenticationResponse.builder()
                                 .code(HttpStatus.CREATED.value())
                                 .message(HttpStatus.CREATED.getReasonPhrase())
                                 .build();

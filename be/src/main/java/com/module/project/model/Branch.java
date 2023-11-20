@@ -1,5 +1,6 @@
 package com.module.project.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -15,6 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -27,6 +29,8 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Table(name = "tb_branch")
+@ToString(exclude = {"cleaner", "services"})
+@JsonIgnoreProperties({"cleaner", "services"})
 public class Branch {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

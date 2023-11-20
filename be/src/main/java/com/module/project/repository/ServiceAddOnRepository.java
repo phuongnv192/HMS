@@ -8,5 +8,9 @@ import java.util.List;
 
 @Repository
 public interface ServiceAddOnRepository extends JpaRepository<ServiceAddOn, Long> {
-    List<ServiceAddOn> findAllByParentId(Long parentId);
+    List<ServiceAddOn> findAllByParentIdAndStatusEquals(Long parentId, String status);
+
+    List<ServiceAddOn> findAllByStatusEquals(String status);
+
+    List<ServiceAddOn> findAllByIdInAndStatus(List<Long> ids, String status);
 }

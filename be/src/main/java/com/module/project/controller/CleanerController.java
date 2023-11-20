@@ -1,6 +1,5 @@
 package com.module.project.controller;
 
-import com.module.project.dto.request.ChooseCleanerRequest;
 import com.module.project.dto.request.CleanerFilterRequest;
 import com.module.project.dto.request.CleanerInfoRequest;
 import com.module.project.dto.request.CleanerUpdateRequest;
@@ -17,15 +16,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import static com.module.project.dto.Constant.API_V1;
-import static com.module.project.dto.Constant.CHOOSE_CLEANER;
 import static com.module.project.dto.Constant.CLEANER;
 import static com.module.project.dto.Constant.CLEANERS;
 import static com.module.project.dto.Constant.CLEANER_HISTORY;
-<<<<<<< HEAD
 import static com.module.project.dto.Constant.CLEANER_HISTORY_DETAIL;
 import static com.module.project.dto.Constant.CLEANER_STATUS;
-=======
->>>>>>> a962a2458dc2a334440eaa729e5ded3456655b55
 
 @RestController
 @RequestMapping(API_V1)
@@ -36,12 +31,7 @@ public class CleanerController {
 
     @GetMapping(CLEANERS)
     public ResponseEntity<Object> getCleaners(@RequestBody CleanerFilterRequest request) {
-        return ResponseEntity.ok(cleanerService.getCleaners(request));
-    }
-
-    @GetMapping(CHOOSE_CLEANER)
-    public ResponseEntity<Object> chooseCleaner(@RequestBody ChooseCleanerRequest chooseCleanerRequest) {
-        return ResponseEntity.ok(cleanerService.chooseCleaner(chooseCleanerRequest));
+        return ResponseEntity.ok(cleanerService.autoChooseCleaner(request.getNumber(), request.getWorkDate()));
     }
 
     @GetMapping(CLEANER_HISTORY)

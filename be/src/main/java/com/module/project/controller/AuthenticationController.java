@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +30,24 @@ public class AuthenticationController {
         try {
             return ResponseEntity.ok(service.register(request));
         } catch (Exception ex) {
+            return ResponseEntity.internalServerError()
+                    .body(AuthenticationResponse.builder()
+                            .token("")
+                            .message("").build());
+        }
+    }
+
+    @GetMapping(VERIFY)
+    public ResponseEntity<AuthenticationResponse> verify(@RequestBody RegisterRequest request) {
+        try {
+            return ResponseEntity.ok(service.verify(request));
+        } catch (BadCredentialsException ex) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED.value()).body(AuthenticationResponse.builder()
+                    .token("")
+                    .code(HttpStatus.UNAUTHORIZED.value())
+                    .message(HttpStatus.UNAUTHORIZED.getReasonPhrase()).build());
+        } catch (Exception ex) {
+            log.error("verify error", ex);
             return ResponseEntity.internalServerError()
                     .body(AuthenticationResponse.builder()
                             .token("")

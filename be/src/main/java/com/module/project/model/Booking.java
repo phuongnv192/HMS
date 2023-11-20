@@ -1,5 +1,6 @@
 package com.module.project.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -39,6 +40,10 @@ public class Booking {
     private int floorNumber;
     private float floorArea;
     private String status;
+    @Column(name = "note", length = 1000)
+    private String note;
+    @Column(name = "rawRequest", length = 5000)
+    private String rawRequest;
 
     @CreationTimestamp
     private Date createDate;
@@ -56,7 +61,6 @@ public class Booking {
     private User user;
 
     @ManyToOne()
-    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "updated_by_id")
     private User userUpdate;
 

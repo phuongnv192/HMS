@@ -5,12 +5,17 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.util.List;
+
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class CleanerFilterRequest {
-    private String gender;
-    private String age;
-    private String rate;
+//    private String name;
+//    private String age;
+//    private String rate;
+    private int number;
+    private List<LocalDate> workDate;
 }

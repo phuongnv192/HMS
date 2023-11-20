@@ -32,6 +32,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
@@ -249,7 +250,7 @@ public class Main implements CommandLineRunner {
                     .status(TransactionStatus.MATCHED.name())
                     .bookingTransaction(bookingTransaction)
                     .serviceAddOns(Set.of(serviceAddOn1))
-                    .workDate(calendar.getTime())
+                    .workDate(calendar.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate())
                     .build();
 
             calendar.add(Calendar.DATE, 1);
@@ -257,7 +258,7 @@ public class Main implements CommandLineRunner {
                     .status(TransactionStatus.MATCHED.name())
                     .bookingTransaction(bookingTransaction)
                     .serviceAddOns(Set.of(serviceAddOn1))
-                    .workDate(calendar.getTime())
+                    .workDate(calendar.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate())
                     .build();
             bookingScheduleRepository.saveAll(Set.of(bookingSchedule, bookingSchedule1));
 

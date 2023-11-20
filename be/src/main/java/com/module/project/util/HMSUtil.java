@@ -1,10 +1,14 @@
 package com.module.project.util;
 
+import com.module.project.dto.ResponseCode;
+import com.module.project.exception.HmsResponse;
 import com.module.project.model.Cleaner;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -53,4 +57,26 @@ public class HMSUtil {
         fromC.setTime(from);
         return toC.get(Calendar.YEAR) - fromC.get(Calendar.YEAR);
     }
+
+    public static <T> HmsResponse<T> buildResponse(ResponseCode responseCode, T data) {
+        HmsResponse<T> response = new HmsResponse<>();
+        response.setCode(responseCode.getCode());
+        response.setMessage(responseCode.getMessage());
+        response.setData(data);
+        return response;
+    }
+
+    public static String getMD5Hash(String input) throws NoSuchAlgorithmException {
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        md.update(input.getBytes());
+        byte[] digest = md.digest();
+
+        StringBuilder sb = new StringBuilder();
+        for (byte b : digest) {
+            sb.append(String.format("%02x", b & 0xff));
+        }
+
+        return sb.toString();
+    }
+
 }

@@ -17,6 +17,9 @@ spring:
       database-platform: org.hibernate.dialect.PostgreSQLDialect
 
 application:
+  choosing-cleaner-price: 20000
+  mail: hoangson99201@gmail.com
+  password: "fyzq mxpc pyla hddk"
   security:
     jwt:
       secret-key: e893d203a96a80a688c1c61d6fab849bb999516b6d3af3f7d4f0c188ffae21bc

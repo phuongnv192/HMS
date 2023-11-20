@@ -5,21 +5,17 @@ public interface Constant {
     String AUTH = "/auth";
     String REGISTER = "/register";
     String AUTHENTICATE = "/authenticate";
-    String BOOK = "/book";
+    String VERIFY = "/verify";
+    String BOOKING = "/booking";
+    String BOOKING_CONFIRM = "/booking/confirm";
     String CLEANER = "/cleaner";
 
     String CLEANERS = "/cleaners";
-    String CHOOSE_CLEANER = "/cleaner/choose";
     String CLEANER_HISTORY = "/cleaner/history";
     String CLEANER_HISTORY_DETAIL = "/cleaner/history/detail";
     String CLEANER_STATUS = "/cleaner/status";
     String SERVICE_TYPE = "/service-types";
     String SERVICE_ADD_ON = "/service-add-ons";
-
-    interface CHOOSE_TYPE {
-        String AUTO = "AUTO";
-        String MANUAL = "MANUAL";
-    }
 
     interface COMMON_STATUS {
         String ACTIVE = "ACTIVE";

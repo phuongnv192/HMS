@@ -14,7 +14,9 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.Date;
@@ -26,6 +28,8 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Table(name = "tb_cleaner")
+@ToString(exclude = {"user", "services"})
+@EqualsAndHashCode(exclude= {"user", "services"})
 public class Cleaner {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
