@@ -43,7 +43,7 @@ export class NavbarComponent implements OnInit {
     isHome() {
         var titlee = this.location.prepareExternalUrl(this.location.path());
 
-        if( titlee === '#/home' ) {
+        if( titlee === 'home' ) {
             return true;
         }
         else {
@@ -52,7 +52,7 @@ export class NavbarComponent implements OnInit {
     }
     isDocumentation() {
         var titlee = this.location.prepareExternalUrl(this.location.path());
-        if( titlee === '#/documentation' ) {
+        if( titlee === 'documentation' ) {
             return true;
         }
         else {
