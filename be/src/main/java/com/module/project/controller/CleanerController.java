@@ -1,13 +1,11 @@
 package com.module.project.controller;
 
 import com.module.project.dto.request.CleanerFilterRequest;
-import com.module.project.dto.request.CleanerInfoRequest;
 import com.module.project.service.CleanerService;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.NotBlank;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,12 +31,7 @@ public class CleanerController {
     }
 
     @GetMapping(CLEANER_HISTORY)
-    public ResponseEntity<Object> getCleanerHistory(@RequestParam(name = "cleaner_id") @NotBlank Integer cleanerId) {
-        return ResponseEntity.ok(cleanerService.getCleanerHistory(cleanerId));
-    }
-
-    @PostMapping(CLEANER)
-    public ResponseEntity<Object> insertCleaner(@RequestBody CleanerInfoRequest cleanerInfoRequest) {
-        return ResponseEntity.ok(cleanerService.insertCleaner(cleanerInfoRequest));
+    public ResponseEntity<Object> getCleanerHistory(@RequestParam(name = "cleaner_id") @NotBlank String cleanerId) {
+        return ResponseEntity.ok(cleanerService.chooseCleaner(cleanerId));
     }
 }

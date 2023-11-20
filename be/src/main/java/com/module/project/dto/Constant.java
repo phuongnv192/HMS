@@ -6,8 +6,6 @@ public interface Constant {
     String REGISTER = "/register";
     String AUTHENTICATE = "/authenticate";
     String BOOK = "/book";
-    String CLEANER = "/cleaner";
-
     String CLEANERS = "/cleaners";
     String CHOOSE_CLEANER = "/cleaner/choose";
     String CLEANER_HISTORY = "/cleaner/history";
