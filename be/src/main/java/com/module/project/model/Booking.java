@@ -1,6 +1,14 @@
 package com.module.project.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,8 +29,8 @@ import java.util.Set;
 @Table(name = "tb_booking")
 public class Booking {
     @Id
-    @Column(unique = true)
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String hostName;
     private String hostPhone;
     private String hostAddress;
@@ -30,7 +38,7 @@ public class Booking {
     private String houseType;
     private int floorNumber;
     private float floorArea;
-    private String confirmStatus;
+    private String status;
 
     @CreationTimestamp
     private Date createDate;
@@ -38,17 +46,16 @@ public class Booking {
     @UpdateTimestamp
     private Date updateDate;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "cleaner_ids")
-    private Set<Cleaner> cleaner;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "cleaner_id")
+    private Set<Cleaner> cleaners;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "customer_id")
     private User user;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "updated_by_id")
     private User userUpdate;

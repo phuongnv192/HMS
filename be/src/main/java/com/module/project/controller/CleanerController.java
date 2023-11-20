@@ -6,7 +6,6 @@ import com.module.project.dto.request.CleanerInfoRequest;
 import com.module.project.dto.request.CleanerUpdateRequest;
 import com.module.project.service.CleanerService;
 import lombok.RequiredArgsConstructor;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.NotBlank;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +16,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.module.project.dto.Constant.*;
+import static com.module.project.dto.Constant.API_V1;
+import static com.module.project.dto.Constant.CHOOSE_CLEANER;
+import static com.module.project.dto.Constant.CLEANER;
+import static com.module.project.dto.Constant.CLEANERS;
+import static com.module.project.dto.Constant.CLEANER_HISTORY;
+import static com.module.project.dto.Constant.CLEANER_HISTORY_DETAIL;
+import static com.module.project.dto.Constant.CLEANER_STATUS;
 
 @RestController
 @RequestMapping(API_V1)
@@ -37,8 +42,14 @@ public class CleanerController {
     }
 
     @GetMapping(CLEANER_HISTORY)
-    public ResponseEntity<Object> getCleanerHistory(@RequestParam(name = "cleaner_id") @NotBlank Integer cleanerId) {
-        return ResponseEntity.ok(cleanerService.getCleanerHistory(cleanerId));
+    public ResponseEntity<Object> getCleanerHistory(@RequestParam(name = "page") Integer page,
+                                                    @RequestParam(name = "size") Integer size) {
+        return ResponseEntity.ok(cleanerService.getCleanerHistory(page, size));
+    }
+
+    @GetMapping(CLEANER_HISTORY_DETAIL)
+    public ResponseEntity<Object> getCleanerHistoryDetail(@RequestParam(name = "cleanerId") Long cleanerId) {
+        return ResponseEntity.ok(cleanerService.getCleanerHistoryDetail(cleanerId));
     }
 
     @PostMapping(CLEANER)

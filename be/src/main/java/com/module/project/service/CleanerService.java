@@ -1,29 +1,43 @@
 package com.module.project.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.module.project.dto.CleanerActivity;
+import com.module.project.dto.CleanerReviewInfo;
 import com.module.project.dto.Constant;
 import com.module.project.dto.request.ChooseCleanerRequest;
 import com.module.project.dto.request.CleanerFilterRequest;
 import com.module.project.dto.request.CleanerInfoRequest;
 import com.module.project.dto.request.CleanerUpdateRequest;
+import com.module.project.dto.response.CleanerDetailHistoryResponse;
 import com.module.project.dto.response.CleanerHistoryResponse;
-import com.module.project.model.BookingSchedule;
+import com.module.project.dto.response.CleanerOverviewResponse;
+import com.module.project.model.Booking;
 import com.module.project.model.Branch;
 import com.module.project.model.Cleaner;
 import com.module.project.model.User;
 import com.module.project.repository.BookingHistoryRepository;
+import com.module.project.repository.BookingRepository;
 import com.module.project.repository.BookingScheduleRepository;
 import com.module.project.repository.BranchRepository;
 import com.module.project.repository.CleanerRepository;
 import com.module.project.repository.ServiceRepository;
 import com.module.project.repository.UserRepository;
+import com.module.project.util.HMSUtil;
 import com.module.project.util.JsonService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Random;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +50,7 @@ public class CleanerService {
     private final UserRepository userRepository;
     private final ServiceRepository serviceRepository;
     private final BookingScheduleRepository bookingScheduleRepository;
+    private final BookingRepository bookingRepository;
 
     private final Random random = new Random();
 
@@ -70,26 +85,95 @@ public class CleanerService {
         return res;
     }
 
-    public List<CleanerHistoryResponse> getCleanerHistory(Integer cleanerId) {
-        Cleaner cleaner = cleanerRepository.findById(cleanerId)
-                .orElseThrow(() -> new InternalError(
-                        "getCleanerHistory: not found any cleaner by id ".concat(cleanerId.toString())));
-        List<CleanerHistoryResponse> response = new ArrayList<>();
-        Map<String, String> reviewList = JsonService.strToObject(cleaner.getReview(), new TypeReference<>() {
-        });
-        // TODO: get history from booking-history table
+    public List<CleanerOverviewResponse> getCleanerHistory(Integer page, Integer size) {
+        List<CleanerOverviewResponse> response = new ArrayList<>();
+        Pageable pageable = PageRequest.of(page, size);
+        List<Cleaner> cleaners = cleanerRepository.findAll(pageable).getContent();
+        for (Cleaner cleaner : cleaners) {
+            // parse object with key is booking_id and value is list schedule
+            Map<Long, CleanerReviewInfo> reviewList = JsonService.strToObject(cleaner.getReview(), new TypeReference<>() {
+            });
+            if (reviewList == null) {
+                continue;
+            }
+            double sumRating = 0;
+            int ratingNumber = 0;
+            CleanerOverviewResponse history = CleanerOverviewResponse.builder()
+                    .cleanerId(cleaner.getId())
+                    .build();
+            for (Long bookingId : reviewList.keySet()) {
+                Optional<Booking> bookingOptional = bookingRepository.findById(bookingId);
+                if (bookingOptional.isEmpty()) {
+                    continue;
+                }
+                CleanerReviewInfo cleanerReviewInfo = reviewList.get(bookingId);
+                if (cleanerReviewInfo != null
+                        && cleanerReviewInfo.getCleanerActivities() != null
+                        && cleanerReviewInfo.getCleanerActivities().size() == 0) {
+                    sumRating += cleanerReviewInfo.getCleanerActivities().stream().mapToDouble(CleanerActivity::getRatingScore).sum();
+                    ratingNumber += cleanerReviewInfo.getCleanerActivities().size();
+                }
+            }
+            history.setAverageRating(ratingNumber != 0 ? Math.round(sumRating / ratingNumber) : ratingNumber);
+            history.setRatingNumber(ratingNumber);
+            response.add(history);
+        }
         return response;
     }
 
+    public CleanerDetailHistoryResponse getCleanerHistoryDetail(Long cleanerId) {
+        Cleaner cleaner = cleanerRepository.findById(cleanerId)
+                .orElseThrow(() -> new InternalError("getCleanerDetailHistory: can't find any cleaner by id: ".concat(cleanerId.toString())));
+        Map<Long, CleanerReviewInfo> reviewList = JsonService.strToObject(cleaner.getReview(), new TypeReference<>() {
+        });
+        double sumRating = 0;
+        int ratingNumber = 0;
+        List<CleanerHistoryResponse> history = new ArrayList<>();
+        for (Long bookingId : reviewList.keySet()) {
+            Optional<Booking> bookingOptional = bookingRepository.findById(bookingId);
+            if (bookingOptional.isEmpty()) {
+                continue;
+            }
+            CleanerReviewInfo cleanerReviewInfo = reviewList.get(bookingId);
+            if (cleanerReviewInfo != null
+                    && cleanerReviewInfo.getCleanerActivities() != null
+                    && cleanerReviewInfo.getCleanerActivities().size() == 0) {
+                CleanerHistoryResponse item = CleanerHistoryResponse.builder()
+                        .name(bookingOptional.get().getHostName())
+                        .houseType(bookingOptional.get().getHouseType())
+                        .floorNumber(bookingOptional.get().getFloorNumber())
+                        .floorArea(bookingOptional.get().getFloorArea())
+                        .build();
+                ratingNumber += cleanerReviewInfo.getCleanerActivities().size();
+                for (CleanerActivity info : cleanerReviewInfo.getCleanerActivities()) {
+                    sumRating += info.getRatingScore();
+                    item.setReview(info.getReview());
+                    item.setRatingScore(info.getRatingScore());
+                    item.setWorkDate(HMSUtil.formatDate(info.getWorkDate(), HMSUtil.DDMMYYYY_FORMAT));
+                    history.add(item);
+                }
+            }
+        }
+        CleanerOverviewResponse ratingOverview = CleanerOverviewResponse.builder()
+                .cleanerId(cleanerId)
+                .averageRating(ratingNumber != 0 ? Math.round(sumRating / ratingNumber) : ratingNumber)
+                .ratingNumber(ratingNumber)
+                .build();
+        return CleanerDetailHistoryResponse.builder()
+                .ratingOverview(ratingOverview)
+                .history(history)
+                .build();
+    }
+
     public Cleaner insertCleaner(CleanerInfoRequest cleanerInfoRequest) {
-        Branch branch = branchRepository.findById(Integer.parseInt(cleanerInfoRequest.getBranchId()))
+        Branch branch = branchRepository.findById(cleanerInfoRequest.getBranchId())
                 .orElseThrow(() -> new InternalError(
-                        "insertCleaner: can't find any branch with id: ".concat(cleanerInfoRequest.getBranchId())));
-        User user = userRepository.findById(Integer.parseInt(cleanerInfoRequest.getUserId()))
+                        "insertCleaner: can't find any branch with id: ".concat(cleanerInfoRequest.getBranchId().toString())));
+        User user = userRepository.findById(cleanerInfoRequest.getUserId())
                 .orElseThrow(() -> new InternalError(
-                        "insertCleaner: can't find any user with id".concat(cleanerInfoRequest.getUserId())));
+                        "insertCleaner: can't find any user with id".concat(cleanerInfoRequest.getUserId().toString())));
         Set<com.module.project.model.Service> serviceIds = new HashSet<>(
-                serviceRepository.findAllById((Iterable<Integer>) cleanerInfoRequest.getServiceIds().iterator()));
+                serviceRepository.findAllById(cleanerInfoRequest.getServiceIds()));
         Cleaner cleaner = Cleaner.builder()
                 .address(cleanerInfoRequest.getAddress())
                 .idCard(cleanerInfoRequest.getIdCard())
@@ -104,11 +188,11 @@ public class CleanerService {
     public Cleaner updateCleaner(CleanerUpdateRequest cleanerUpdateRequest) {
         Cleaner cleaner = cleanerRepository.findById(cleanerUpdateRequest.getId()).get();
 
-        Branch branch = branchRepository.findById(Integer.parseInt(cleanerUpdateRequest.getBranchId()))
+        Branch branch = branchRepository.findById(cleanerUpdateRequest.getBranchId())
                 .orElseThrow(() -> new InternalError(
-                        "insertCleaner: can't find any branch with id: ".concat(cleanerUpdateRequest.getBranchId())));
+                        "insertCleaner: can't find any branch with id: ".concat(cleanerUpdateRequest.getBranchId().toString())));
         Set<com.module.project.model.Service> serviceIds = new HashSet<>(
-                serviceRepository.findAllById((Iterable<Integer>) cleanerUpdateRequest.getServiceIds().iterator()));
+                serviceRepository.findAllById(cleanerUpdateRequest.getServiceIds()));
 
         cleaner = Cleaner.builder()
                 .address(cleanerUpdateRequest.getAddress())

@@ -1,6 +1,14 @@
 package com.module.project.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,6 +18,7 @@ import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
+import java.util.Set;
 
 @Data
 @Builder
@@ -18,11 +27,11 @@ import java.util.Date;
 @Entity
 @Table(name = "tb_booking_schedule")
 public class BookingSchedule {
-
     @Id
-    @GeneratedValue
-    private Integer scheduleId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long scheduleId;
     private Date workDate;
+    private String dayOfTheWeek;
     private Date startTime;
     private Date endTime;
     private String status;
@@ -30,18 +39,17 @@ public class BookingSchedule {
 
     @UpdateTimestamp
     private Date updateDate;
-    private Integer updateBy;
+    private Long updateBy;
 
     private String paymentStatus;
     private String cashbackStatus;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "add_on_id")
-    private ServiceAddOn addonId;
-
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "transaction_id")
-    private BookingTransaction booking;
+    private BookingTransaction bookingTransaction;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "add_on_id")
+    private Set<ServiceAddOn> serviceAddOns;
 }

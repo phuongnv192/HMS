@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.NotBlank;
 
-import java.util.Set;
+import java.util.List;
 
 @Data
 @Builder
@@ -17,7 +17,7 @@ public class CleanerInfoRequest {
     @NotBlank
     private String idCard;
     @NotBlank
-    private String userId;
-    private String branchId;
-    private Set<String> serviceIds;
+    private Long userId;
+    private Long branchId;
+    private List<Long> serviceIds;
 }

@@ -1,20 +1,19 @@
 package com.module.project.dto.response;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Data
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 public class CleanerHistoryResponse {
     private String name;
-    private String ratingScore;
+    private Long ratingScore;
     private String workDate;
-    private String serviceType;
-    private String servicePackage;
+    private String houseType;
     private int floorNumber;
     private float floorArea;
     private String review;

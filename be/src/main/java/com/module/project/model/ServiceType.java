@@ -1,13 +1,19 @@
 package com.module.project.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Set;
 
 @Data
 @Builder
@@ -17,8 +23,13 @@ import lombok.NoArgsConstructor;
 @Table(name = "tb_service_type")
 public class ServiceType {
     @Id
-    @GeneratedValue
-    public Integer serviceTypeId;
-    public String serviceTypeName;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long serviceTypeId;
+    private String serviceTypeName;
 
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "serviceType", cascade = CascadeType.ALL)
+    private Set<ServicePackage> servicePackages;
+
+    @OneToMany(mappedBy = "serviceType", cascade = CascadeType.ALL)
+    private Set<Service> services;
 }

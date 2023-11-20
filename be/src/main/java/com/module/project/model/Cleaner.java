@@ -1,6 +1,15 @@
 package com.module.project.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,23 +25,23 @@ import java.util.Set;
 @Table(name = "tb_cleaner")
 public class Cleaner {
     @Id
-    @GeneratedValue
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String address;
     private String idCard;
     private String status;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne()
     @JoinColumn(name = "user_id")
-    public User user;
+    private User user;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne()
     @JoinColumn(name = "branch_id")
-    public Branch branch;
+    private Branch branch;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "service_id")
-    public Set<Service> services;
+    private Set<Service> services;
 
     private String review;
 }

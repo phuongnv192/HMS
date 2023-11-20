@@ -3,6 +3,8 @@ package com.module.project.model;
 import java.util.Date;
 import java.util.Set;
 
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.OneToOne;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -28,41 +30,49 @@ import lombok.NoArgsConstructor;
 @Table(name = "tb_booking_history")
 public class BookingHistory {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer historyId;
-    @ManyToOne(cascade = CascadeType.ALL)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "booking_id")
-    private Booking booking;
-
-    @ManyToOne(cascade = CascadeType.ALL)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "schedule_id")
-    private BookingSchedule schedule;
-
-    @ManyToOne(cascade = CascadeType.ALL)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "add_on_id")
-    private ServiceAddOn addonId;
-
-    @ManyToMany(cascade = CascadeType.ALL)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "cleaner_ids")
-    private Set<Cleaner> cleaners;
-
-    @ManyToOne(cascade = CascadeType.ALL)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "user_id")
-    private User user;
-    private double totalBookingPrice;
-    private int totalBookingCleaner;
-    private float totalBookingDate;
-    private String bookingStatusBefore;
-    private String bookingStatusAfter;
-    private String changeStatusDescription;
-    private String paymentStatus;
-    private String cashBackStatus;
-    @CreationTimestamp
-    private Date createDate;
+//
+//    private Long bookingId;
+//    private String hostName;
+//    private String hostPhone;
+//    private String hostAddress;
+//    private String houseType;
+//    private int floorNumber;
+//    private float floorArea;
+//
+//    @ManyToOne()
+//    @JoinColumn(name = "customer_id")
+//    private User user;
+//
+//    @ManyToOne(cascade = CascadeType.ALL)
+//    @OnDelete(action = OnDeleteAction.CASCADE)
+//    @JoinColumn(name = "schedule_id")
+//    private BookingSchedule schedule;
+//
+//    @ManyToOne(cascade = CascadeType.ALL)
+//    @OnDelete(action = OnDeleteAction.CASCADE)
+//    @JoinColumn(name = "add_on_id")
+//    private ServiceAddOn addonId;
+//
+//    @ManyToMany(cascade = CascadeType.ALL)
+//    @OnDelete(action = OnDeleteAction.CASCADE)
+//    @JoinColumn(name = "cleaner_ids")
+//    private Set<Cleaner> cleaners;
+//
+//    @ManyToOne(cascade = CascadeType.ALL)
+//    @OnDelete(action = OnDeleteAction.CASCADE)
+//    @JoinColumn(name = "user_id")
+//    private User user;
+//    private double totalBookingPrice;
+//    private int totalBookingCleaner;
+//    private float totalBookingDate;
+//    private String bookingStatusBefore;
+//    private String bookingStatusAfter;
+//    private String changeStatusDescription;
+//    private String paymentStatus;
+//    private String cashBackStatus;
+//    @CreationTimestamp
+//    private Date createDate;
 
 }

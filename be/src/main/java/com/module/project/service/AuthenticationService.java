@@ -1,5 +1,6 @@
 package com.module.project.service;
 
+import com.module.project.dto.Constant;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -55,7 +56,7 @@ public class AuthenticationService {
                                 .email(request.getEmail())
                                 .gender(request.getGender())
                                 .role(roleRepository.findByName(request.getRole()))
-                                .accountStatus(true)
+                                .status(Constant.COMMON_STATUS.ACTIVE)
                                 .build();
                 repository.save(user);
                 var jwtToken = jwtService.generateToken(user);
