@@ -1,7 +1,5 @@
 package com.module.project.model;
 
-import com.module.project.model.User;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,6 +12,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.util.Date;
 
 @Data
 @Builder
@@ -27,9 +29,16 @@ public class Branch {
     private Integer id;
     private String branchName;
     private String branchAddress;
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "manager_id")
     public User user;
+
     private String branchDescription;
     private boolean branchStatus;
+
+    @CreationTimestamp
+    private Date createDate;
+    @UpdateTimestamp
+    private Date updateDate;
 }

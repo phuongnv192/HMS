@@ -3,6 +3,7 @@ package com.module.project.model;
 import java.util.Date;
 import java.util.Set;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -61,6 +62,7 @@ public class BookingHistory {
     private String changeStatusDescription;
     private String paymentStatus;
     private String cashBackStatus;
+    @CreationTimestamp
     private Date createDate;
 
 }

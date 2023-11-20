@@ -11,6 +11,7 @@ public interface Constant {
     String CLEANERS = "/cleaners";
     String CHOOSE_CLEANER = "/cleaner/choose";
     String CLEANER_HISTORY = "/cleaner/history";
+    String CLEANER_STATUS = "/cleaner/status";
 
     interface CHOOSE_TYPE {
         String AUTO = "AUTO";

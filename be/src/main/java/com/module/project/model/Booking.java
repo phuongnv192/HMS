@@ -31,26 +31,12 @@ public class Booking {
     private int floorNumber;
     private float floorArea;
     private String confirmStatus;
-//    private String txnStatus;
-//    private float totalDate;
-//    private String totalPrice;
-//    private int totalCleaner;
 
     @CreationTimestamp
     private Date createDate;
 
     @UpdateTimestamp
     private Date updateDate;
-
-    // @ManyToMany(cascade = CascadeType.ALL)
-    // @OnDelete(action = OnDeleteAction.CASCADE)
-    // @JoinColumn(name = "addon_id")
-    // private AddOn addOn;
-
-    // @ManyToOne(cascade = CascadeType.ALL)
-    // @OnDelete(action = OnDeleteAction.CASCADE)
-    // @JoinColumn(name = "schedule_ids")
-    // private Set<Schedule> schedule;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @OnDelete(action = OnDeleteAction.CASCADE)

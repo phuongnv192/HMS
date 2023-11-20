@@ -12,7 +12,9 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CleanerInfoRequest {
+public class CleanerUpdateRequest {
+    private Integer id;
+    private String status;
     private String address;
     @NotBlank
     private String idCard;
