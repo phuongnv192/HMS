@@ -1,16 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 declare interface RouteInfo {
-    path: string;
-    title: string;
-    icon: string;
-    class: string;
+  path: string;
+  title: string;
+  icon: string;
+  class: string;
 }
 export const ROUTES: RouteInfo[] = [
-    { path: '/dashboard', title: 'Dashboard',  icon: 'ni-tv-2 text-primary', class: '' },
-    { path: '/maps', title: 'Maps',  icon:'ni-pin-3 text-orange', class: '' },
-    { path: '/tables', title: 'Tables',  icon:'ni-bullet-list-67 text-red', class: '' },
+  { path: '/dashboard', title: 'Thống kê', icon: 'ni-tv-2', class: '' },
+  { path: '/maps', title: 'Bản đồ', icon: 'ni-pin-3 text-orange', class: '' },
+  { path: '/tables', title: 'Danh sách nhân viên', icon: 'ni-bullet-list-67 text-red', class: '' },
+  { path: '/history', title: 'Lịch sử công việc', icon: 'fas fa-history', class: '' },
+  { path: '/user-profile', title: 'Thông tin cá nhân', icon: 'fas fa-user', class: '' },
 ];
 
 @Component({
@@ -23,12 +25,35 @@ export class SidebarComponent implements OnInit {
   public menuItems: any[];
   public isCollapsed = true;
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private route: ActivatedRoute) {
+    this.menuItems = this.setActiveClass(ROUTES);
+  }
 
   ngOnInit() {
+
+    this.route.url.subscribe(segments => {
+      const currentUrl = segments.join('/');
+      this.menuItems = this.setActiveClass(ROUTES, currentUrl);
+    });
+
+
     this.menuItems = ROUTES.filter(menuItem => menuItem);
     this.router.events.subscribe((event) => {
       this.isCollapsed = true;
-   });
+    });
+
+
+
+  }
+
+  private setActiveClass(routes: RouteInfo[], currentUrl: string = ''): RouteInfo[] {
+    return routes.map(route => {
+      route.class = (route.path === currentUrl) ? 'text-primary' : '';
+      return route;
+    });
+  }
+
+  logout() {
+
   }
 }

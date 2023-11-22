@@ -10,13 +10,12 @@
                 <div class="col search-emp">
                   <div class="search-name">
                     <h5 class="card-title text-uppercase text-muted mb-0 font14">Tên nhân viên</h5>
-                    <input #emp_name id="emp_name" placeholder="Nguyen Van A" [(ngModel)]="empName" type="text" aria-describedby="emp_name-help"
-                    maxlength="50">
+                    <input #emp_name id="emp_name" placeholder="Nguyen Van A" [(ngModel)]="empName" type="text"
+                      aria-describedby="emp_name-help" maxlength="50">
                   </div>
                   <div class="search-age">
                     <h5 class="card-title text-uppercase text-muted mb-0 font14">Tuổi</h5>
-                    <select [(ngModel)]="searchAge" id="houseType" aria-describedby="houseType-help"
-                      title="tuổi">
+                    <select [(ngModel)]="searchAge" id="houseType" aria-describedby="houseType-help" title="tuổi">
                       <option *ngFor="let age of ageRange" [value]="age">{{ age }}</option>
                     </select>
                   </div>
@@ -29,22 +28,21 @@
                   </div>
                   <div class="search-rate">
                     <h5 class="card-title text-uppercase text-muted mb-0 font14">Đánh giá</h5>
-                    <select [(ngModel)]="searchRate" id="houseType" aria-describedby="houseType-help"
-                      title="đánh giá">
+                    <select [(ngModel)]="searchRate" id="houseType" aria-describedby="houseType-help" title="đánh giá">
                       <option *ngFor="let rate of rateRange" [value]="rate">{{ rate }}</option>
                     </select>
                   </div>
-                  
-              </div>
+
+                </div>
 
                 <div class="col-auto">
                   <div class="icon icon-shape bg-danger text-white rounded-circle shadow" (click)="searchEmp()">
                     <i class="fas fa-search"></i>
                   </div>
                 </div>
+              </div>
             </div>
           </div>
-        </div>
         </div>
         <div class="col-xl-3 col-lg-6">
           <div class="card card-stats mb-4 mb-xl-0">
@@ -108,9 +106,9 @@
                 <td>
                   <span class="badge badge-dot mr-4">
                     <i
-                      [ngClass]="{'bg-success': cleaner.status == 'Sẵn sàng', 'bg-warning': cleaner.status == 'Đang làm việc', 'bg-danger': (cleaner.status == 'Nghỉ phép' || cleaner.status == 'Bận')}"></i>
-                    {{cleaner.status}}
-                  </span>
+                      [ngClass]="{'bg-success': cleaner.status == 'active', 'bg-danger': cleaner.status == 'inactive'}"></i>
+                    <!-- , 'bg-warning': cleaner.status == 'Đang làm việc' -->
+                    {{ cleaner.status === 'active' ? 'Đang hoạt động' : 'Không hoạt động' }} </span>
                 </td>
                 <td>
                   <div class="d-flex align-items-center">
@@ -121,7 +119,7 @@
                         <div class="progress-bar bg-warning" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 92%;"></div>
                       </div>
                     </div> -->
-                    <div class="star-rating" [innerHTML]="generateStarRating(averageRating)"></div>
+                    <div class="star-rating" [innerHTML]="generateStarRating(cleaner.averageRating)"></div>
 
                     <span>({{cleaner.ratingNumber}})</span>
                   </div>
@@ -132,9 +130,9 @@
                       <i class="fas fa-ellipsis-v"></i>
                     </a>
                     <div ngbDropdownMenu class=" dropdown-menu-right dropdown-menu-arrow">
-                      <a class="dropdown-item" href="/profile-cleaner?{{cleaner.cleanerId}}">Xem thông tin</a>
-                      <a class="dropdown-item" (click)="changeStatus()">Đang làm việc / Nghỉ</a>
-                      <a class="dropdown-item" (click)="removeUser()">Xóa</a>
+                      <a class="dropdown-item" href="/user-profile?cleanerId={{cleaner.cleanerId}}">Xem thông tin</a>
+                      <a class="dropdown-item" (click)="changeStatus()">Đổi trạng thái</a>
+                      <a class="dropdown-item" (click)="removeUser(cleaner.cleanerId)">Xóa</a>
                     </div>
                   </div>
                 </td>
