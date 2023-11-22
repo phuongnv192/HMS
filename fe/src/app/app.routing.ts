@@ -29,7 +29,7 @@ const routes: Routes = [
   { path: 'user-profile', component: UserProfileComponent },
   { path: 'history', component: HistoryComponent },
   { path: 'schedule', component: ScheduleComponent },
-  // { path: 'forgot-password',          component: ForgotPWComponent },
+  { path: 'forgot-password',          component: ForgotPWComponent },
   { path: '', redirectTo: 'home', pathMatch: 'full' }
 ];
 

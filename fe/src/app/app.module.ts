@@ -37,6 +37,7 @@ import { DashboardComponent } from "./employee/dashboard/dashboard.component";
 import { TablesComponent } from "./employee/tables.component";
 import { AuthService } from "./services/auth.service";
 import { HttpClientModule } from "@angular/common/http";
+import { IvyCarouselModule } from "angular-responsive-carousel";
 
 @NgModule({
   declarations: [
@@ -68,7 +69,8 @@ import { HttpClientModule } from "@angular/common/http";
     RouterModule,
     AppRoutingModule,
     HomeModule,
-    HttpClientModule
+    HttpClientModule,
+    IvyCarouselModule
   ],
   providers: [AuthService],
   bootstrap: [AppComponent],
