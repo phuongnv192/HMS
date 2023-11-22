@@ -42,6 +42,7 @@ public class BookingSchedule {
     private Date updateDate;
     private Long updateBy;
 
+    private double totalSchedulePrice;
     private String paymentStatus;
     private String cashbackStatus;
 

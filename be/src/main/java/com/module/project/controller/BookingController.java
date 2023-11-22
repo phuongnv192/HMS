@@ -28,11 +28,11 @@ public class BookingController {
 
     @PostMapping(BOOKING)
     public ResponseEntity<Object> book(@RequestBody BookingRequest request) {
-        return ResponseEntity.ok(service.book(request));
+        return ResponseEntity.ok(service.booking(request));
     }
 
     @PostMapping(BOOKING_CONFIRM)
-    public ResponseEntity<Object> confirmBooking(@RequestParam(name = "bookingId") Long bookingId,
+    public ResponseEntity<Object> customerConfirmBooking(@RequestParam(name = "bookingId") Long bookingId,
                                                  @RequestParam(name = "userId") Long userId) {
         return ResponseEntity.ok(service.confirmBooking(bookingId, userId));
     }

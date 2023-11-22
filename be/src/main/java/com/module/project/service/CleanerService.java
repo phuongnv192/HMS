@@ -5,9 +5,11 @@ import com.module.project.dto.CleanerActivity;
 import com.module.project.dto.CleanerReviewInfo;
 import com.module.project.dto.Constant;
 import com.module.project.dto.ResponseCode;
+import com.module.project.dto.TransactionStatus;
 import com.module.project.dto.request.CleanerFilterRequest;
 import com.module.project.dto.request.CleanerInfoRequest;
 import com.module.project.dto.request.CleanerUpdateRequest;
+import com.module.project.dto.request.ScheduleConfirmRequest;
 import com.module.project.dto.response.CleanerDetailHistoryResponse;
 import com.module.project.dto.response.CleanerHistoryResponse;
 import com.module.project.dto.response.CleanerOverviewResponse;
@@ -15,16 +17,14 @@ import com.module.project.exception.HmsErrorCode;
 import com.module.project.exception.HmsException;
 import com.module.project.exception.HmsResponse;
 import com.module.project.model.Booking;
-import com.module.project.model.CleanerWorkingDate;
 import com.module.project.model.Branch;
 import com.module.project.model.Cleaner;
+import com.module.project.model.CleanerWorkingDate;
 import com.module.project.model.User;
-import com.module.project.repository.CleanerWorkingDateRepository;
-import com.module.project.repository.BookingHistoryRepository;
 import com.module.project.repository.BookingRepository;
-import com.module.project.repository.BookingScheduleRepository;
 import com.module.project.repository.BranchRepository;
 import com.module.project.repository.CleanerRepository;
+import com.module.project.repository.CleanerWorkingDateRepository;
 import com.module.project.repository.ServiceRepository;
 import com.module.project.repository.UserRepository;
 import com.module.project.util.HMSUtil;
@@ -52,11 +52,9 @@ import java.util.stream.Collectors;
 public class CleanerService {
 
     private final CleanerRepository cleanerRepository;
-    private final BookingHistoryRepository bookingHistoryRepository;
     private final BranchRepository branchRepository;
     private final UserRepository userRepository;
     private final ServiceRepository serviceRepository;
-    private final BookingScheduleRepository bookingScheduleRepository;
     private final BookingRepository bookingRepository;
     private final CleanerWorkingDateRepository cleanerWorkingDateRepository;
 
@@ -228,6 +226,19 @@ public class CleanerService {
         return HMSUtil.buildResponse(ResponseCode.SUCCESS, cleanerRepository.save(cleaner));
     }
 
+    public HmsResponse<Object> confirmSchedule(ScheduleConfirmRequest request) {
+        switch (request.getStatus()) {
+            case ON_PROCESS, MATCHED, ON_MOVING -> {
+                // TODO
+            }
+            case DONE -> {
+
+            }
+            default -> throw new HmsException(HmsErrorCode.INVALID_REQUEST, "status not valid");
+        }
+        return null;
+    }
+
     private List<Cleaner> filterCleaners(List<Cleaner> cleaners, CleanerFilterRequest request) {
         // TODO: update later - filter by gender and sort by rating
         // List<BookingSchedule> bookingSchedules =
@@ -247,7 +258,7 @@ public class CleanerService {
         for (CleanerWorkingDate cleaner : bookingSchedules) {
             if (workDate.contains(cleaner.getScheduleDate())) {
                 cleanerIds.remove(cleaner.getCleanerId());
-                if (cleanerIds.size() == 0 || cleanerIds.size() <= num) {
+                if (cleanerIds.isEmpty() || cleanerIds.size() <= num) {
                     return cleanerIds;
                 }
             }

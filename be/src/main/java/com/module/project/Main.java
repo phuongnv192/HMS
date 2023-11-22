@@ -176,19 +176,19 @@ public class Main implements CommandLineRunner {
             serviceTypeRepository.saveAll(serviceTypeList);
 
             ServicePackage servicePackage = ServicePackage.builder()
-                    .servicePackageName("1 month")
+                    .servicePackageName("1")
                     .serviceType(serviceType)
                     .build();
             ServicePackage servicePackage1 = ServicePackage.builder()
-                    .servicePackageName("3 months")
+                    .servicePackageName("3")
                     .serviceType(serviceType1)
                     .build();
             ServicePackage servicePackage2 = ServicePackage.builder()
-                    .servicePackageName("6 months")
+                    .servicePackageName("6")
                     .serviceType(serviceType2)
                     .build();
             ServicePackage servicePackage3 = ServicePackage.builder()
-                    .servicePackageName("12 months")
+                    .servicePackageName("12")
                     .serviceType(serviceType2)
                     .build();
             List<ServicePackage> servicePackages = Arrays.asList(servicePackage, servicePackage1, servicePackage2, servicePackage3);

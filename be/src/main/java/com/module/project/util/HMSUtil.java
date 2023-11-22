@@ -10,9 +10,13 @@ import org.springframework.util.CollectionUtils;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class HMSUtil {
@@ -79,4 +83,37 @@ public class HMSUtil {
         return sb.toString();
     }
 
+    public static LocalDate convertDateToLocalDate(Date date) {
+        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    }
+
+    public static List<LocalDate> getDatesBetweenFromDate(Date startDate, Date endDate) {
+        LocalDate start = startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate end = endDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        return getDatesBetween(start, end);
+    }
+
+    public static List<LocalDate> getDatesBetween(LocalDate startDate, LocalDate endDate) {
+        return startDate.datesUntil(endDate).collect(Collectors.toList());
+    }
+
+    public static List<LocalDate> weeksInCalendar(LocalDate now, LocalDate month) {
+        List<LocalDate> daysOfWeeks = new ArrayList<>();
+        for (LocalDate day = now; stillInCalendar(month, day); day = day.plusWeeks(1)) {
+            daysOfWeeks.add(day);
+        }
+        return daysOfWeeks;
+    }
+
+    public static List<LocalDate> monthsInCalendar(LocalDate now, LocalDate month) {
+        List<LocalDate> daysOfMonth = new ArrayList<>();
+        for (LocalDate day = now; stillInCalendar(month, day); day = day.plusMonths(1)) {
+            daysOfMonth.add(day);
+        }
+        return daysOfMonth;
+    }
+
+    private static boolean stillInCalendar(LocalDate month, LocalDate day) {
+        return !day.isAfter(month);
+    }
 }

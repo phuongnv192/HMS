@@ -9,11 +9,12 @@ public interface Constant {
     String BOOKING = "/booking";
     String BOOKING_CONFIRM = "/booking/confirm";
     String CLEANER = "/cleaner";
-
     String CLEANERS = "/cleaners";
     String CLEANER_HISTORY = "/cleaner/history";
     String CLEANER_HISTORY_DETAIL = "/cleaner/history/detail";
     String CLEANER_STATUS = "/cleaner/status";
+    String CLEANER_CONFIRM_SCHEDULE = "/cleaner/schedule/confirm";
+    String CLEANER_CANCEL_SCHEDULE = "/cleaner/schedule/cancel";
     String SERVICE_TYPE = "/service-types";
     String SERVICE_ADD_ON = "/service-add-ons";
 

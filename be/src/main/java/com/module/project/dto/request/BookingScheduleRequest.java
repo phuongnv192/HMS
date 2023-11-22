@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -13,5 +15,8 @@ import java.util.List;
 @AllArgsConstructor
 public class BookingScheduleRequest {
     private int floorNumber;
+    private LocalDate workDate;
+    private Date startTime;
+    private Date endTime;
     private List<Long> serviceAddOnIds;
 }

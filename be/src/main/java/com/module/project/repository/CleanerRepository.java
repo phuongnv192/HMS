@@ -12,4 +12,6 @@ public interface CleanerRepository extends JpaRepository<Cleaner, Long> {
     Optional<Cleaner> findById(Integer id);
 
     List<Cleaner> findAll();
+
+    List<Cleaner> findAllByIdInAndStatusEquals(List<Long> ids, String status);
 }

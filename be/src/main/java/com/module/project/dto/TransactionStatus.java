@@ -1,9 +1,16 @@
 package com.module.project.dto;
 
 public enum TransactionStatus {
-    CONFIRMING,
     ON_MOVING,
     MATCHED,
     ON_PROCESS,
-    DONE
+    DONE;
+
+    public static TransactionStatus lookUp(String name) throws IllegalArgumentException {
+        for (TransactionStatus val : values()) {
+            if (val.name().equalsIgnoreCase(name))
+                return val;
+        }
+        return null;
+    }
 }
