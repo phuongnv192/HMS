@@ -44,6 +44,7 @@ public class BookingSchedule {
 
     private double totalSchedulePrice;
     private String paymentStatus;
+    private String paymentNote;
     private String cashbackStatus;
 
     @ManyToOne()

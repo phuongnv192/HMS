@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -37,9 +38,9 @@ public class BookingTransaction {
     @OneToMany(mappedBy = "bookingTransaction", cascade = CascadeType.ALL)
     private Set<BookingSchedule> bookingSchedules;
 
-    @OneToOne()
-    @JoinColumn(name = "service_type_id")
-    private ServiceType serviceType;
+    @ManyToOne()
+    @JoinColumn(name = "service_package_id")
+    private ServicePackage servicePackage;
 
     private double totalBookingPrice;
     private int totalBookingCleaner;

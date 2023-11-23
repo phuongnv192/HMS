@@ -3,15 +3,20 @@ package com.module.project.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.module.project.dto.ConfirmStatus;
 import com.module.project.dto.FloorInfoEnum;
+import com.module.project.dto.PaymentStatus;
 import com.module.project.dto.ResponseCode;
+import com.module.project.dto.RoleEnum;
 import com.module.project.dto.request.BookingRequest;
+import com.module.project.dto.request.BookingStatusRequest;
 import com.module.project.exception.HmsErrorCode;
 import com.module.project.exception.HmsException;
 import com.module.project.exception.HmsResponse;
 import com.module.project.model.Booking;
+import com.module.project.model.BookingSchedule;
 import com.module.project.model.BookingTransaction;
 import com.module.project.model.User;
 import com.module.project.repository.BookingRepository;
+import com.module.project.repository.BookingScheduleRepository;
 import com.module.project.repository.UserRepository;
 import com.module.project.util.HMSUtil;
 import com.module.project.util.JsonService;
@@ -19,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Calendar;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +35,7 @@ public class BookingService {
     private final BookingRepository bookingRepository;
     private final UserRepository userRepository;
     private final ScheduleService scheduleService;
+    private final BookingScheduleRepository bookingScheduleRepository;
 
     public HmsResponse<Booking> booking(BookingRequest request) {
         User customer = userRepository.findById(request.getCustomerId())
@@ -56,12 +62,43 @@ public class BookingService {
         return HMSUtil.buildResponse(ResponseCode.SUCCESS, booking);
     }
 
-    public HmsResponse<Object> confirmBooking(Long bookingId, Long userId) {
-        Booking booking = bookingRepository.findById(bookingId)
+    public HmsResponse<Object> confirmBooking(BookingStatusRequest request, Long userId) {
+        Booking booking = bookingRepository.findById(request.getBookingId())
                 .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "relevant booking is not existed on system"));
+        if (!ConfirmStatus.RECEIVED.name().equals(booking.getStatus())) {
+            throw new HmsException(HmsErrorCode.INVALID_REQUEST, "can't execute this request because status of schedule is not match");
+        }
         booking.setStatus(ConfirmStatus.CONFIRMED.name());
         processBookingSchedule(booking, userId);
         return HMSUtil.buildResponse(ResponseCode.SUCCESS, null);
+    }
+
+    public HmsResponse<Object> cancelBooking(BookingStatusRequest request, Long userId) {
+        Booking booking = bookingRepository.findById(request.getBookingId())
+                .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "relevant booking is not existed on system"));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "can't find any user by ".concat(userId.toString())));
+        List<String> acceptRole = Arrays.asList(RoleEnum.ADMIN.name(), RoleEnum.MANAGER.name());
+        if (booking.getUser().getId().equals(userId) || acceptRole.contains(user.getRole().getName())) {
+            scheduleService.cancelBooking(booking, user);
+            return HMSUtil.buildResponse(ResponseCode.SUCCESS, null);
+        } else {
+            throw new HmsException(HmsErrorCode.INVALID_REQUEST, "user dont have permission to execute");
+        }
+    }
+
+    public HmsResponse<Object> updateWithdraw(Long bookScheduleId, String userId, String roleName) {
+        List<String> approveRole = Arrays.asList(RoleEnum.MANAGER.name(), RoleEnum.LEADER.name());
+        if (approveRole.contains(roleName)) {
+            BookingSchedule bookingSchedule = bookingScheduleRepository.findById(bookScheduleId)
+                    .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "relevant schedule is not existed on system"));
+            bookingSchedule.setPaymentStatus(PaymentStatus.WITHDRAW.name());
+            bookingSchedule.setUpdateBy(Long.parseLong(userId));
+            bookingScheduleRepository.save(bookingSchedule);
+            return HMSUtil.buildResponse(ResponseCode.SUCCESS, null);
+        } else {
+            throw new HmsException(HmsErrorCode.INVALID_REQUEST, "user dont have permission to execute");
+        }
     }
 
     private void processBookingSchedule(Booking booking, Long userId) {
@@ -79,12 +116,6 @@ public class BookingService {
         } else {
             scheduleService.processBookingPeriod(booking, request, bookingTransaction, userId);
         }
-    }
-
-    public static void main(String[] args) {
-        Calendar month = Calendar.getInstance();
-        month.add(Calendar.MONTH, 6);
-        System.out.println(HMSUtil.monthsInCalendar(HMSUtil.convertDateToLocalDate(Calendar.getInstance().getTime()), HMSUtil.convertDateToLocalDate(month.getTime())));
     }
 
     public Map<String, Object> updateBooking(Map<String, Object> request) throws Exception {

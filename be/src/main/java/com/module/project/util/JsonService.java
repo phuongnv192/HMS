@@ -15,6 +15,7 @@ public class JsonService {
     private JsonService() {
         om = new ObjectMapper();
         om.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        om.findAndRegisterModules();
     }
 
     public static JsonService getInstance() {
@@ -68,6 +69,7 @@ public class JsonService {
 
     public static <T> T strToObject(String str, TypeReference<T> valueTypeRef) {
         var objectMapper = new ObjectMapper();
+        objectMapper.findAndRegisterModules();
         try {
             return objectMapper.readValue(str, valueTypeRef);
         } catch (Exception ex) {

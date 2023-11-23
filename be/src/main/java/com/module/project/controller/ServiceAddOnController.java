@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import static com.module.project.dto.Constant.API_V1;
+import static com.module.project.dto.Constant.FLOOR_INFO;
 import static com.module.project.dto.Constant.SERVICE_ADD_ON;
 import static com.module.project.dto.Constant.SERVICE_TYPE;
 
@@ -27,5 +28,10 @@ public class ServiceAddOnController {
     @GetMapping(SERVICE_TYPE)
     public ResponseEntity<Object> getAllServiceType() {
         return ResponseEntity.ok(service.getAllServiceType());
+    }
+
+    @GetMapping(FLOOR_INFO)
+    public ResponseEntity<Object> getFloorInfo() {
+        return ResponseEntity.ok(service.getFloorInfo());
     }
 }

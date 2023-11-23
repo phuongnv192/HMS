@@ -4,7 +4,8 @@ public enum TransactionStatus {
     ON_MOVING,
     MATCHED,
     ON_PROCESS,
-    DONE;
+    DONE,
+    CANCELLED;
 
     public static TransactionStatus lookUp(String name) throws IllegalArgumentException {
         for (TransactionStatus val : values()) {

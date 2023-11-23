@@ -18,6 +18,7 @@ spring:
 
 application:
   choosing-cleaner-price: 20000
+  default-rating: 4
   mail: hoangson99201@gmail.com
   password: "fyzq mxpc pyla hddk"
   security:

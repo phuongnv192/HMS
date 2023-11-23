@@ -1,10 +1,11 @@
 package com.module.project.controller;
 
-import com.module.project.dto.request.CleanerFilterRequest;
+import com.module.project.dto.ClaimEnum;
 import com.module.project.dto.request.CleanerInfoRequest;
 import com.module.project.dto.request.CleanerUpdateRequest;
 import com.module.project.dto.request.ScheduleConfirmRequest;
 import com.module.project.service.CleanerService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -18,11 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static com.module.project.dto.Constant.API_V1;
 import static com.module.project.dto.Constant.CLEANER;
-import static com.module.project.dto.Constant.CLEANERS;
-import static com.module.project.dto.Constant.CLEANER_CANCEL_SCHEDULE;
-import static com.module.project.dto.Constant.CLEANER_CONFIRM_SCHEDULE;
 import static com.module.project.dto.Constant.CLEANER_HISTORY;
 import static com.module.project.dto.Constant.CLEANER_HISTORY_DETAIL;
+import static com.module.project.dto.Constant.CLEANER_SCHEDULE_STATUS;
 import static com.module.project.dto.Constant.CLEANER_STATUS;
 
 @RestController
@@ -31,11 +30,6 @@ import static com.module.project.dto.Constant.CLEANER_STATUS;
 public class CleanerController {
 
     private final CleanerService cleanerService;
-
-    @GetMapping(CLEANERS)
-    public ResponseEntity<Object> getCleaners(@RequestBody CleanerFilterRequest request) {
-        return ResponseEntity.ok(cleanerService.autoChooseCleaner(request.getNumber(), request.getWorkDate()));
-    }
 
     @GetMapping(CLEANER_HISTORY)
     public ResponseEntity<Object> getCleanerHistory(@RequestParam(name = "page") Integer page,
@@ -64,13 +58,9 @@ public class CleanerController {
         return ResponseEntity.ok(cleanerService.changeStatusCleaner(cleanerUpdateRequest));
     }
 
-    @PostMapping(CLEANER_CONFIRM_SCHEDULE)
-    public ResponseEntity<Object> confirmSchedule(@RequestBody ScheduleConfirmRequest request) {
-        return ResponseEntity.ok(cleanerService.confirmSchedule(request));
-    }
-
-    @PostMapping(CLEANER_CANCEL_SCHEDULE)
-    public ResponseEntity<Object> cancelSchedule(@RequestBody ScheduleConfirmRequest request) {
-        return ResponseEntity.ok(cleanerService.confirmSchedule(request));
+    @PostMapping(CLEANER_SCHEDULE_STATUS)
+    public ResponseEntity<Object> updateStatusSchedule(@RequestBody ScheduleConfirmRequest request, HttpServletRequest httpServletRequest) {
+        String userId = (String) httpServletRequest.getAttribute(ClaimEnum.USER_ID.name);
+        return ResponseEntity.ok(cleanerService.updateStatusSchedule(request, userId));
     }
 }

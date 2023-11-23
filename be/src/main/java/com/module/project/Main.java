@@ -2,6 +2,7 @@ package com.module.project;
 
 import com.module.project.dto.ConfirmStatus;
 import com.module.project.dto.Constant;
+import com.module.project.dto.RoleEnum;
 import com.module.project.dto.TransactionStatus;
 import com.module.project.model.Booking;
 import com.module.project.model.BookingSchedule;
@@ -31,6 +32,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.ZoneId;
 import java.util.Arrays;
@@ -79,15 +81,18 @@ public class Main implements CommandLineRunner {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
     public void run(String... args) {
         try {
             Role[] roles = new Role[]{
-                    new Role(1L, "admin"),
-                    new Role(2L, "manager"),
-                    new Role(3L, "leader"),
-                    new Role(4L, "cleaner"),
-                    new Role(5L, "customer"),
+                    new Role(1L, RoleEnum.ADMIN.name()),
+                    new Role(2L, RoleEnum.MANAGER.name()),
+                    new Role(3L, RoleEnum.LEADER.name()),
+                    new Role(4L, RoleEnum.CLEANER.name()),
+                    new Role(5L, RoleEnum.CUSTOMER.name()),
             };
             roleRepository.saveAll(Arrays.asList(roles));
 
@@ -100,18 +105,30 @@ public class Main implements CommandLineRunner {
             User user1 = User.builder()
                     .firstName("Duong")
                     .lastName("PL")
-                    .username("test1")
-                    .password("1")
-                    .status(Constant.COMMON_STATUS.ACTIVE)
-                    .role(roles[0])
-                    .build();
-            User user2 = User.builder()
-                    .username("test2")
-                    .password("2")
+                    .username("manager")
+                    .password(passwordEncoder.encode("1"))
                     .status(Constant.COMMON_STATUS.ACTIVE)
                     .role(roles[1])
                     .build();
-            userRepository.saveAll(Arrays.asList(user1, user2));
+            User user2 = User.builder()
+                    .username("admin")
+                    .password(passwordEncoder.encode("1"))
+                    .status(Constant.COMMON_STATUS.ACTIVE)
+                    .role(roles[0])
+                    .build();
+            User user3 = User.builder()
+                    .username("cleaner")
+                    .password(passwordEncoder.encode("1"))
+                    .status(Constant.COMMON_STATUS.ACTIVE)
+                    .role(roles[3])
+                    .build();
+            User user4 = User.builder()
+                    .username("leader")
+                    .password(passwordEncoder.encode("1"))
+                    .status(Constant.COMMON_STATUS.ACTIVE)
+                    .role(roles[2])
+                    .build();
+            userRepository.saveAll(Arrays.asList(user1, user2, user3, user4));
 
             String review = "{\n" +
                     "    \"1\": {\n" +
@@ -161,7 +178,21 @@ public class Main implements CommandLineRunner {
                     .idCard("2")
                     .review(review)
                     .build();
-            cleanerRepository.saveAll(Arrays.asList(cleaner1, cleaner2));
+            Cleaner cleaner3 = Cleaner.builder()
+                    .user(user3)
+                    .branch(branch)
+                    .status(Constant.COMMON_STATUS.ACTIVE)
+                    .idCard("2")
+                    .review(review)
+                    .build();
+            Cleaner cleaner4 = Cleaner.builder()
+                    .user(user4)
+                    .branch(branch)
+                    .status(Constant.COMMON_STATUS.ACTIVE)
+                    .idCard("2")
+                    .review(review)
+                    .build();
+            cleanerRepository.saveAll(Arrays.asList(cleaner1, cleaner2, cleaner3, cleaner4));
 
             ServiceType serviceType = ServiceType.builder()
                     .serviceTypeName("Daily on the basis")
@@ -223,44 +254,44 @@ public class Main implements CommandLineRunner {
                     .build();
             serviceAddOnRepository.saveAll(Arrays.asList(serviceAddOn1, serviceAddOn2));
 
-            Booking booking = Booking.builder()
-                    .hostName("Booking guest name")
-                    .houseType(Constant.HOUSE_TYPE.APARTMENT)
-                    .floorNumber(12)
-                    .floorArea(120f)
-                    .status(ConfirmStatus.RECEIVED.name())
-                    .cleaners(Set.of(cleaner1, cleaner2))
-                    .user(user1)
-                    .userUpdate(user1)
-                    .build();
-            bookingRepository.save(booking);
-
-            BookingTransaction bookingTransaction = BookingTransaction.builder()
-                    .booking(booking)
-                    .totalBookingCleaner(2)
-                    .totalBookingPrice(1000000D)
-                    .totalBookingDate(12)
-                    .status(ConfirmStatus.RECEIVED.name())
-                    .serviceType(serviceType)
-                    .build();
-            bookingTransactionRepository.save(bookingTransaction);
-
-            Calendar calendar = Calendar.getInstance();
-            BookingSchedule bookingSchedule = BookingSchedule.builder()
-                    .status(TransactionStatus.MATCHED.name())
-                    .bookingTransaction(bookingTransaction)
-                    .serviceAddOns(Set.of(serviceAddOn1))
-                    .workDate(calendar.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate())
-                    .build();
-
-            calendar.add(Calendar.DATE, 1);
-            BookingSchedule bookingSchedule1 = BookingSchedule.builder()
-                    .status(TransactionStatus.MATCHED.name())
-                    .bookingTransaction(bookingTransaction)
-                    .serviceAddOns(Set.of(serviceAddOn1))
-                    .workDate(calendar.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate())
-                    .build();
-            bookingScheduleRepository.saveAll(Set.of(bookingSchedule, bookingSchedule1));
+//            Booking booking = Booking.builder()
+//                    .hostName("Booking guest name")
+//                    .houseType(Constant.HOUSE_TYPE.APARTMENT)
+//                    .floorNumber(12)
+//                    .floorArea(120f)
+//                    .status(ConfirmStatus.RECEIVED.name())
+//                    .cleaners(Set.of(cleaner1, cleaner2))
+//                    .user(user1)
+//                    .userUpdate(user1)
+//                    .build();
+//            bookingRepository.save(booking);
+//
+//            BookingTransaction bookingTransaction = BookingTransaction.builder()
+//                    .booking(booking)
+//                    .totalBookingCleaner(2)
+//                    .totalBookingPrice(1000000D)
+//                    .totalBookingDate(12)
+//                    .status(ConfirmStatus.RECEIVED.name())
+//                    .servicePackage(servicePackage3)
+//                    .build();
+//            bookingTransactionRepository.save(bookingTransaction);
+//
+//            Calendar calendar = Calendar.getInstance();
+//            BookingSchedule bookingSchedule = BookingSchedule.builder()
+//                    .status(TransactionStatus.MATCHED.name())
+//                    .bookingTransaction(bookingTransaction)
+//                    .serviceAddOns(Set.of(serviceAddOn1))
+//                    .workDate(calendar.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate())
+//                    .build();
+//
+//            calendar.add(Calendar.DATE, 1);
+//            BookingSchedule bookingSchedule1 = BookingSchedule.builder()
+//                    .status(TransactionStatus.MATCHED.name())
+//                    .bookingTransaction(bookingTransaction)
+//                    .serviceAddOns(Set.of(serviceAddOn1))
+//                    .workDate(calendar.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate())
+//                    .build();
+//            bookingScheduleRepository.saveAll(Set.of(bookingSchedule, bookingSchedule1));
 
         } catch (Exception e) {
             System.out.println("ERROR: " + e.getMessage());

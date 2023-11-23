@@ -2,6 +2,7 @@ package com.module.project.filter;
 
 import java.io.IOException;
 
+import com.module.project.dto.ClaimEnum;
 import com.module.project.service.JwtService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -55,6 +56,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 authToken.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+                request.setAttribute(ClaimEnum.USER_ID.name, jwtService.extractByName(jwt, ClaimEnum.USER_ID.name));
+                request.setAttribute(ClaimEnum.ROLE_ID.name, jwtService.extractByName(jwt, ClaimEnum.ROLE_ID.name));
+                request.setAttribute(ClaimEnum.ROLE_NAME.name, jwtService.extractByName(jwt, ClaimEnum.ROLE_NAME.name));
             }
         }
         filterChain.doFilter(request, response);

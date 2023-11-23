@@ -1,6 +1,7 @@
 package com.module.project.repository;
 
 import com.module.project.model.Cleaner;
+import com.module.project.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,4 +15,6 @@ public interface CleanerRepository extends JpaRepository<Cleaner, Long> {
     List<Cleaner> findAll();
 
     List<Cleaner> findAllByIdInAndStatusEquals(List<Long> ids, String status);
+
+    Optional<Cleaner> findByUser(User user);
 }

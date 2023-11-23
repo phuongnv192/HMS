@@ -1,0 +1,480 @@
+{
+	"info": {
+		"_postman_id": "98e438c3-89fd-465b-b338-2bcde3ac0bf2",
+		"name": "HMS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "register",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"username\",\n    \"first_name\": \"first name\",\n    \"last_name\": \"last name\",\n    \"email\": \"sonbas@smamkds.cpm\",\n    \"password\": \"password\",\n    \"phone_number\": \"phoneNumber\",\n    \"gender\": \"gender\",\n    \"role\": \"admin\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8888/api/v1/auth/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8888",
+					"path": [
+						"api",
+						"v1",
+						"auth",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "authenticate",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"console.log(jsonData[\"token\"])",
+							"pm.environment.set(\"accessToken\", jsonData[\"token\"]);",
+							"console.log(pm.environment.get(\"accessToken\"));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"test1\",\n    \"password\": \"1\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8888/api/v1/auth/authenticate",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8888",
+					"path": [
+						"api",
+						"v1",
+						"auth",
+						"authenticate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get list cleaner",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"address\": \"address\",\n    \"idCard\": \"idCard\",\n    \"userId\": \"userId\",\n    \"branchId\": \"1\",\n    \"serviceIds\": [1, 2, 3]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8888/api/v1/cleaner/history?page=0&size=4",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8888",
+					"path": [
+						"api",
+						"v1",
+						"cleaner",
+						"history"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "0"
+						},
+						{
+							"key": "size",
+							"value": "4"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get cleaner detail",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8888/api/v1/cleaner/history/detail?cleanerId=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8888",
+					"path": [
+						"api",
+						"v1",
+						"cleaner",
+						"history",
+						"detail"
+					],
+					"query": [
+						{
+							"key": "cleanerId",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get service add on",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"address\": \"address\",\n    \"idCard\": \"idCard\",\n    \"userId\": \"userId\",\n    \"branchId\": \"1\",\n    \"serviceIds\": [1, 2, 3]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8888/api/v1/service-add-ons?addOnId=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8888",
+					"path": [
+						"api",
+						"v1",
+						"service-add-ons"
+					],
+					"query": [
+						{
+							"key": "addOnId",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get floor info",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"address\": \"address\",\n    \"idCard\": \"idCard\",\n    \"userId\": \"userId\",\n    \"branchId\": \"1\",\n    \"serviceIds\": [1, 2, 3]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8888/api/v1/floor-info",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8888",
+					"path": [
+						"api",
+						"v1",
+						"floor-info"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "customer booking",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"hostName\": \"duongpl\",\n    \"hostPhone\": \"\",\n    \"hostAddress\": \"\",\n    \"hostDistance\": \"\",\n    \"houseType\": \"\",\n    \"floorNumber\": 2,\n    \"floorArea\": \"M260\",\n    \"customerId\": 1,\n    \"cleanerIds\": null,\n    \"bookingSchedules\": [\n        {\n            \"floorNumber\": 4,\n            \"workDate\": \"2023-11-16\",\n            \"startTime\": null,\n            \"endTime\": null,\n            \"serviceAddOnIds\": []\n        }\n    ],\n    \"serviceTypeId\": 3,\n    \"servicePackageId\": 3,\n    \"serviceAddOnIds\": [3],\n    \"startTime\": \"\",\n    \"endTime\": \"\",\n    \"workDate\": \"2023-11-16\",\n    \"dayOfTheWeek\": null,\n    \"note\": \"noting\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8888/api/v1/booking",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8888",
+					"path": [
+						"api",
+						"v1",
+						"booking"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "customer confirm booking",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"bookingId\": 1\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8888/api/v1/booking/confirm",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8888",
+					"path": [
+						"api",
+						"v1",
+						"booking",
+						"confirm"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "customer cancel booking",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"bookingId\": 1\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8888/api/v1/booking/cancel",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8888",
+					"path": [
+						"api",
+						"v1",
+						"booking",
+						"cancel"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "cleaner update schedule status",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"scheduleId\": \"1\",\n    \"status\": \"DONE\",\n    \"paymentStatus\": \"\",\n    \"note\": \"\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8888/api/v1/cleaner/schedule/status",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8888",
+					"path": [
+						"api",
+						"v1",
+						"cleaner",
+						"schedule",
+						"status"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "manager/leader update payment schedule",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"bookingId\": 1\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8888/api/v1/schedule/withdraw",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8888",
+					"path": [
+						"api",
+						"v1",
+						"schedule",
+						"withdraw"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

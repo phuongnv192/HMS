@@ -30,7 +30,6 @@ public class BookingRequest {
     private Date startTime;
     private Date endTime;
     private LocalDate workDate;
-    private String dayOfTheWeek;
     private String note;
     private String paymentType;
 }

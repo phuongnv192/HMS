@@ -1,5 +1,6 @@
 package com.module.project.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -13,7 +14,9 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -28,6 +31,9 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Table(name = "tb_booking")
+//@EqualsAndHashCode(exclude= {"userUpdate", "user"})
+//@ToString(exclude = {"userUpdate", "user"})
+@JsonIgnoreProperties({"userUpdate", "user"})
 public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

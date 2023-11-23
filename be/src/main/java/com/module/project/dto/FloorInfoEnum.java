@@ -12,12 +12,12 @@ public enum FloorInfoEnum {
     M2400(400, 4, 8, 3000000),
     ;
 
-    private final float floorArea; //m2
+    private final int floorArea; //m2
     private final int cleanerNum;
     private final int duration; // hour
     private final long price; // dong
 
-    FloorInfoEnum(float floorArea, int cleanerNum, int duration, long price) {
+    FloorInfoEnum(int floorArea, int cleanerNum, int duration, long price) {
         this.floorArea = floorArea;
         this.cleanerNum = cleanerNum;
         this.duration = duration;
