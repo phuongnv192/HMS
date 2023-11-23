@@ -15,6 +15,7 @@ export class ScheduleComponent implements OnInit {
   houseType: string[];
   searchRate: any;
   searchHouseType: string;
+  dateList: any;
   constructor() { }
 
   ngOnInit() {
@@ -65,5 +66,34 @@ export class ScheduleComponent implements OnInit {
 
   }
 
-}
+  getDay(todayin) {
+    let today = new Date(todayin);
+    return today.getDate();
+  }
 
+  getMonth(todayin) {
+    let today = new Date(todayin);
+    return today.getMonth() + 1;
+  }
+
+  getDateMonth(todayin) {
+    let days = {
+      Sunday: "CN",
+      Monday: "Thứ 2",
+      Tuesday: "Thứ 3",
+      Wednesday: "Thứ 4",
+      Thursday: "Thứ 5",
+      Friday: "Thứ 6",
+      Saturday: "Thứ 7"
+    }
+    let today = new Date(todayin);
+    return days[today.toLocaleDateString('en-US', { weekday: 'long' })];
+  }
+
+  getYearDateMonth(todayin) {
+    let today = new Date(todayin);
+    return (today.getMonth() + 1) + '/' + today.getDate() + '/' + today.getFullYear();
+  }
+
+
+}

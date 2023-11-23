@@ -43,7 +43,7 @@
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="ni ni-email-83"></i></span>
                     </div>
-                    <input #account id="account" (keypress)="omit_special_char_email($event)"
+                    <input class="form-control"t #account id="account" (keypress)="omit_special_char_email($event)"
                       (blur)="changeHandler('account')" (focus)="focusAccount()" placeholder="name@email.com"
                       type="text" aria-describedby="email-help" maxlength="50" [(ngModel)]="account_name">
                   </div>
