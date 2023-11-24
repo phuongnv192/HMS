@@ -1,6 +1,8 @@
-import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
-import { AuthService } from "../../services/auth.service";
-import { Router } from "@angular/router";
+
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
+
 
 @Component({
   selector: "app-signup",
@@ -13,6 +15,8 @@ export class SignupComponent implements OnInit {
   @ViewChild("repassword", { static: false }) re_password: ElementRef;
   @ViewChild("email", { static: false }) emailElement: ElementRef;
   @ViewChild("account", { static: false }) accountElement: ElementRef;
+  @ViewChild("firstname", { static: false }) firstnameElement: ElementRef;
+  @ViewChild("lastname", { static: false }) lastnameElement: ElementRef;
 
   isChecked: boolean = false;
   isRegistered: boolean = false;
@@ -29,12 +33,15 @@ export class SignupComponent implements OnInit {
   focus3;
   account_name: any;
   account_email: any;
+  first_name = '';
+  last_name = '';
+  gender: any;
   accountBlur: boolean;
   emailBlur: boolean;
   emailExist = false;
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   verifyPassword(): boolean {
     const password = this.pwd;
@@ -47,11 +54,13 @@ export class SignupComponent implements OnInit {
     const account_name = this.account_name;
     const email = this.account_email;
     const password = this.pwd;
-    console.log(this.verifyPassword());
+    const fist = this.first_name;
+    const last = this.last_name;
+    const gender = this.gender;
     if (!this.verifyPassword()) {
       this.reinput = true;
     }
-    // this.authService.register(tel, password).subscribe(
+    // this.authService.register(account_name, first, last, gender, gender, tel, password).subscribe(
     //   (response) => {
     //     // Đăng ký thành công
     //     this.isRegistered = true;

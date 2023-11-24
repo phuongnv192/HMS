@@ -176,24 +176,20 @@
           </div>
           <a routerLinkActive="active" [routerLink]="['/user-profile']" class="dropdown-item">
             <i class="ni ni-single-02"></i>
-            <span>My profile</span>
+            <span>Xem thông tin</span>
           </a>
-          <a routerLinkActive="active" [routerLink]="['/user-profile']" class="dropdown-item">
-            <i class="ni ni-settings-gear-65"></i>
-            <span>Settings</span>
-          </a>
-          <a routerLinkActive="active" [routerLink]="['/user-profile']" class="dropdown-item">
+          <a routerLinkActive="active" [routerLink]="['/change-pass']" class="dropdown-item">
             <i class="ni ni-calendar-grid-58"></i>
-            <span>Activity</span>
+            <span>Đổi mật khẩu</span>
           </a>
-          <a routerLinkActive="active" [routerLink]="['/user-profile']" class="dropdown-item">
+          <a routerLinkActive="active" [routerLink]="['/support']" class="dropdown-item">
             <i class="ni ni-support-16"></i>
-            <span>Support</span>
+            <span>Liên hệ & Hỗ trợ</span>
           </a>
           <div class="dropdown-divider"></div>
-          <a href="#!" class="dropdown-item">
+          <a (click)="logout()" class="dropdown-item">
             <i class="ni ni-user-run"></i>
-            <span>Logout</span>
+            <span>Đăng xuất</span>
           </a>
         </div>
       </li>

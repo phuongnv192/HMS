@@ -37,24 +37,50 @@
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="ni ni-hat-3"></i></span>
                     </div>
-                    <input  class="form-control" #account id="account" 
-                    (keypress)="omit_special_char_email($event)"
-                    (blur)="changeHandler('account')" (focus)="focusAccount()"
-                    placeholder="name@email.com" type="text" aria-describedby="email-help" maxlength="50"
-                    [(ngModel)]="account_name">
+                    <input class="form-control" #account id="account" (keypress)="omit_special_char_email($event)"
+                      (blur)="changeHandler('account')" (focus)="focusAccount()" placeholder="name@email.com"
+                      type="text" aria-describedby="email-help" maxlength="50" [(ngModel)]="account_name">
                   </div>
-                  <div *ngIf="account_name" class="delete" (click)="clearEmail()">
+                  <!-- <div *ngIf="account_name" class="delete" (click)="clearEmail()">
                     <img style="float: right;" src="assets/img/close.svg" />
                   </div>
-                    <span *ngIf="password.value && !validatePassword(password.value)" class="error"> Mật khẩu tối thiểu tám ký tự, ít nhất một chữ cái, một số và một ký tự đặc biệt.</span>
-
+                    <span *ngIf="password.value && !validatePassword(password.value)" class="error"> Mật khẩu tối thiểu tám ký tự, ít nhất một chữ cái, một số và một ký tự đặc biệt.</span> -->
+                </div>
+                <div class="form-group" [ngClass]="{'focused':focus===true}">
+                  <div class="input-group input-group-alternative mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="fas fa-user"></i></span>
+                    </div>
+                    <input class="form-control" (keypress)="omit_special_char_email($event)"
+                      placeholder="Họ" [(ngModel)]="first_name">
+                  </div>
+                  <div class="input-group input-group-alternative mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="fas fa-user"></i></span>
+                    </div>
+                    <input class="form-control" (keypress)="omit_special_char_email($event)"
+                      placeholder="Tên" [(ngModel)]="last_name">
+                  </div>
+                </div>
+                <div class="form-group" [ngClass]="{'focused':focus1===true}">
+                  <label>Giới tính:</label>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" id="nam" name="gender" value="Nam"
+                      [(ngModel)]="gender">
+                    <label class="form-check-label" for="nam">Nam</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" id="nu" name="gender" value="Nữ" [(ngModel)]="gender">
+                    <label class="form-check-label" for="nu">Nữ</label>
+                  </div>
                 </div>
                 <div class="form-group" [ngClass]="{'focused':focus1===true}">
                   <div class="input-group input-group-alternative mb-3">
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="fas fa-phone"></i></span>
                     </div>
-                    <input class="form-control" placeholder="Phone Number" type="text" (focus)="focus=true" (blur)="focus1=false">
+                    <input class="form-control" placeholder="Phone Number" type="text" (focus)="focus=true"
+                      (blur)="focus1=false">
                   </div>
                 </div>
                 <div class="form-group" [ngClass]="{'focused':focus2===true}">
@@ -62,27 +88,27 @@
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="ni ni-email-83"></i></span>
                     </div>
-                    <input  class="form-control" #email id="email" 
-                    (keypress)="omit_special_char_email($event)"
-                    (blur)="changeHandler('email')" (focus)="focusEmail()"
-                    placeholder="name@email.com" type="text" aria-describedby="email-help" maxlength="50"
-                    [(ngModel)]="account_email">
+                    <input class="form-control" #email id="email" (keypress)="omit_special_char_email($event)"
+                      (blur)="changeHandler('email')" (focus)="focusEmail()" placeholder="name@email.com" type="text"
+                      aria-describedby="email-help" maxlength="50" [(ngModel)]="account_email">
                   </div>
-                  <div *ngIf="account_email" class="delete" (click)="clearEmail()">
-                    <img style="float: right;" src="assets/img/bnpl/Close.svg" />
-                  </div>
-                <span *ngIf="emailExist" class="error"> Email đã được đăng ký.</span>
+                  <!-- <div *ngIf="account_email" class="delete" (click)="clearEmail()">
+                    <img style="float: right;" src="assets/img/close.svg" />
+                  </div> -->
+                  <span *ngIf="emailExist" class="error"> Email đã được đăng ký.</span>
                 </div>
                 <div class="form-group" [ngClass]="{'focused':focus3===true}">
                   <div class="input-group input-group-alternative">
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
                     </div>
-                    <input class="form-control" placeholder="Password" type="password" [(ngModel)]="pwd" type="password" name="password" #password  id="password" (focus)="focus2=true" (blur)="focus3=false">
+                    <input class="form-control" placeholder="Password" type="password" [(ngModel)]="pwd" type="password"
+                      name="password" #password id="password" (focus)="focus2=true" (blur)="focus3=false">
                   </div>
                 </div>
-                <span *ngIf="password.value && !validatePassword(password.value)" class="error"> Mật khẩu tối thiểu tám ký tự, ít nhất một chữ cái, một số và một ký tự đặc biệt.</span>
-                <div class="text-muted font-italic">
+                <span *ngIf="password.value && !validatePassword(password.value)" class="error"> Mật khẩu tối thiểu tám
+                  ký tự, ít nhất một chữ cái, một số và một ký tự đặc biệt.</span>
+                <div class="text-muted font-italic" style="margin-top: -1rem; margin-bottom: 1rem;">
                   <small>password strength:
                     <span class="text-success font-weight-700">strong</span>
                   </small>
@@ -92,16 +118,19 @@
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
                     </div>
-                    <input class="form-control" placeholder="Password" type="password" [(ngModel)]="repwd" type="password" name="repassword" #repassword id="repassword"  (focus)="focus2=true" (blur)="focus4=false">
+                    <input class="form-control" placeholder="Password" type="password" [(ngModel)]="repwd"
+                      type="password" name="repassword" #repassword id="repassword" (focus)="focus2=true"
+                      (blur)="focus4=false">
                   </div>
                 </div>
                 <span *ngIf="reinput" class="error"> Mật khẩu nhập lại không khớp</span>
-                
+
                 <div class="row my-4">
                   <div class="col-12">
                     <div class="custom-control custom-control-alternative custom-checkbox">
                       <input class="custom-control-input" id="customCheckRegister" type="checkbox">
-                      <label class="custom-control-label" for="customCheckRegister" (change)="checkCheckBoxvalue($event)">
+                      <label class="custom-control-label" for="customCheckRegister"
+                        (change)="checkCheckBoxvalue($event)">
                         Tôi đồng ý với
                         <a href="javascript:void(0)" class="text-red-600">
                           Điều khoản </a>

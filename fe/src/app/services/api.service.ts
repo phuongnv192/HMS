@@ -37,8 +37,8 @@ export class ApiService {
     return this.http.get<any>(this.USER_INFOR, { headers });
   }
 
-  register(tel: string, password: string): Observable<any> {
-    return this.http.post<any>(this.REGISTER, { tel, password});
+  register(account_name: string, first:string, last:string, gender:string, tel: string, password: string): Observable<any> {
+    return this.http.post<any>(this.REGISTER, { account_name, first, last, gender, tel, password });
   }
 
 
