@@ -32,7 +32,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Table(name = "tb_user")
-@ToString(exclude = {"bookings"})
+//@ToString(exclude = {"bookings"})
 public class User implements UserDetails {
     @Id
     @GeneratedValue
