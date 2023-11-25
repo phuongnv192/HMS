@@ -1,5 +1,6 @@
 package com.module.project.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -27,6 +28,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Table(name = "tb_booking_schedule")
+@JsonIgnoreProperties({"bookingTransaction", "user"})
 public class BookingSchedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

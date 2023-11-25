@@ -16,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class BookingDetailResponse {
-  private Long bookingId;
+    private Long bookingId;
 
     private String hostName;
     private String hostPhone;

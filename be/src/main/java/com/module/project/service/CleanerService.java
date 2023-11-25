@@ -5,10 +5,11 @@ import com.module.project.dto.CleanerActivity;
 import com.module.project.dto.CleanerReviewInfo;
 import com.module.project.dto.Constant;
 import com.module.project.dto.ResponseCode;
-import com.module.project.dto.request.CleanerFilterRequest;
+import com.module.project.dto.TransactionStatus;
 import com.module.project.dto.request.CleanerInfoRequest;
 import com.module.project.dto.request.CleanerUpdateRequest;
 import com.module.project.dto.request.ScheduleConfirmRequest;
+import com.module.project.dto.response.BookingDetailResponse;
 import com.module.project.dto.response.CleanerDetailHistoryResponse;
 import com.module.project.dto.response.CleanerHistoryResponse;
 import com.module.project.dto.response.CleanerOverviewResponse;
@@ -53,10 +54,11 @@ public class CleanerService {
     private final ServiceRepository serviceRepository;
     private final BookingRepository bookingRepository;
     private final ScheduleService scheduleService;
+    private final BookingService bookingService;
 
-    public List<Cleaner> getCleaners(CleanerFilterRequest request) {
-        List<Cleaner> cleaners = cleanerRepository.findAll();
-        return cleaners;
+    public HmsResponse<List<Cleaner>> getCleaners(Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return HMSUtil.buildResponse(ResponseCode.SUCCESS, cleanerRepository.findAll(pageable).getContent());
     }
 
     // public HmsResponse<List<CleanerOverviewResponse>> getCleanerHistory(Integer page, Integer size) {
@@ -106,36 +108,33 @@ public class CleanerService {
                 .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "getCleanerDetailHistory: can't find any cleaner by id: ".concat(cleanerId.toString())));
         Map<Long, CleanerReviewInfo> reviewList = JsonService.strToObject(cleaner.getReview(), new TypeReference<>() {
         });
-        if (reviewList == null) {
-            return null;
-        }
         double sumRating = 0;
         int ratingNumber = 0;
         List<CleanerHistoryResponse> history = new ArrayList<>();
-        for (Long bookingId : reviewList.keySet()) {
-            Optional<Booking> bookingOptional = bookingRepository.findById(bookingId);
-            if (bookingOptional.isEmpty()) {
-                continue;
-            }
-            CleanerReviewInfo cleanerReviewInfo = reviewList.get(bookingId);
-            if (cleanerReviewInfo != null
-                    && cleanerReviewInfo.getCleanerActivities() != null
-                    && !cleanerReviewInfo.getCleanerActivities().isEmpty()) {
-                CleanerHistoryResponse item = CleanerHistoryResponse.builder()
-                        .name(bookingOptional.get().getHostName())
-                        .houseType(bookingOptional.get().getHouseType())
-                        .floorNumber(bookingOptional.get().getFloorNumber())
-                        .floorArea(bookingOptional.get().getFloorArea())
-                        .build();
-                ratingNumber += cleanerReviewInfo.getCleanerActivities().size();
-                for (CleanerActivity info : cleanerReviewInfo.getCleanerActivities()) {
-                    sumRating += info.getRatingScore();
-                    CleanerHistoryResponse clone = new CleanerHistoryResponse();
-                    BeanUtils.copyProperties(item, clone);
-                    clone.setReview(info.getReview());
-                    clone.setRatingScore(info.getRatingScore());
-                    clone.setWorkDate(HMSUtil.formatDate(info.getWorkDate(), HMSUtil.DDMMYYYY_FORMAT));
-                    history.add(clone);
+        if (reviewList != null) {
+            for (Long bookingId : reviewList.keySet()) {
+                Optional<Booking> bookingOptional = bookingRepository.findById(bookingId);
+                if (bookingOptional.isEmpty()) {
+                    continue;
+                }
+                CleanerReviewInfo cleanerReviewInfo = reviewList.get(bookingId);
+                if (cleanerReviewInfo != null
+                        && cleanerReviewInfo.getCleanerActivities() != null
+                        && !cleanerReviewInfo.getCleanerActivities().isEmpty()) {
+                    CleanerHistoryResponse item = CleanerHistoryResponse.builder()
+                            .name(bookingOptional.get().getHostName())
+                            .houseType(bookingOptional.get().getHouseType())
+                            .floorNumber(bookingOptional.get().getFloorNumber())
+                            .floorArea(bookingOptional.get().getFloorArea())
+                            .build();
+                    ratingNumber += cleanerReviewInfo.getCleanerActivities().size();
+                    for (CleanerActivity info : cleanerReviewInfo.getCleanerActivities()) {
+                        sumRating += info.getRatingScore();
+                        item.setReview(info.getReview());
+                        item.setRatingScore(info.getRatingScore());
+                        item.setWorkDate(HMSUtil.formatDate(info.getWorkDate(), HMSUtil.DDMMYYYY_FORMAT));
+                        history.add(item);
+                    }
                 }
             }
         }
@@ -209,46 +208,18 @@ public class CleanerService {
         return HMSUtil.buildResponse(ResponseCode.SUCCESS, null);
     }
 
-    public HmsResponse<List<CleanerOverviewResponse>> getListCleanerAvailable(LocalDate workDate, Long serviceTypeId, Long servicePackageId) {
-        List<Cleaner> cleaners = scheduleService.getListCleanerAvailable(workDate, serviceTypeId, servicePackageId);
-        List<CleanerOverviewResponse> response = new ArrayList<>();
-        for (Cleaner cleaner : cleaners) {
-            Map<Long, CleanerReviewInfo> reviewList = JsonService.strToObject(cleaner.getReview(), new TypeReference<>() {
-            });
-            CleanerOverviewResponse history = CleanerOverviewResponse.builder()
-                    .cleanerId(cleaner.getId())
-                    .name(HMSUtil.convertToFullName(cleaner.getUser().getFirstName(), cleaner.getUser().getLastName()))
-                    .idCard(cleaner.getIdCard())
-                    .email(cleaner.getUser().getEmail())
-                    .phoneNumber(cleaner.getUser().getPhoneNumber())
-                    .status(cleaner.getStatus())
-                    .branch(cleaner.getBranch())
-                    .activityYear(HMSUtil.calculateActivityYear(cleaner.getCreateDate(), new Date()))
-                    .averageRating(0L)
-                    .ratingNumber(0)
-                    .build();
-            if (reviewList != null) {
-                double sumRating = 0;
-                int ratingNumber = 0;
-
-                for (Long bookingId : reviewList.keySet()) {
-                    Optional<Booking> bookingOptional = bookingRepository.findById(bookingId);
-                    if (bookingOptional.isEmpty()) {
-                        continue;
-                    }
-                    CleanerReviewInfo cleanerReviewInfo = reviewList.get(bookingId);
-                    if (cleanerReviewInfo != null
-                            && cleanerReviewInfo.getCleanerActivities() != null
-                            && !cleanerReviewInfo.getCleanerActivities().isEmpty()) {
-                        sumRating += cleanerReviewInfo.getCleanerActivities().stream().mapToDouble(CleanerActivity::getRatingScore).sum();
-                        ratingNumber += cleanerReviewInfo.getCleanerActivities().size();
-                    }
-                }
-                history.setAverageRating(ratingNumber != 0 ? Math.round(sumRating / ratingNumber) : ratingNumber);
-                history.setRatingNumber(ratingNumber);
+    public HmsResponse<List<BookingDetailResponse>> getCleanerSchedule(Long cleanerId, Integer page, Integer size,
+                                                                       String userId, String roleName) {
+        Cleaner cleaner = cleanerRepository.findById(cleanerId)
+                .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "can't find any cleaner by id ".concat(cleanerId.toString())));
+        Pageable pageable = PageRequest.of(page, size);
+        List<Booking> bookingList = bookingRepository.findAllByCleanersIn(Set.of(cleaner), pageable).getContent();
+        List<BookingDetailResponse> responses = new ArrayList<>();
+        for (Booking booking : bookingList) {
+            if (!TransactionStatus.DONE.name().equals(booking.getStatus())) {
+                responses.add(bookingService.getBookingDetail(booking.getId(), userId, roleName, false));
             }
-            response.add(history);
         }
-        return HMSUtil.buildResponse(ResponseCode.SUCCESS, response);
+        return HMSUtil.buildResponse(ResponseCode.SUCCESS, responses);
     }
 }

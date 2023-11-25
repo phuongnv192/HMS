@@ -1,5 +1,6 @@
 package com.module.project.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -45,6 +46,7 @@ public class User implements UserDetails {
     private String gender;
     private String email;
     private String phoneNumber;
+    @JsonIgnore
     private String password;
     private String status;
     @CreationTimestamp

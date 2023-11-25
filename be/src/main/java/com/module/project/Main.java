@@ -130,67 +130,67 @@ public class Main implements CommandLineRunner {
                     .build();
             userRepository.saveAll(Arrays.asList(user1, user2, user3, user4));
 
-            String review = "{\n" +
-                    "    \"1\": {\n" +
-                    "        \"cleanerActivities\": [\n" +
-                    "            {\n" +
-                    "                \"bookingScheduleId\": 1,\n" +
-                    "                \"workDate\": 1699882588882,\n" +
-                    "                \"ratingScore\": 5,\n" +
-                    "                \"review\": \"good\"\n" +
-                    "            },\n" +
-                    "            {\n" +
-                    "                \"bookingScheduleId\": 1,\n" +
-                    "                \"workDate\": 1699882588882,\n" +
-                    "                \"ratingScore\": 5,\n" +
-                    "                \"review\": \"good\"\n" +
-                    "            }\n" +
-                    "        ]\n" +
-                    "    },\n" +
-                    "    \"2\": {\n" +
-                    "        \"cleanerActivities\": [\n" +
-                    "            {\n" +
-                    "                \"bookingScheduleId\": 1,\n" +
-                    "                \"workDate\": 1699882588882,\n" +
-                    "                \"ratingScore\": 5,\n" +
-                    "                \"review\": \"good\"\n" +
-                    "            },\n" +
-                    "            {\n" +
-                    "                \"bookingScheduleId\": 1,\n" +
-                    "                \"workDate\": 1699882588882,\n" +
-                    "                \"ratingScore\": 5,\n" +
-                    "                \"review\": \"good\"\n" +
-                    "            }\n" +
-                    "        ]\n" +
-                    "    }\n" +
-                    "}";
+//            String review = "{\n" +
+//                    "    \"1\": {\n" +
+//                    "        \"cleanerActivities\": [\n" +
+//                    "            {\n" +
+//                    "                \"bookingScheduleId\": 1,\n" +
+//                    "                \"workDate\": 1699882588882,\n" +
+//                    "                \"ratingScore\": 5,\n" +
+//                    "                \"review\": \"good\"\n" +
+//                    "            },\n" +
+//                    "            {\n" +
+//                    "                \"bookingScheduleId\": 1,\n" +
+//                    "                \"workDate\": 1699882588882,\n" +
+//                    "                \"ratingScore\": 5,\n" +
+//                    "                \"review\": \"good\"\n" +
+//                    "            }\n" +
+//                    "        ]\n" +
+//                    "    },\n" +
+//                    "    \"2\": {\n" +
+//                    "        \"cleanerActivities\": [\n" +
+//                    "            {\n" +
+//                    "                \"bookingScheduleId\": 1,\n" +
+//                    "                \"workDate\": 1699882588882,\n" +
+//                    "                \"ratingScore\": 5,\n" +
+//                    "                \"review\": \"good\"\n" +
+//                    "            },\n" +
+//                    "            {\n" +
+//                    "                \"bookingScheduleId\": 1,\n" +
+//                    "                \"workDate\": 1699882588882,\n" +
+//                    "                \"ratingScore\": 5,\n" +
+//                    "                \"review\": \"good\"\n" +
+//                    "            }\n" +
+//                    "        ]\n" +
+//                    "    }\n" +
+//                    "}";
             Cleaner cleaner1 = Cleaner.builder()
                     .user(user1)
                     .branch(branch)
                     .status(Constant.COMMON_STATUS.ACTIVE)
                     .idCard("1")
-                    .review(review)
+//                    .review(review)
                     .build();
             Cleaner cleaner2 = Cleaner.builder()
                     .user(user2)
                     .branch(branch)
                     .status(Constant.COMMON_STATUS.ACTIVE)
                     .idCard("2")
-                    .review(review)
+//                    .review(review)
                     .build();
             Cleaner cleaner3 = Cleaner.builder()
                     .user(user3)
                     .branch(branch)
                     .status(Constant.COMMON_STATUS.ACTIVE)
                     .idCard("2")
-                    .review(review)
+//                    .review(review)
                     .build();
             Cleaner cleaner4 = Cleaner.builder()
                     .user(user4)
                     .branch(branch)
                     .status(Constant.COMMON_STATUS.ACTIVE)
                     .idCard("2")
-                    .review(review)
+//                    .review(review)
                     .build();
             cleanerRepository.saveAll(Arrays.asList(cleaner1, cleaner2, cleaner3, cleaner4));
 

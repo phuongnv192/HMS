@@ -1,5 +1,6 @@
 package com.module.project.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -30,6 +31,7 @@ import java.util.Set;
 @Table(name = "tb_cleaner")
 @ToString(exclude = {"user", "services"})
 @EqualsAndHashCode(exclude= {"user", "services"})
+@JsonIgnoreProperties({"services", "user"})
 public class Cleaner {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

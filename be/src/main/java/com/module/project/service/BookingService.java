@@ -15,21 +15,24 @@ import com.module.project.exception.HmsResponse;
 import com.module.project.model.Booking;
 import com.module.project.model.BookingSchedule;
 import com.module.project.model.BookingTransaction;
+import com.module.project.model.Cleaner;
 import com.module.project.model.ServicePackage;
 import com.module.project.model.ServiceType;
 import com.module.project.model.User;
 import com.module.project.repository.BookingRepository;
 import com.module.project.repository.BookingScheduleRepository;
+import com.module.project.repository.BookingTransactionRepository;
 import com.module.project.repository.UserRepository;
 import com.module.project.util.HMSUtil;
 import com.module.project.util.JsonService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +42,7 @@ public class BookingService {
     private final UserRepository userRepository;
     private final ScheduleService scheduleService;
     private final BookingScheduleRepository bookingScheduleRepository;
+    private final BookingTransactionRepository bookingTransactionRepository;
 
     public HmsResponse<Booking> booking(BookingRequest request) {
         User customer = userRepository.findById(request.getCustomerId())
@@ -122,16 +126,10 @@ public class BookingService {
     }
 
     public HmsResponse<Object> updateBooking(BookingRequest request, String userId) {
-        Booking booking = bookingRepository.findById(request.getBookingId())
-                .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "relevant booking is not existed on system"));
-        if (!userId.equals(booking.getUser().getId().toString())) {
-            throw new HmsException(HmsErrorCode.INVALID_REQUEST, "user dont have permission to execute");
-        }
-
         return HMSUtil.buildResponse(ResponseCode.SUCCESS, null);
     }
 
-     public BookingDetailResponse getBookingDetail(Long bookingId, String userId, String roleName, boolean isShowSchedule) {
+    public BookingDetailResponse getBookingDetail(Long bookingId, String userId, String roleName, boolean isShowSchedule) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "relevant booking is not existed on system"));
         List<String> acceptRole = Arrays.asList(RoleEnum.MANAGER.name(), RoleEnum.LEADER.name());
@@ -151,7 +149,7 @@ public class BookingService {
         if (isShowSchedule) {
             scheduleList = bookingScheduleRepository.findAllByBookingTransaction(bookingTransaction);
         }
-         return BookingDetailResponse.builder()
+        return BookingDetailResponse.builder()
                 .bookingId(bookingId)
                 .hostName(booking.getHostName())
                 .hostPhone(booking.getHostPhone())
@@ -169,21 +167,17 @@ public class BookingService {
                 .createDate(booking.getCreateDate())
                 .updateDate(booking.getUpdateDate())
                 .status(bookingTransaction.getStatus())
-                .review(booking.getReview())
-                .rejectedReason(booking.getRejectedReason())
                 .scheduleList(scheduleList)
                 .build();
     }
 
-    public Map<String, Object> updateBooking(Map<String, Object> request) throws Exception {
-        return null;
-    }
-
-    public Map<String, Object> getBookingDetail(Map<String, Object> request) throws Exception {
-        return null;
-    }
-
-    public List<Map<String, Object>> getBookingList(Map<String, Object> request) throws Exception {
-        return null;
+    public HmsResponse<Object> getBookingList(Integer page, Integer size, String roleName) {
+        List<String> acceptRole = Arrays.asList(RoleEnum.MANAGER.name(), RoleEnum.LEADER.name());
+        if (!acceptRole.contains(roleName)) {
+            throw new HmsException(HmsErrorCode.INVALID_REQUEST, "privileges access denied");
+        }
+        Pageable pageable = PageRequest.of(page, size);
+        List<Booking> bookingList = bookingRepository.findAll(pageable).getContent();
+        return HMSUtil.buildResponse(ResponseCode.SUCCESS, bookingList);
     }
 }

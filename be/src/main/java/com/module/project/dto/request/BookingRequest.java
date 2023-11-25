@@ -14,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookingRequest {
+    private Long bookingId;
     private String hostName;
     private String hostPhone;
     private String hostAddress;
