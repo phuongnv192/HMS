@@ -37,9 +37,9 @@ export class SignupComponent implements OnInit {
   accountBlur: boolean;
   emailBlur: boolean;
   emailExist = false;
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   verifyPassword(): boolean {
     const password = this.pwd;
@@ -48,29 +48,31 @@ export class SignupComponent implements OnInit {
   }
 
   signUp() {
-    const tel = this.tel;
-    const account_name = this.account_name;
-    const email = this.account_email;
-    const password = this.pwd;
-    const fist = this.first_name;
-    const last = this.last_name;
-    const gender = this.gender;
-    if (!this.verifyPassword()) {
-      this.reinput = true;
+    this.reinput = !this.verifyPassword();
+    //check validate password and repassword
+    if (this.pwd && this.validatePassword(this.pwd) && this.isChecked && !this.reinput) {      
+      var reqBody = {
+        username: this.account_name,
+        first_name: this.first_name,
+        last_name: this.last_name,
+        email: this.account_email,
+        password: this.pwd,
+        phone_number: this.tel,
+        gender: this.gender,
+        role: "CUSTOMER",
+      };
+      console.log(123123123);
+      
+      this.authService.register(reqBody).subscribe({
+        next: () => {
+          // Đăng ký thành công
+          this.isRegistered = true;
+          // Chuyển hướng sang trang Home và truyền thông báo thành công
+          this.router.navigate(["/login"], { queryParams: { success: true } });
+        },
+        error: () => { },
+      });
     }
-    // this.authService.register(account_name, first, last, gender, gender, tel, password).subscribe(
-    //   (response) => {
-    //     // Đăng ký thành công
-    //     this.isRegistered = true;
-    //     // Chuyển hướng sang trang Home và truyền thông báo thành công
-    //     this.router.navigate(["/home"], { queryParams: { success: true } });
-    //   },
-    //   (error) => {
-    //     // Đăng ký thất bại
-    //     this.errorMessage = error.message;
-    //     // Hiển thị thông báo lỗi
-    //   }
-    // );
   }
 
   omit_special_char_email(event) {
