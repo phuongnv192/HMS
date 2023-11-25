@@ -6,7 +6,7 @@
 </div>
 <div *ngIf="true">
     <app-sidebar></app-sidebar>
-    <div class="main-content">
+    <div [ngClass]="{'main-content':adminNavbar===true}">
         <!-- Top navbar -->
         <app-navbar></app-navbar>
         <!-- Pages -->
@@ -14,6 +14,5 @@
         <!-- <div class="container-fluid">
             <app-footer></app-footer>
         </div>  -->
-    </div>
-    
+    </div> 
 </div>

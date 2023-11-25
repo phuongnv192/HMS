@@ -3,30 +3,15 @@
     <div class="header-body">
       <!-- Card stats -->
       <div class="row">
-        <div class="col-xl-9 col-lg-6">
+        <div class="col-xl-6 col-lg-6">
           <div class="card card-stats mb-4 mb-xl-0">
             <div class="card-body">
               <div class="row">
                 <div class="col search-emp">
                   <div class="search-name">
-                    <h5 class="card-title text-uppercase text-muted mb-0 font14">Tên đơn dịch vụ</h5>
+                    <h5 class="card-title text-uppercase text-muted mb-0 font14">Mã đơn dịch vụ</h5>
                     <input #serviceName id="serviceName" placeholder="Booking #1" [(ngModel)]="name" type="text"
                       aria-describedby="serviceName-help" maxlength="50">
-                  </div>
-
-                  <div class="search-rate">
-                    <h5 class="card-title text-uppercase text-muted mb-0 font14">Đánh giá</h5>
-                    <select [(ngModel)]="searchRate" id="rate" aria-describedby="rate-help" title="đánh giá">
-                      <option *ngFor="let rate of rateRange" [value]="rate">{{ rate }}</option>
-                    </select>
-                  </div>
-
-                  <div class="search-rate">
-                    <h5 class="card-title text-uppercase text-muted mb-0 font14">Loại nhà</h5>
-                    <select [(ngModel)]="searchHouseType" id="houseType" aria-describedby="houseType-help"
-                      title="Loại nhà">
-                      <option *ngFor="let type of houseType" [value]="type">{{ type }}</option>
-                    </select>
                   </div>
 
                   <div class="search-date">
@@ -58,14 +43,14 @@
     <div class="col">
       <div class="card shadow">
         <div class="card-header border-0">
-          <h3 class="mb-0 font20">Danh sách nhân viên dọn dẹp</h3>
+          <h3 class="mb-0 font20">Danh sách đơn dịch vụ:</h3>
         </div>
         <div class="table-responsive">
           <div class="showtime-options">
             <carousel height="87px" cellsToShow="7" *ngIf="dateList && dateList.length >= 7">
-                <div [ngClass]="{'selected':selectedDate===getYearDateMonth(showtime.data[0].Session_dtmDate_Time)}"
+                <div [ngClass]="{'selected':selectedDate===showtime}"
                     class="carousel-cell" *ngFor="let showtime of dateList"
-                    (click)="getHourList(getYearDateMonth(showtime.data[0].Session_dtmDate_Time))">
+                    (click)="viewDetail(showtime)">
                     <div class="left">{{getDay(showtime.data[0].Session_dtmDate_Time)}}</div>
                     <div class="right"><span>/{{getMonth(showtime.data[0].Session_dtmDate_Time)}}
                         </span><span>{{getDateMonth(showtime.data[0].Session_dtmDate_Time)}}</span>
@@ -73,12 +58,12 @@
                 </div>
             </carousel>
             <div class="select-date-container" height="87px" cellsToShow="7" *ngIf="dateList && dateList.length < 7">
-                <div [ngClass]="{'selected':selectedDate===getYearDateMonth(showtime.data[0].Session_dtmDate_Time)}"
+                <div [ngClass]="{'selected':selectedDate===showtime}"
                     class="datetimeBtn" *ngFor="let showtime of dateList"
-                    (click)="getHourList(getYearDateMonth(showtime.data[0].Session_dtmDate_Time))">
-                    <div class="left">{{getDay(showtime.data[0].Session_dtmDate_Time)}}</div>
-                    <div class="right"><span>/{{getMonth(showtime.data[0].Session_dtmDate_Time)}}
-                        </span><span>{{getDateMonth(showtime.data[0].Session_dtmDate_Time)}}</span>
+                    (click)="viewDetail(showtime)">
+                    <div class="left">{{getDay(showtime)}}</div>
+                    <div class="right"><span>/{{getMonth(showtime)}}
+                        </span><span>{{getDateMonth(showtime)}}</span>
                     </div>
                 </div>
             </div>
@@ -86,7 +71,7 @@
         </div>
 
         </div>
-        <div class="card-footer py-4">
+        <!-- <div class="card-footer py-4">
           <nav aria-label="...">
             <ul class="pagination justify-content-end mb-0">
               <li class="page-item disabled">
@@ -110,7 +95,7 @@
               </li>
             </ul>
           </nav>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>

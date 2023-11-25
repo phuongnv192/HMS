@@ -26,13 +26,16 @@ export class SidebarComponent implements OnInit {
 
   public menuItems: any[];
   public isCollapsed = true;
+  adminNavbar = false;
 
   constructor(private router: Router, private route: ActivatedRoute, private authService: AuthService) {
     this.menuItems = this.setActiveClass(ROUTES);
   }
 
   ngOnInit() {
-
+    if(this.authService.getJwtToken()){
+      this.adminNavbar = true;
+    }
     this.route.url.subscribe(segments => {
       const currentUrl = segments.join('/');
       this.menuItems = this.setActiveClass(ROUTES, currentUrl);

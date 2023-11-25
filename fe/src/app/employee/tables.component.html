@@ -3,7 +3,7 @@
     <div class="header-body">
       <!-- Card stats -->
       <div class="row">
-        <div class="col-xl-9 col-lg-6">
+        <div class="col-xl-6 col-lg-6">
           <div class="card card-stats mb-4 mb-xl-0">
             <div class="card-body">
               <div class="row">
@@ -13,12 +13,12 @@
                     <input #emp_name id="emp_name" placeholder="Nguyen Van A" [(ngModel)]="empName" type="text"
                       aria-describedby="emp_name-help" maxlength="50">
                   </div>
-                  <div class="search-age">
+                  <!-- <div class="search-age">
                     <h5 class="card-title text-uppercase text-muted mb-0 font14">Tuổi</h5>
                     <select [(ngModel)]="searchAge" id="houseType" aria-describedby="houseType-help" title="tuổi">
                       <option *ngFor="let age of ageRange" [value]="age">{{ age }}</option>
                     </select>
-                  </div>
+                  </div> -->
                   <div class="search-status">
                     <h5 class="card-title text-uppercase text-muted mb-0 font14">Trạng thái</h5>
                     <select [(ngModel)]="searchStatus" id="houseType" aria-describedby="houseType-help"
@@ -44,7 +44,7 @@
             </div>
           </div>
         </div>
-        <div class="col-xl-3 col-lg-6">
+        <!-- <div class="col-xl-3 col-lg-6">
           <div class="card card-stats mb-4 mb-xl-0">
             <div class="card-body">
               <div class="row">
@@ -59,7 +59,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>

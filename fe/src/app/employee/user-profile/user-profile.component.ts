@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+// import { ApiService } from 'src/app/services/api.service';
+// import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-user-profile',
@@ -23,11 +25,17 @@ export class UserProfileComponent implements OnInit {
   email: any;
   history: any;
   review: any;
+  jwtToken: any;
 
+  // private authService: AuthService, private apiService: ApiService
   constructor() { }
 
   ngOnInit() {
-    // this.id = 
+    // this.jwtToken = this.authService.getJwtToken();
+    // console.log("this.jwtToken", this.jwtToken);
+    // this.apiService.getUsers().subscribe( data => {
+    //   this.data = data;
+    // })
     this.data = {
       "ratingOverview": {
         "cleanerId": 1,
@@ -107,21 +115,18 @@ export class UserProfileComponent implements OnInit {
     //   }
     // ]
     this.averageRating = this.data.ratingOverview.averageRating;
-    console.log("averageRating", this.averageRating);
     this.name = this.data.ratingOverview.name;
     this.email = this.data.ratingOverview.email;
     this.phoneNumber = this.data.ratingOverview.phoneNumber;
     this.address = this.data.ratingOverview.address ? this.data.ratingOverview.address : null;
-    console.log("address", this.address);
     this.idCard = this.data.ratingOverview.idCard;
-    this.dob = this.data.ratingOverview.dob;
+    // this.dob = this.data.ratingOverview.dob;
     this.status = this.data.ratingOverview.status;
     this.branch = this.data.ratingOverview.branch.branchName;
     this.activityYear = this.data.ratingOverview.activityYear;
     this.ratingNumber = this.data.ratingOverview.ratingNumber;
     this.review = this.data.history[0].review;
-    console.log("review", this.review);
-    this.history = this.data.history
+    this.history = this.data.history;
 
   }
 

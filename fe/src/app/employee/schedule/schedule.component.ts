@@ -19,6 +19,7 @@ export class ScheduleComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+    this.dateList = ["11/20/2023", "11/27/2023", "12/04/2023", "12/11/2023"]
     this.data = {
       "ratingOverview": {
         "cleanerId": 1,

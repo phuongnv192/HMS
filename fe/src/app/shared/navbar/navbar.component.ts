@@ -15,16 +15,30 @@ export class NavbarComponent implements OnInit {
   private lastPoppedUrl: string;
   private yScrollStack: number[] = [];
   listTitles: any[];
+<<<<<<< HEAD
+=======
+  adminNavbar = false;
+>>>>>>> d15a1657bfc7f05681c843344bc133d35448396b
 
   constructor(
     public location: Location,
     private router: Router,
     private authService: AuthService
   ) {}
+<<<<<<< HEAD
 
   ngOnInit() {
     this.listTitles = ROUTES.filter((listTitle) => listTitle);
 
+=======
+
+  ngOnInit() {
+    if(this.authService.getJwtToken()){
+      this.adminNavbar = true;
+    }
+    this.listTitles = ROUTES.filter((listTitle) => listTitle);
+
+>>>>>>> d15a1657bfc7f05681c843344bc133d35448396b
     this.router.events.subscribe((event) => {
       this.isCollapsed = true;
       if (event instanceof NavigationStart) {

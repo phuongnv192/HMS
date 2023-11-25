@@ -14,7 +14,7 @@ export class ApiService {
   // // private IMPORT_PROFILE = this.baseUrl + "api/v1/files/import-file";
   // private SEND_OTP = this.baseUrl + "api/v1/otp/send-otp";
   // private VERIFY_OTP = this.baseUrl + "api/v1/otp/verify-otp";
-  private USER_INFOR = this.baseUrl + "user/me";
+  private USER_INFOR = this.baseUrl + "user/infor";
   private LOGIN = this.baseUrl + "user/signin";
   private REGISTER = this.baseUrl + "/user/signup";
   // // THIẾU 1 số api liên quan đến quyền / phân quyền và admin do chưa design
