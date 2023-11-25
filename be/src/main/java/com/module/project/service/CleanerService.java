@@ -217,7 +217,7 @@ public class CleanerService {
         List<BookingDetailResponse> responses = new ArrayList<>();
         for (Booking booking : bookingList) {
             if (!TransactionStatus.DONE.name().equals(booking.getStatus())) {
-                responses.add(bookingService.getBookingDetail(booking.getId(), userId, roleName, false));
+                responses.add(bookingService.getBookingDetail(booking.getId(), userId, roleName, true));
             }
         }
         return HMSUtil.buildResponse(ResponseCode.SUCCESS, responses);
