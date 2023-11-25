@@ -8,7 +8,8 @@ import { environment } from "src/environments/environment";
 export class AuthService {
   private baseUrl = environment.apiUrl + "/auth";
   private jwtToken: string;
-  private REGISTER = this.baseUrl + "/signup";
+  private REGISTER = this.baseUrl + "/register";
+  private LOGOUT = this.baseUrl + "/logout";
 
   constructor(private http: HttpClient) {}
 
@@ -26,14 +27,16 @@ export class AuthService {
       );
   }
 
-  register(tel: string, password: string): Observable<any> {
-    return this.http.post<any>(this.REGISTER, { tel, password });
+  register(req: any): Observable<any> {
+    return this.http.post<any>(this.REGISTER, req);
   }
 
   signout() {
     // Xóa jwt token khỏi sessionStorage
+    var a = this.http.post<any>(this.LOGOUT, {});
     sessionStorage.removeItem("jwtToken");
     this.jwtToken = null;
+    return a;
   }
 
   isAuthenticated(): boolean {
