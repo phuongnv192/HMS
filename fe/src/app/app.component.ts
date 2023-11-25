@@ -54,7 +54,7 @@ export class AppComponent implements OnInit {
         lastScrollTop = st;
     };
     ngOnInit() {
-        if(this.authService.getJwtToken()){
+        if (this.authService.getJwtToken()) {
             this.adminNavbar = true;
         }
         var navbar: HTMLElement = this.element.nativeElement.children[0].children[0];

@@ -1,4 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Renderer2 } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { ApiService } from 'src/app/services/api.service';
+import { AuthService } from 'src/app/services/auth.service';
+import { DialogService } from 'src/app/services/dialog.service';
+import { BookingDetailDialog } from './booking-detail-dialog/booking-detail-dialog';
+
+export interface BookingDetailNoteData {
+  id: any;
+  data: any;
+  dateList: any;
+  day: any;
+}
 
 @Component({
   selector: 'app-schedule',
@@ -16,10 +28,69 @@ export class ScheduleComponent implements OnInit {
   searchRate: any;
   searchHouseType: string;
   dateList: any;
-  constructor() { }
+  dateSchedule: any[];
+
+  constructor(
+    public dialog: MatDialog, private renderer: Renderer2,
+    public dialogRef: MatDialogRef<BookingDetailDialog>
+  ) { }
 
   ngOnInit() {
-    this.dateList = ["11/20/2023", "11/27/2023", "12/04/2023", "12/11/2023"]
+    this.dateSchedule = [
+      {
+        id: 's1',
+        name: 'Đơn dịch vụ #1',
+        workDate: ["11/20/2023", "11/27/2023", "12/04/2023", "12/11/2023"],
+        startTime: '8:30 AM',
+        endTime: '10:30 AM',
+        duration: '2',
+        serviceAddOnIds: []
+      },
+      {
+        id: 's2',
+        name: 'Đơn dịch vụ #2',
+        workDate: ["11/20/2023", "11/27/2023", "12/04/2023", "12/11/2023"],
+        startTime: '8:30 AM',
+        endTime: '10:30 AM',
+        duration: '2',
+        serviceAddOnIds: []
+      },
+      {
+        id: 's3',
+        name: 'Đơn dịch vụ #3',
+        workDate: ["11/20/2023", "11/21/2023", "11/22/2023", "11/23/2023", "11/24/2023", "11/25/2023", "11/26/2023", "11/27/2023", "11/28/2023"],
+        startTime: '8:30 AM',
+        endTime: '10:30 AM',
+        duration: '2',
+        serviceAddOnIds: []
+      }
+    ]
+    this.dateList = [
+      {
+        id: 'd1',
+        workDate: "12/20/2023",
+        name: 'Đơn dịch vụ ngày #1',
+        startTime: "08:00 AM",
+        endTime: "11:00 AM",
+        duration: 3
+      },
+      {
+        id: 'd2',
+        workDate: "12/21/2023",
+        name: 'Đơn dịch vụ ngày #2',
+        startTime: "09:00 AM",
+        endTime: "10:00 AM",
+        duration: 1
+      },
+      {
+        id: 'd1',
+        workDate: "12/22/2023",
+        name: 'Đơn dịch vụ ngày #3',
+        startTime: "03:00 PM",
+        endTime: "05:00 AM",
+        duration: 3
+      },
+    ]
     this.data = {
       "ratingOverview": {
         "cleanerId": 1,
@@ -55,12 +126,6 @@ export class ScheduleComponent implements OnInit {
       ]
     }
     this.schedule = this.data.history;
-    console.log("this.schedule", this.schedule);
-    this.searchRate = '4 - 5';
-    this.searchHouseType = 'APARTMENT';
-    this.houseType = ['APARTMENT', 'NORMAL', 'Villa'];
-    this.rateRange = ['0 - 1', '1 - 2', '2 - 3', '3 - 4', '4 - 5'];
-    this.date = '19/11/2023';
   }
 
   search() {
@@ -96,5 +161,32 @@ export class ScheduleComponent implements OnInit {
     return (today.getMonth() + 1) + '/' + today.getDate() + '/' + today.getFullYear();
   }
 
+  viewDetailinSchedule(id: any, showtime: string) {
+    // this.dialogService.sendDataDialog(true);
+    console.log('document.body:', document.body); // Kiểm tra xem document.body có tồn tại hay không
+    // if (this.dialogRef) {
+    this.renderer.addClass(document.body, 'modal-open');
+    this.dialogRef = this.dialog.open(BookingDetailDialog, {
+      width: '600px',
+      maxHeight: '80%',
+      data: {
+        id: id,
+        detail: this.data,
+        dateList: this.dateList,
+        day: showtime
+      },
+      panelClass: ['view-detail']
+    });
+    console.log('this.dialogRef', this.dialogRef);
+
+    this.dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        console.log('The dialog was closed');
+        this.renderer.removeClass(document.body, 'modal-open');
+        // this.dialogService.sendDataDialog(false);
+      }
+    });
+    // }
+  }
 
 }

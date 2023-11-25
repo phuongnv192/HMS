@@ -21,6 +21,7 @@ import { UserProfileComponent } from './employee/user-profile/user-profile.compo
 import { DashboardComponent } from './employee/dashboard/dashboard.component';
 import { HistoryComponent } from './employee/history/history.component';
 import { ScheduleComponent } from './employee/schedule/schedule.component';
+import { BookingDetailDialog } from './employee/schedule/booking-detail-dialog/booking-detail-dialog';
 
 import { HomeModule } from "./home/home.module";
 import { LoginComponent } from "./auth/login/login.component";
@@ -30,7 +31,7 @@ import { TablesComponent } from "./employee/tables.component";
 import { AuthService } from "./services/auth.service";
 import { HttpClientModule } from "@angular/common/http";
 import { IvyCarouselModule } from "angular-responsive-carousel";
-import {MatDialogModule} from '@angular/material/dialog';
+import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 
 
 @NgModule({
@@ -55,6 +56,7 @@ import {MatDialogModule} from '@angular/material/dialog';
     SignupComponent,
     HistoryComponent,
     ScheduleComponent,
+    BookingDetailDialog
   ],
   imports: [
     BrowserModule,
@@ -67,7 +69,7 @@ import {MatDialogModule} from '@angular/material/dialog';
     IvyCarouselModule,
     MatDialogModule
   ],
-  providers: [AuthService],
+  providers: [AuthService, { provide: MatDialogRef, useValue: {} }],
   bootstrap: [AppComponent],
   exports: [],
 })
