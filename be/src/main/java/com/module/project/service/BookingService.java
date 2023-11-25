@@ -8,12 +8,15 @@ import com.module.project.dto.ResponseCode;
 import com.module.project.dto.RoleEnum;
 import com.module.project.dto.request.BookingRequest;
 import com.module.project.dto.request.BookingStatusRequest;
+import com.module.project.dto.response.BookingDetailResponse;
 import com.module.project.exception.HmsErrorCode;
 import com.module.project.exception.HmsException;
 import com.module.project.exception.HmsResponse;
 import com.module.project.model.Booking;
 import com.module.project.model.BookingSchedule;
 import com.module.project.model.BookingTransaction;
+import com.module.project.model.ServicePackage;
+import com.module.project.model.ServiceType;
 import com.module.project.model.User;
 import com.module.project.repository.BookingRepository;
 import com.module.project.repository.BookingScheduleRepository;
@@ -116,6 +119,60 @@ public class BookingService {
         } else {
             scheduleService.processBookingPeriod(booking, request, bookingTransaction, userId);
         }
+    }
+
+    public HmsResponse<Object> updateBooking(BookingRequest request, String userId) {
+        Booking booking = bookingRepository.findById(request.getBookingId())
+                .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "relevant booking is not existed on system"));
+        if (!userId.equals(booking.getUser().getId().toString())) {
+            throw new HmsException(HmsErrorCode.INVALID_REQUEST, "user dont have permission to execute");
+        }
+
+        return HMSUtil.buildResponse(ResponseCode.SUCCESS, null);
+    }
+
+     public BookingDetailResponse getBookingDetail(Long bookingId, String userId, String roleName, boolean isShowSchedule) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "relevant booking is not existed on system"));
+        List<String> acceptRole = Arrays.asList(RoleEnum.MANAGER.name(), RoleEnum.LEADER.name());
+        List<Long> cleanersId = booking.getCleaners().stream().map(Cleaner::getId).toList();
+        if (!acceptRole.contains(roleName)) {
+            if (booking.getUser().getId().toString().equals(userId) || cleanersId.contains(Long.parseLong(userId))) {
+                // do nothing
+            } else {
+                throw new HmsException(HmsErrorCode.INVALID_REQUEST, "user dont have permission to execute");
+            }
+        }
+        BookingTransaction bookingTransaction = bookingTransactionRepository.findByBooking(booking)
+                .orElseThrow(() -> new HmsException(HmsErrorCode.INTERNAL_SERVER_ERROR, "relevant transaction is not existed on system"));
+        ServicePackage servicePackage = bookingTransaction.getServicePackage();
+        ServiceType serviceType = servicePackage.getServiceType();
+        List<BookingSchedule> scheduleList = null;
+        if (isShowSchedule) {
+            scheduleList = bookingScheduleRepository.findAllByBookingTransaction(bookingTransaction);
+        }
+         return BookingDetailResponse.builder()
+                .bookingId(bookingId)
+                .hostName(booking.getHostName())
+                .hostPhone(booking.getHostPhone())
+                .hostAddress(booking.getHostAddress())
+                .hostDistance(booking.getHostDistance())
+                .houseType(booking.getHouseType())
+                .floorNumber(booking.getFloorNumber())
+                .floorArea(booking.getFloorArea())
+                .bookingTransactionId(bookingTransaction.getTransactionId())
+                .serviceTypeName(serviceType.getServiceTypeName())
+                .servicePackageName(servicePackage.getServicePackageName())
+                .totalBookingPrice(bookingTransaction.getTotalBookingPrice())
+                .totalBookingCleaner(bookingTransaction.getTotalBookingCleaner())
+                .totalBookingDate(bookingTransaction.getTotalBookingDate())
+                .createDate(booking.getCreateDate())
+                .updateDate(booking.getUpdateDate())
+                .status(bookingTransaction.getStatus())
+                .review(booking.getReview())
+                .rejectedReason(booking.getRejectedReason())
+                .scheduleList(scheduleList)
+                .build();
     }
 
     public Map<String, Object> updateBooking(Map<String, Object> request) throws Exception {

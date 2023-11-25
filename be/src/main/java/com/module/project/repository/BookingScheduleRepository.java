@@ -22,4 +22,9 @@ public interface BookingScheduleRepository extends JpaRepository<BookingSchedule
                             @Param(value = "notStatus") List<String> notStatus);
 
     List<BookingSchedule> findAllByBookingTransaction(BookingTransaction bookingTransaction);
+    
+    @Query(value = "select count(1) from BookingSchedule " +
+            "where bookingTransaction = :bookingTransaction and status not in :status")
+    int getScheduleStatusByTransactionId(@Param(value = "bookingTransaction") BookingTransaction bookingTransaction,
+                                         @Param(value = "status") List<String> status);
 }

@@ -19,6 +19,7 @@ import com.module.project.model.Cleaner;
 import com.module.project.model.CleanerWorkingDate;
 import com.module.project.model.ServiceAddOn;
 import com.module.project.model.ServicePackage;
+import com.module.project.model.ServiceType;
 import com.module.project.model.User;
 import com.module.project.repository.BookingRepository;
 import com.module.project.repository.BookingScheduleRepository;
@@ -27,6 +28,7 @@ import com.module.project.repository.CleanerRepository;
 import com.module.project.repository.CleanerWorkingDateRepository;
 import com.module.project.repository.ServiceAddOnRepository;
 import com.module.project.repository.ServicePackageRepository;
+import com.module.project.repository.ServiceTypeRepository;
 import com.module.project.repository.UserRepository;
 import com.module.project.util.HMSUtil;
 import com.module.project.util.JsonService;
@@ -40,6 +42,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -63,6 +66,7 @@ public class ScheduleService {
     private final ServicePackageRepository servicePackageRepository;
     private final CleanerRepository cleanerRepository;
     private final UserRepository userRepository;
+    private final ServiceTypeRepository serviceTypeRepository;
 
     @Value("${application.choosing-cleaner-price:0}")
     private long choosingCleanerPrice;
@@ -120,21 +124,23 @@ public class ScheduleService {
         ServicePackage servicePackage = servicePackageRepository.findById(request.getServicePackageId())
                 .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "can't find any service package by ".concat(request.getServicePackageId().toString())));
         bookingTransaction.setServicePackage(servicePackage);
+        Calendar startDay = Calendar.getInstance();
+        startDay.setTime(Date.from(request.getWorkDate().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
         Calendar periodRange = Calendar.getInstance();
         periodRange.setTime(Date.from(request.getWorkDate().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
         periodRange.add(Calendar.MONTH, Integer.parseInt(servicePackage.getServicePackageName()));
         switch (request.getServiceTypeId().toString()) {
             case "1" -> {
-                List<LocalDate> periodDate = HMSUtil.getDatesBetweenFromDate(Calendar.getInstance().getTime(), periodRange.getTime());
+                List<LocalDate> periodDate = HMSUtil.getDatesBetweenFromDate(startDay.getTime(), periodRange.getTime());
                 processInsertToBookingSchedule(booking, request, bookingTransaction, userId, floorInfoEnum, null, periodDate);
             }
             case "2" -> {
                 String dayOfWeek = HMSUtil.convertDateToLocalDate(periodRange.getTime()).getDayOfWeek().toString();
-                List<LocalDate> periodDate = HMSUtil.weeksInCalendar(HMSUtil.convertDateToLocalDate(Calendar.getInstance().getTime()), HMSUtil.convertDateToLocalDate(periodRange.getTime()));
+                List<LocalDate> periodDate = HMSUtil.weeksInCalendar(HMSUtil.convertDateToLocalDate(startDay.getTime()), HMSUtil.convertDateToLocalDate(periodRange.getTime()));
                 processInsertToBookingSchedule(booking, request, bookingTransaction, userId, floorInfoEnum, dayOfWeek, periodDate);
             }
             case "3" -> {
-                List<LocalDate> periodDate = HMSUtil.monthsInCalendar(HMSUtil.convertDateToLocalDate(Calendar.getInstance().getTime()), HMSUtil.convertDateToLocalDate(periodRange.getTime()));
+                List<LocalDate> periodDate = HMSUtil.monthsInCalendar(HMSUtil.convertDateToLocalDate(startDay.getTime()), HMSUtil.convertDateToLocalDate(periodRange.getTime()));
                 processInsertToBookingSchedule(booking, request, bookingTransaction, userId, floorInfoEnum, null, periodDate);
             }
             default ->
@@ -181,6 +187,8 @@ public class ScheduleService {
                         cleanerWorkingDateRepository.save(cleanerWorkingDate);
                     }
                     updateReviewOfCleaner(cleaner, booking, bookingSchedule, defaultRating, StringUtils.EMPTY);
+                    
+                    processIfAllSchedulesAreDone(booking, bookingTransaction);
                 }
                 case CANCELLED -> {
                     // TODO go in deep later
@@ -194,6 +202,8 @@ public class ScheduleService {
                         cleanerWorkingDate.setStatus(Constant.COMMON_STATUS.INACTIVE);
                         cleanerWorkingDateRepository.save(cleanerWorkingDate);
                     }
+
+                    processIfAllSchedulesAreDone(booking, bookingTransaction);
                 }
                 default -> throw new HmsException(HmsErrorCode.INVALID_REQUEST, "status not valid");
             }
@@ -289,6 +299,12 @@ public class ScheduleService {
         List<Cleaner> cleaners;
         if (isAutoChoosing) {
             cleaners = autoChooseCleaner(floorInfoEnum.getCleanerNum(), workDate);
+            if (cleaners.isEmpty()) {
+                booking.setStatus(TransactionStatus.CANCELLED.name());
+                booking.setRejectedReason("There is no available cleaner right now on the system");
+                bookingRepository.saveAndFlush(booking);
+                throw new HmsException(HmsErrorCode.INTERNAL_SERVER_ERROR, "There is no available cleaner right now on the system");
+            }
             addWorkDate(saveList, cleaners, workDate);
         } else {
             cleaners = cleanerRepository.findAllByIdInAndStatusEquals(request.getCleanerIds(), Constant.COMMON_STATUS.ACTIVE);
@@ -342,13 +358,42 @@ public class ScheduleService {
         return cleanerRepository.findAllById(res);
     }
 
+    public List<Cleaner> getListCleanerAvailable(LocalDate workDate, Long serviceTypeId, Long servicePackageId) {
+        ServiceType serviceType = serviceTypeRepository.findById(serviceTypeId)
+                .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "can't find any service type by ".concat(serviceTypeId.toString())));
+        ServicePackage servicePackage = servicePackageRepository.findById(servicePackageId)
+                .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "can't find any service package by ".concat(servicePackageId.toString())));
+        List<LocalDate> periodDate;
+        Calendar startDay = Calendar.getInstance();
+        startDay.setTime(Date.from(workDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
+        Calendar periodRange = Calendar.getInstance();
+        periodRange.setTime(Date.from(workDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
+        periodRange.add(Calendar.MONTH, Integer.parseInt(servicePackage.getServicePackageName()));
+        switch (serviceType.getServiceTypeId().toString()) {
+            case "1" -> {
+                periodDate = HMSUtil.getDatesBetweenFromDate(startDay.getTime(), periodRange.getTime());
+            }
+            case "2" -> {
+                periodDate = HMSUtil.weeksInCalendar(HMSUtil.convertDateToLocalDate(startDay.getTime()), HMSUtil.convertDateToLocalDate(periodRange.getTime()));
+            }
+            case "3" -> {
+                periodDate = HMSUtil.monthsInCalendar(HMSUtil.convertDateToLocalDate(startDay.getTime()), HMSUtil.convertDateToLocalDate(periodRange.getTime()));
+            }
+            default ->
+                    throw new HmsException(HmsErrorCode.INVALID_REQUEST, "not support service package ".concat(serviceTypeId.toString()));
+        }
+        Set<Long> cleanerIds = filterOnlyAvailable(cleanerRepository.countCleanerByStatusEquals(Constant.COMMON_STATUS.ACTIVE), periodDate);
+        return cleanerRepository.findAllById(cleanerIds);
+    }
+
+
     private Set<Long> filterOnlyAvailable(int num, List<LocalDate> workDate) {
         List<CleanerWorkingDate> bookingSchedules = cleanerWorkingDateRepository.findAllByStatusEquals(Constant.COMMON_STATUS.ACTIVE);
-        Set<Long> cleanerIds = cleanerRepository.findAll().stream().map(Cleaner::getId).collect(Collectors.toSet());
+        Set<Long> cleanerIds = cleanerRepository.findAllByStatusEquals(Constant.COMMON_STATUS.ACTIVE).stream().map(Cleaner::getId).collect(Collectors.toSet());
         for (CleanerWorkingDate cleaner : bookingSchedules) {
             if (workDate.contains(cleaner.getScheduleDate())) {
                 cleanerIds.remove(cleaner.getCleanerId());
-                if (cleanerIds.isEmpty() || cleanerIds.size() <= num) {
+                if (cleanerIds.isEmpty()) {
                     return cleanerIds;
                 }
             }
@@ -356,11 +401,11 @@ public class ScheduleService {
         return cleanerIds;
     }
 
-    private void updateReviewOfCleaner(Cleaner cleaner,
-                                       Booking booking,
-                                       BookingSchedule bookingSchedule,
-                                       Long rating,
-                                       String review) {
+    public void updateReviewOfCleaner(Cleaner cleaner,
+                                      Booking booking,
+                                      BookingSchedule bookingSchedule,
+                                      Long rating,
+                                      String review) {
         Map<Long, CleanerReviewInfo> reviewList = JsonService.strToObject(cleaner.getReview(), new TypeReference<>() {
         });
         CleanerActivity cleanerActivity = CleanerActivity.builder()
@@ -379,7 +424,22 @@ public class ScheduleService {
         } else {
             if (reviewList.containsKey(booking.getId())) {
                 CleanerReviewInfo item = reviewList.get(booking.getId());
-                item.getCleanerActivities().add(cleanerActivity);
+                List<CleanerActivity> list = new ArrayList<>(item.getCleanerActivities());
+                boolean isExisted = false;
+                for (CleanerActivity activity : list) {
+                    if (activity.getBookingScheduleId().equals(cleanerActivity.getBookingScheduleId())) {
+                        activity.setRatingScore(rating);
+                        activity.setReview(review);
+                        isExisted = true;
+                        break;
+                    }
+                }
+                if (isExisted) {
+                    item.setCleanerActivities(list);
+                } else {
+                    list.add(cleanerActivity);
+                    item.setCleanerActivities(list);
+                }
                 reviewList.put(booking.getId(), item);
             } else {
                 reviewList.put(booking.getId(), cleanerReviewInfo);
@@ -387,5 +447,16 @@ public class ScheduleService {
             cleaner.setReview(JsonService.writeStringSkipError(reviewList));
         }
         cleanerRepository.save(cleaner);
+    }
+
+    private void processIfAllSchedulesAreDone(Booking booking, BookingTransaction bookingTransaction) {
+        List<String> status = Arrays.asList(TransactionStatus.DONE.name(), TransactionStatus.CANCELLED.name());
+        if (bookingScheduleRepository.getScheduleStatusByTransactionId(bookingTransaction, status) == 0) {
+            bookingTransaction.setStatus(TransactionStatus.DONE.name());
+            bookingTransactionRepository.save(bookingTransaction);
+
+            booking.setStatus(TransactionStatus.DONE.name());
+            bookingRepository.save(booking);
+        }
     }
 }

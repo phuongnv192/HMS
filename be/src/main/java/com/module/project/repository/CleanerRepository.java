@@ -12,7 +12,9 @@ import java.util.Optional;
 public interface CleanerRepository extends JpaRepository<Cleaner, Long> {
     Optional<Cleaner> findById(Integer id);
 
-    List<Cleaner> findAll();
+    int countCleanerByStatusEquals(String status);
+
+    List<Cleaner> findAllByStatusEquals(String status);
 
     List<Cleaner> findAllByIdInAndStatusEquals(List<Long> ids, String status);
 

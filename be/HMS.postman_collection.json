@@ -475,6 +475,149 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Get service types",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"address\": \"address\",\n    \"idCard\": \"idCard\",\n    \"userId\": \"userId\",\n    \"branchId\": \"1\",\n    \"serviceIds\": [1, 2, 3]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8888/api/v1/service-types",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8888",
+					"path": [
+						"api",
+						"v1",
+						"service-types"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User submit review",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"bookingId\": 1,\n    \"scheduleId\": 2,\n    \"cleanerId\": 2,\n    \"reviewBooking\": true,\n    \"ratingScore\": 5,\n    \"review\": \"very good\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8888/api/v1/user/submit/review",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8888",
+					"path": [
+						"api",
+						"v1",
+						"user",
+						"submit",
+						"review"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get cleaners available",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"bookingId\": 1,\n    \"scheduleId\": 2,\n    \"cleanerId\": 2,\n    \"reviewBooking\": true,\n    \"ratingScore\": 5,\n    \"review\": \"very good\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8888/api/v1/cleaner/available?workDate=2023-11-21&serviceTypeId=3&servicePackageId=3",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8888",
+					"path": [
+						"api",
+						"v1",
+						"cleaner",
+						"available"
+					],
+					"query": [
+						{
+							"key": "workDate",
+							"value": "2023-11-21"
+						},
+						{
+							"key": "serviceTypeId",
+							"value": "3"
+						},
+						{
+							"key": "servicePackageId",
+							"value": "3"
+						}
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }

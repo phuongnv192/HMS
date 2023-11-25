@@ -28,10 +28,12 @@ import com.module.project.util.HMSUtil;
 import com.module.project.util.JsonService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -57,47 +59,47 @@ public class CleanerService {
         return cleaners;
     }
 
-    public HmsResponse<List<CleanerOverviewResponse>> getCleanerHistory(Integer page, Integer size) {
-        List<CleanerOverviewResponse> response = new ArrayList<>();
-        Pageable pageable = PageRequest.of(page, size);
-        List<Cleaner> cleaners = cleanerRepository.findAll(pageable).getContent();
-        for (Cleaner cleaner : cleaners) {
-            Map<Long, CleanerReviewInfo> reviewList = JsonService.strToObject(cleaner.getReview(), new TypeReference<>() {
-            });
-            if (reviewList == null) {
-                continue;
-            }
-            double sumRating = 0;
-            int ratingNumber = 0;
-            CleanerOverviewResponse history = CleanerOverviewResponse.builder()
-                    .cleanerId(cleaner.getId())
-                    .name(HMSUtil.convertToFullName(cleaner.getUser().getFirstName(), cleaner.getUser().getLastName()))
-                    .idCard(cleaner.getIdCard())
-                    .email(cleaner.getUser().getEmail())
-                    .phoneNumber(cleaner.getUser().getPhoneNumber())
-                    .status(cleaner.getStatus())
-                    .branch(cleaner.getBranch())
-                    .activityYear(HMSUtil.calculateActivityYear(cleaner.getCreateDate(), new Date()))
-                    .build();
-            for (Long bookingId : reviewList.keySet()) {
-                Optional<Booking> bookingOptional = bookingRepository.findById(bookingId);
-                if (bookingOptional.isEmpty()) {
-                    continue;
-                }
-                CleanerReviewInfo cleanerReviewInfo = reviewList.get(bookingId);
-                if (cleanerReviewInfo != null
-                        && cleanerReviewInfo.getCleanerActivities() != null
-                        && !cleanerReviewInfo.getCleanerActivities().isEmpty()) {
-                    sumRating += cleanerReviewInfo.getCleanerActivities().stream().mapToDouble(CleanerActivity::getRatingScore).sum();
-                    ratingNumber += cleanerReviewInfo.getCleanerActivities().size();
-                }
-            }
-            history.setAverageRating(ratingNumber != 0 ? Math.round(sumRating / ratingNumber) : ratingNumber);
-            history.setRatingNumber(ratingNumber);
-            response.add(history);
-        }
-        return HMSUtil.buildResponse(ResponseCode.SUCCESS, response);
-    }
+    // public HmsResponse<List<CleanerOverviewResponse>> getCleanerHistory(Integer page, Integer size) {
+    //     List<CleanerOverviewResponse> response = new ArrayList<>();
+    //     Pageable pageable = PageRequest.of(page, size);
+    //     List<Cleaner> cleaners = cleanerRepository.findAll(pageable).getContent();
+    //     for (Cleaner cleaner : cleaners) {
+    //         Map<Long, CleanerReviewInfo> reviewList = JsonService.strToObject(cleaner.getReview(), new TypeReference<>() {
+    //         });
+    //         if (reviewList == null) {
+    //             continue;
+    //         }
+    //         double sumRating = 0;
+    //         int ratingNumber = 0;
+    //         CleanerOverviewResponse history = CleanerOverviewResponse.builder()
+    //                 .cleanerId(cleaner.getId())
+    //                 .name(HMSUtil.convertToFullName(cleaner.getUser().getFirstName(), cleaner.getUser().getLastName()))
+    //                 .idCard(cleaner.getIdCard())
+    //                 .email(cleaner.getUser().getEmail())
+    //                 .phoneNumber(cleaner.getUser().getPhoneNumber())
+    //                 .status(cleaner.getStatus())
+    //                 .branch(cleaner.getBranch())
+    //                 .activityYear(HMSUtil.calculateActivityYear(cleaner.getCreateDate(), new Date()))
+    //                 .build();
+    //         for (Long bookingId : reviewList.keySet()) {
+    //             Optional<Booking> bookingOptional = bookingRepository.findById(bookingId);
+    //             if (bookingOptional.isEmpty()) {
+    //                 continue;
+    //             }
+    //             CleanerReviewInfo cleanerReviewInfo = reviewList.get(bookingId);
+    //             if (cleanerReviewInfo != null
+    //                     && cleanerReviewInfo.getCleanerActivities() != null
+    //                     && !cleanerReviewInfo.getCleanerActivities().isEmpty()) {
+    //                 sumRating += cleanerReviewInfo.getCleanerActivities().stream().mapToDouble(CleanerActivity::getRatingScore).sum();
+    //                 ratingNumber += cleanerReviewInfo.getCleanerActivities().size();
+    //             }
+    //         }
+    //         history.setAverageRating(ratingNumber != 0 ? Math.round(sumRating / ratingNumber) : ratingNumber);
+    //         history.setRatingNumber(ratingNumber);
+    //         response.add(history);
+    //     }
+    //     return HMSUtil.buildResponse(ResponseCode.SUCCESS, response);
+    // }
 
     public HmsResponse<CleanerDetailHistoryResponse> getCleanerHistoryDetail(Long cleanerId) {
         Cleaner cleaner = cleanerRepository.findById(cleanerId)
@@ -128,10 +130,12 @@ public class CleanerService {
                 ratingNumber += cleanerReviewInfo.getCleanerActivities().size();
                 for (CleanerActivity info : cleanerReviewInfo.getCleanerActivities()) {
                     sumRating += info.getRatingScore();
-                    item.setReview(info.getReview());
-                    item.setRatingScore(info.getRatingScore());
-                    item.setWorkDate(HMSUtil.formatDate(info.getWorkDate(), HMSUtil.DDMMYYYY_FORMAT));
-                    history.add(item);
+                    CleanerHistoryResponse clone = new CleanerHistoryResponse();
+                    BeanUtils.copyProperties(item, clone);
+                    clone.setReview(info.getReview());
+                    clone.setRatingScore(info.getRatingScore());
+                    clone.setWorkDate(HMSUtil.formatDate(info.getWorkDate(), HMSUtil.DDMMYYYY_FORMAT));
+                    history.add(clone);
                 }
             }
         }
@@ -169,7 +173,8 @@ public class CleanerService {
     }
 
     public HmsResponse<Cleaner> updateCleaner(CleanerUpdateRequest cleanerUpdateRequest) {
-        Cleaner cleaner = cleanerRepository.findById(cleanerUpdateRequest.getId()).get();
+        Cleaner cleaner = cleanerRepository.findById(cleanerUpdateRequest.getId())
+                .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "can't find any cleaner by id: ".concat(cleanerUpdateRequest.getId().toString())));
 
         Branch branch = branchRepository.findById(cleanerUpdateRequest.getBranchId())
                 .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST,
@@ -177,26 +182,24 @@ public class CleanerService {
         Set<com.module.project.model.Service> serviceIds = new HashSet<>(
                 serviceRepository.findAllById(cleanerUpdateRequest.getServiceIds()));
 
-        cleaner = Cleaner.builder()
-                .address(cleanerUpdateRequest.getAddress())
-                .idCard(cleanerUpdateRequest.getIdCard())
-                .branch(branch)
-                .status(Constant.COMMON_STATUS.ACTIVE.equals(cleanerUpdateRequest.getStatus())
+        cleaner.setAddress(cleanerUpdateRequest.getAddress());
+        cleaner.setIdCard(cleanerUpdateRequest.getIdCard());
+        cleaner.setBranch(branch);
+        cleaner.setStatus(Constant.COMMON_STATUS.ACTIVE.equals(cleanerUpdateRequest.getStatus())
                         ? Constant.COMMON_STATUS.ACTIVE
-                        : Constant.COMMON_STATUS.INACTIVE)
-                .services(serviceIds)
-                .build();
+                        : Constant.COMMON_STATUS.INACTIVE);
+        cleaner.setServices(serviceIds);
 
         return HMSUtil.buildResponse(ResponseCode.SUCCESS, cleanerRepository.save(cleaner));
     }
 
     public HmsResponse<Cleaner> changeStatusCleaner(CleanerUpdateRequest cleanerUpdateRequest) {
-        Cleaner cleaner = cleanerRepository.findById(cleanerUpdateRequest.getId()).get();
-        cleaner = Cleaner.builder()
-                .status(Constant.COMMON_STATUS.ACTIVE.equals(cleanerUpdateRequest.getStatus().toUpperCase())
-                        ? Constant.COMMON_STATUS.ACTIVE
-                        : Constant.COMMON_STATUS.INACTIVE)
-                .build();
+        Cleaner cleaner = cleanerRepository.findById(cleanerUpdateRequest.getId())
+                .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "can't find any cleaner by id: ".concat(cleanerUpdateRequest.getId().toString())));
+        String status = Constant.COMMON_STATUS.ACTIVE.equalsIgnoreCase(cleanerUpdateRequest.getStatus())
+                ? Constant.COMMON_STATUS.ACTIVE
+                : Constant.COMMON_STATUS.INACTIVE;
+        cleaner.setStatus(status);
 
         return HMSUtil.buildResponse(ResponseCode.SUCCESS, cleanerRepository.save(cleaner));
     }
@@ -204,5 +207,48 @@ public class CleanerService {
     public HmsResponse<Object> updateStatusSchedule(ScheduleConfirmRequest request, String userId) {
         scheduleService.updateStatusSchedule(request, userId);
         return HMSUtil.buildResponse(ResponseCode.SUCCESS, null);
+    }
+
+    public HmsResponse<List<CleanerOverviewResponse>> getListCleanerAvailable(LocalDate workDate, Long serviceTypeId, Long servicePackageId) {
+        List<Cleaner> cleaners = scheduleService.getListCleanerAvailable(workDate, serviceTypeId, servicePackageId);
+        List<CleanerOverviewResponse> response = new ArrayList<>();
+        for (Cleaner cleaner : cleaners) {
+            Map<Long, CleanerReviewInfo> reviewList = JsonService.strToObject(cleaner.getReview(), new TypeReference<>() {
+            });
+            CleanerOverviewResponse history = CleanerOverviewResponse.builder()
+                    .cleanerId(cleaner.getId())
+                    .name(HMSUtil.convertToFullName(cleaner.getUser().getFirstName(), cleaner.getUser().getLastName()))
+                    .idCard(cleaner.getIdCard())
+                    .email(cleaner.getUser().getEmail())
+                    .phoneNumber(cleaner.getUser().getPhoneNumber())
+                    .status(cleaner.getStatus())
+                    .branch(cleaner.getBranch())
+                    .activityYear(HMSUtil.calculateActivityYear(cleaner.getCreateDate(), new Date()))
+                    .averageRating(0L)
+                    .ratingNumber(0)
+                    .build();
+            if (reviewList != null) {
+                double sumRating = 0;
+                int ratingNumber = 0;
+
+                for (Long bookingId : reviewList.keySet()) {
+                    Optional<Booking> bookingOptional = bookingRepository.findById(bookingId);
+                    if (bookingOptional.isEmpty()) {
+                        continue;
+                    }
+                    CleanerReviewInfo cleanerReviewInfo = reviewList.get(bookingId);
+                    if (cleanerReviewInfo != null
+                            && cleanerReviewInfo.getCleanerActivities() != null
+                            && !cleanerReviewInfo.getCleanerActivities().isEmpty()) {
+                        sumRating += cleanerReviewInfo.getCleanerActivities().stream().mapToDouble(CleanerActivity::getRatingScore).sum();
+                        ratingNumber += cleanerReviewInfo.getCleanerActivities().size();
+                    }
+                }
+                history.setAverageRating(ratingNumber != 0 ? Math.round(sumRating / ratingNumber) : ratingNumber);
+                history.setRatingNumber(ratingNumber);
+            }
+            response.add(history);
+        }
+        return HMSUtil.buildResponse(ResponseCode.SUCCESS, response);
     }
 }

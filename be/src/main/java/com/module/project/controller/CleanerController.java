@@ -17,9 +17,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
+
 import static com.module.project.dto.Constant.API_V1;
 import static com.module.project.dto.Constant.CLEANER;
 import static com.module.project.dto.Constant.CLEANER_HISTORY;
+import static com.module.project.dto.Constant.CLEANER_AVAILABLE;
 import static com.module.project.dto.Constant.CLEANER_HISTORY_DETAIL;
 import static com.module.project.dto.Constant.CLEANER_SCHEDULE_STATUS;
 import static com.module.project.dto.Constant.CLEANER_STATUS;
@@ -31,11 +34,11 @@ public class CleanerController {
 
     private final CleanerService cleanerService;
 
-    @GetMapping(CLEANER_HISTORY)
-    public ResponseEntity<Object> getCleanerHistory(@RequestParam(name = "page") Integer page,
-                                                    @RequestParam(name = "size") Integer size) {
-        return ResponseEntity.ok(cleanerService.getCleanerHistory(page, size));
-    }
+    // @GetMapping(CLEANER_HISTORY)
+    // public ResponseEntity<Object> getCleanerHistory(@RequestParam(name = "page") Integer page,
+    //                                                 @RequestParam(name = "size") Integer size) {
+    //     return ResponseEntity.ok(cleanerService.getCleanerHistory(page, size));
+    // }
 
     @GetMapping(CLEANER_HISTORY_DETAIL)
     public ResponseEntity<Object> getCleanerHistoryDetail(@RequestParam(name = "cleanerId") Long cleanerId) {
@@ -62,5 +65,12 @@ public class CleanerController {
     public ResponseEntity<Object> updateStatusSchedule(@RequestBody ScheduleConfirmRequest request, HttpServletRequest httpServletRequest) {
         String userId = (String) httpServletRequest.getAttribute(ClaimEnum.USER_ID.name);
         return ResponseEntity.ok(cleanerService.updateStatusSchedule(request, userId));
+    }
+
+    @GetMapping(CLEANER_AVAILABLE)
+    public ResponseEntity<Object> getListCleanerAvailable(@RequestParam(name = "workDate") LocalDate workDate,
+                                                          @RequestParam(name = "serviceTypeId") Long serviceTypeId,
+                                                          @RequestParam(name = "servicePackageId") Long servicePackageId) {
+        return ResponseEntity.ok(cleanerService.getListCleanerAvailable(workDate, serviceTypeId, servicePackageId));
     }
 }
