@@ -25,7 +25,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'forgot-password', component: ForgotPWComponent },
   { path: 'dashboard', component: DashboardComponent },
-  { path: 'tables', component: TablesComponent },
+  { path: 'list-user', component: TablesComponent },
   { path: 'user-profile', component: UserProfileComponent },
   { path: 'history', component: HistoryComponent },
   { path: 'schedule', component: ScheduleComponent },

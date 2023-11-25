@@ -1430,15 +1430,15 @@
 
 .showtime-options {
   border: 0em;
-  background-color: #232323;
+  // background-color: #232323;
   max-width: 960px;
   height: 151px;
   margin: 0 32px;
 
   .selected {
-      background-color: #ffd530 !important;
+      background-color: #232323 !important;
       color: #171617 !important;
-      border-color: 1px solid #ffd530 !important;
+      border-color: 1px solid #232323 !important;
   }
 
   .carousel-cell {
@@ -1446,9 +1446,9 @@
       background-color: rgba(255, 255, 255, 0.19);
       height: 87px;
       width: 115px;
-      border: 1px solid #ffd530 !important;
+      border: 1px solid #232323 !important;
       margin: 32px 12px 32px 0px;
-      color: #ffd530;
+      color: #232323;
 
       &:hover {
           box-shadow: 1px 1px 1px 1px #ffe991;
@@ -1458,7 +1458,7 @@
 
       &:active {
           box-shadow: 1px 1px 1px 1px #ffe991;
-          // background-color: #ffd530;
+          background-color: #ffd530;
           color: #171617;
           transform: translateY(2px);
       }
@@ -1506,7 +1506,7 @@
 
   .select-date-container {
     overflow: hidden;
-    width: 100%;
+    width: 95%;
     height: 150px;
     display: flex;
     // cursor: grab;
@@ -1515,11 +1515,11 @@
     .datetimeBtn {
         border-radius: 4px;
         background-color: rgba(255, 255, 255, 0.19);
-        height: 87px;
-        width: 130px !important;
-        border: 1px solid #ffd530 !important;
+        height: 90px;
+        width: 135px !important;
+        border: 1px solid #232323 !important;
         margin: 32px 12px 32px 0px;
-        color: #ffd530;
+        color: #232323;
 
         &:hover {
             box-shadow: 1px 1px 1px 1px #ffe991;
