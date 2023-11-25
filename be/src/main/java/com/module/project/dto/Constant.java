@@ -5,8 +5,10 @@ public interface Constant {
     String AUTH = "/auth";
     String REGISTER = "/register";
     String AUTHENTICATE = "/authenticate";
+    String USER_INFO = "/user/info";
     String VERIFY = "/verify";
     String BOOKING = "/booking";
+    String BOOKING_DETAIL = "/booking/detail";
     String BOOKING_CONFIRM = "/booking/confirm";
     String BOOKING_CANCEL = "/booking/cancel";
     String CLEANER = "/cleaner";
@@ -14,9 +16,11 @@ public interface Constant {
     String CLEANER_HISTORY = "/cleaner/history";
     String CLEANER_HISTORY_DETAIL = "/cleaner/history/detail";
     String CLEANER_STATUS = "/cleaner/status";
+    String CLEANER_SCHEDULES = "/cleaner/schedules";
     String CLEANER_SCHEDULE_STATUS = "/cleaner/schedule/status";
     String SERVICE_TYPE = "/service-types";
-    String SERVICE_ADD_ON = "/service-add-ons";
+    String SERVICE_ADD_ONS = "/service-add-ons";
+    String SERVICE_ADD_ON = "/service-add-on";
     String FLOOR_INFO = "/floor-info";
     String UPDATE_WITHDRAW = "/schedule/withdraw";
 

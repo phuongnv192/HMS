@@ -19,8 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static com.module.project.dto.Constant.API_V1;
 import static com.module.project.dto.Constant.CLEANER;
+import static com.module.project.dto.Constant.CLEANERS;
 import static com.module.project.dto.Constant.CLEANER_HISTORY;
 import static com.module.project.dto.Constant.CLEANER_HISTORY_DETAIL;
+import static com.module.project.dto.Constant.CLEANER_SCHEDULES;
 import static com.module.project.dto.Constant.CLEANER_SCHEDULE_STATUS;
 import static com.module.project.dto.Constant.CLEANER_STATUS;
 
@@ -30,6 +32,12 @@ import static com.module.project.dto.Constant.CLEANER_STATUS;
 public class CleanerController {
 
     private final CleanerService cleanerService;
+
+    @GetMapping(CLEANERS)
+    public ResponseEntity<Object> getListCleaner(@RequestParam(name = "page") Integer page,
+                                                 @RequestParam(name = "size") Integer size) {
+        return ResponseEntity.ok(cleanerService.getCleaners(page, size));
+    }
 
     @GetMapping(CLEANER_HISTORY)
     public ResponseEntity<Object> getCleanerHistory(@RequestParam(name = "page") Integer page,
@@ -62,5 +70,15 @@ public class CleanerController {
     public ResponseEntity<Object> updateStatusSchedule(@RequestBody ScheduleConfirmRequest request, HttpServletRequest httpServletRequest) {
         String userId = (String) httpServletRequest.getAttribute(ClaimEnum.USER_ID.name);
         return ResponseEntity.ok(cleanerService.updateStatusSchedule(request, userId));
+    }
+
+    @GetMapping(CLEANER_SCHEDULES)
+    public ResponseEntity<Object> getCleanerSchedule(@RequestParam(name = "cleanerId") Long cleanerId,
+                                                     @RequestParam(name = "page") Integer page,
+                                                     @RequestParam(name = "size") Integer size,
+                                                     HttpServletRequest httpServletRequest) {
+        String userId = (String) httpServletRequest.getAttribute(ClaimEnum.USER_ID.name);
+        String roleName = (String) httpServletRequest.getAttribute(ClaimEnum.ROLE_NAME.name);
+        return ResponseEntity.ok(cleanerService.getCleanerSchedule(cleanerId, page, size, userId, roleName));
     }
 }

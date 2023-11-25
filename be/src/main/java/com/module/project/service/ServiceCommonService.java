@@ -3,6 +3,8 @@ package com.module.project.service;
 import com.module.project.dto.Constant;
 import com.module.project.dto.FloorInfoEnum;
 import com.module.project.dto.ResponseCode;
+import com.module.project.dto.RoleEnum;
+import com.module.project.dto.request.ServiceAddOnRequest;
 import com.module.project.dto.response.FloorInfoResponse;
 import com.module.project.dto.response.ViewServiceAddOnResponse;
 import com.module.project.exception.HmsErrorCode;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -70,5 +73,49 @@ public class ServiceCommonService {
                     .build());
         }
         return HMSUtil.buildResponse(ResponseCode.SUCCESS, responses);
+    }
+
+    public HmsResponse<ServiceAddOn> updateServiceAddOn(ServiceAddOnRequest request, String roleName) {
+        List<String> acceptRole = List.of(RoleEnum.MANAGER.name());
+        if (!acceptRole.contains(roleName)) {
+            throw new HmsException(HmsErrorCode.INVALID_REQUEST, "privileges access denied");
+        }
+        ServiceAddOn serviceAddOn = serviceAddOnRepository.findById(request.getServiceAddOnId())
+                .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "can't find any add on by ".concat(request.getServiceAddOnId().toString())));
+        handleServiceAddOnParent(request, serviceAddOn);
+        serviceAddOn.setName(request.getName());
+        serviceAddOn.setStatus(request.getStatus());
+        serviceAddOn.setPrice(request.getPrice());
+        return HMSUtil.buildResponse(ResponseCode.SUCCESS, serviceAddOnRepository.save(serviceAddOn));
+    }
+
+    public HmsResponse<Objects> insertServiceAddOn(ServiceAddOnRequest request, String roleName) {
+        List<String> acceptRole = List.of(RoleEnum.MANAGER.name());
+        if (!acceptRole.contains(roleName)) {
+            throw new HmsException(HmsErrorCode.INVALID_REQUEST, "privileges access denied");
+        }
+        ServiceAddOn serviceAddOn = ServiceAddOn.builder()
+                .name(request.getName())
+                .status(request.getStatus())
+                .price(request.getPrice())
+                .build();
+        handleServiceAddOnParent(request, serviceAddOn);
+        serviceAddOnRepository.save(serviceAddOn);
+        return HMSUtil.buildResponse(ResponseCode.SUCCESS, null);
+    }
+
+    private void handleServiceAddOnParent(ServiceAddOnRequest request, ServiceAddOn serviceAddOn) {
+        if (request.getParentId() != null) {
+            ServiceAddOn parentId = serviceAddOnRepository.findById(request.getParentId())
+                    .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "parent id not existed"));
+            if (parentId.getParentId() != null) {
+                throw new HmsException(HmsErrorCode.INTERNAL_SERVER_ERROR, "can't update request because the data is not match");
+            }
+            serviceAddOn.setParentId(parentId.getId());
+        } else {
+            if (serviceAddOn.getParentId() != null) {
+                serviceAddOn.setParentId(null);
+            }
+        }
     }
 }

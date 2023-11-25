@@ -386,6 +386,7 @@ public class ScheduleService {
             }
             cleaner.setReview(JsonService.writeStringSkipError(reviewList));
         }
+        // TODO check if all schedules are done then update status of transaction and root to DONE
         cleanerRepository.save(cleaner);
     }
 }
