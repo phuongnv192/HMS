@@ -514,9 +514,6 @@
 			"response": []
 		},
 		{
-<<<<<<< HEAD
-			"name": "Get service types",
-=======
 			"name": "Insert service add on",
 			"request": {
 				"auth": {
@@ -738,7 +735,6 @@
 		},
 		{
 			"name": "Get list cleaner",
->>>>>>> 27c5b48162490939e0916c26be4e3c3978d1eee7
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -765,11 +761,7 @@
 					"raw": "{\n    \"address\": \"address\",\n    \"idCard\": \"idCard\",\n    \"userId\": \"userId\",\n    \"branchId\": \"1\",\n    \"serviceIds\": [1, 2, 3]\n}"
 				},
 				"url": {
-<<<<<<< HEAD
-					"raw": "http://localhost:8888/api/v1/service-types",
-=======
 					"raw": "http://localhost:8888/api/v1/cleaners?page=0&size=2",
->>>>>>> 27c5b48162490939e0916c26be4e3c3978d1eee7
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -778,15 +770,24 @@
 					"path": [
 						"api",
 						"v1",
-<<<<<<< HEAD
-						"service-types"
+						"cleaners"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "0"
+						},
+						{
+							"key": "size",
+							"value": "2"
+						}
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "User submit review",
+			"name": "Change password",
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -807,10 +808,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"bookingId\": 1,\n    \"scheduleId\": 2,\n    \"cleanerId\": 2,\n    \"reviewBooking\": true,\n    \"ratingScore\": 5,\n    \"review\": \"very good\"\n}"
+					"raw": "{\n    \"userId\": 1,\n    \"oldPassword\": 2,\n    \"newPassword\": 1\n}"
 				},
 				"url": {
-					"raw": "http://localhost:8888/api/v1/user/submit/review",
+					"raw": "http://localhost:8888/api/v1/user/change-password",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -820,18 +821,14 @@
 						"api",
 						"v1",
 						"user",
-						"submit",
-						"review"
+						"change-password"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "Get cleaners available",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
+			"name": "Update user",
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -843,7 +840,7 @@
 						}
 					]
 				},
-				"method": "GET",
+				"method": "PUT",
 				"header": [
 					{
 						"key": "Content-Type",
@@ -852,10 +849,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"bookingId\": 1,\n    \"scheduleId\": 2,\n    \"cleanerId\": 2,\n    \"reviewBooking\": true,\n    \"ratingScore\": 5,\n    \"review\": \"very good\"\n}"
+					"raw": "{\n    \"userId\": 1,\n    \"firstName\": \"wrong\",\n    \"lastName\": \"never\",\n    \"gender\": \"Nam\",\n    \"email\": \"email@email.com\",\n    \"phoneNumber\": \"0123012021\",\n    \"status\": \"ACTIVE\",\n    \"roleId\" : 2\n}"
 				},
 				"url": {
-					"raw": "http://localhost:8888/api/v1/cleaner/available?workDate=2023-11-21&serviceTypeId=3&servicePackageId=3",
+					"raw": "http://localhost:8888/api/v1/user/info",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -864,34 +861,8 @@
 					"path": [
 						"api",
 						"v1",
-						"cleaner",
-						"available"
-					],
-					"query": [
-						{
-							"key": "workDate",
-							"value": "2023-11-21"
-						},
-						{
-							"key": "serviceTypeId",
-							"value": "3"
-						},
-						{
-							"key": "servicePackageId",
-							"value": "3"
-=======
-						"cleaners"
-					],
-					"query": [
-						{
-							"key": "page",
-							"value": "0"
-						},
-						{
-							"key": "size",
-							"value": "2"
->>>>>>> 27c5b48162490939e0916c26be4e3c3978d1eee7
-						}
+						"user",
+						"info"
 					]
 				}
 			},

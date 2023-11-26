@@ -6,6 +6,7 @@ public interface Constant {
     String REGISTER = "/register";
     String AUTHENTICATE = "/authenticate";
     String USER_SUBMIT_REVIEW = "/user/submit/review";
+    String USER_CHANGE_PASSWORD = "/user/change-password";
     String USER_INFO = "/user/info";
     String VERIFY = "/verify";
     String BOOKING = "/booking";
