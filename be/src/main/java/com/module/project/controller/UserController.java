@@ -9,13 +9,16 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import static com.module.project.dto.Constant.USER_SUBMIT_REVIEW;
+import static com.module.project.dto.Constant.USER_INFO_BY_ID;
 import static com.module.project.dto.Constant.API_V1;
 import static com.module.project.dto.Constant.USER_CHANGE_PASSWORD;
 import static com.module.project.dto.Constant.USER_INFO;
@@ -32,22 +35,30 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserInfo(userId));
     }
 
+    @GetMapping(USER_INFO_BY_ID)
+    public ResponseEntity<Object> getUserInfoById(@PathVariable String id) {
+        return ResponseEntity.ok(userService.getEmployeeInfo(id));
+    }
+
     @PutMapping(USER_INFO)
-    public ResponseEntity<Object> updateUserInfo(@RequestBody UserInfoRequest request, HttpServletRequest httpServletRequest) {
+    public ResponseEntity<Object> updateUserInfo(@RequestBody UserInfoRequest request,
+            HttpServletRequest httpServletRequest) {
         String userId = (String) httpServletRequest.getAttribute(ClaimEnum.USER_ID.name);
         String roleName = (String) httpServletRequest.getAttribute(ClaimEnum.ROLE_NAME.name);
         return ResponseEntity.ok(userService.updateUserInfo(request, userId, roleName));
     }
     
     @PostMapping(USER_SUBMIT_REVIEW)
-    public ResponseEntity<Object> submitReview(@RequestBody SubmitReviewRequest submitReviewRequest, HttpServletRequest httpServletRequest) {
+    public ResponseEntity<Object> submitReview(@RequestBody SubmitReviewRequest submitReviewRequest,
+            HttpServletRequest httpServletRequest) {
         String userId = (String) httpServletRequest.getAttribute(ClaimEnum.USER_ID.name);
         return ResponseEntity.ok(userService.submitReview(submitReviewRequest, userId));
     }
 
     
     @PostMapping(USER_CHANGE_PASSWORD)
-    public ResponseEntity<Object> changePassword(@RequestBody ChangePasswordRequest request, HttpServletRequest httpServletRequest) {
+    public ResponseEntity<Object> changePassword(@RequestBody ChangePasswordRequest request,
+            HttpServletRequest httpServletRequest) {
         String userId = (String) httpServletRequest.getAttribute(ClaimEnum.USER_ID.name);
         String roleName = (String) httpServletRequest.getAttribute(ClaimEnum.ROLE_NAME.name);
         return ResponseEntity.ok(userService.changePassword(request, userId, roleName));

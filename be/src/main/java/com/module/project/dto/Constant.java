@@ -8,6 +8,7 @@ public interface Constant {
     String USER_SUBMIT_REVIEW = "/user/submit/review";
     String USER_CHANGE_PASSWORD = "/user/change-password";
     String USER_INFO = "/user/info";
+    String USER_INFO_BY_ID = "/user/{id}";
     String VERIFY = "/verify";
     String BOOKING = "/booking";
     String BOOKING_DETAIL = "/booking/detail";

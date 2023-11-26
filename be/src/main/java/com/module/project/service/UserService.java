@@ -40,7 +40,17 @@ public class UserService {
     private final RoleRepository roleRepository;
 
     public HmsResponse<User> getUserInfo(String userId) {
-        User user = userRepository.findById(Long.parseLong(userId)).orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "can't find any user by ".concat(userId)));
+        User user = userRepository.findById(Long.parseLong(userId)).orElseThrow(
+                () -> new HmsException(HmsErrorCode.INVALID_REQUEST, "can't find any user by ".concat(userId)));
+        List<Booking> bookings = bookingRepository.findAllByUser(user);
+        user.setBookings(new HashSet<>(bookings));
+        return HMSUtil.buildResponse(ResponseCode.SUCCESS, user);
+    }
+
+    public HmsResponse<User> getEmployeeInfo(String userId) {
+        User user = userRepository.findById(Long.parseLong(userId))
+                .filter(a -> !a.getRole().getName().equals(RoleEnum.CUSTOMER.toString())).orElseThrow(
+                        () -> new HmsException(HmsErrorCode.INVALID_REQUEST, "can't find any user by ".concat(userId)));
         List<Booking> bookings = bookingRepository.findAllByUser(user);
         user.setBookings(new HashSet<>(bookings));
         return HMSUtil.buildResponse(ResponseCode.SUCCESS, user);
@@ -67,28 +77,34 @@ public class UserService {
 
     public HmsResponse<Object> submitReview(SubmitReviewRequest request, String userId) {
         Booking booking = bookingRepository.findById(request.getBookingId())
-                .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "can't find any booking by ".concat(request.getBookingId().toString())));
+                .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST,
+                "can't find any booking by ".concat(request.getBookingId().toString())));
         if (!userId.equals(booking.getUser().getId().toString())) {
             throw new HmsException(HmsErrorCode.INVALID_REQUEST, "user dont have permission to execute");
         }
         if (request.getReviewBooking()) {
             if (!TransactionStatus.DONE.name().equals(booking.getStatus())) {
-                throw new HmsException(HmsErrorCode.INTERNAL_SERVER_ERROR, "can't submit review because booking is not done yet");
-            }
+            throw new HmsException(HmsErrorCode.INTERNAL_SERVER_ERROR,
+                    "can't submit review because booking is not done yet");
+        }
             booking.setReview(request.getReview());
             bookingRepository.save(booking);
         } else {
             BookingSchedule bookingSchedule = bookingScheduleRepository.findById(request.getScheduleId())
-                    .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "can't find any schedule by ".concat(request.getBookingId().toString())));
+               .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST,
+                            "can't find any schedule by ".concat(request.getBookingId().toString())));
             if (!TransactionStatus.DONE.name().equals(bookingSchedule.getStatus())) {
-                throw new HmsException(HmsErrorCode.INTERNAL_SERVER_ERROR, "can't submit review because schedule is not done yet");
+               throw new HmsException(HmsErrorCode.INTERNAL_SERVER_ERROR,
+                        "can't submit review because schedule is not done yet");
             }
             bookingSchedule.setRatingScore(request.getRatingScore().toString());
             bookingScheduleRepository.save(bookingSchedule);
 
             Cleaner cleaner = cleanerRepository.findById(request.getCleanerId())
-                    .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "can't find any cleaner by ".concat(request.getBookingId().toString())));
-            scheduleService.updateReviewOfCleaner(cleaner, booking, bookingSchedule, Long.valueOf(request.getRatingScore()), request.getReview());
+                     .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST,
+                            "can't find any cleaner by ".concat(request.getBookingId().toString())));
+            scheduleService.updateReviewOfCleaner(cleaner, booking, bookingSchedule,
+                    Long.valueOf(request.getRatingScore()), request.getReview());
         }
         return HMSUtil.buildResponse(ResponseCode.SUCCESS, null);
     }
@@ -96,7 +112,8 @@ public class UserService {
     public HmsResponse<User> changePassword(ChangePasswordRequest request, String userId, String roleName) {
         User user = validateUpdateUser(userId, roleName, request.getUserId());
         if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
-            throw new HmsException(HmsErrorCode.INTERNAL_SERVER_ERROR, "the current password you input not match with itself on system");
+           throw new HmsException(HmsErrorCode.INTERNAL_SERVER_ERROR,
+                    "the current password you input not match with itself on system");
         }
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         return HMSUtil.buildResponse(ResponseCode.SUCCESS, userRepository.save(user));
@@ -109,6 +126,7 @@ public class UserService {
             }
         }
         return userRepository.findById(userUpdateId)
-                .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "can't find any schedule by ".concat(userUpdateId.toString())));
+             .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST,
+                        "can't find any schedule by ".concat(userUpdateId.toString())));
     }
 }
