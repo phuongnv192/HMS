@@ -27,11 +27,16 @@ import { HomeModule } from "./home/home.module";
 import { LoginComponent } from "./auth/login/login.component";
 import { ForgotPWComponent } from "./auth/forgot-password/forgot-pw.component";
 import { SignupComponent } from "./auth/signup/signup.component";
-import { TablesComponent } from "./employee/tables.component";
+import { ListCleanerComponent } from "./employee/tables.component";
 import { AuthService } from "./services/auth.service";
 import { HttpClientModule } from "@angular/common/http";
 import { IvyCarouselModule } from "angular-responsive-carousel";
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { ListCustomerComponent } from "./customer/list-customer/list-customer.component";
+import { CustomerProfileComponent } from "./customer/customer-profile/customer-profile.component";
+import { ChangePassComponent } from "./auth/change-password/change-password.component";
+import { CustomerHistoryComponent } from "./customer/customer-booking/customer-booking-history/customer-history.component";
+import { CustomerScheduleComponent } from "./customer/customer-booking/customer-booking-list/customer-schedule.component";
 
 
 @NgModule({
@@ -52,11 +57,16 @@ import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
     ForgotPWComponent,
     UserProfileComponent,
     DashboardComponent,
-    TablesComponent,
+    ListCleanerComponent,
     SignupComponent,
     HistoryComponent,
     ScheduleComponent,
-    BookingDetailDialog
+    BookingDetailDialog,
+    ListCustomerComponent,
+    CustomerProfileComponent,
+    ChangePassComponent,
+    CustomerHistoryComponent,
+    CustomerScheduleComponent,
   ],
   imports: [
     BrowserModule,

@@ -11,7 +11,7 @@ declare interface RouteInfo {
 export const ROUTES: RouteInfo[] = [
   { path: '/dashboard', title: 'Thống kê', icon: 'ni-tv-2', class: '' },
   { path: '/maps', title: 'Bản đồ', icon: 'ni-pin-3 text-orange', class: '' },
-  { path: '/tables', title: 'Danh sách nhân viên', icon: 'ni-bullet-list-67 text-red', class: '' },
+  { path: '/list-cleaner', title: 'Danh sách nhân viên', icon: 'ni-bullet-list-67 text-red', class: '' },
   { path: '/schedule', title: 'Lịch công việc', icon: 'ni-calendar-grid-58', class: '' },
   { path: '/history', title: 'Lịch sử công việc', icon: 'fas fa-history', class: '' },
   { path: '/user-profile', title: 'Thông tin cá nhân', icon: 'fas fa-user', class: '' },
@@ -33,7 +33,7 @@ export class SidebarComponent implements OnInit {
   }
 
   ngOnInit() {
-    if(this.authService.getJwtToken()){
+    if (this.authService.getJwtToken()) {
       this.adminNavbar = true;
     }
     this.route.url.subscribe(segments => {

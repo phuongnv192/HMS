@@ -9,9 +9,10 @@ export class AuthService {
   private baseUrl = environment.apiUrl + "/auth";
   private jwtToken: string;
   private REGISTER = this.baseUrl + "/register";
+  private CHANGE_PASS = this.baseUrl + "/change-password";
   private LOGOUT = this.baseUrl + "/logout";
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   signin(username: string, password: string): Observable<any> {
     return this.http
@@ -25,6 +26,10 @@ export class AuthService {
           }
         })
       );
+  }
+
+  changePass(username: string, password: string): Observable<any> {
+    return this.http.post<any>(this.CHANGE_PASS, { username, password });
   }
 
   register(req: any): Observable<any> {

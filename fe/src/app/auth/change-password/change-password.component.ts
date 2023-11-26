@@ -1,26 +1,42 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { AuthService } from "../../services/auth.service";
 import { Router } from "@angular/router";
 
 @Component({
-  selector: "app-login",
-  templateUrl: "./login.component.html",
-  styleUrls: ["./login.component.css"],
+  selector: "app-change-password",
+  templateUrl: "./change-password.component.html",
+  styleUrls: ["./change-password.component.css"],
 })
-export class LoginComponent implements OnInit {
+export class ChangePassComponent implements OnInit {
   @ViewChild("account") accountElement: any;
+  @ViewChild("password", { static: false }) password: ElementRef;
+  @ViewChild("repassword", { static: false }) re_password: ElementRef;
 
   focus;
   focus1;
+  focus2;
+  focus4;
+  focus3;
   account_name: any;
   accountBlur = false;
-  password: string;
+  pwd: string;
+  repwd: string;
+  changeError = false;
+
   constructor(private authService: AuthService, private router: Router) { }
 
   ngOnInit() { }
 
-  login() {
-    this.authService.signin(this.account_name, this.password).subscribe({
+  validatePassword(password: string): boolean {
+    const pattern =
+      "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$";
+    const regex = new RegExp(pattern);
+    return regex.test(password);
+  }
+
+
+  changePass() {
+    this.authService.changePass(this.account_name, this.pwd).subscribe({
       next: (res) => {
         this.router.navigate(["/home"]);
         if (res.data.role == "admin") {
@@ -30,6 +46,7 @@ export class LoginComponent implements OnInit {
         }
       }, // nextHandler
       error: (err) => {
+        this.changeError = true;
         console.log(err);
       }, // errorHandler
     });
