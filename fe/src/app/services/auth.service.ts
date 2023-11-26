@@ -14,16 +14,22 @@ export class AuthService {
 
   constructor(private http: HttpClient) { }
 
+  getToken() {
+    return sessionStorage.getItem('token');
+  }
+
   signin(username: string, password: string): Observable<any> {
     return this.http
       .post(`${this.baseUrl}/authenticate`, { username, password })
       .pipe(
         tap((res) => {
-          if (res.token) {
-            // Lưu jwt token vào sessionStorage
-            sessionStorage.setItem("jwtToken", res.token);
-            this.jwtToken = res.token;
+          if (res.data.token) {
+            if (res && res.data && res.data.token) {
+              // Lưu jwt token vào sessionStorage
+              sessionStorage.setItem("token", res.data.token);
+              this.jwtToken = res.data.token;
           }
+        }
         })
       );
   }

@@ -32,7 +32,7 @@ const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent },
   { path: 'list-cleaner', component: ListCleanerComponent },
   { path: 'list-customer', component: ListCustomerComponent },
-  { path: 'user-profile', component: UserProfileComponent },
+  { path: 'user-profile/:id', component: UserProfileComponent },
   { path: 'customer-profile', component: CustomerProfileComponent },
   { path: 'history', component: HistoryComponent },
   { path: 'customer-history', component: CustomerHistoryComponent },

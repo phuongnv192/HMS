@@ -1,20 +1,23 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { AuthService } from "src/app/services/auth.service";
+import { CleanerService } from "src/app/services/cleaner.service";
 // import { ApiService } from 'src/app/services/api.service';
 // import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
-  selector: 'app-user-profile',
-  templateUrl: './user-profile.component.html',
-  styleUrls: ['./user-profile.component.scss']
+  selector: "app-user-profile",
+  templateUrl: "./user-profile.component.html",
+  styleUrls: ["./user-profile.component.scss"],
 })
 export class UserProfileComponent implements OnInit {
   cleanerId: any;
   averageRating: any;
-  name: any
-  dob: any
+  name: any;
+  dob: any;
   gender: any;
-  address: any
-  status: any
+  address: any;
+  status: any;
   activityYear: any;
   ratingNumber: any;
   data: any;
@@ -28,48 +31,54 @@ export class UserProfileComponent implements OnInit {
   jwtToken: any;
 
   // private authService: AuthService, private apiService: ApiService
-  constructor() { }
+  constructor(
+    private authService: AuthService,
+    private cleanService: CleanerService,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit() {
-    // this.jwtToken = this.authService.getJwtToken();
-    // console.log("this.jwtToken", this.jwtToken);
-    // this.apiService.getUsers().subscribe( data => {
-    //   this.data = data;
-    // })
-    this.data = {
-      "ratingOverview": {
-        "cleanerId": 1,
-        "name": "Nguyen Hoang Anh",
-        "idCard": "0123456789",
-        "email": "abc@gmail.com",
-        "phoneNumber": 84966069299,
-        "status": "active",
-        "branch": 1,
-        "activityYear": 0,
-        "averageRating": 5,
-        "ratingNumber": 2
-      },
-      "history": [
-        {
-          "name": "Booking guest name",
-          "ratingScore": 5,
-          "workDate": "13/11/2023",
-          "houseType": "APARTMENT",
-          "floorNumber": 12,
-          "floorArea": 120.0,
-          "review": "Làm việc tích cực, nhanh gọn và sạch sẽ. Thái độ chuyên nghiệp và tỉ mỉ. Rất hài lòng."
-        },
-        {
-          "name": "Booking guest name",
-          "ratingScore": 5,
-          "workDate": "13/11/2023",
-          "houseType": "APARTMENT",
-          "floorNumber": 12,
-          "floorArea": 120.0,
-          "review": "good"
-        }
-      ]
-    }
+    this.jwtToken = this.authService.getJwtToken();
+    console.log("this.jwtToken", this.jwtToken);
+    let id = this.route.snapshot.paramMap.get('id');
+    this.cleanService.getEmployeeById(id).subscribe( data => {
+      this.data = data;
+    })
+    // this.data = {
+    //   ratingOverview: {
+    //     cleanerId: 1,
+    //     name: "Nguyen Hoang Anh",
+    //     idCard: "0123456789",
+    //     email: "abc@gmail.com",
+    //     phoneNumber: 84966069299,
+    //     status: "active",
+    //     branch: 1,
+    //     activityYear: 0,
+    //     averageRating: 5,
+    //     ratingNumber: 2,
+    //   },
+    //   history: [
+    //     {
+    //       name: "Booking guest name",
+    //       ratingScore: 5,
+    //       workDate: "13/11/2023",
+    //       houseType: "APARTMENT",
+    //       floorNumber: 12,
+    //       floorArea: 120.0,
+    //       review:
+    //         "Làm việc tích cực, nhanh gọn và sạch sẽ. Thái độ chuyên nghiệp và tỉ mỉ. Rất hài lòng.",
+    //     },
+    //     {
+    //       name: "Booking guest name",
+    //       ratingScore: 5,
+    //       workDate: "13/11/2023",
+    //       houseType: "APARTMENT",
+    //       floorNumber: 12,
+    //       floorArea: 120.0,
+    //       review: "good",
+    //     },
+    //   ],
+    // };
     //   [
     //   {
     //     "cleanerId": 1,
@@ -118,7 +127,9 @@ export class UserProfileComponent implements OnInit {
     this.name = this.data.ratingOverview.name;
     this.email = this.data.ratingOverview.email;
     this.phoneNumber = this.data.ratingOverview.phoneNumber;
-    this.address = this.data.ratingOverview.address ? this.data.ratingOverview.address : null;
+    this.address = this.data.ratingOverview.address
+      ? this.data.ratingOverview.address
+      : null;
     this.idCard = this.data.ratingOverview.idCard;
     // this.dob = this.data.ratingOverview.dob;
     this.status = this.data.ratingOverview.status;
@@ -127,7 +138,6 @@ export class UserProfileComponent implements OnInit {
     this.ratingNumber = this.data.ratingOverview.ratingNumber;
     this.review = this.data.history[0].review;
     this.history = this.data.history;
-
   }
 
   generateStarRating(rating: number): string {
@@ -143,10 +153,8 @@ export class UserProfileComponent implements OnInit {
       stars.push('<i class="fas fa-star-half-alt"></i>');
     }
 
-    return stars.join('');
+    return stars.join("");
   }
 
-  showMore(id: any) {
-
-  }
+  showMore(id: any) {}
 }
