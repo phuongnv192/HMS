@@ -7,6 +7,7 @@ import com.module.project.dto.TransactionStatus;
 import com.module.project.dto.request.ChangePasswordRequest;
 import com.module.project.dto.request.SubmitReviewRequest;
 import com.module.project.dto.request.UserInfoRequest;
+import com.module.project.dto.response.ListUserResponse;
 import com.module.project.exception.HmsErrorCode;
 import com.module.project.exception.HmsException;
 import com.module.project.exception.HmsResponse;
@@ -25,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -54,6 +56,24 @@ public class UserService {
         List<Booking> bookings = bookingRepository.findAllByUser(user);
         user.setBookings(new HashSet<>(bookings));
         return HMSUtil.buildResponse(ResponseCode.SUCCESS, user);
+    }
+
+    public HmsResponse<List<ListUserResponse>> getUsers(String roleName) {
+        if (!RoleEnum.ADMIN.name().equals(roleName)) {
+            throw new HmsException(HmsErrorCode.INVALID_REQUEST, "user dont have permission to execute");
+        }
+        List<User> userList = userRepository.findAll();
+        List<ListUserResponse> response = new ArrayList<>();
+        for (User user : userList) {
+            ListUserResponse userResponse = ListUserResponse.builder()
+                    .userId(user.getId())
+                    .username(user.getUsername())
+                    .fullName(HMSUtil.convertToFullName(user.getFirstName(), user.getLastName()))
+                    .build();
+            response.add(userResponse);
+        }
+        return HMSUtil.buildResponse(ResponseCode.SUCCESS, response);
+
     }
 
     public HmsResponse<User> updateUserInfo(UserInfoRequest request, String userId, String roleName) {

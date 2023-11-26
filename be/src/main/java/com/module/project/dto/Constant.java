@@ -9,6 +9,7 @@ public interface Constant {
     String USER_CHANGE_PASSWORD = "/user/change-password";
     String USER_INFO = "/user/info";
     String USER_INFO_BY_ID = "/user/{id}";
+    String USERS = "/users";
     String VERIFY = "/verify";
     String BOOKING = "/booking";
     String BOOKING_DETAIL = "/booking/detail";

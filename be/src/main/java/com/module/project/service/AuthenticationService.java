@@ -60,7 +60,7 @@ public class AuthenticationService {
             log.error("error when send email verify account {}", request.getUsername());
         }
         return HMSUtil.buildResponse(ResponseCode.SUCCESS, AuthenticationResponse.builder()
-                .message(HttpStatus.CREATED.getReasonPhrase())
+                .message("Please check your mail to verify your account")
                 .build());
         }
 
@@ -82,6 +82,9 @@ public class AuthenticationService {
         var user = userRepository.findByUsername(request.getUsernameOrEmail())
                 .orElseGet(() -> userRepository.findByEmail(request.getUsernameOrEmail())
                 .orElseThrow());
+        if (Constant.COMMON_STATUS.INACTIVE.equals(user.getStatus())) {
+                throw new HmsException(HmsErrorCode.INTERNAL_SERVER_ERROR, "user has not been active yet");
+        }        
         var jwtToken = jwtService.generateToken(user);
                 revokeAllUserTokens(user);
                 saveUserToken(user, jwtToken);

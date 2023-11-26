@@ -14,20 +14,27 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.module.project.dto.Constant.USER_SUBMIT_REVIEW;
 import static com.module.project.dto.Constant.USER_INFO_BY_ID;
 import static com.module.project.dto.Constant.API_V1;
+import static com.module.project.dto.Constant.USERS;
 import static com.module.project.dto.Constant.USER_CHANGE_PASSWORD;
 import static com.module.project.dto.Constant.USER_INFO;
+import static com.module.project.dto.Constant.USER_SUBMIT_REVIEW;
 
 @RestController
 @RequestMapping(API_V1)
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+
+    @GetMapping(USERS)
+    public ResponseEntity<Object> getUsers(HttpServletRequest httpServletRequest) {
+        String roleName = (String) httpServletRequest.getAttribute(ClaimEnum.ROLE_NAME.name);
+        return ResponseEntity.ok(userService.getUsers(roleName));
+    }
+
 
     @GetMapping(USER_INFO)
     public ResponseEntity<Object> getUserInfo(HttpServletRequest httpServletRequest) {
