@@ -29,6 +29,7 @@ export class UserProfileComponent implements OnInit {
   history: any;
   review: any;
   jwtToken: any;
+  cleaner: any;
 
   // private authService: AuthService, private apiService: ApiService
   constructor(
@@ -42,8 +43,12 @@ export class UserProfileComponent implements OnInit {
     console.log("this.jwtToken", this.jwtToken);
     let id = this.route.snapshot.paramMap.get('id');
     this.cleanService.getEmployeeById(id).subscribe( data => {
+      this.cleaner = data;
+      this.cleanerId = data.id;
+    });
+    this.cleanService.getCleanerHistoryDetail(id).subscribe( data => {
       this.data = data;
-    })
+    });
     // this.data = {
     //   ratingOverview: {
     //     cleanerId: 1,

@@ -1,9 +1,12 @@
+<!-- Màn hình guest/customer -->
 <div *ngIf="false">
     <app-navbar></app-navbar>
     <!-- Sidenav -->
     <router-outlet></router-outlet>
     <app-footer></app-footer>
 </div>
+
+<!-- Màn hình quản lý -->
 <div *ngIf="true">
     <app-sidebar></app-sidebar>
     <!-- [ngClass]="{'main-content':adminNavbar===true}" -->

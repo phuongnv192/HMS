@@ -92,6 +92,7 @@ import { AuthInterceptor } from "./core/authenticator";
     { provide: MatDialogRef, useValue: {} },
   ],
   bootstrap: [AppComponent],
+  entryComponents: [BookingDetailDialog, CalendarDialog, TermAndConditionDialog, PickCleanerDialog, CleanerRateDialog],
   exports: [],
 })
 export class AppModule {}

@@ -1,3 +1,4 @@
+<!-- Màn hình guest/customer -->
 <nav *ngIf="false" id="navbar-main"
   class="navbar navbar-main navbar-expand-lg navbar-transparent navbar-light headroom headroom--top headroom--pinned">
   <div class="container">
@@ -33,10 +34,10 @@
             <span class="nav-link-inner--text">Trang chủ</span>
           </a>
           <div class="dropdown-menu">
-            <a [routerLink]="['/introduction']" class="dropdown-item">Introduction</a>
-            <a [routerLink]="['/user-profile']" class="dropdown-item">Profile</a>
-            <a [routerLink]="['/login']" class="dropdown-item">Login</a>
-            <a [routerLink]="['/register']" class="dropdown-item">Register</a>
+            <a [routerLink]="['/introduction']" class="dropdown-item">Giới thiệu</a>
+            <a [routerLink]="['/user-profile']" class="dropdown-item">Thông tin cá nhân</a>
+            <a [routerLink]="['/login']" class="dropdown-item">Đăng nhập</a>
+            <a [routerLink]="['/register']" class="dropdown-item">Đăng ký</a>
           </div>
         </li>
         <li class="nav-item dropdown">
@@ -140,7 +141,7 @@
   </div>
 </nav>
 
-<!-- NAVBAR - ADMIN SCREEN -->
+<!-- NAVBAR - ADMIN / Quản lý -->
 <nav *ngIf="true" class="navbar navbar-top navbar-expand-md navbar-dark" id="navbar-main">
   <div class="container-fluid">
     <!-- Brand -->
@@ -177,6 +178,14 @@
           <a routerLinkActive="active" [routerLink]="['/user-profile']" class="dropdown-item">
             <i class="ni ni-single-02"></i>
             <span>Xem thông tin</span>
+          </a>
+          <a routerLinkActive="active" [routerLink]="['/customer-schedule']" class="dropdown-item">
+            <i class="ni ni-single-02"></i>
+            <span>Xem lịch đẵ đặt</span>
+          </a>
+          <a routerLinkActive="active" [routerLink]="['/customer-history']" class="dropdown-item">
+            <i class="ni ni-single-02"></i>
+            <span>Xem lịch sử đặt hàng</span>
           </a>
           <a routerLinkActive="active" [routerLink]="['/change-pass']" class="dropdown-item">
             <i class="ni ni-calendar-grid-58"></i>

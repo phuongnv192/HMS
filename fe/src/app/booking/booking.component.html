@@ -97,13 +97,13 @@
                     </select>
                   </div>
                   <h6 class="text-primary text-uppercase">Tiện ích bổ sung</h6>
-                  <p class="description" style="margin-bottom: 5px;">Các loại hình dịch vụ tiện ích bổ sung là bao gồm
+                  <p class="description">Các loại hình dịch vụ tiện ích bổ sung là bao gồm
                     các khu vực và thiết bị không bao gồm trong dịch vụ dọn dẹp.</p>
                   <div class="extension-service">
                     <span *ngFor="let extends of serviceExtend" [value]="extends" class="badge badge-pill badge-primary"
                       (click)="extendsDialog()">{{extends.name}}</span>
                     <p class="listAdvanceService" style="padding-top: 1rem;" *ngIf="true">* Danh sách tiện ích đã đăng
-                      ký: <span style="font-weight: 700; font-size: 13px; color: blue;">{{
+                      ký: <span style="font-weight: 700; font-size: 14px; color: blue;">{{
                         listAdvanceService
                         }}</span></p>
                   </div>
@@ -157,7 +157,7 @@
                   </div>
                   <h6 class="text-primary text-uppercase">Ghi chú</h6>
                   <div class="note-section">
-                    <textarea [(ngModel)]="note" rows="4"
+                    <textarea style="width: 80%;" [(ngModel)]="note" rows="4"
                       placeholder="Nhập ghi chú của bạn cho dịch vụ đăng ký"></textarea>
                   </div>
                   <div class="term-and-conditions">
@@ -169,7 +169,7 @@
                       <div class="payment-form-iframe">
                         <term-and-conditions></term-and-conditions>
                       </div>
-                      <div class="center">
+                      <div class="note-term">
                         <div class="m_row">
                           <div class="col-xs-12">
                             <p class="box_title2">
@@ -190,7 +190,7 @@
                     </div>
                   </div>
                 </div>
-                <div style="padding-top: 30px; display: flex;">
+                <div class="button-payment">
                   <div
                     style="text-align: end; justify-content: center; margin-right: 3rem; width: 80%; padding-top: 10px;">
                     Tổng tiền:
@@ -198,14 +198,9 @@
                     <!-- {{totalAmount}} -->
                     VNĐ
                   </div>
-                  <button style="width: 20%; text-align: end; margin-right: 3rem;" (click)="Order()" [disabled]="
-                    !validPayment ||
-                    !termAndCondition
-                  " [class.disabled]="
-                    !validPayment ||
-                    !termAndCondition">
-                    <a href="" class="btn btn-primary">Đặt
-                      lịch</a>
+                  <button class="btn btn-primary btn-pay" (click)="Order()"
+                    [class.disabled]=" !validPayment || !termAndCondition">
+                    Đặt lịch
                   </button>
                 </div>
 

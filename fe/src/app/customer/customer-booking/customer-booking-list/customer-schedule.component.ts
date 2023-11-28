@@ -3,7 +3,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { BookingDetailDialog } from 'src/app/employee/schedule/booking-detail-dialog/booking-detail-dialog';
 import { ApiService } from 'src/app/services/api.service';
 import { AuthService } from 'src/app/services/auth.service';
-import { DialogService } from 'src/app/services/dialog.service';
+// import { DialogService } from 'src/app/services/dialog.service';
 // import { BookingDetailDialog } from '../schedule/booking-detail-dialog/booking-detail-dialog';
 
 export interface BookingDetailNoteData {
@@ -33,6 +33,7 @@ export class CustomerScheduleComponent implements OnInit {
 
   constructor(
     public dialog: MatDialog, private renderer: Renderer2,
+    // private dialogService: DialogService
     public dialogRef: MatDialogRef<BookingDetailDialog>
   ) { }
 

@@ -5,7 +5,7 @@ import { Component, Inject, OnDestroy } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
-import { DialogService } from 'src/app/services/dialog.service';
+// import { DialogService } from 'src/app/services/dialog.service';
 import { CleanerRateDialog } from '../cleaner-rate-dialog/cleaner-rate-dialog';
 
 
@@ -25,7 +25,7 @@ export class PickCleanerDialog implements OnDestroy, OnInit {
     private sanitizer: DomSanitizer,
     private _activated: ActivatedRoute,
     public dialog: MatDialog, private renderer: Renderer2,
-    private dialogService: DialogService,
+    // private dialogService: DialogService,
     public dialogRef: MatDialogRef<CleanerRateDialog>,
     public cleanerDialogRef: MatDialogRef<PickCleanerDialog>,
     @Inject(MAT_DIALOG_DATA) public data: PickCleanerData) {
@@ -45,7 +45,7 @@ export class PickCleanerDialog implements OnDestroy, OnInit {
   }
 
   cleanerRateDetail() {
-    this.dialogService.sendDataDialog(true);
+    // this.dialogService.sendDataDialog(true);
     this.renderer.addClass(document.body, 'modal-open');
     this.dialogRef = this.dialog.open(CleanerRateDialog, {
       width: '400px',
@@ -59,7 +59,7 @@ export class PickCleanerDialog implements OnDestroy, OnInit {
     this.dialogRef.afterClosed().subscribe(result => {
       // console.log('The dialog was closed');
       this.renderer.removeClass(document.body, 'modal-open');
-      this.dialogService.sendDataDialog(false);
+      // this.dialogService.sendDataDialog(false);
     });
   }
 

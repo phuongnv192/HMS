@@ -2,7 +2,7 @@ import { Component, OnInit, Renderer2 } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ApiService } from 'src/app/services/api.service';
 import { AuthService } from 'src/app/services/auth.service';
-import { DialogService } from 'src/app/services/dialog.service';
+//import { DialogService } from 'src/app/services/dialog.service';
 import { BookingDetailDialog } from './booking-detail-dialog/booking-detail-dialog';
 
 export interface BookingDetailNoteData {
@@ -167,8 +167,8 @@ export class ScheduleComponent implements OnInit {
     // if (this.dialogRef) {
     this.renderer.addClass(document.body, 'modal-open');
     this.dialogRef = this.dialog.open(BookingDetailDialog, {
-      width: '600px',
-      maxHeight: '80%',
+      width: '900px',
+      maxHeight: '60%',
       data: {
         id: id,
         detail: this.data,

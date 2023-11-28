@@ -34,7 +34,7 @@
 
 */
 
-
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
 
 :root {
     --blue: #5e72e4;

@@ -2,7 +2,7 @@ import { Component, ElementRef, Inject, OnInit, Renderer2, ViewChild } from '@an
 import { Router } from '@angular/router';
 import { NgbDateStruct, NgbDate } from '@ng-bootstrap/ng-bootstrap';
 import { format, isAfter, isBefore, subMonths } from 'date-fns';
-import { DialogService } from 'src/app/services/dialog.service';
+// import { DialogService } from 'src/app/services/dialog.service';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CalendarDialog } from './calendar-dialog/calendar-dialog';
 import { PickCleanerDialog } from './pick-cleaner-dialog/pick-cleaner-dialog';
@@ -94,7 +94,7 @@ export class BookingComponent implements OnInit {
   private TermsDialogRef: any;
   private termCondition: any;
   totalAmount: any;
-  validPayment: any;
+  validPayment = true;
   @ViewChild("termsDiv") termsDiv: ElementRef<HTMLElement>;
   data: any;
   dataCleaner: any;
@@ -111,7 +111,7 @@ export class BookingComponent implements OnInit {
   constructor(
     private router: Router,
     public dialog: MatDialog, private renderer: Renderer2,
-    private dialogService: DialogService,
+    // private dialogService: DialogService,
     public dialogRef: MatDialogRef<CalendarDialog>,
     public cleanerDialogRef: MatDialogRef<PickCleanerDialog>
   ) {
@@ -227,7 +227,7 @@ export class BookingComponent implements OnInit {
   }
 
   pickCalendar(): void {
-    this.dialogService.sendDataDialog(true);
+    // this.dialogService.sendDataDialog(true);
     this.renderer.addClass(document.body, 'modal-open');
     this.dialogRef = this.dialog.open(CalendarDialog, {
       width: '600px',
@@ -242,7 +242,7 @@ export class BookingComponent implements OnInit {
     this.dialogRef.afterClosed().subscribe(result => {
       // console.log('The dialog was closed');
       this.renderer.removeClass(document.body, 'modal-open');
-      this.dialogService.sendDataDialog(false);
+      // this.dialogService.sendDataDialog(false);
     });
   }
 
@@ -263,7 +263,7 @@ export class BookingComponent implements OnInit {
   }
 
   pickCleaner() {
-    this.dialogService.sendDataDialog(true);
+    // this.dialogService.sendDataDialog(true);
     this.renderer.addClass(document.body, 'modal-open');
     this.cleanerDialogRef = this.dialog.open(PickCleanerDialog, {
       width: '600px',
@@ -277,7 +277,7 @@ export class BookingComponent implements OnInit {
     this.cleanerDialogRef.afterClosed().subscribe(result => {
       // console.log('The dialog was closed');
       this.renderer.removeClass(document.body, 'modal-open');
-      this.dialogService.sendDataDialog(false);
+      // this.dialogService.sendDataDialog(false);
     });
   }
 

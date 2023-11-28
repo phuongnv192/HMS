@@ -4,7 +4,7 @@ import { OnInit, Renderer2 } from '@angular/core';
 import { Component, Inject, OnDestroy } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 
-import { DialogService } from 'src/app/services/dialog.service';
+// import { DialogService } from 'src/app/services/dialog.service';
 
 @Component({
   selector: 'app-cleaner-rate-dialog',
@@ -20,7 +20,7 @@ export class CleanerRateDialog implements OnDestroy, OnInit {
 
   constructor(
     public dialog: MatDialog, private renderer: Renderer2,
-    private dialogService: DialogService,
+    // private dialogService: DialogService,
     public cleanerDialogRef: MatDialogRef<CleanerRateDialog>,
     @Inject(MAT_DIALOG_DATA) public data: CleanerData) {
   }
