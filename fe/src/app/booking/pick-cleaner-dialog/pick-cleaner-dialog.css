@@ -59,9 +59,11 @@ h6 {
   background: #fff;
   border-radius: 0 0 3px 3px;
   padding: 15px 10px;
-  height: calc(100vh - 225px);
+/* height: calc(100vh - 225px); */;
   overflow-y: scroll;
   overflow-x: hidden;
+  min-height: 325px !important;
+
 }
 
 .content-item {

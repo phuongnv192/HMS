@@ -2,7 +2,7 @@ import { Component, OnInit, Renderer2 } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ApiService } from 'src/app/services/api.service';
 import { AuthService } from 'src/app/services/auth.service';
-//import { DialogService } from 'src/app/services/dialog.service';
+// import { DialogService } from 'src/app/services/dialog.service';
 import { BookingDetailDialog } from './booking-detail-dialog/booking-detail-dialog';
 
 export interface BookingDetailNoteData {
@@ -162,9 +162,6 @@ export class ScheduleComponent implements OnInit {
   }
 
   viewDetailinSchedule(id: any, showtime: string) {
-    // this.dialogService.sendDataDialog(true);
-    console.log('document.body:', document.body); // Kiểm tra xem document.body có tồn tại hay không
-    // if (this.dialogRef) {
     this.renderer.addClass(document.body, 'modal-open');
     this.dialogRef = this.dialog.open(BookingDetailDialog, {
       width: '900px',
@@ -177,16 +174,11 @@ export class ScheduleComponent implements OnInit {
       },
       panelClass: ['view-detail']
     });
-    console.log('this.dialogRef', this.dialogRef);
 
     this.dialogRef.afterClosed().subscribe(result => {
-      if (result) {
         console.log('The dialog was closed');
         this.renderer.removeClass(document.body, 'modal-open');
-        // this.dialogService.sendDataDialog(false);
-      }
     });
-    // }
   }
 
 }

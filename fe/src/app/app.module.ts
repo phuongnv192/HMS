@@ -41,6 +41,7 @@ import { ChangePassComponent } from "./auth/change-password/change-password.comp
 import { CustomerHistoryComponent } from "./customer/customer-booking/customer-booking-history/customer-history.component";
 import { CustomerScheduleComponent } from "./customer/customer-booking/customer-booking-list/customer-schedule.component";
 import { AuthInterceptor } from "./core/authenticator";
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -81,6 +82,7 @@ import { AuthInterceptor } from "./core/authenticator";
     HttpClientModule,
     IvyCarouselModule,
     MatDialogModule,
+    BrowserAnimationsModule
   ],
   providers: [
     {
