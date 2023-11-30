@@ -99,11 +99,14 @@
                   <h6 class="text-primary text-uppercase">Tiện ích bổ sung</h6>
                   <p class="description">Các loại hình dịch vụ tiện ích bổ sung là bao gồm
                     các khu vực và thiết bị không bao gồm trong dịch vụ dọn dẹp.</p>
+                  <p class="description">Sau đây là <u style="font-size: 14px; font-weight: 600;">Bảng giá</u> các loại
+                    hình dịch vụ tiện
+                    ích HSM cũng cấp:</p>
                   <div class="extension-service">
                     <span *ngFor="let extends of serviceExtend" [value]="extends" class="badge badge-pill badge-primary"
                       (click)="extendsDialog()">{{extends.name}}</span>
                     <p class="listAdvanceService" style="padding-top: 1rem;" *ngIf="true">* Danh sách tiện ích đã đăng
-                      ký: <span style="font-weight: 700; font-size: 14px; color: blue;">{{
+                      ký: <span style="font-weight: 700; font-size: 15px; color: darkred;">{{
                         listAdvanceService
                         }}</span></p>
                   </div>
@@ -112,7 +115,7 @@
                   <p class="description" style="margin-bottom: 5px;">Có 2 sự lựa chọn cho khách hàng khi sử dụng dịch vụ
                     dọn dẹp đó là: <b>Sử dụng duy nhất</b> và <b>định kỳ</b></p>
                   <div class="input-group">
-                    <p style="width: 25%;">Hình thức sử dụng: </p>
+                    <p style="width: 20%;">Hình thức sử dụng: </p>
                     <select [(ngModel)]="selectedTimeType" id="timeType" aria-describedby="timeType-help"
                       title="Loại hình thức thời gian">
                       <option *ngFor="let time of timeTypes" [value]="time">{{ time }}</option>

@@ -37,7 +37,7 @@ export class BookingComponent implements OnInit {
 
   showDatePicker = false;
   selectedDate: NgbDateStruct;
-  listAdvanceService = "Vệ sinh máy giặt không tháo lồng x 2, Vệ sinh tủ lạnh dung tích 90-160 lít x 3"
+  listAdvanceService = "Vệ sinh máy giặt, Vệ sinh tủ lạnh, Vệ sinh điều hòa"
   floors: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; // Mảng từ 1 đến 10
   houseTypes: string[] = ['Nhà đất', 'Chung cư'];
   serviceTypes: string[] = ['Tổng vệ sinh', 'Theo khu vực/Diện tích'];

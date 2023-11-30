@@ -22,6 +22,8 @@
 
 h6 {
   margin-top: 1.5rem;
+  font-size: 22px;
+  font-weight: 600;
 }
 
 #houseType {
@@ -66,7 +68,7 @@ h6 {
     width: 15%;
     height: 36px;
     font-size: 11px;
-    margin-right: 5rem;
+    margin-right: 3rem;
   }
 
   .showTime {
@@ -87,7 +89,7 @@ h6 {
   padding: 10px 0px 15px;
 
   h6 {
-    font-size: 12px;
+    font-size: 14px;
     line-height: 14px;
     text-align: left;
     color: #333;
@@ -176,7 +178,7 @@ h6 {
         width: 0;
       }
 
-      input:checked ~ .checkmark {
+      input:checked~.checkmark {
         background-color: #00529c;
         border: 1px solid #00529c;
       }
@@ -192,7 +194,7 @@ h6 {
         border: 1px solid #888;
       }
 
-      input:checked ~ .checkmark:after {
+      input:checked~.checkmark:after {
         display: block;
       }
 
@@ -291,7 +293,7 @@ h6 {
     padding: 15px;
 
     h6 {
-      //   font-size: 14px;
+      font-size: 14px;
     }
 
     .center {
@@ -336,4 +338,20 @@ h6 {
   width: 20%;
   margin-right: 3rem;
   text-align: center;
+}
+
+textarea::placeholder {
+  color: #999;
+  /* Chọn một màu mờ nhạt bạn muốn */
+  opacity: 0.7;
+  /* Điều chỉnh độ mờ nhạt của chữ */
+  padding: 0.5rem;
+}
+
+input::placeholder {
+  color: #999;
+  /* Chọn một màu mờ nhạt bạn muốn */
+  opacity: 0.7;
+  /* Điều chỉnh độ mờ nhạt của chữ */
+  padding: 0.5rem;
 }

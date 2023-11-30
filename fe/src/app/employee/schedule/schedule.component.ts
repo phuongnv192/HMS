@@ -4,6 +4,7 @@ import { ApiService } from 'src/app/services/api.service';
 import { AuthService } from 'src/app/services/auth.service';
 // import { DialogService } from 'src/app/services/dialog.service';
 import { BookingDetailDialog } from './booking-detail-dialog/booking-detail-dialog';
+import { BookingService } from 'src/app/services/booking.service';
 
 export interface BookingDetailNoteData {
   id: any;
@@ -29,13 +30,22 @@ export class ScheduleComponent implements OnInit {
   searchHouseType: string;
   dateList: any;
   dateSchedule: any[];
+  bookingDetail: any;
+  bookingList: any;
+  apiBookingDetailExecuted = false;
 
   constructor(
     public dialog: MatDialog, private renderer: Renderer2,
-    public dialogRef: MatDialogRef<BookingDetailDialog>
+    public dialogRef: MatDialogRef<BookingDetailDialog>,
+    private bookingService: BookingService
   ) { }
 
   ngOnInit() {
+
+    this.bookingService.getListBooking().subscribe((data) => {
+      this.bookingList = data;
+    });
+
     this.dateSchedule = [
       {
         id: 's1',
@@ -121,11 +131,24 @@ export class ScheduleComponent implements OnInit {
           "houseType": "VILLA",
           "floorNumber": 12,
           "floorArea": 120.0,
-          "review": "Khá là tuyệt. Nhanh nhẹn và thân thiện, dịch vụ chất lượng cao."
+          "review": "Khá là tuyệt. Nhanh nhẹn và thân thiện , dịch vụ chất lượng cao."
         }
       ]
     }
     this.schedule = this.data.history;
+  }
+
+  onClickButton(id: any) {
+    if (!this.apiBookingDetailExecuted) {
+      // Gọi API abc ở đây
+      this.bookingService.getBookingDetail().subscribe((data) => {
+        this.apiBookingDetailExecuted = true;
+        this.bookingDetail = data;
+      });
+    } else {
+      // Nếu đã thực hiện API abc, thực hiện các tác vụ khác trực tiếp
+      // this.performOtherTasks();
+    }
   }
 
   search() {
@@ -176,8 +199,8 @@ export class ScheduleComponent implements OnInit {
     });
 
     this.dialogRef.afterClosed().subscribe(result => {
-        console.log('The dialog was closed');
-        this.renderer.removeClass(document.body, 'modal-open');
+      console.log('The dialog was closed');
+      this.renderer.removeClass(document.body, 'modal-open');
     });
   }
 
