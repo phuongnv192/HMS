@@ -8,9 +8,10 @@ import { BookingService } from 'src/app/services/booking.service';
 
 export interface BookingDetailNoteData {
   id: any;
-  data: any;
-  dateList: any;
-  day: any;
+  review: any;
+  note: any;
+  name: string;
+  detail: any;
 }
 
 @Component({
@@ -43,64 +44,13 @@ export class ScheduleComponent implements OnInit {
   ngOnInit() {
 
     this.bookingService.getListBooking().subscribe((data) => {
-      this.bookingList = data;
+      console.log('aaaa');
+
+      this.bookingList = data.data;
+      console.log('this.bookingList', this.bookingList);
     });
 
-    this.dateSchedule = [
-      {
-        id: 's1',
-        name: 'Đơn dịch vụ #1',
-        workDate: ["11/20/2023", "11/27/2023", "12/04/2023", "12/11/2023"],
-        startTime: '8:30 AM',
-        endTime: '10:30 AM',
-        duration: '2',
-        serviceAddOnIds: []
-      },
-      {
-        id: 's2',
-        name: 'Đơn dịch vụ #2',
-        workDate: ["11/20/2023", "11/27/2023", "12/04/2023", "12/11/2023"],
-        startTime: '8:30 AM',
-        endTime: '10:30 AM',
-        duration: '2',
-        serviceAddOnIds: []
-      },
-      {
-        id: 's3',
-        name: 'Đơn dịch vụ #3',
-        workDate: ["11/20/2023", "11/21/2023", "11/22/2023", "11/23/2023", "11/24/2023", "11/25/2023", "11/26/2023", "11/27/2023", "11/28/2023"],
-        startTime: '8:30 AM',
-        endTime: '10:30 AM',
-        duration: '2',
-        serviceAddOnIds: []
-      }
-    ]
-    this.dateList = [
-      {
-        id: 'd1',
-        workDate: "12/20/2023",
-        name: 'Đơn dịch vụ ngày #1',
-        startTime: "08:00 AM",
-        endTime: "11:00 AM",
-        duration: 3
-      },
-      {
-        id: 'd2',
-        workDate: "12/21/2023",
-        name: 'Đơn dịch vụ ngày #2',
-        startTime: "09:00 AM",
-        endTime: "10:00 AM",
-        duration: 1
-      },
-      {
-        id: 'd1',
-        workDate: "12/22/2023",
-        name: 'Đơn dịch vụ ngày #3',
-        startTime: "03:00 PM",
-        endTime: "05:00 AM",
-        duration: 3
-      },
-    ]
+
     this.data = {
       "ratingOverview": {
         "cleanerId": 1,
@@ -138,17 +88,46 @@ export class ScheduleComponent implements OnInit {
     this.schedule = this.data.history;
   }
 
-  onClickButton(id: any) {
-    if (!this.apiBookingDetailExecuted) {
-      // Gọi API abc ở đây
-      this.bookingService.getBookingDetail().subscribe((data) => {
-        this.apiBookingDetailExecuted = true;
-        this.bookingDetail = data;
+  // onClickButton(id: any) {
+  //   if (!this.apiBookingDetailExecuted) {
+  //     // Gọi API abc ở đây
+  //     this.bookingService.getBookingDetail().subscribe((data) => {
+  //       this.apiBookingDetailExecuted = true;
+  //       this.bookingDetail = data;
+  //     });
+  //   } else {
+  //     // Nếu đã thực hiện API abc, thực hiện các tác vụ khác trực tiếp
+  //     // this.performOtherTasks();
+  //   }
+  // }
+
+  showDetail(id: any, review: any, note: any, name: string) {
+    let detail: any;
+    this.bookingService.getBookingDetail(id).subscribe((data) => {
+      detail = data.data;
+      console.log(222222222, detail);
+      this.renderer.addClass(document.body, 'modal-open');
+      this.dialogRef = this.dialog.open(BookingDetailDialog, {
+        width: '1500px',
+        maxHeight: '60%',
+        data: {
+          id: id,
+          review: review,
+          note: note,
+          name: name,
+          detail: detail
+        },
+        panelClass: ['view-detail']
       });
-    } else {
-      // Nếu đã thực hiện API abc, thực hiện các tác vụ khác trực tiếp
-      // this.performOtherTasks();
-    }
+
+      this.dialogRef.afterClosed().subscribe(result => {
+        console.log('The dialog was closed');
+        this.renderer.removeClass(document.body, 'modal-open');
+      });
+    });
+    console.log(111111111);
+
+
   }
 
   search() {

@@ -2,12 +2,43 @@
   <div class="dialog-container">
     <div class="header-background"></div>
     <div class="header">
-      <h6>ABC</h6>
+      <h6>Thông tin chi tiết đơn hàng</h6>
     </div>
-    <div class="content row">
+    <div class="content">
       <div class="content-scroll">
-        <div class="title_note"> XYZ </div>
+        <div class="title_note"> Tên đơn hàng <b>{{name}}</b></div>
+        <div class="table-responsive">
+          <div class="showtime-options">
+            <label> - {{date.name}}: <span>({{date.startTime}} - {{date.endTime}})</span></label>
+            <carousel height="87px" cellsToShow="7" *ngIf="date.workDate && date.workDate.length >= 7">
+              <div [ngClass]="{'selected':selectedDate===showtime}" class="carousel-cell"
+                *ngFor="let showtime of date.workDate" (click)="viewDetailinSchedule(date.id, showtime)">
+                <div class="left">{{getDay(showtime)}}</div>
+                <div class="right"><span>/{{getMonth(showtime)}}
+                  </span><span>{{getDateMonth(showtime)}}</span>
+                </div>
+              </div>
+            </carousel>
 
+            <div class="select-date-container" height="87px" cellsToShow="7"
+              *ngIf="date.workDate && date.workDate.length < 7">
+              <div [ngClass]="{'selected':selectedDate===showtime}" class="datetimeBtn"
+                *ngFor="let showtime of date.workDate" (click)="viewDetailinSchedule(date.id, showtime)">
+                <div class="left">{{getDay(showtime)}}</div>
+                <div class="right"><span>/{{getMonth(showtime)}}
+                  </span><span>{{getDateMonth(showtime)}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- <div class="table-responsive" style="margin-top: 2rem;">
+          <div class="showtime-bydate" *ngFor="let date of dateList">
+            <span> - {{date.name}}: ({{date.startTime}} - {{date.endTime}}): </span>
+            <span style="font-weight: 700; font-size: 16px"> {{date.workDate}} </span>
+            <u (click)="viewDetailinSchedule(date.id, date.workDate)"> (Xem chi tiết)</u>
+          </div>
+        </div> -->
       </div>
     </div>
     <button mat-button class="button" (click)="onNoClick()"><img src="./assets/img/x-dialog.svg" /></button>

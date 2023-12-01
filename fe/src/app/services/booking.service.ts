@@ -22,8 +22,24 @@ export class BookingService {
   //   return this.http.post<any>(`${this.baseUrl}/cleaner/history/detail`, { id });
   // }
 
-  getBookingDetail(): Observable<any> {
-    return this.http.get<any>('assets/data/booking-detail.json');
+  getBookingDetail(id: any): Observable<any> {
+    if (id == 1) {
+      return this.http.get<any>('assets/data/booking-detail.json');
+    } else if (id == 2) {
+      return this.http.get<any>('assets/data/booking-detail2.json');
+    } else if (id == 3) {
+      return this.http.get<any>('assets/data/booking-detail3.json');
+    } else if (id == 4) {
+      return this.http.get<any>('assets/data/booking-detail4.json');
+    } else if (id == 5) {
+      return this.http.get<any>('assets/data/booking-detail5.json');
+    } else if (id == 6) {
+      return this.http.get<any>('assets/data/booking-detail6.json');
+    } else if (id == 7) {
+      return this.http.get<any>('assets/data/booking-detail7.json');
+    } else if (id == 8) {
+      return this.http.get<any>('assets/data/booking-detail8.json');
+    }
   }
 
   getListBooking(): Observable<any> {
