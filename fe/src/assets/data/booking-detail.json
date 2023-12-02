@@ -5,13 +5,13 @@
         "bookingId": 1,
         "hostName": "duongpl",
         "hostPhone": "0929192292",
-        "hostAddress": "hostAddress",
+        "hostAddress": "Số 29 Ngọc Khánh, Ba Đình, Hà Nội",
         "hostDistance": "12",
-        "houseType": "APARTMENT",
+        "houseType": "Chung cư",
         "floorNumber": 2,
         "floorArea": 60.0,
         "bookingTransactionId": 1,
-        "serviceTypeName": "Monthly on the basis",
+        "serviceTypeName": "Định kỳ theo tháng",
         "servicePackageName": "6",
         "totalBookingPrice": 7020000.0,
         "totalBookingCleaner": 2,
@@ -24,17 +24,39 @@
                 "scheduleId": 1,
                 "workDate": "2023-11-28",
                 "dayOfTheWeek": null,
-                "startTime": null,
-                "endTime": null,
+                "startTime": "09:00 AM",
+                "endTime": "11:30 AM",
                 "status": "RECEIVED",
                 "ratingScore": null,
                 "updateDate": "2023-11-28T12:05:34.735+00:00",
                 "updateBy": 1,
                 "totalSchedulePrice": 2000000.0,
-                "paymentStatus": null,
+                "paymentStatus": "Chưa thanh toán",
                 "paymentNote": null,
                 "cashbackStatus": null,
-                "serviceAddOns": []
+                "serviceAddOns": [
+                    {
+                        "id": 1,
+                        "name": "Vệ sinh tủ lạnh",
+                        "parentId": 1,
+                        "price": 20000,
+                        "status": "ACTIVE"
+                    },
+                    {
+                        "id": 2,
+                        "name": "Dọn phòng gác/tầng trệt",
+                        "parentId": 1,
+                        "price": 20000,
+                        "status": "ACTIVE"
+                    },
+                    {
+                        "id": 3,
+                        "name": "Vệ sinh và bảo trì máy giặt lồng",
+                        "parentId": 1,
+                        "price": 20000,
+                        "status": "ACTIVE"
+                    }
+                ]
             },
             {
                 "scheduleId": 2,
@@ -75,6 +97,20 @@
                 "paymentNote": null,
                 "cashbackStatus": null,
                 "serviceAddOns": [
+                    {
+                        "id": 3,
+                        "name": "Vệ sinh và bảo trì máy giặt lồng",
+                        "parentId": 1,
+                        "price": 20000,
+                        "status": "ACTIVE"
+                    },
+                    {
+                        "id": 3,
+                        "name": "Vệ sinh và bảo trì máy giặt lồng",
+                        "parentId": 1,
+                        "price": 20000,
+                        "status": "ACTIVE"
+                    },
                     {
                         "id": 3,
                         "name": "Vệ sinh và bảo trì máy giặt lồng",

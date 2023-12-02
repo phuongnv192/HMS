@@ -17,6 +17,17 @@ export class BookingDetailDialog implements OnInit, OnDestroy {
   selectedDate: any;
   date: any;
   public name: any;
+  public id: any;
+  detail: any;
+  scheduleDay: any;
+  scheduleDayTime: any;
+  scheduleStartTime: any;
+  scheduleEndTime: any;
+  schedulePaymentStatus: any;
+  schedulePaymentNote: any;
+  scheduleAddOns: any;
+  namesOfScheduleDay: any;
+  scheduleDayList: any;
 
 
   constructor(
@@ -28,35 +39,26 @@ export class BookingDetailDialog implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     console.log('BookingDetailDialog oninit');
-    this.dateSchedule = [
-      {
-        id: '1',
-        name: 'Đơn dịch vụ #1',
-        workDate: ["11/20/2023", "11/27/2023", "12/04/2023", "12/11/2023"],
-        startTime: '8:30 AM',
-        endTime: '10:30 AM',
-        duration: '2',
-        serviceAddOnIds: []
-      },
-      {
-        id: '2',
-        name: 'Đơn dịch vụ #2',
-        workDate: ["11/20/2023", "11/27/2023", "12/04/2023", "12/11/2023"],
-        startTime: '8:30 AM',
-        endTime: '10:30 AM',
-        duration: '2',
-        serviceAddOnIds: []
-      },
-      {
-        id: '3',
-        name: 'Đơn dịch vụ #3',
-        workDate: ["11/20/2023", "11/21/2023", "11/22/2023", "11/23/2023", "11/24/2023", "11/25/2023", "11/26/2023", "11/27/2023", "11/28/2023"],
-        startTime: '8:30 AM',
-        endTime: '10:30 AM',
-        duration: '2',
-        serviceAddOnIds: []
-      }
-    ]
+    this.id = this.data.id;
+    this.detail = this.data.detail;
+    console.log("name", this.detail);
+
+    // }
+
+    // this.dateSchedule = [
+    //   {
+    //     id: '1',
+    //     workDate: ["11/20/2023", "11/27/2023", "12/04/2023", "12/11/2023"],
+    //   },
+    //   {
+    //     id: '2',
+    //     workDate: ["11/20/2023", "11/27/2023", "12/04/2023", "12/11/2023"],
+    //   },
+    //   {
+    //     id: '3',
+    //     workDate: ["11/20/2023", "11/21/2023", "11/22/2023", "11/23/2023", "11/24/2023", "11/25/2023", "11/26/2023", "11/27/2023", "11/28/2023"],
+    //   }
+    // ]
     this.dateList = [
       {
         id: 'd1',
@@ -84,9 +86,26 @@ export class BookingDetailDialog implements OnInit, OnDestroy {
       },
     ]
 
+
+    this.scheduleDay = this.data.detail.scheduleList[0];
+
+    // .workDate;
+    // this.scheduleStartTime = this.data.detail.scheduleList[0].startTime;
+    // this.scheduleEndTime = this.data.detail.scheduleList[0].endTime;
+    // this.schedulePaymentStatus = this.data.detail.scheduleList[0].paymentStatus;
+    // this.schedulePaymentNote = this.data.detail.scheduleList[0].paymentNote;
+    this.scheduleAddOns = this.data.detail.scheduleList[0].serviceAddOns;
+    this.namesOfScheduleDay = this.scheduleAddOns.map(item => item.name).join(', ');
+    this.scheduleDayList = this.detail.scheduleList.map(item => item.workDate);
+    console.log("scheduleDayList", this.scheduleDayList);
+
+    this.dateSchedule = [{
+      id: this.id,
+      workDate: this.scheduleDayList
+    }];
     this.date = this.dateSchedule.find((item) => item.id == this.data.id);
-    this.name = this.data.name;
-    console.log("name", this.data);
+
+    console.log("dateSchedule", this.dateSchedule);
 
   }
 
@@ -108,12 +127,14 @@ export class BookingDetailDialog implements OnInit, OnDestroy {
 
   getDay(todayin) {
     let today = new Date(todayin);
-    return today.getDate();
+    let day = today.getDate().toString().padStart(2, '0');
+    return day;
   }
 
   getMonth(todayin) {
     let today = new Date(todayin);
-    return today.getMonth() + 1;
+    let month = (today.getMonth() + 1).toString().padStart(2, '0');
+    return month;
   }
 
   getDateMonth(todayin) {

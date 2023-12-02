@@ -6,41 +6,72 @@
     </div>
     <div class="content">
       <div class="content-scroll">
-        <div class="title_note"> Tên đơn hàng <b>{{name}}</b></div>
-        <div class="table-responsive">
-          <div class="showtime-options">
-            <label> - {{date.name}}: <span>({{date.startTime}} - {{date.endTime}})</span></label>
-            <carousel height="87px" cellsToShow="7" *ngIf="date.workDate && date.workDate.length >= 7">
-              <div [ngClass]="{'selected':selectedDate===showtime}" class="carousel-cell"
-                *ngFor="let showtime of date.workDate" (click)="viewDetailinSchedule(date.id, showtime)">
-                <div class="left">{{getDay(showtime)}}</div>
-                <div class="right"><span>/{{getMonth(showtime)}}
-                  </span><span>{{getDateMonth(showtime)}}</span>
+        <div class="title_note"> *Mã đơn hàng <b>#S{{id}}</b></div>
+        <div class="booking-detail-information">
+          <div class="host-information">
+            <i> - Thông tin dịch vụ: </i>
+            <p> Tên khách hàng:<span>
+                {{detail.hostName}}
+              </span></p>
+            <p> SĐT khách hàng: <span>
+                {{detail.hostPhone}}
+              </span></p>
+            <p> Địa chỉ dọn: <span>
+                {{detail.hostAddress}}
+              </span></p>
+            <p> Loại nhà: <span>
+                {{detail.houseType}}
+              </span></p>
+            <p> Số tầng dọn / tổng diện tích dọn: <span>
+                {{detail.floorNumber}} - {{detail.floorArea}}m2
+              </span></p>
+            <p> Loại định kỳ: <span>
+                {{detail.serviceTypeName}} - {{detail.servicePackageName}}
+              </span></p>
+            <p> Tổng số ngày dọn: <span>
+                {{detail.totalBookingDate}}
+              </span></p>
+          </div>
+          <hr>
+          <div class="serviceType">
+            - Thông tin định kỳ của ngày <b> {{scheduleDay.workDate}} ( {{scheduleDay.startTime}} -
+              {{scheduleDay.endTime}} )</b> :
+            <p>Trạng thái: {{scheduleDay.status}}</p>
+            <p>Dịch vụ tiện ích bổ sung: {{namesOfScheduleDay}}</p>
+          </div>
+          <div class="table-responsive">
+            <div class="showtime-options">
+              <carousel height="87px" cellsToShow="7" *ngIf="date.workDate && date.workDate.length >= 7">
+                <div [ngClass]="{'selected':selectedDate===showtime}" class="carousel-cell"
+                  *ngFor="let showtime of date.workDate" (click)="viewDetailinSchedule(date.id, showtime)">
+                  <div class="left">{{getDay(showtime)}}</div>
+                  <div class="right"><span>/{{getMonth(showtime)}}
+                    </span><span>{{getDateMonth(showtime)}}</span>
+                  </div>
                 </div>
-              </div>
-            </carousel>
+              </carousel>
 
-            <div class="select-date-container" height="87px" cellsToShow="7"
-              *ngIf="date.workDate && date.workDate.length < 7">
-              <div [ngClass]="{'selected':selectedDate===showtime}" class="datetimeBtn"
-                *ngFor="let showtime of date.workDate" (click)="viewDetailinSchedule(date.id, showtime)">
-                <div class="left">{{getDay(showtime)}}</div>
-                <div class="right"><span>/{{getMonth(showtime)}}
-                  </span><span>{{getDateMonth(showtime)}}</span>
+              <div class="select-date-container" height="87px" cellsToShow="7"
+                *ngIf="date.workDate && date.workDate.length < 7">
+                <div [ngClass]="{'selected':selectedDate===showtime}" class="datetimeBtn"
+                  *ngFor="let showtime of date.workDate" (click)="viewDetailinSchedule(date.id, showtime)">
+                  <div class="left">{{getDay(showtime)}}</div>
+                  <div class="right"><span>/{{getMonth(showtime)}}
+                    </span><span>{{getDateMonth(showtime)}}</span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        <!-- <div class="table-responsive" style="margin-top: 2rem;">
+          <!-- <div class="table-responsive" style="margin-top: 2rem;">
           <div class="showtime-bydate" *ngFor="let date of dateList">
             <span> - {{date.name}}: ({{date.startTime}} - {{date.endTime}}): </span>
             <span style="font-weight: 700; font-size: 16px"> {{date.workDate}} </span>
             <u (click)="viewDetailinSchedule(date.id, date.workDate)"> (Xem chi tiết)</u>
           </div>
         </div> -->
+        </div>
       </div>
+      <button mat-button class="button" (click)="onNoClick()"><img src="./assets/img/x-dialog.svg" /></button>
     </div>
-    <button mat-button class="button" (click)="onNoClick()"><img src="./assets/img/x-dialog.svg" /></button>
   </div>
-</div>
