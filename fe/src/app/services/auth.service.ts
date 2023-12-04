@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { tap } from "rxjs/operators";
 import { environment } from "src/environments/environment";
-
+import { jwtDecode } from "jwt-decode";
 @Injectable()
 export class AuthService {
   private baseUrl = environment.apiUrl + "/auth";
@@ -12,10 +12,10 @@ export class AuthService {
   private CHANGE_PASS = this.baseUrl + "/change-password";
   private LOGOUT = this.baseUrl + "/logout";
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getToken() {
-    return sessionStorage.getItem('token');
+    return sessionStorage.getItem("token");
   }
 
   signin(username: string, password: string): Observable<any> {
@@ -28,8 +28,8 @@ export class AuthService {
               // Lưu jwt token vào sessionStorage
               sessionStorage.setItem("token", res.data.token);
               this.jwtToken = res.data.token;
+            }
           }
-        }
         })
       );
   }
@@ -62,5 +62,27 @@ export class AuthService {
   getHeaders(): HttpHeaders {
     // Thêm jwt token vào header trước khi gửi request
     return new HttpHeaders({ Authorization: `Bearer ${this.getJwtToken()}` });
+  }
+
+  isTokenExpired(): boolean {
+    const token = this.getToken();
+    if (token) {
+      const expirationDate = this.getExpirationDate(token);
+      return expirationDate && expirationDate < new Date();
+    }
+    return true;
+  }
+  
+  private getExpirationDate(token: string): Date | null {
+    const decodedToken: any = jwtDecode(token);
+
+    if (decodedToken && decodedToken.exp) {
+      // `exp` is the expiration timestamp in seconds
+      const expirationDate = new Date(decodedToken.exp * 1000);
+      console.log("Token Expiration Date:", expirationDate);
+    } else {
+      console.error("Failed to decode JWT or missing expiration date.");
+    }
+    return new Date();
   }
 }

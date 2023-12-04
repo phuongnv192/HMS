@@ -20,26 +20,27 @@ import { CustomerProfileComponent } from "./customer/customer-profile/customer-p
 import { ChangePassComponent } from "./auth/change-password/change-password.component";
 import { CustomerScheduleComponent } from "./customer/customer-booking/customer-booking-list/customer-schedule.component";
 import { CustomerHistoryComponent } from "./customer/customer-booking/customer-booking-history/customer-history.component";
+import { AuthGuard } from "./shared/auth.guard";
 
 const routes: Routes = [
-  { path: 'home', component: HomeComponent },
-  { path: 'profile', component: ProfileComponent },
-  { path: 'register', component: SignupComponent },
-  { path: 'introduction', component: IntroductionComponent },
-  { path: 'booking', component: BookingComponent },
+  { path: 'home', component: HomeComponent , canActivate: [AuthGuard] },
+  { path: 'profile', component: ProfileComponent , canActivate: [AuthGuard] },
+  { path: 'register', component: SignupComponent},
+  { path: 'introduction', component: IntroductionComponent , canActivate: [AuthGuard] },
+  { path: 'booking', component: BookingComponent , canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
-  { path: 'forgot-password', component: ForgotPWComponent },
-  { path: 'dashboard', component: DashboardComponent },
-  { path: 'list-cleaner', component: ListCleanerComponent },
-  { path: 'list-customer', component: ListCustomerComponent },
-  { path: 'user-profile/:id', component: UserProfileComponent },
-  { path: 'customer-profile', component: CustomerProfileComponent },
-  { path: 'history', component: HistoryComponent },
-  { path: 'customer-history', component: CustomerHistoryComponent },
-  { path: 'schedule', component: ScheduleComponent },
-  { path: 'customer-schedule', component: CustomerScheduleComponent },
-  { path: 'forgot-password', component: ForgotPWComponent },
-  { path: 'change-password', component: ChangePassComponent },
+  { path: 'forgot-password', component: ForgotPWComponent , canActivate: [AuthGuard] },
+  { path: 'dashboard', component: DashboardComponent , canActivate: [AuthGuard] },
+  { path: 'list-cleaner', component: ListCleanerComponent , canActivate: [AuthGuard] },
+  { path: 'list-customer', component: ListCustomerComponent , canActivate: [AuthGuard] },
+  { path: 'user-profile/:id', component: UserProfileComponent , canActivate: [AuthGuard] },
+  { path: 'customer-profile', component: CustomerProfileComponent , canActivate: [AuthGuard] },
+  { path: 'history', component: HistoryComponent , canActivate: [AuthGuard] },
+  { path: 'customer-history', component: CustomerHistoryComponent , canActivate: [AuthGuard] },
+  { path: 'schedule', component: ScheduleComponent , canActivate: [AuthGuard] },
+  { path: 'customer-schedule', component: CustomerScheduleComponent , canActivate: [AuthGuard] },
+  { path: 'forgot-password', component: ForgotPWComponent , canActivate: [AuthGuard] },
+  { path: 'change-password', component: ChangePassComponent , canActivate: [AuthGuard] },
   { path: '', redirectTo: 'home', pathMatch: 'full' }
 ];
 

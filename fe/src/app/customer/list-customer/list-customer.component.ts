@@ -1,17 +1,25 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from "@angular/core";
+import { CustomerService } from "src/app/services/customer.service";
 
 @Component({
-  selector: 'app-list-customer',
-  templateUrl: './list-customer.component.html',
-  styleUrls: ['./list-customer.component.scss']
+  selector: "app-list-customer",
+  templateUrl: "./list-customer.component.html",
+  styleUrls: ["./list-customer.component.scss"],
 })
 export class ListCustomerComponent implements OnInit {
   listCustomer: any;
-  cusName = '';
+  cusName = "";
 
-  constructor() { }
+  constructor(private customerService: CustomerService) {}
 
   ngOnInit() {
+    this.customerService.getCustomers(null).subscribe({
+      next: (res) => {
+        console.log(res);
+      },
+      error: () => {},
+    });
+
     this.listCustomer = [
       {
         customerId: 1,
@@ -19,7 +27,7 @@ export class ListCustomerComponent implements OnInit {
         dob: "23/06/1999",
         gender: "Nam",
         address: "Số 1 Kim mã, Ba Đình, Hà Nội",
-        totalBooking: 10
+        totalBooking: 10,
       },
       {
         customerId: 2,
@@ -27,7 +35,7 @@ export class ListCustomerComponent implements OnInit {
         dob: "11/07/1998",
         gender: "Nam",
         address: "Số 2 Kim mã, Ba Đình, Hà Nội",
-        totalBooking: 2
+        totalBooking: 2,
       },
       {
         customerId: 3,
@@ -35,7 +43,7 @@ export class ListCustomerComponent implements OnInit {
         dob: "01/08/2003",
         gender: "Nam",
         address: "Số 3 Kim mã, Ba Đình, Hà Nội",
-        totalBooking: 16
+        totalBooking: 16,
       },
       {
         customerId: 4,
@@ -53,20 +61,12 @@ export class ListCustomerComponent implements OnInit {
         address: "Số 1 Kim mã, Ba Đình, Hà Nội",
         totalBooking: 5,
       },
-    ]
-
+    ];
   }
 
-  removeUser() {
+  removeUser() {}
 
-  }
+  changeStatus() {}
 
-  changeStatus() {
-
-  }
-
-  searchCustomer() {
-
-  }
-
+  searchCustomer() {}
 }
