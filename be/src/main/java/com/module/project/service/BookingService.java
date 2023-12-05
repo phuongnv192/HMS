@@ -126,6 +126,13 @@ public class BookingService {
     }
 
     public HmsResponse<Object> updateBooking(BookingRequest request, String userId) {
+        Booking booking = bookingRepository.findById(request.getBookingId())
+                .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "relevant booking is not existed on system"));
+        if (!userId.equals(booking.getUser().getId().toString())) {
+            throw new HmsException(HmsErrorCode.INVALID_REQUEST, "user dont have permission to execute");
+        }
+        // TODO: define scope for updating booking
+
         return HMSUtil.buildResponse(ResponseCode.SUCCESS, null);
     }
 
@@ -167,6 +174,8 @@ public class BookingService {
                 .createDate(booking.getCreateDate())
                 .updateDate(booking.getUpdateDate())
                 .status(bookingTransaction.getStatus())
+                .review(booking.getReview())
+                .rejectedReason(booking.getRejectedReason())
                 .scheduleList(scheduleList)
                 .build();
     }

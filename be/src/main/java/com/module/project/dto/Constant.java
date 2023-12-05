@@ -5,11 +5,11 @@ public interface Constant {
     String AUTH = "/auth";
     String REGISTER = "/register";
     String AUTHENTICATE = "/authenticate";
-    String USER_SUBMIT_REVIEW = "/user/submit/review";
-    String USER_CHANGE_PASSWORD = "/user/change-password";
     String USER_INFO = "/user/info";
     String USER_INFO_BY_ID = "/user/{id}";
     String USERS = "/users";
+    String USER_SUBMIT_REVIEW = "/user/submit/review";
+    String USER_CHANGE_PASSWORD = "/user/change-password";
     String VERIFY = "/verify";
     String BOOKING = "/booking";
     String BOOKING_DETAIL = "/booking/detail";
@@ -41,5 +41,9 @@ public interface Constant {
     interface HOUSE_TYPE {
         String APARTMENT = "APARTMENT";
         String HOUSE_VILLA = "HOUSE/VILLA";
+    }
+
+    interface UNIT {
+        String MONTH = "months";
     }
 }

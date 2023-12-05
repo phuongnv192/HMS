@@ -27,6 +27,7 @@ public class ServicePackage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long servicePackageId;
     private String servicePackageName;
+    private String unit;
 
     @ManyToOne()
     @JoinColumn(name = "service_type_id")

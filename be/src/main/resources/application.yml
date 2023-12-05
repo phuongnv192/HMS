@@ -7,6 +7,7 @@ spring:
     username: postgres
     password: postgres
   jpa:
+    defer-datasource-initialization: true
     hibernate:
       ddl-auto: create-drop
     show-sql: true
@@ -15,6 +16,10 @@ spring:
         format-sql: true
       database: postgresql
       database-platform: org.hibernate.dialect.PostgreSQLDialect
+  sql:
+    init:
+#      data-locations: classpath*:schema.sql
+      mode: always
 
 application:
   choosing-cleaner-price: 20000
