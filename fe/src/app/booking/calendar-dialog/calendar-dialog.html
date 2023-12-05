@@ -2,14 +2,83 @@
   <div class="dialog-container">
     <div class="header-background"></div>
     <div class="header">
-      <h6>ABC</h6>
+      <h6>Chọn định kỳ cho dịch vụ</h6>
     </div>
-    <div class="content row">
+    <div class="content">
       <div class="content-scroll">
-        <div class="title_note"> XYZ </div>
+        <div class="title_note"> * Vui lòng chọn các loại định kỳ:</div>
+        <div class="booking-detail-information">
+          <div class="host-information">
+            <div class="input-group">
+              <p>Loại định kỳ(*): </p>
+              <select [(ngModel)]="selectedServiceTypeId" id="serviceType" aria-describedby="serviceType-help" (ngModelChange)="selectedService($event)"
+                title="Loại định kỳ">
+                <option *ngFor="let service of serviceTypes" [value]="service">{{ service }}</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <p>Thời gian định kỳ(*): </p>
+              <select [(ngModel)]="selectedServicePackageId" id="serviceType" aria-describedby="serviceType-help"
+                title="Thời gian định kỳ">
+                <option *ngFor="let package of servicePackages" [value]="package">{{ package }}</option>
+              </select>
+            </div>
+            <div class="date-pickertime" *ngIf="selectedTimeType">
+              <button type="button" class="btn btn-primary pickday" (click)="pickDate()">Chọn ngày
+                <i></i></button>
+              <ngb-datepicker class="calendar" *ngIf="showDatePicker" #dp [(ngModel)]="selectedDate"
+                (dateSelect)="hideDatePicker()" (navigate)="datePickerNavigate($event)"
+                [minDate]="minSelectableDate" [maxDate]="maxSelectableDate"></ngb-datepicker>
+              <p class="showTime" *ngIf="!showDatePicker && datePickerShow">* Lịch ngày bắt đầu: <span>{{
+                  datePickerShow
+                  }}</span>  <span *ngIf="pickServiceType != 1"> -  {{scheduleDescription}}</span></p>
+            </div>
+            <div class="date-pickertime" *ngIf="!selectedTimeType">
+              <button type="button" class="btn btn-primary pickday" (click)="pickCalendar()">Chọn lịch
+                <i></i></button>
+            </div>
+          </div>
+          <hr>
+          <div class="serviceType">
+            - Thông tin định kỳ của ngày
+             <!-- <b> {{scheduleDay.workDate}} ( {{scheduleDay.startTime}} -
+              {{scheduleDay.endTime}} )</b> : -->
+            <!-- <p>Trạng thái: {{scheduleDay.status}}</p>
+            <p>Dịch vụ tiện ích bổ sung: {{namesOfScheduleDay}}</p> -->
+          </div>
+          <div class="table-responsive">
+            <div class="showtime-options">
+              <carousel height="87px" cellsToShow="7" *ngIf="dateArray && dateArray.length >= 7">
+                <div [ngClass]="{'selected':selectedDate===showtime}" class="carousel-cell"
+                  *ngFor="let showtime of dateArray">
+                  <div class="top">{{getDay(showtime)}} <span>/{{getMonth(showtime)}}
+                    </span></div>
+                  <div class="bottom">{{getDateMonth(showtime)}}
+                  </div>
+                </div>
+              </carousel>
 
+              <div class="select-date-container" height="87px" cellsToShow="7"
+                *ngIf="dateArray && dateArray.length < 7">
+                <div [ngClass]="{'selected':selectedDate===showtime}" class="datetimeBtn"
+                  *ngFor="let showtime of dateArray">
+                  <div class="top">{{getDay(showtime)}} <span>/{{getMonth(showtime)}}
+                    </span></div>
+                  <div class="bottom">{{getDateMonth(showtime)}}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- <div class="table-responsive" style="margin-top: 2rem;">
+          <div class="showtime-bydate" *ngFor="let date of dateList">
+            <span> - {{date.name}}: ({{date.startTime}} - {{date.endTime}}): </span>
+            <span style="font-weight: 700; font-size: 16px"> {{date.workDate}} </span>
+            <u (click)="viewDetailinSchedule(date.id, date.workDate)"> (Xem chi tiết)</u>
+          </div>
+        </div> -->
+        </div>
       </div>
+      <button mat-button class="button" (click)="onNoClick()"><img src="./assets/img/x-dialog.svg" /></button>
     </div>
-    <button mat-button class="button" (click)="onNoClick()"><img src="./assets/img/x-dialog.svg" /></button>
   </div>
-</div>
