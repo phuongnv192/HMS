@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { environment } from "src/environments/environment";
@@ -9,18 +9,35 @@ import { environment } from "src/environments/environment";
 export class BookingService {
   constructor(private http: HttpClient) { }
   private baseUrl = environment.apiUrl;
-
+  private SERVICETYPE = this.baseUrl + "/service-types";
+  private CLEANERAVAIBLAE = this.baseUrl + "/cleaner/available";
+  private SERVICEADDON = this.baseUrl + "/service-add-ons?addOnId=";
   // getEmployees(params: HttpParams): Observable<any> {
   //   return this.http.get<any>(`${this.baseUrl}/cleaners`, { params });
   // }
 
-  // getEmployeeById(id: string): Observable<any> {
-  //   return this.http.get<any>(`${this.baseUrl}/user/${id}`);
-  // }
+  private getHeadersWithToken(): HttpHeaders {
+    const token = sessionStorage.getItem('token');
+    return new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    });
+  }
 
-  // getCleanerHistoryDetail(id: string): Observable<any> {
-  //   return this.http.post<any>(`${this.baseUrl}/cleaner/history/detail`, { id });
-  // }
+  getServiceType(): Observable<any> {
+    const headers = this.getHeadersWithToken();
+    return this.http.get<any>(`${this.SERVICETYPE}`, { headers });
+  }
+
+  getServiceAddOns(id: string): Observable<any> {
+    const headers = this.getHeadersWithToken();
+    return this.http.get<any>(`${this.SERVICEADDON + id}`, { headers });
+  }
+
+  getCleanerAvaiable(): Observable<any> {
+    const headers = this.getHeadersWithToken();
+    return this.http.get<any>(`${this.CLEANERAVAIBLAE}`, { headers });
+  }
 
   getBookingDetail(id: any): Observable<any> {
     if (id == 1) {

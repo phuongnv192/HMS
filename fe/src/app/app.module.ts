@@ -42,6 +42,9 @@ import { CustomerHistoryComponent } from "./customer/customer-booking/customer-b
 import { CustomerScheduleComponent } from "./customer/customer-booking/customer-booking-list/customer-schedule.component";
 import { AuthInterceptor } from "./core/authenticator";
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { PriceListDialog } from "./booking/price-list-dialog/price-list-dialog";
+import { PriceFormatPipe } from "./pipe/currency.pipe";
+import { AddServiceDialog } from "./booking/calendar-dialog/add-service-dialog/add-service-dialog";
 
 @NgModule({
   declarations: [
@@ -71,6 +74,9 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
     ChangePassComponent,
     CustomerHistoryComponent,
     CustomerScheduleComponent,
+    PriceListDialog,
+    PriceFormatPipe,
+    AddServiceDialog
   ],
   imports: [
     BrowserModule,

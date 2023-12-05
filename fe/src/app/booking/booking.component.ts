@@ -6,6 +6,8 @@ import { format, isAfter, isBefore, subMonths } from 'date-fns';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CalendarDialog } from './calendar-dialog/calendar-dialog';
 import { PickCleanerDialog } from './pick-cleaner-dialog/pick-cleaner-dialog';
+import { BookingService } from '../services/booking.service';
+import { PriceListDialog } from './price-list-dialog/price-list-dialog';
 
 export interface DialogData {
   data: string;
@@ -19,10 +21,16 @@ export interface PickCleanerData {
   data: any;
 }
 
-export interface CalendarNoteData {
-  _type: any;
-  listDay: any;
+export interface CalendarDialogData {
+  type: any;
+  pickDay: any;
+  addonService: any;
 }
+
+export interface PriceListDialogData {
+  data: any;
+}
+
 @Component({
   selector: 'app-booking',
   templateUrl: './booking.component.html',
@@ -37,7 +45,8 @@ export class BookingComponent implements OnInit {
 
   showDatePicker = false;
   selectedDate: NgbDateStruct;
-  listAdvanceService = "Vệ sinh máy giặt, Vệ sinh tủ lạnh, Vệ sinh điều hòa"
+  listAdvanceService = [];
+  activeBadges: { [key: string]: boolean } = {};
   floors: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; // Mảng từ 1 đến 10
   houseTypes: string[] = ['Nhà đất', 'Chung cư'];
   serviceTypes: string[] = ['Tổng vệ sinh', 'Theo khu vực/Diện tích'];
@@ -98,6 +107,10 @@ export class BookingComponent implements OnInit {
   @ViewChild("termsDiv") termsDiv: ElementRef<HTMLElement>;
   data: any;
   dataCleaner: any;
+  pickDay: any;
+  serviceTypeData: any;
+  priceList: any;
+  textListAdvanceService: string;
 
 
   onResize(event) {
@@ -113,7 +126,9 @@ export class BookingComponent implements OnInit {
     public dialog: MatDialog, private renderer: Renderer2,
     // private dialogService: DialogService,
     public dialogRef: MatDialogRef<CalendarDialog>,
-    public cleanerDialogRef: MatDialogRef<PickCleanerDialog>
+    public dialogRefPriceList: MatDialogRef<PriceListDialog>,
+    public cleanerDialogRef: MatDialogRef<PickCleanerDialog>,
+    private bookingServicee: BookingService
   ) {
     const today = new Date();
     this.minSelectableDate = new NgbDate(today.getFullYear(), today.getMonth() + 1, today.getDate());
@@ -123,6 +138,16 @@ export class BookingComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.bookingServicee.getServiceType().subscribe(data => {
+      if (data) this.serviceTypeData = data.data;
+    });
+
+    this.bookingServicee.getServiceAddOns("-1").subscribe(data => {
+      if (data) this.priceList = data.data;
+      console.log(this.priceList, "---priceList");
+
+    });
+
     this.selectedPaymentMethod = 'cash';
     this.selectedFloors = this.floors[0];
     this.selectedHouseType = this.houseTypes[0];
@@ -130,53 +155,6 @@ export class BookingComponent implements OnInit {
     this.selectedServiceType = this.serviceTypes[0];
     this.selectedTimeType = this.timeTypes[0];
 
-    //   {
-    //     "user_name": "abc",
-    //     "user_phone": 0966069299,
-    //     "location": "abcxyz",
-    //     "houseType": "Nhà đất",
-    //     "serviceType": "Tổng vệ sinh",
-    //     "floor": 1,
-    //     "area": 250,
-    //     "serviceExtend": [
-    //         {
-    //           name: 'Vệ sinh máy giặt',
-    //           value: [
-    //             { description: 'Vệ sinh máy giặt không tháo lồng', price: 100, quantity: 2 },
-    //             { description: 'Vệ sinh và bảo trì máy giặt lồng', price: 150, quantity: 1 }
-    //           ]
-    //         },
-    //         {
-    //           name: 'Vệ sinh tủ lạnh',
-    //           value: [
-    //             { description: 'Dung tích 90-160 lít', price: 50, quantity: 3 },
-    //             { description: 'Dung tích 180-250 lít', price: 70, quantity: 2 },
-    //             { description: 'Dung tích 400 - 600 lít', price: 90, quantity: 1 },
-    //             { description: 'Dung tích trên 600 lít', price: 120, quantity: 1 }
-    //           ]
-    //         },
-    //         {
-    //           name: 'Vệ sinh đồ nấu nướng',
-    //           value: [
-    //             { description: 'Toàn bộ', price: 200, quantity: 1 },
-    //             { description: 'Lò nướng, lò vi sóng', price: 80, quantity: 2 },
-    //             { description: 'Bếp gas', price: 60, quantity: 1 }
-    //           ]
-    //         }
-    //         // Thêm các phần tử khác nếu cần
-    //     ]
-    //     "date": {
-    //       "a": "Ngày A",
-    //       "b": "Ngày B",
-    //       "c": "Ngày C"
-    //     },
-    //     "cleaner": {   //hoặc chuỗi rỗng = random
-    //       "a": "anh A",
-    //       "b": "chị B",
-    //     },
-    //     "note":"abcabcabc"
-    //   }
-    // }
   }
 
   pickDate() {
@@ -223,20 +201,32 @@ export class BookingComponent implements OnInit {
     return result;
   }
 
-  extendsDialog() {
+  extendsDialog(service: string) {
+    const index = this.listAdvanceService.indexOf(service);
+    this.activeBadges[service] = !this.activeBadges[service];
+    if (index === -1) {
+      // Nếu giá trị không tồn tại, thêm vào mảng
+      this.listAdvanceService.push(service);
+    } else {
+      // Nếu giá trị đã tồn tại, loại bỏ khỏi mảng
+      this.listAdvanceService.splice(index, 1);
+    }
+    this.textListAdvanceService = this.listAdvanceService.join(', ')
+
   }
 
   pickCalendar(): void {
     // this.dialogService.sendDataDialog(true);
     this.renderer.addClass(document.body, 'modal-open');
     this.dialogRef = this.dialog.open(CalendarDialog, {
-      width: '600px',
-      maxHeight: '80%',
+      width: '1200px',
+      maxHeight: '60%',
       data: {
-        type: this.type,
-        listDay: this.listDay,
+        type: this.serviceTypeData,
+        pickDay: this.pickDay,
+        addonService: this.priceList
       },
-      panelClass: ['bank-note']
+      panelClass: ['calendar-pick']
     });
 
     this.dialogRef.afterClosed().subscribe(result => {
@@ -283,6 +273,25 @@ export class BookingComponent implements OnInit {
 
   Order() {
 
+  }
+
+  showPriceList(): void {
+    // this.dialogService.sendDataDialog(true);
+    this.renderer.addClass(document.body, 'modal-open');
+    this.dialogRefPriceList = this.dialog.open(PriceListDialog, {
+      width: '1200px',
+      maxHeight: '80%',
+      data: {
+        data: this.priceList,
+      },
+      panelClass: ['price-list']
+    });
+
+    this.dialogRefPriceList.afterClosed().subscribe(result => {
+      // console.log('The dialog was closed');
+      this.renderer.removeClass(document.body, 'modal-open');
+      // this.dialogService.sendDataDialog(false);
+    });
   }
 
 }

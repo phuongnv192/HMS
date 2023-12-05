@@ -1,0 +1,43 @@
+<div mat-dialog-actions class="guide_class">
+  <div class="dialog-container">
+    <div class="header-background"></div>
+    <div class="header">
+      <h6>Bảng giá dịch vụ</h6>
+    </div>
+    <div class="content">
+      <div class="content-scroll">
+        <div class="title_note"> *Bảng giá dịch vụ chỉ bảo gồm vệ sinh và bảo dưỡng. Không bảo gồm sửa chữa hỏng hóc hoặc cải tiến:</div>
+        <div class="title_note rednoti"> Dịch vụ hiện có dựa trên các nhu cầu chính và theo các sản phẩm / dịch vụ thường thấy trên thị trường</div>
+        <div class="table-responsive" *ngFor="let list of parentService">
+          <div class="pricelist-title">{{list.parent.name}}</div>
+          <table class="table align-items-center table-flush">
+            <thead class="thead-light">
+              <tr>
+                <th scope="col">Mã dịch vụ</th>
+                <th scope="col">Tên dịch vụ</th>
+                <th scope="col">Giá cả</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let price of list.children">
+                <th scope="row">
+                  <div class="media align-items-center">
+                    <div class="media-body">
+                      <span class="mb-0 text-sm">{{price.id}}</span>
+                    </div>
+                  </div>
+                </th>
+                <td>
+                  {{price.name}}
+                </td>
+                <td>
+                  {{price.price | priceFormat}}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <button mat-button class="button" (click)="onNoClick()"><img src="./assets/img/x-dialog.svg" /></button>
+    </div>
+  </div>

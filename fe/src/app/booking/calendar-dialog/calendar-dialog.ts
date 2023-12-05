@@ -2,10 +2,16 @@ import { Subscription } from 'rxjs';
 import { CalendarDialogData } from '../booking.component';
 import { NgZone, OnInit, Renderer2 } from '@angular/core';
 import { Component, Inject, OnDestroy } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { addDays, addWeeks, format, addMonths } from 'date-fns';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+import { AddServiceDialog } from './add-service-dialog/add-service-dialog';
 
+export interface AddServiceDialogData {
+  data: any;
+  addonService: any;
+  servicePick: any;
+}
 
 @Component({
   selector: 'app-calendar-dialog',
@@ -45,11 +51,13 @@ export class CalendarDialog implements OnDestroy, OnInit {
   datePicker: string;
   datePickerShow: any;
   scheduleDescription = '';
+  selectedPick: any;
 
   constructor(
     public dialogRef: MatDialogRef<CalendarDialog>,
+    public dialogRefAddOn: MatDialogRef<AddServiceDialog>,
     @Inject(MAT_DIALOG_DATA) public data: CalendarDialogData,
-    private renderer: Renderer2,
+    public dialog: MatDialog, private renderer: Renderer2,
     private ngZone: NgZone) {
   }
 
@@ -71,7 +79,6 @@ export class CalendarDialog implements OnDestroy, OnInit {
 
   ngOnInit(): void {
     this.pickDay = this.data.pickDay;
-
     if (this.pickDay) {
 
     } else {
@@ -153,12 +160,14 @@ export class CalendarDialog implements OnDestroy, OnInit {
     // }];
     // this.date = this.dateSchedule.find((item) => item.id == this.data.id);
 
-    console.log("dateSchedule", this.dateSchedule);
   }
 
   selectedService(event: any) {
     this.servicePackages = [];
-    console.log("selectedServiceTypeId", this.selectedServiceTypeId);
+    this.dateArray = [];
+    this.selectedDate = null;
+    // this.showDatePicker = true;
+    this.datePickerShow = false;
 
     this.pickServiceType = this.getId(this.data.type, this.selectedServiceTypeId);
 
@@ -197,8 +206,6 @@ export class CalendarDialog implements OnDestroy, OnInit {
 
   getMonth(todayin) {
     const inputDate = new Date(todayin); // Ngày tháng năm (MM-dd-yyyy)
-    console.log('Tháng:', inputDate);
-
     const monthValue = inputDate.getMonth() + 1; // Thêm 1 để chuyển từ 0-11 thành 1-12
 
     // Định dạng giá trị tháng thành chuỗi
@@ -212,7 +219,7 @@ export class CalendarDialog implements OnDestroy, OnInit {
 
   getDateMonth(todayin) {
     let days = {
-      Sunday: "CN",
+      Sunday: "Chủ Nhật",
       Monday: "Thứ 2",
       Tuesday: "Thứ 3",
       Wednesday: "Thứ 4",
@@ -226,7 +233,11 @@ export class CalendarDialog implements OnDestroy, OnInit {
 
   getYearDateMonth(todayin) {
     let today = new Date(todayin);
-    return today.getDate()  + '/' + (today.getMonth() + 1) + '/' + today.getFullYear();
+    const monthValue = today.getMonth() + 1; // Thêm 1 để chuyển từ 0-11 thành 1-12
+
+    // Định dạng giá trị tháng thành chuỗi
+    let formattedMonth = monthValue.toString();
+    return today.getDate()  + '/' + formattedMonth + '/' + today.getFullYear();
   }
 
 
@@ -311,5 +322,33 @@ export class CalendarDialog implements OnDestroy, OnInit {
         this.scheduleDescription = 'Ngày' + dateDay + 'thàng tháng'
       }
     }
+  }
+
+  viewDetailinSchedule(showtime: any){
+    this.selectedDate = showtime;
+     // this.dialogService.sendDataDialog(true);
+     this.renderer.addClass(document.body, 'modal-open');
+     this.dialogRefAddOn = this.dialog.open(AddServiceDialog, {
+       width: '500px',
+       maxHeight: '50%',
+       data: {
+         data: showtime,
+         addonService: this.data.addonService,
+         servicePick: this.selectedPick
+       },
+       panelClass: ['add-service']
+     });
+ 
+     this.dialogRefAddOn.afterClosed().subscribe(result => {
+      console.log(result);
+      
+       // console.log('The dialog was closed');
+       this.renderer.removeClass(document.body, 'modal-open');
+       // this.dialogService.sendDataDialog(false);
+     });
+  }
+
+  removeAddOns(){
+
   }
 }

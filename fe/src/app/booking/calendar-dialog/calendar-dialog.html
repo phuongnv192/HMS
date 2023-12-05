@@ -49,23 +49,25 @@
           <div class="table-responsive">
             <div class="showtime-options">
               <carousel height="87px" cellsToShow="7" *ngIf="dateArray && dateArray.length >= 7">
-                <div [ngClass]="{'selected':selectedDate===showtime}" class="carousel-cell"
+                <div [ngClass]="{'selected':selectedDate===showtime}" class="carousel-cell" (click)="viewDetailinSchedule(showtime)"
                   *ngFor="let showtime of dateArray">
                   <div class="top">{{getDay(showtime)}} <span>/{{getMonth(showtime)}}
                     </span></div>
                   <div class="bottom">{{getDateMonth(showtime)}}
                   </div>
+                  <i *ngIf="serviceAddOns" class="fas fa-check-square" (click)="removeAddOns()"></i>
                 </div>
               </carousel>
 
               <div class="select-date-container" height="87px" cellsToShow="7"
                 *ngIf="dateArray && dateArray.length < 7">
-                <div [ngClass]="{'selected':selectedDate===showtime}" class="datetimeBtn"
+                <div [ngClass]="{'selected':selectedDate===showtime}" class="datetimeBtn" (click)="viewDetailinSchedule(showtime)"
                   *ngFor="let showtime of dateArray">
                   <div class="top">{{getDay(showtime)}} <span>/{{getMonth(showtime)}}
                     </span></div>
                   <div class="bottom">{{getDateMonth(showtime)}}
                   </div>
+                  <i *ngIf="serviceAddOns" class="fas fa-check-square" (click)="removeAddOns()"></i>
                 </div>
               </div>
             </div>

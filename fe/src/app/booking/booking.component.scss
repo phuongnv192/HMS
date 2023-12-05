@@ -60,6 +60,10 @@ h6 {
   width: 75%;
 }
 
+.extension-service .badge span{
+  cursor: pointer;
+}
+
 .date-pickertime {
   display: flex;
   margin-top: 1rem;
@@ -354,4 +358,13 @@ input::placeholder {
   opacity: 0.7;
   /* Điều chỉnh độ mờ nhạt của chữ */
   padding: 0.5rem;
+}
+
+.active {
+  background-color: #c50e0e; /* Màu nền khi badge được kích hoạt */
+  color: white; /* Màu chữ khi badge được kích hoạt */
+}
+
+span i {
+  margin-left: 5px; /* Khoảng cách giữa chữ và icon */
 }
