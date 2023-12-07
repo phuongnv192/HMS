@@ -13,7 +13,9 @@ import lombok.experimental.SuperBuilder;
 public class CleanerOverviewResponse {
     private Long cleanerId;
     private String name;
+    private String gender;
     private String idCard;
+    private String address;
     private String email;
     private String phoneNumber;
     private String status;
