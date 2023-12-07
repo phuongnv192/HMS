@@ -22,7 +22,6 @@ public class BookingRequest {
     private String houseType;
     private int floorNumber;
     private String floorArea;
-    private Long customerId;
     private List<Long> cleanerIds;
     private List<BookingScheduleRequest> bookingSchedules;
     private Long serviceTypeId;

@@ -40,8 +40,9 @@ public class BookingController {
     }
 
     @PostMapping(BOOKING)
-    public ResponseEntity<Object> booking(@RequestBody BookingRequest request) {
-        return ResponseEntity.ok(bookingService.booking(request));
+   public ResponseEntity<Object> booking(@RequestBody BookingRequest request, HttpServletRequest httpServletRequest) {
+        String userId = (String) httpServletRequest.getAttribute(ClaimEnum.USER_ID.name);
+        return ResponseEntity.ok(bookingService.booking(request, userId));
     }
 
     @PutMapping(BOOKING)

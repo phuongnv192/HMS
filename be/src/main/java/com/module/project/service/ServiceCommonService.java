@@ -81,7 +81,7 @@ public class ServiceCommonService {
     }
 
     public HmsResponse<ServiceAddOn> updateServiceAddOn(ServiceAddOnRequest request, String roleName) {
-        List<String> acceptRole = List.of(RoleEnum.MANAGER.name());
+        List<String> acceptRole = List.of(RoleEnum.LEADER.name());
         if (!acceptRole.contains(roleName)) {
             throw new HmsException(HmsErrorCode.INVALID_REQUEST, "privileges access denied");
         }
@@ -95,7 +95,7 @@ public class ServiceCommonService {
     }
 
     public HmsResponse<Objects> insertServiceAddOn(ServiceAddOnRequest request, String roleName) {
-        List<String> acceptRole = List.of(RoleEnum.MANAGER.name());
+       List<String> acceptRole = List.of(RoleEnum.LEADER.name());
         if (!acceptRole.contains(roleName)) {
             throw new HmsException(HmsErrorCode.INVALID_REQUEST, "privileges access denied");
         }
@@ -114,7 +114,7 @@ public class ServiceCommonService {
     }
 
     public HmsResponse<com.module.project.model.Service> insertService(ServiceRequest request, String roleName) {
-        if (!RoleEnum.ADMIN.name().equals(roleName)) {
+       if (!RoleEnum.LEADER.name().equals(roleName)) {
             throw new HmsException(HmsErrorCode.INVALID_REQUEST, "privileges access denied");
         }
         ServiceType serviceType = serviceTypeRepository.findById(request.getServiceTypeId())
@@ -135,7 +135,7 @@ public class ServiceCommonService {
     }
 
     public HmsResponse<com.module.project.model.Service> updateService(ServiceRequest request, String roleName) {
-        if (!RoleEnum.ADMIN.name().equals(roleName)) {
+       if (!RoleEnum.LEADER.name().equals(roleName)) {
             throw new HmsException(HmsErrorCode.INVALID_REQUEST, "privileges access denied");
         }
         com.module.project.model.Service service = serviceRepository.findById(request.getServiceId())

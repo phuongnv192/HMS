@@ -59,7 +59,8 @@ public class UserService {
     }
 
     public HmsResponse<List<ListUserResponse>> getUsers(String roleName) {
-        if (!RoleEnum.ADMIN.name().equals(roleName)) {
+       List<String> acceptRoles = List.of(RoleEnum.ADMIN.name(), RoleEnum.LEADER.name());
+            if (!acceptRoles.contains(roleName)) {
             throw new HmsException(HmsErrorCode.INVALID_REQUEST, "user dont have permission to execute");
         }
         List<User> userList = userRepository.findAll();
@@ -141,7 +142,8 @@ public class UserService {
 
     private User validateUpdateUser(String userId, String roleName, Long userUpdateId) {
         if (!userId.equals(userUpdateId.toString())) {
-            if (!RoleEnum.ADMIN.name().equals(roleName)) {
+             List<String> acceptRoles = List.of(RoleEnum.ADMIN.name(), RoleEnum.LEADER.name(), RoleEnum.MANAGER.name());
+        if (!acceptRoles.contains(roleName)) {
                 throw new HmsException(HmsErrorCode.INVALID_REQUEST, "user dont have permission to execute");
             }
         }

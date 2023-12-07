@@ -6,6 +6,7 @@ import com.module.project.dto.CleanerReviewInfo;
 import com.module.project.dto.ConfirmStatus;
 import com.module.project.dto.Constant;
 import com.module.project.dto.FloorInfoEnum;
+import com.module.project.dto.RoleEnum;
 import com.module.project.dto.TransactionStatus;
 import com.module.project.dto.request.BookingRequest;
 import com.module.project.dto.request.BookingScheduleRequest;
@@ -158,7 +159,7 @@ public class ScheduleService {
                 .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "can't find any schedule by ".concat(request.getScheduleId().toString())));
         BookingTransaction bookingTransaction = bookingSchedule.getBookingTransaction();
         Booking booking = bookingTransaction.getBooking();
-        if (booking.getCleaners().contains(cleaner) || user.getRole().getName().equals("manager")) {
+        if (booking.getCleaners().contains(cleaner) || RoleEnum.LEADER.name().equals(user.getRole().getName())) {
             switch (request.getStatus()) {
                 case ON_PROCESS, MATCHED, ON_MOVING -> {
                    String oldStatus = bookingSchedule.getStatus();
@@ -197,7 +198,7 @@ public class ScheduleService {
                     updateReviewOfCleaner(cleaner, booking, bookingSchedule, defaultRating, StringUtils.EMPTY);
                     
                     processIfAllSchedulesAreDone(booking, bookingTransaction);
-                    mailService.sendMailUpdatingStatusOfSchedule(booking.getUser().getEmail(), booking.getHostName(), booking.getHostAddress(), booking.getHostAddress(),
+                  mailService.sendMailUpdatingStatusOfSchedule(booking.getUser().getEmail(), booking.getHostName(), booking.getHostAddress(), booking.getHostPhone(),
                             HMSUtil.formatDate(Date.from(bookingSchedule.getWorkDate().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()), HMSUtil.DDMMYYYY_FORMAT),
                             request.getStatus().getName());
                 }
@@ -215,6 +216,9 @@ public class ScheduleService {
                     }
 
                     processIfAllSchedulesAreDone(booking, bookingTransaction);
+                    mailService.sendMailUpdatingStatusOfSchedule(booking.getUser().getEmail(), booking.getHostName(), booking.getHostAddress(), booking.getHostPhone(),
+                            HMSUtil.formatDate(Date.from(bookingSchedule.getWorkDate().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()), HMSUtil.DDMMYYYY_FORMAT),
+                            request.getStatus().getName());
                 }
                 default -> throw new HmsException(HmsErrorCode.INVALID_REQUEST, "status not valid");
             }

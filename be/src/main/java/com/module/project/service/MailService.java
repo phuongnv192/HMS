@@ -52,6 +52,52 @@ public class MailService {
         send(recipientEmail, subject, content, true);
     }
 
+    public void sendMailCancelOfBooking(String recipientEmail,
+                                        String hostName,
+                                        String hostAddress,
+                                        String hostPhone,
+                                        String date,
+                                        String cancelTime) {
+        String subject = "Notification for change of booking status that you have been enrolled in";
+        String content = "A booking that you have been enrolled in has been updated to <b>cancelled</b> by customer.<br>" +
+                "Host name: <b>" + hostName + "</b><br>" +
+                "Host address: <b>" + hostAddress + "</b><br>" +
+                "Host phone: <b>" + hostPhone + "</b><br>" +
+                "Booking date: <b>" + date + "</b><br>" +
+                "Cancelled time: - <b>" + cancelTime + "</b>";
+        send(recipientEmail, subject, content, true);
+    }
+
+    public void sendMailUpdateOfBooking(String recipientEmail,
+                                        String hostName,
+                                        String hostAddress,
+                                        String hostPhone,
+                                        String date,
+                                        String updateTime) {
+        String subject = "Notification for change of booking status that you have been enrolled in";
+        String content = "A booking that you have been enrolled in has been updated some importance info about the host. Please carefully take a look at that.<br>" +
+                "Host name: <b>" + hostName + "</b><br>" +
+                "Host address: <b>" + hostAddress + "</b><br>" +
+                "Host phone: <b>" + hostPhone + "</b><br>" +
+                "Booking date: <b>" + date + "</b><br>" +
+                "Updated time: - <b>" + updateTime + "</b>";
+        send(recipientEmail, subject, content, true);
+    }
+
+    public void sendMailForCleaners(String recipientEmail,
+                                    String hostName,
+                                    String hostAddress,
+                                    String hostPhone,
+                                    String date) {
+        String subject = "Notification for booking that you have been enrolled in";
+        String content = "You have been enrolled in a booking. Please carefully take a look at that.<br>" +
+                "Host name: <b>" + hostName + "</b><br>" +
+                "Host address: <b>" + hostAddress + "</b><br>" +
+                "Host phone: <b>" + hostPhone + "</b><br>" +
+                "Booking date: <b>" + date + "</b><br>";
+        send(recipientEmail, subject, content, true);
+    }
+
     public void send(String recipientEmail, String subject, String content, boolean isHtml) {
 
         Properties properties = new Properties();

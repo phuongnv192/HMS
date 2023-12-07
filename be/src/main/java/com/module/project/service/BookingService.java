@@ -32,7 +32,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -43,9 +45,10 @@ public class BookingService {
     private final ScheduleService scheduleService;
     private final BookingScheduleRepository bookingScheduleRepository;
     private final BookingTransactionRepository bookingTransactionRepository;
+    private final MailService mailService;
 
-    public HmsResponse<Booking> booking(BookingRequest request) {
-        User customer = userRepository.findById(request.getCustomerId())
+    public HmsResponse<Booking> booking(BookingRequest request, String userId) {
+        User customer = userRepository.findById(Long.parseLong(userId))
                 .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "relevant user is not existed on system"));
         FloorInfoEnum floorInfoEnum = FloorInfoEnum.lookUp(request.getFloorArea());
         if (floorInfoEnum == null) {
@@ -77,6 +80,11 @@ public class BookingService {
         }
         booking.setStatus(ConfirmStatus.CONFIRMED.name());
         processBookingSchedule(booking, userId);
+        
+        String mailTo = getListMailCleanerFromBooking(booking);
+        mailService.sendMailForCleaners(mailTo, booking.getHostName(), booking.getHostAddress(), booking.getHostPhone(),
+                HMSUtil.formatDate(booking.getCreateDate(), HMSUtil.DDMMYYYYHHMMSS_FORMAT));
+
         return HMSUtil.buildResponse(ResponseCode.SUCCESS, null);
     }
 
@@ -85,9 +93,15 @@ public class BookingService {
                 .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "relevant booking is not existed on system"));
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "can't find any user by ".concat(userId.toString())));
-        List<String> acceptRole = Arrays.asList(RoleEnum.ADMIN.name(), RoleEnum.MANAGER.name());
+        List<String> acceptRole = List.of(RoleEnum.LEADER.name());
         if (booking.getUser().getId().equals(userId) || acceptRole.contains(user.getRole().getName())) {
             scheduleService.cancelBooking(booking, user);
+
+            String mailTo = getListMailCleanerFromBooking(booking);
+            mailService.sendMailCancelOfBooking(mailTo, booking.getHostName(), booking.getHostAddress(), booking.getHostPhone(),
+                    HMSUtil.formatDate(booking.getCreateDate(), HMSUtil.DDMMYYYYHHMMSS_FORMAT),
+                    HMSUtil.formatDate(new Date(), HMSUtil.DDMMYYYYHHMMSS_FORMAT));
+
             return HMSUtil.buildResponse(ResponseCode.SUCCESS, null);
         } else {
             throw new HmsException(HmsErrorCode.INVALID_REQUEST, "user dont have permission to execute");
@@ -95,7 +109,7 @@ public class BookingService {
     }
 
     public HmsResponse<Object> updateWithdraw(Long bookScheduleId, String userId, String roleName) {
-        List<String> approveRole = Arrays.asList(RoleEnum.MANAGER.name(), RoleEnum.LEADER.name());
+        List<String> approveRole = List.of(RoleEnum.LEADER.name());
         if (approveRole.contains(roleName)) {
             BookingSchedule bookingSchedule = bookingScheduleRepository.findById(bookScheduleId)
                     .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "relevant schedule is not existed on system"));
@@ -125,7 +139,7 @@ public class BookingService {
         }
     }
 
-    public HmsResponse<Object> updateBooking(BookingRequest request, String userId) {
+    public HmsResponse<Booking> updateBooking(BookingRequest request, String userId) {
         Booking booking = bookingRepository.findById(request.getBookingId())
                 .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "relevant booking is not existed on system"));
         if (!userId.equals(booking.getUser().getId().toString())) {
@@ -138,7 +152,12 @@ public class BookingService {
         bookingRepository.save(booking);
         // TODO: define scope for updating booking
 
-        return HMSUtil.buildResponse(ResponseCode.SUCCESS, null);
+       String mailTo = getListMailCleanerFromBooking(booking);
+        mailService.sendMailUpdateOfBooking(mailTo, booking.getHostName(), booking.getHostAddress(), booking.getHostPhone(),
+                HMSUtil.formatDate(booking.getCreateDate(), HMSUtil.DDMMYYYYHHMMSS_FORMAT),
+                HMSUtil.formatDate(new Date(), HMSUtil.DDMMYYYYHHMMSS_FORMAT));
+
+        return HMSUtil.buildResponse(ResponseCode.SUCCESS, booking);
     }
 
     public BookingDetailResponse getBookingDetail(Long bookingId, String userId, String roleName, boolean isShowSchedule) {
@@ -193,5 +212,12 @@ public class BookingService {
         Pageable pageable = PageRequest.of(page, size);
         List<Booking> bookingList = bookingRepository.findAll(pageable).getContent();
         return HMSUtil.buildResponse(ResponseCode.SUCCESS, bookingList);
+    }
+
+    private String getListMailCleanerFromBooking(Booking booking) {
+        return booking.getCleaners().stream().map(e -> {
+            User u = e.getUser();
+            return u.getEmail();
+        }).collect(Collectors.joining(","));
     }
 }

@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
 
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -27,6 +26,7 @@ public class HMSUtil {
     public static final String COMMA = ",";
     public static final String SPACE = " ";
     public static final String DDMMYYYY_FORMAT = "dd/MM/yyyy";
+    public static final String DDMMYYYYHHMMSS_FORMAT = "dd/MM/yyyy HH:mm:ss";
 
     public static String convertCleanersToIds(List<Cleaner> cleaners) {
         if (cleaners == null || CollectionUtils.isEmpty(cleaners)) {
@@ -44,7 +44,7 @@ public class HMSUtil {
     public static String formatDate(Date date, String format) {
         String rs = null;
         try {
-            rs = new SimpleDateFormat(DDMMYYYY_FORMAT).format(date);
+            rs = new SimpleDateFormat(format).format(date);
         } catch (Exception ex) {
             log.warn("Exception when format date {} with detail: {}", date, ex.getMessage());
         }
@@ -69,20 +69,7 @@ public class HMSUtil {
         response.setData(data);
         return response;
     }
-
-    public static String getMD5Hash(String input) throws NoSuchAlgorithmException {
-        MessageDigest md = MessageDigest.getInstance("MD5");
-        md.update(input.getBytes());
-        byte[] digest = md.digest();
-
-        StringBuilder sb = new StringBuilder();
-        for (byte b : digest) {
-            sb.append(String.format("%02x", b & 0xff));
-        }
-
-        return sb.toString();
-    }
-
+    
     public static LocalDate convertDateToLocalDate(Date date) {
         return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     }
