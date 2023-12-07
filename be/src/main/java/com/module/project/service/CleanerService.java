@@ -56,9 +56,14 @@ public class CleanerService {
     private final ScheduleService scheduleService;
     private final BookingService bookingService;
 
-    public HmsResponse<List<Cleaner>> getCleaners(Integer page, Integer size) {
+    public HmsResponse<List<CleanerOverviewResponse>> getCleaners(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size);
-        return HMSUtil.buildResponse(ResponseCode.SUCCESS, cleanerRepository.findAll(pageable).getContent());
+        List<Cleaner> cleaners = cleanerRepository.findAll(pageable).getContent();
+        List<CleanerOverviewResponse> response = new ArrayList<>();
+        for (Cleaner cleaner : cleaners) {
+            response.add(getCleanerOverview(cleaner));
+        }
+        return HMSUtil.buildResponse(ResponseCode.SUCCESS, response);
     }
 
     // public HmsResponse<List<CleanerOverviewResponse>> getCleanerHistory(Integer page, Integer size) {
@@ -141,6 +146,7 @@ public class CleanerService {
         CleanerOverviewResponse ratingOverview = CleanerOverviewResponse.builder()
                 .cleanerId(cleanerId)
                 .name(HMSUtil.convertToFullName(cleaner.getUser().getFirstName(), cleaner.getUser().getLastName()))
+                .gender(cleaner.getUser().getGender())
                 .activityYear(HMSUtil.calculateActivityYear(cleaner.getCreateDate(), new Date()))
                 .averageRating(ratingNumber != 0 ? Math.round(sumRating / ratingNumber) : ratingNumber)
                 .ratingNumber(ratingNumber)
@@ -221,5 +227,54 @@ public class CleanerService {
             }
         }
         return HMSUtil.buildResponse(ResponseCode.SUCCESS, responses);
+    }
+
+    public HmsResponse<List<CleanerOverviewResponse>> getListCleanerAvailable(LocalDate workDate, Long serviceTypeId, Long servicePackageId) {
+        List<Cleaner> cleaners = scheduleService.getListCleanerAvailable(workDate, serviceTypeId, servicePackageId);
+        List<CleanerOverviewResponse> response = new ArrayList<>();
+        for (Cleaner cleaner : cleaners) {
+            response.add(getCleanerOverview(cleaner));
+        }
+        return HMSUtil.buildResponse(ResponseCode.SUCCESS, response);
+    }
+
+    private CleanerOverviewResponse getCleanerOverview(Cleaner cleaner) {
+        Map<Long, CleanerReviewInfo> reviewList = JsonService.strToObject(cleaner.getReview(), new TypeReference<>() {
+        });
+        CleanerOverviewResponse history = CleanerOverviewResponse.builder()
+                .cleanerId(cleaner.getId())
+                .name(HMSUtil.convertToFullName(cleaner.getUser().getFirstName(), cleaner.getUser().getLastName()))
+                .gender(cleaner.getUser().getGender())
+                .idCard(cleaner.getIdCard())
+                .address(cleaner.getAddress())
+                .email(cleaner.getUser().getEmail())
+                .phoneNumber(cleaner.getUser().getPhoneNumber())
+                .status(cleaner.getStatus())
+                .branch(cleaner.getBranch())
+                .activityYear(HMSUtil.calculateActivityYear(cleaner.getCreateDate(), new Date()))
+                .averageRating(0L)
+                .ratingNumber(0)
+                .build();
+        if (reviewList != null) {
+            double sumRating = 0;
+            int ratingNumber = 0;
+
+            for (Long bookingId : reviewList.keySet()) {
+                Optional<Booking> bookingOptional = bookingRepository.findById(bookingId);
+                if (bookingOptional.isEmpty()) {
+                    continue;
+                }
+                CleanerReviewInfo cleanerReviewInfo = reviewList.get(bookingId);
+                if (cleanerReviewInfo != null
+                        && cleanerReviewInfo.getCleanerActivities() != null
+                        && !cleanerReviewInfo.getCleanerActivities().isEmpty()) {
+                    sumRating += cleanerReviewInfo.getCleanerActivities().stream().mapToDouble(CleanerActivity::getRatingScore).sum();
+                    ratingNumber += cleanerReviewInfo.getCleanerActivities().size();
+                }
+            }
+        }
+        history.setAverageRating(ratingNumber != 0 ? Math.round(sumRating / ratingNumber) : ratingNumber);
+        history.setRatingNumber(ratingNumber);
+        return history;
     }
 }
