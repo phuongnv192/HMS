@@ -49,7 +49,7 @@ public class AuthenticationService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .phoneNumber(request.getPhoneNumber())
                 .email(request.getEmail())
-                .gender(request.getGender())
+               .gender(Constant.GENDER.MALE.equals(request.getGender()) ? Constant.GENDER.MALE : Constant.GENDER.FEMALE)
                 .role(roleRepository.findByName(request.getRole()))
                 .status(Constant.COMMON_STATUS.INACTIVE)
                 .build();
