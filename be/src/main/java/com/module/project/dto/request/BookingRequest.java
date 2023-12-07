@@ -19,6 +19,7 @@ public class BookingRequest {
     private String hostPhone;
     private String hostAddress;
     private String hostDistance;
+    private Long distancePrice;
     private String houseType;
     private int floorNumber;
     private String floorArea;
