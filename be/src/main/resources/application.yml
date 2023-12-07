@@ -18,7 +18,6 @@ spring:
       database-platform: org.hibernate.dialect.PostgreSQLDialect
   sql:
     init:
-#      data-locations: classpath*:schema.sql
       mode: always
 
 application:

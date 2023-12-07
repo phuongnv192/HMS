@@ -67,6 +67,7 @@ public class ScheduleService {
     private final CleanerRepository cleanerRepository;
     private final UserRepository userRepository;
     private final ServiceTypeRepository serviceTypeRepository;
+    private final MailService mailService;
 
     @Value("${application.choosing-cleaner-price:0}")
     private long choosingCleanerPrice;
@@ -143,8 +144,7 @@ public class ScheduleService {
                 List<LocalDate> periodDate = HMSUtil.monthsInCalendar(HMSUtil.convertDateToLocalDate(startDay.getTime()), HMSUtil.convertDateToLocalDate(periodRange.getTime()));
                 processInsertToBookingSchedule(booking, request, bookingTransaction, userId, floorInfoEnum, null, periodDate);
             }
-            default ->
-                    throw new HmsException(HmsErrorCode.INVALID_REQUEST, "not support service package ".concat(request.getServiceTypeId().toString()));
+          default -> throw new HmsException(HmsErrorCode.INVALID_REQUEST, "not support service package ".concat(request.getServiceTypeId().toString()));
         }
     }
 
@@ -161,24 +161,32 @@ public class ScheduleService {
         if (booking.getCleaners().contains(cleaner) || user.getRole().getName().equals("manager")) {
             switch (request.getStatus()) {
                 case ON_PROCESS, MATCHED, ON_MOVING -> {
-                    if (TransactionStatus.DONE.name().equals(bookingSchedule.getStatus())) {
-                        throw new HmsException(HmsErrorCode.INVALID_REQUEST, "can't execute this request because status of schedule is not match");
+                   String oldStatus = bookingSchedule.getStatus();
+                    if (!TransactionStatus.DONE.name().equals(bookingSchedule.getStatus())) {
+                        bookingSchedule.setStatus(request.getStatus().name());
+                        bookingSchedule.setUpdateBy(Long.parseLong(userId));
+                        bookingScheduleRepository.save(bookingSchedule);
                     }
-                    bookingSchedule.setStatus(request.getStatus().name());
-                    bookingSchedule.setUpdateBy(Long.parseLong(userId));
-                    bookingScheduleRepository.save(bookingSchedule);
+                    if ((TransactionStatus.ON_PROCESS.equals(request.getStatus()) && !oldStatus.equals(request.getStatus().name()))
+                            || (TransactionStatus.ON_MOVING.equals(request.getStatus()) && !oldStatus.equals(request.getStatus().name()))) {
+                        mailService.sendMailUpdatingStatusOfSchedule(booking.getUser().getEmail(), booking.getHostName(), booking.getHostAddress(), booking.getHostPhone(),
+                                HMSUtil.formatDate(Date.from(bookingSchedule.getWorkDate().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()), HMSUtil.DDMMYYYY_FORMAT),
+                                request.getStatus().getName());
+                    }
                 }
                 case DONE -> {
-                    if (request.getStatus().name().equals(bookingSchedule.getStatus())) {
-                        return;
-                    } else if (!TransactionStatus.MATCHED.name().equals(bookingSchedule.getStatus())) {
-                        throw new HmsException(HmsErrorCode.INVALID_REQUEST, "can't execute this request because status of schedule is not match");
+                    // if (request.getStatus().name().equals(bookingSchedule.getStatus())) {
+                    //     return;
+                    // } else if (!TransactionStatus.MATCHED.name().equals(bookingSchedule.getStatus())) {
+                    //     throw new HmsException(HmsErrorCode.INVALID_REQUEST, "can't execute this request because status of schedule is not match");
+                    if (!TransactionStatus.DONE.name().equals(bookingSchedule.getStatus())) {
+                        bookingSchedule.setStatus(request.getStatus().name());
+                        bookingSchedule.setPaymentStatus(request.getPaymentStatus().name());
+                        bookingSchedule.setUpdateBy(Long.parseLong(userId));
+                        bookingSchedule.setPaymentNote(request.getNote());
+                        bookingScheduleRepository.save(bookingSchedule);
                     }
-                    bookingSchedule.setStatus(request.getStatus().name());
-                    bookingSchedule.setPaymentStatus(request.getPaymentStatus().name());
-                    bookingSchedule.setUpdateBy(Long.parseLong(userId));
-                    bookingSchedule.setPaymentNote(request.getNote());
-                    bookingScheduleRepository.save(bookingSchedule);
+                    
 
                     CleanerWorkingDate cleanerWorkingDate = cleanerWorkingDateRepository.findByCleanerIdAndScheduleDateEqualsAndStatusEquals(cleaner.getId(), bookingSchedule.getWorkDate(), Constant.COMMON_STATUS.ACTIVE)
                             .orElse(null);
@@ -189,9 +197,12 @@ public class ScheduleService {
                     updateReviewOfCleaner(cleaner, booking, bookingSchedule, defaultRating, StringUtils.EMPTY);
                     
                     processIfAllSchedulesAreDone(booking, bookingTransaction);
+                    mailService.sendMailUpdatingStatusOfSchedule(booking.getUser().getEmail(), booking.getHostName(), booking.getHostAddress(), booking.getHostAddress(),
+                            HMSUtil.formatDate(Date.from(bookingSchedule.getWorkDate().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()), HMSUtil.DDMMYYYY_FORMAT),
+                            request.getStatus().getName());
                 }
                 case CANCELLED -> {
-                    // TODO go in deep later
+                    // TODO do clearer later
                     bookingSchedule.setStatus(request.getStatus().name());
                     bookingSchedule.setUpdateBy(Long.parseLong(userId));
                     bookingScheduleRepository.save(bookingSchedule);
@@ -379,8 +390,7 @@ public class ScheduleService {
             case "3" -> {
                 periodDate = HMSUtil.monthsInCalendar(HMSUtil.convertDateToLocalDate(startDay.getTime()), HMSUtil.convertDateToLocalDate(periodRange.getTime()));
             }
-            default ->
-                    throw new HmsException(HmsErrorCode.INVALID_REQUEST, "not support service package ".concat(serviceTypeId.toString()));
+            default -> throw new HmsException(HmsErrorCode.INVALID_REQUEST, "not support service package ".concat(serviceTypeId.toString()));
         }
         Set<Long> cleanerIds = filterOnlyAvailable(cleanerRepository.countCleanerByStatusEquals(Constant.COMMON_STATUS.ACTIVE), periodDate);
         return cleanerRepository.findAllById(cleanerIds);

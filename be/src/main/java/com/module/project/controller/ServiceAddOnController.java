@@ -2,6 +2,7 @@ package com.module.project.controller;
 
 import com.module.project.dto.ClaimEnum;
 import com.module.project.dto.request.ServiceAddOnRequest;
+import com.module.project.dto.request.ServiceRequest;
 import com.module.project.service.ServiceCommonService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static com.module.project.dto.Constant.API_V1;
 import static com.module.project.dto.Constant.FLOOR_INFO;
+import static com.module.project.dto.Constant.SERVICE;
 import static com.module.project.dto.Constant.SERVICE_ADD_ON;
 import static com.module.project.dto.Constant.SERVICE_ADD_ONS;
 import static com.module.project.dto.Constant.SERVICE_TYPE;
@@ -52,5 +54,22 @@ public class ServiceAddOnController {
     public ResponseEntity<Object> updateServiceAddOn(@RequestBody ServiceAddOnRequest request, HttpServletRequest httpServletRequest) {
         String roleName = (String) httpServletRequest.getAttribute(ClaimEnum.ROLE_NAME.name);
         return ResponseEntity.ok(serviceCommonService.updateServiceAddOn(request, roleName));
+    }
+    
+    @GetMapping(SERVICE)
+    public ResponseEntity<Object> getAllService() {
+        return ResponseEntity.ok(serviceCommonService.getAllService());
+    }
+
+    @PostMapping(SERVICE)
+    public ResponseEntity<Object> insertService(@RequestBody ServiceRequest request, HttpServletRequest httpServletRequest) {
+        String roleName = (String) httpServletRequest.getAttribute(ClaimEnum.ROLE_NAME.name);
+        return ResponseEntity.ok(serviceCommonService.insertService(request, roleName));
+    }
+
+    @PutMapping(SERVICE)
+    public ResponseEntity<Object> updateService(@RequestBody ServiceRequest request, HttpServletRequest httpServletRequest) {
+        String roleName = (String) httpServletRequest.getAttribute(ClaimEnum.ROLE_NAME.name);
+        return ResponseEntity.ok(serviceCommonService.updateService(request, roleName));
     }
 }

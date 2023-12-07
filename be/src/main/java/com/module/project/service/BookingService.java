@@ -131,6 +131,11 @@ public class BookingService {
         if (!userId.equals(booking.getUser().getId().toString())) {
             throw new HmsException(HmsErrorCode.INVALID_REQUEST, "user dont have permission to execute");
         }
+        booking.setHostName(request.getHostName());
+        booking.setHostAddress(request.getHostAddress());
+        booking.setHostPhone(request.getHostPhone());
+        booking.setHostDistance(request.getHostDistance());
+        bookingRepository.save(booking);
         // TODO: define scope for updating booking
 
         return HMSUtil.buildResponse(ResponseCode.SUCCESS, null);

@@ -34,10 +34,25 @@ public class MailService {
         content.append("http://localhost:8888/api/v1/auth/verify")
             .append("?username=")
             .append(username);
-        send(recipientEmail, subject, content.toString());
+        send(recipientEmail, subject, content.toString(), false);
     }
 
-    public void send(String recipientEmail, String subject, String content) {
+    public void sendMailUpdatingStatusOfSchedule(String recipientEmail,
+                                                 String hostName,
+                                                 String hostAddress,
+                                                 String hostPhone,
+                                                 String date,
+                                                 String status) {
+        String subject = "Notification for change of schedule status";
+        String content = "You have a booking cleaning schedule that recently have been updated status of process.<br>" +
+                "Host name: <b>" + hostName + "</b><br>" +
+                "Host address: <b>" + hostAddress + "</b><br>" +
+                "Host phone: <b>" + hostPhone + "</b><br>" +
+                "Current status of schedule on " + date + " - <b>" + status + "</b>";
+        send(recipientEmail, subject, content, true);
+    }
+
+    public void send(String recipientEmail, String subject, String content, boolean isHtml) {
 
         Properties properties = new Properties();
         properties.put("mail.smtp.auth", "true");
@@ -63,7 +78,12 @@ public class MailService {
 
             // Set the subject and text of the email
             message.setSubject(subject);
-            message.setText(content);
+            
+            if (isHtml) {
+                message.setContent(content, "text/html; charset=UTF-8");
+            } else {
+                message.setText(content);
+            }
 
             // Send the email
             Transport.send(message);

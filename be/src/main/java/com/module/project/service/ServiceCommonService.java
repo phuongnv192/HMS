@@ -5,6 +5,7 @@ import com.module.project.dto.FloorInfoEnum;
 import com.module.project.dto.ResponseCode;
 import com.module.project.dto.RoleEnum;
 import com.module.project.dto.request.ServiceAddOnRequest;
+import com.module.project.dto.request.ServiceRequest;
 import com.module.project.dto.response.FloorInfoResponse;
 import com.module.project.dto.response.ViewServiceAddOnResponse;
 import com.module.project.exception.HmsErrorCode;
@@ -13,6 +14,7 @@ import com.module.project.exception.HmsResponse;
 import com.module.project.model.ServiceAddOn;
 import com.module.project.model.ServiceType;
 import com.module.project.repository.ServiceAddOnRepository;
+import com.module.project.repository.ServiceRepository;
 import com.module.project.repository.ServiceTypeRepository;
 import com.module.project.util.HMSUtil;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +22,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +33,8 @@ import java.util.Objects;
 public class ServiceCommonService {
     private final ServiceAddOnRepository serviceAddOnRepository;
     private final ServiceTypeRepository serviceTypeRepository;
-
+    private final ServiceRepository serviceRepository;
+    
     public HmsResponse<List<ViewServiceAddOnResponse>> getAllServiceAddOn(Long addOnId) {
         if (addOnId != -1) {
             ServiceAddOn serviceAddOn = serviceAddOnRepository.findById(addOnId)
@@ -102,6 +107,52 @@ public class ServiceCommonService {
         handleServiceAddOnParent(request, serviceAddOn);
         serviceAddOnRepository.save(serviceAddOn);
         return HMSUtil.buildResponse(ResponseCode.SUCCESS, null);
+    }
+
+    public HmsResponse<List<com.module.project.model.Service>> getAllService() {
+        return HMSUtil.buildResponse(ResponseCode.SUCCESS, serviceRepository.findAll());
+    }
+
+    public HmsResponse<com.module.project.model.Service> insertService(ServiceRequest request, String roleName) {
+        if (!RoleEnum.ADMIN.name().equals(roleName)) {
+            throw new HmsException(HmsErrorCode.INVALID_REQUEST, "privileges access denied");
+        }
+        ServiceType serviceType = serviceTypeRepository.findById(request.getServiceTypeId())
+                .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "can't find any service type by ".concat(request.getServiceTypeId().toString())));
+        Set<ServiceAddOn> serviceAddOnSet = new HashSet<>(serviceAddOnRepository.findAllById(request.getAddOnIds()));
+
+        com.module.project.model.Service service = com.module.project.model.Service.builder()
+                .serviceName(request.getServiceName())
+                .description(request.getDescription())
+                .status(Constant.COMMON_STATUS.ACTIVE.equalsIgnoreCase(request.getStatus())
+                        ? Constant.COMMON_STATUS.ACTIVE
+                        : Constant.COMMON_STATUS.INACTIVE)
+                .paymentMethod(request.getPaymentMethod())
+                .serviceType(serviceType)
+                .serviceAddOnSet(serviceAddOnSet)
+                .build();
+        return HMSUtil.buildResponse(ResponseCode.SUCCESS, serviceRepository.save(service));
+    }
+
+    public HmsResponse<com.module.project.model.Service> updateService(ServiceRequest request, String roleName) {
+        if (!RoleEnum.ADMIN.name().equals(roleName)) {
+            throw new HmsException(HmsErrorCode.INVALID_REQUEST, "privileges access denied");
+        }
+        com.module.project.model.Service service = serviceRepository.findById(request.getServiceId())
+                .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "can't find any service by ".concat(request.getServiceId().toString())));
+        ServiceType serviceType = serviceTypeRepository.findById(request.getServiceTypeId())
+                .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "can't find any service type by ".concat(request.getServiceTypeId().toString())));
+        Set<ServiceAddOn> serviceAddOnSet = new HashSet<>(serviceAddOnRepository.findAllById(request.getAddOnIds()));
+
+        service.setServiceName(request.getServiceName());
+        service.setDescription(request.getDescription());
+        service.setStatus(Constant.COMMON_STATUS.ACTIVE.equalsIgnoreCase(request.getStatus())
+                ? Constant.COMMON_STATUS.ACTIVE
+                : Constant.COMMON_STATUS.INACTIVE);
+        service.setPaymentMethod(request.getPaymentMethod());
+        service.setServiceType(serviceType);
+        service.setServiceAddOnSet(serviceAddOnSet);
+        return HMSUtil.buildResponse(ResponseCode.SUCCESS, serviceRepository.save(service));
     }
 
     private void handleServiceAddOnParent(ServiceAddOnRequest request, ServiceAddOn serviceAddOn) {
