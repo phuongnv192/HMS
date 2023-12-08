@@ -219,14 +219,14 @@ export class BookingComponent implements OnInit {
     // this.dialogService.sendDataDialog(true);
     this.renderer.addClass(document.body, 'modal-open');
     this.dialogRef = this.dialog.open(CalendarDialog, {
-      width: '1200px',
+      width: '1000px',
       maxHeight: '60%',
       data: {
         type: this.serviceTypeData,
         pickDay: this.pickDay,
         addonService: this.priceList
       },
-      panelClass: ['calendar-pick']
+      panelClass: ['calendar-pick', 'custom-margin']
     });
 
     this.dialogRef.afterClosed().subscribe(result => {

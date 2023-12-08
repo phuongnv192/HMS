@@ -1446,9 +1446,9 @@
   border: 0em;
   // background-color: #232323;
   max-width: 960px;
-  height: 151px;
-  margin: 0 32px 10px 32px;
-
+  height: 155px;
+  margin: -10px 30px 0 30px;
+  // padding: 1.4rem;
   label {
     margin-bottom: -2rem !important;
   }
@@ -1535,7 +1535,7 @@
   .select-date-container {
     overflow: hidden;
     width: 95%;
-    height: 150px;
+    height: 190px;
     display: flex;
     // cursor: grab;
     margin: -10px 60px 0 60px;
@@ -1836,10 +1836,39 @@ h6 {
   font-size: 12px;
   font-weight: 400;
   line-height: 16px;
+
 }
 
 .content-scroll {
   overflow: auto;
+}
+
+.content-calendar{
+  width: 100%;
+  display: flex;
+}
+
+.input-information{
+  width: 50%;
+  display: block;
+}
+
+.pickTime{
+  width: 50%;
+}
+
+.calender-pick-info{
+  width: 100%;
+  display: block;
+  margin-top: 4rem;
+}
+
+.inputTime{
+  width: 100%;
+
+  .in_input_time{
+    width: 20%;
+  }
 }
 
 .title_note {
@@ -1853,7 +1882,7 @@ h6 {
 .booking-detail-information {
   font-size: 13px;
   font-weight: 400;
-
+  width: 80%;
   p {
     font-size: 13px;
     font-weight: 300;
@@ -1883,17 +1912,15 @@ hr {
   margin-bottom: 0.5rem;
 }
 
-
-
 .input-group input {
   height: 35px !important;
-  width: 20%;
+  width: 35%;
 }
 
 .input-group p {
   padding-top: 5px;
   padding-right: 15px;
-  width: 15%;
+  width: 30%;
   margin-bottom: 1rem;
 }
 
@@ -1911,14 +1938,33 @@ h6 {
 
 #servicePackage {
   height: 35px;
-  width: 12%;
+  width: 70%;
   text-align: center;
 }
 
 #serviceType {
   height: 35px;
-  width: 30%;
+  width: 70%;
   text-align: center;
+}
+
+#time {
+  height: 35px;
+  width: 35%;
+  text-align: center;
+}
+
+.red_border, .red_border_no_background {
+  border: 1px solid red!important;
+  margin-bottom: 5px!important;
+}
+
+.error {
+  font-size: 11px;
+  color: #FF0000;
+  // margin-bottom: 15px;
+  float: left;
+  width: 100%;
 }
 
 .date-pickertime {
@@ -1934,12 +1980,29 @@ h6 {
 
   .showTime {
     width: 50%;
-
+    margin-top: 1rem;
     span {
       font-weight: 700;
     }
   }
 }
+
+.hide-selected-date {
+   color: #525f7f!important;
+}
+.hide-selected-date {
+   background-color:  #fff!important; 
+}
+// .hide-selected-date .ngb-dp-day,
+// .hide-selected-date .ngb-dp-month,
+// .hide-selected-date .ngb-dp-year {
+//   display: none;
+// }
+
+// .hide-selected-date .ngb-dp-day.today {
+//   /* Hiển thị lại ngày hiện tại nếu muốn */
+//   display: block;
+// }
 
 .carrousel-cell i {
   position: absolute;
@@ -1953,4 +2016,16 @@ h6 {
   top: 0;
   right: 0;
   cursor: pointer;
+}
+
+::ng-deep .custom-margin {
+  margin-bottom: 10rem;
+}
+
+::ng-deep .custom-icon {
+  font-size: 24px; /* Điều chỉnh kích cỡ của icon theo mong muốn */
+}
+
+.bottom{
+  font-size: 13px;
 }

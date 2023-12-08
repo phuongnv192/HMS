@@ -45,6 +45,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { PriceListDialog } from "./booking/price-list-dialog/price-list-dialog";
 import { PriceFormatPipe } from "./pipe/currency.pipe";
 import { AddServiceDialog } from "./booking/calendar-dialog/add-service-dialog/add-service-dialog";
+// import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -88,7 +89,7 @@ import { AddServiceDialog } from "./booking/calendar-dialog/add-service-dialog/a
     HttpClientModule,
     IvyCarouselModule,
     MatDialogModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
   ],
   providers: [
     {

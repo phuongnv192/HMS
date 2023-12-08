@@ -8,11 +8,15 @@
         <div class="title_note"> Đơn dịch vụ định kỳ ngày {{ date }} </div>
         <div class="title_note rednoti"> *Dịch vụ tiện ích được thêm theo ngày đối với lựa chọn "Dịch vụ định kỳ":</div>
         <div class="table-responsive" *ngFor="let list of parentService">
-          <input type="checkbox" [(ngModel)]="list.parent.name " (click)="checkBox(list.parent.name)"> {{ list.parent.name }}
+          <input type="checkbox" [(ngModel)]="list.checked " (click)="checkService(list.name.parent.name)"> {{ list.name.parent.name }}
         </div>
-        <div class=""> Các dịch vụ tiện ích đăng ký: {{ textListAdvanceService }} </div>
+        <div class="listAdvanceService"> Các dịch vụ tiện ích đăng ký: {{ textListAdvanceService }} </div>
 
       </div>
+
+     
+    </div>
+    <div class="button-submit">
       <button mat-button class="btn" (click)="confirm()">Bổ sung</button>
       <button mat-button class="btn" (click)="cancel()">Hủy</button>
     </div>

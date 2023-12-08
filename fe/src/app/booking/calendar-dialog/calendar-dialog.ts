@@ -3,8 +3,8 @@ import { CalendarDialogData } from '../booking.component';
 import { NgZone, OnInit, Renderer2 } from '@angular/core';
 import { Component, Inject, OnDestroy } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { addDays, addWeeks, format, addMonths } from 'date-fns';
-import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+import { addDays, addWeeks, format, addMonths, isBefore, isAfter, subMonths } from 'date-fns';
+import { NgbDate, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { AddServiceDialog } from './add-service-dialog/add-service-dialog';
 
 export interface AddServiceDialogData {
@@ -46,12 +46,17 @@ export class CalendarDialog implements OnDestroy, OnInit {
   pickServiceType: any;
   dateArray: any[] = [];
   selectedTimeType = true;
-  selectedDate: NgbDateStruct;
-  showDatePicker: boolean;
+  selectedDate: NgbDateStruct | null = null;
+  showDatePicker: boolean = true;
   datePicker: string;
   datePickerShow: any;
   scheduleDescription = '';
   selectedPick: any;
+  servicePick: any;
+  c_time = false;
+  _inTime: any;
+  flag: any;
+  scheduleTimeDescription: any;
 
   constructor(
     public dialogRef: MatDialogRef<CalendarDialog>,
@@ -97,80 +102,16 @@ export class CalendarDialog implements OnDestroy, OnInit {
       this.servicePackages.push(element.servicePackageName + ' - ' + element.unit);
     });
 
-
-    // }
-
-    // this.dateSchedule = [
-    //   {
-    //     id: '1',
-    //     workDate: ["11/20/2023", "11/27/2023", "12/04/2023", "12/11/2023"],
-    //   },
-    //   {
-    //     id: '2',
-    //     workDate: ["11/20/2023", "11/27/2023", "12/04/2023", "12/11/2023"],
-    //   },
-    //   {
-    //     id: '3',
-    //     workDate: ["11/20/2023", "11/21/2023", "11/22/2023", "11/23/2023", "11/24/2023", "11/25/2023", "11/26/2023", "11/27/2023", "11/28/2023"],
-    //   }
-    // ]
-    this.dateList = [
-      {
-        id: 'd1',
-        workDate: "12/20/2023",
-        name: 'Đơn dịch vụ ngày #1',
-        startTime: "08:00 AM",
-        endTime: "11:00 AM",
-        duration: 3
-      },
-      {
-        id: 'd2',
-        workDate: "12/21/2023",
-        name: 'Đơn dịch vụ ngày #2',
-        startTime: "09:00 AM",
-        endTime: "10:00 AM",
-        duration: 1
-      },
-      {
-        id: 'd1',
-        workDate: "12/22/2023",
-        name: 'Đơn dịch vụ ngày #3',
-        startTime: "03:00 PM",
-        endTime: "05:00 AM",
-        duration: 3
-      },
-    ]
-
-
-    // this.scheduleDay = this.data.pickDay.scheduleList[0];
-
-    // // .workDate;
-    // // this.scheduleStartTime = this.data.pickDay.scheduleList[0].startTime;
-    // // this.scheduleEndTime = this.data.pickDay.scheduleList[0].endTime;
-    // // this.schedulePaymentStatus = this.data.pickDay.scheduleList[0].paymentStatus;
-    // // this.schedulePaymentNote = this.data.pickDay.scheduleList[0].paymentNote;
-    // this.scheduleAddOns = this.data.pickDay.scheduleList[0].serviceAddOns;
-    // this.namesOfScheduleDay = this.scheduleAddOns.map(item => item.name).join(', ');
-    // this.scheduleDayList = this.pickDay.scheduleList.map(item => item.workDate);
-    // console.log("scheduleDayList", this.scheduleDayList);
-
-    // this.dateSchedule = [{
-    //   id: this.id,
-    //   workDate: this.scheduleDayList
-    // }];
-    // this.date = this.dateSchedule.find((item) => item.id == this.data.id);
-
   }
 
   selectedService(event: any) {
     this.servicePackages = [];
-    this.dateArray = [];
-    this.selectedDate = null;
+    // this.dateArray = [];
+    // this.selectedDate = null;
     // this.showDatePicker = true;
     this.datePickerShow = false;
 
     this.pickServiceType = this.getId(this.data.type, this.selectedServiceTypeId);
-
     this.packagesTemp = this.data.type[this.pickServiceType - 1].servicePackages;
 
     this.packagesTemp.forEach(element => {
@@ -180,6 +121,8 @@ export class CalendarDialog implements OnDestroy, OnInit {
     if (this.pickServiceType == 1 || this.pickServiceType == 3) {
       this.selectedTimeType = true;
     }
+    this.hideDatePicker();
+
   }
 
 
@@ -305,6 +248,19 @@ export class CalendarDialog implements OnDestroy, OnInit {
     this.showDatePicker = !this.showDatePicker;
   }
 
+  datePickerNavigate(event: any) {
+    // Chặn ngày trước hôm nay và sau hôm nay 1 tháng
+    const today = new Date();
+    const minDate = subMonths(today, 1);
+    const maxDate = new Date(today);
+    maxDate.setHours(23, 59, 59); // Đặt thời gian cuối ngày để bao gồm toàn bộ ngày hôm nay
+
+    if (isBefore(event.current, minDate) || isAfter(event.current, maxDate)) {
+      // Nếu ngày không nằm trong khoảng cho phép, chuyển về tháng hiện tại
+      event.current = new NgbDate(today.getFullYear(), today.getMonth(), today.getDate());
+    }
+  }
+
   hideDatePicker() {
     if (this.selectedDate) {
       const jsDate = new Date(this.selectedDate.year, this.selectedDate.month - 1, this.selectedDate.day);
@@ -319,7 +275,7 @@ export class CalendarDialog implements OnDestroy, OnInit {
         this.scheduleDescription = dateDay + ' hàng tuần'
       } else if(this.pickServiceType == 3){
         dateDay = this.getDay(this.datePicker)
-        this.scheduleDescription = 'Ngày' + dateDay + 'thàng tháng'
+        this.scheduleDescription = 'Ngày ' + dateDay + ' hàng tháng'
       }
     }
   }
@@ -341,14 +297,144 @@ export class CalendarDialog implements OnDestroy, OnInit {
  
      this.dialogRefAddOn.afterClosed().subscribe(result => {
       console.log(result);
-      
+      if(result){
+        this.selectedPick = result;
+      }
        // console.log('The dialog was closed');
        this.renderer.removeClass(document.body, 'modal-open');
        // this.dialogService.sendDataDialog(false);
      });
   }
 
+  ValidateExpDate(_val: any, event) {
+    this.c_time = false;
+    // this.error_post_message = '';
+    var ua = navigator.userAgent.toLowerCase();
+    let v = '';
+    // check for safari macbook
+    if (ua.indexOf('safari') != -1 && this.isMacintosh()) {
+      if (ua.indexOf('chrome') > -1) {
+        this._inTime = _val.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+        v = this._inTime;
+      } else {
+        if (_val.value) {
+          if (event.keyCode === 8 || event.key === "Backspace" || event.inputType == 'deleteContentBackward') {
+            if (event.target.name == 'exp_date' && this._inTime) {
+              if (this._inTime.length != 3) {
+                this._inTime = this._inTime.slice(0, -1);
+              } else {
+                this._inTime = this._inTime.slice(0, -2);
+              }
+            }
+            event.preventDefault();
+          } else if (!isNaN(_val.value.substr(_val.value.length - 1)) && event.inputType == 'insertCompositionText') {
+            this._inTime = this._inTime + _val.value.substr(_val.value.length - 1);
+          }
+        } else {
+          this._inTime = '';
+        }
+        v = this._inTime;
+      }
+    } else {
+      this._inTime = _val.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+      v = this._inTime;
+    }
+    const newdate = this.time_format(v);
+    _val.value = newdate;
+    this._inTime = newdate;
+    if (this.validTime(this._inTime)) {
+      this.c_time = false;
+    } else {
+      
+    }
+    this.enablePayNow();
+  }
+
+  
+  isMacintosh() {
+    return navigator.platform.toLowerCase().indexOf('mac') > -1
+  }
+
+  time_format(value) {
+    let v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+    if (v.length === 2 && this.flag.length === 3 && this.flag.charAt(this.flag.length - 1) === ':') {
+      v = '';
+    }
+    if (v && !v.startsWith('0') && !v.startsWith('1')) {
+      if (v.length === 1) {
+          v = '0' + v + ':';
+      } else if (v.length === 2) {
+        v = v + ':';
+      }
+    } else if ((v <= 19 && v >= 8) || v.length === 2) {
+        v = v + ':';
+    }
+    const matches = v.match(/\d{2,4}/g);
+    const match = matches && matches[0] || '';
+    const parts = [];
+    for (let i = 0, len = match.length; i < len; i += 2) {
+      parts.push(match.substring(i, i + 2));
+      if (len === 2) {
+        parts.push('');
+      }
+    }
+    if (parts.length) {
+      this.flag = parts.join(':');
+      console.log("length", v.length);
+      return parts.join(':');
+    } else {
+      this.flag = value;
+      console.log("length", v.length);
+      return value;
+    }
+  }
+
+  public blurExpDate(_val: any): void {
+    this.scheduleTimeDescription = '';
+    this.c_time = !(this.validTime(this._inTime));
+    const v = this._inTime.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+    const newdate = this.time_format(v);
+    _val.value = newdate;
+    this._inTime = newdate;
+    if(!this.c_time){
+      this.scheduleTimeDescription = this.convertTimeFormat(newdate);
+      console.log("scheduleTimeDescription", this.scheduleTimeDescription);
+    }
+  }
+
+  convertTimeFormat(inputTime: string): string {
+    // Kiểm tra xem inputTime có đúng định dạng hh:mm không
+    const timeRegex = /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
+    if (!timeRegex.test(inputTime)) {
+      // Nếu không đúng định dạng, trả về thông báo lỗi hoặc giá trị ban đầu
+      return 'Invalid time format';
+    }
+  
+    // Chuyển đổi thành đối tượng Date để dễ xử lý
+    const inputDate = new Date(`1970-01-01T${inputTime}:00Z`);
+  
+    // Lấy giờ và phút
+    const hours = inputDate.getHours();
+    const minutes = inputDate.getMinutes();
+  
+    // Tạo chuỗi kết quả
+    const result = `${hours} giờ ${minutes} phút`;
+  
+    return result;
+  }
+
+  validTime(value) {
+    console.log("value", value.length);
+    
+    return ((value.length == 4 && value.search('/') == -1) || value.length == 5) && parseInt(value.split(':')[0], 0) >= 8
+      && (parseInt(value.split(':')[0], 0) < 20) && (parseInt(value.split(':')[1], 0) <= 60)
+  }
+
   removeAddOns(){
+
+  }
+
+  enablePayNow(){
 
   }
 }
