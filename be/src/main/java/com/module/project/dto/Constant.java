@@ -47,4 +47,9 @@ public interface Constant {
     interface UNIT {
         String MONTH = "months";
     }
+
+    interface GENDER {
+        String MALE = "Male";
+        String FEMALE = "Female";
+    }
 }
