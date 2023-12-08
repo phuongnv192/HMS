@@ -1,0 +1,1 @@
+drop TABLE if exists test1;

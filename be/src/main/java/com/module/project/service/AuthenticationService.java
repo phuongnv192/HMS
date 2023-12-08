@@ -26,21 +26,20 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Slf4j
 public class AuthenticationService {
-        private final UserRepository userRepository;
-        private final RoleRepository roleRepository;
-        private final TokenRepository tokenRepository;
-        private final PasswordEncoder passwordEncoder;
-        private final JwtService jwtService;
-        private final MailService mailService;
-        private final AuthenticationManager authenticationManager;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final TokenRepository tokenRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
+    private final MailService mailService;
+    private final AuthenticationManager authenticationManager;
 
-        public HmsResponse<AuthenticationResponse> register(RegisterRequest request) {
-                if (userRepository.existsByUsername(request.getUsername())) {
-                    throw new HmsException(HmsErrorCode.INVALID_REQUEST, "Username already exists");
+    public HmsResponse<AuthenticationResponse> register(RegisterRequest request) {
+        if (userRepository.existsByUsername(request.getUsername())) {
+            throw new HmsException(HmsErrorCode.INVALID_REQUEST, "Username already exists");
         }
-
         if (userRepository.existsByEmail(request.getEmail())) {
-                throw new HmsException(HmsErrorCode.INVALID_REQUEST, "Email already exists. Please use another email to register");
+            throw new HmsException(HmsErrorCode.INVALID_REQUEST, "Email already exists. Please use another email to register");
         }
         User user = User.builder()
                 .username(request.getUsername())
@@ -49,7 +48,7 @@ public class AuthenticationService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .phoneNumber(request.getPhoneNumber())
                 .email(request.getEmail())
-               .gender(Constant.GENDER.MALE.equals(request.getGender()) ? Constant.GENDER.MALE : Constant.GENDER.FEMALE)
+                .gender(Constant.GENDER.MALE.equals(request.getGender()) ? Constant.GENDER.MALE : Constant.GENDER.FEMALE)
                 .role(roleRepository.findByName(request.getRole()))
                 .status(Constant.COMMON_STATUS.INACTIVE)
                 .build();
@@ -62,55 +61,55 @@ public class AuthenticationService {
         return HMSUtil.buildResponse(ResponseCode.SUCCESS, AuthenticationResponse.builder()
                 .message("Please check your mail to verify your account")
                 .build());
-        }
+    }
 
-        public HmsResponse<AuthenticationResponse> verify(String username) {
-                User user = userRepository.findByUsername(username)
-                        .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "Invalid username"));
-                user.setStatus(Constant.COMMON_STATUS.ACTIVE);
-                userRepository.save(user);
-                return HMSUtil.buildResponse(ResponseCode.SUCCESS, AuthenticationResponse.builder()
-                        .message(HttpStatus.CREATED.getReasonPhrase())
-                        .build());
-        }
+    public HmsResponse<AuthenticationResponse> verify(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "Invalid username"));
+        user.setStatus(Constant.COMMON_STATUS.ACTIVE);
+        userRepository.save(user);
+        return HMSUtil.buildResponse(ResponseCode.SUCCESS, AuthenticationResponse.builder()
+                .message(HttpStatus.CREATED.getReasonPhrase())
+                .build());
+    }
 
-        public HmsResponse<AuthenticationResponse> authentication(AuthenticationRequest request) {
-                authenticationManager.authenticate(
-                        new UsernamePasswordAuthenticationToken(request.getUsernameOrEmail(),
-                                request.getPassword()));
+    public HmsResponse<AuthenticationResponse> authentication(AuthenticationRequest request) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getUsernameOrEmail(),
+                        request.getPassword()));
 
         var user = userRepository.findByUsername(request.getUsernameOrEmail())
                 .orElseGet(() -> userRepository.findByEmail(request.getUsernameOrEmail())
-                .orElseThrow());
+                        .orElseThrow());
         if (Constant.COMMON_STATUS.INACTIVE.equals(user.getStatus())) {
-                throw new HmsException(HmsErrorCode.INTERNAL_SERVER_ERROR, "user has not been active yet");
-        }        
+            throw new HmsException(HmsErrorCode.INTERNAL_SERVER_ERROR, "user has not been active yet");
+        }
         var jwtToken = jwtService.generateToken(user);
-                revokeAllUserTokens(user);
-                saveUserToken(user, jwtToken);
-                return HMSUtil.buildResponse(ResponseCode.SUCCESS, AuthenticationResponse.builder()
-                        .token(jwtToken)
-                        .build());
-        }
+        revokeAllUserTokens(user);
+        saveUserToken(user, jwtToken);
+        return HMSUtil.buildResponse(ResponseCode.SUCCESS, AuthenticationResponse.builder()
+                .token(jwtToken)
+                .build());
+    }
 
-        private void saveUserToken(User user, String jwtToken) {
-                var token = Token.builder()
-                        .user(user)
-                        .token(jwtToken)
-                        .expired(false)
-                        .revoked(false)
-                        .build();
-                tokenRepository.save(token);
-            }
-        
-            private void revokeAllUserTokens(User user) {
-                var validUserTokens = tokenRepository.findAllValidTokenByUser(user.getId());
-                if (validUserTokens.isEmpty())
-                    return;
-                validUserTokens.forEach(token -> {
-                    token.setExpired(true);
-                    token.setRevoked(true);
-                });
-                tokenRepository.saveAll(validUserTokens);
-        }
+    private void saveUserToken(User user, String jwtToken) {
+        var token = Token.builder()
+                .user(user)
+                .token(jwtToken)
+                .expired(false)
+                .revoked(false)
+                .build();
+        tokenRepository.save(token);
+    }
+
+    private void revokeAllUserTokens(User user) {
+        var validUserTokens = tokenRepository.findAllValidTokenByUser(user.getId());
+        if (validUserTokens.isEmpty())
+            return;
+        validUserTokens.forEach(token -> {
+            token.setExpired(true);
+            token.setRevoked(true);
+        });
+        tokenRepository.saveAll(validUserTokens);
+    }
 }

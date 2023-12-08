@@ -23,4 +23,3 @@ public class CleanerOverviewResponse {
     private int activityYear;
     private Long averageRating;
     private int ratingNumber;
-}

@@ -66,47 +66,47 @@ public class CleanerService {
         return HMSUtil.buildResponse(ResponseCode.SUCCESS, response);
     }
 
-    // public HmsResponse<List<CleanerOverviewResponse>> getCleanerHistory(Integer page, Integer size) {
-    //     List<CleanerOverviewResponse> response = new ArrayList<>();
-    //     Pageable pageable = PageRequest.of(page, size);
-    //     List<Cleaner> cleaners = cleanerRepository.findAll(pageable).getContent();
-    //     for (Cleaner cleaner : cleaners) {
-    //         Map<Long, CleanerReviewInfo> reviewList = JsonService.strToObject(cleaner.getReview(), new TypeReference<>() {
-    //         });
-    //         if (reviewList == null) {
-    //             continue;
-    //         }
-    //         double sumRating = 0;
-    //         int ratingNumber = 0;
-    //         CleanerOverviewResponse history = CleanerOverviewResponse.builder()
-    //                 .cleanerId(cleaner.getId())
-    //                 .name(HMSUtil.convertToFullName(cleaner.getUser().getFirstName(), cleaner.getUser().getLastName()))
-    //                 .idCard(cleaner.getIdCard())
-    //                 .email(cleaner.getUser().getEmail())
-    //                 .phoneNumber(cleaner.getUser().getPhoneNumber())
-    //                 .status(cleaner.getStatus())
-    //                 .branch(cleaner.getBranch())
-    //                 .activityYear(HMSUtil.calculateActivityYear(cleaner.getCreateDate(), new Date()))
-    //                 .build();
-    //         for (Long bookingId : reviewList.keySet()) {
-    //             Optional<Booking> bookingOptional = bookingRepository.findById(bookingId);
-    //             if (bookingOptional.isEmpty()) {
-    //                 continue;
-    //             }
-    //             CleanerReviewInfo cleanerReviewInfo = reviewList.get(bookingId);
-    //             if (cleanerReviewInfo != null
-    //                     && cleanerReviewInfo.getCleanerActivities() != null
-    //                     && !cleanerReviewInfo.getCleanerActivities().isEmpty()) {
-    //                 sumRating += cleanerReviewInfo.getCleanerActivities().stream().mapToDouble(CleanerActivity::getRatingScore).sum();
-    //                 ratingNumber += cleanerReviewInfo.getCleanerActivities().size();
-    //             }
-    //         }
-    //         history.setAverageRating(ratingNumber != 0 ? Math.round(sumRating / ratingNumber) : ratingNumber);
-    //         history.setRatingNumber(ratingNumber);
-    //         response.add(history);
-    //     }
-    //     return HMSUtil.buildResponse(ResponseCode.SUCCESS, response);
-    // }
+//    public HmsResponse<List<CleanerOverviewResponse>> getCleanerHistory(Integer page, Integer size) {
+//        List<CleanerOverviewResponse> response = new ArrayList<>();
+//        Pageable pageable = PageRequest.of(page, size);
+//        List<Cleaner> cleaners = cleanerRepository.findAll(pageable).getContent();
+//        for (Cleaner cleaner : cleaners) {
+//            Map<Long, CleanerReviewInfo> reviewList = JsonService.strToObject(cleaner.getReview(), new TypeReference<>() {
+//            });
+//            if (reviewList == null) {
+//                continue;
+//            }
+//            double sumRating = 0;
+//            int ratingNumber = 0;
+//            CleanerOverviewResponse history = CleanerOverviewResponse.builder()
+//                    .cleanerId(cleaner.getId())
+//                    .name(HMSUtil.convertToFullName(cleaner.getUser().getFirstName(), cleaner.getUser().getLastName()))
+//                    .idCard(cleaner.getIdCard())
+//                    .email(cleaner.getUser().getEmail())
+//                    .phoneNumber(cleaner.getUser().getPhoneNumber())
+//                    .status(cleaner.getStatus())
+//                    .branch(cleaner.getBranch())
+//                    .activityYear(HMSUtil.calculateActivityYear(cleaner.getCreateDate(), new Date()))
+//                    .build();
+//            for (Long bookingId : reviewList.keySet()) {
+//                Optional<Booking> bookingOptional = bookingRepository.findById(bookingId);
+//                if (bookingOptional.isEmpty()) {
+//                    continue;
+//                }
+//                CleanerReviewInfo cleanerReviewInfo = reviewList.get(bookingId);
+//                if (cleanerReviewInfo != null
+//                        && cleanerReviewInfo.getCleanerActivities() != null
+//                        && !cleanerReviewInfo.getCleanerActivities().isEmpty()) {
+//                    sumRating += cleanerReviewInfo.getCleanerActivities().stream().mapToDouble(CleanerActivity::getRatingScore).sum();
+//                    ratingNumber += cleanerReviewInfo.getCleanerActivities().size();
+//                }
+//            }
+//            history.setAverageRating(ratingNumber != 0 ? Math.round(sumRating / ratingNumber) : ratingNumber);
+//            history.setRatingNumber(ratingNumber);
+//            response.add(history);
+//        }
+//        return HMSUtil.buildResponse(ResponseCode.SUCCESS, response);
+//    }
 
     public HmsResponse<CleanerDetailHistoryResponse> getCleanerHistoryDetail(Long cleanerId) {
         Cleaner cleaner = cleanerRepository.findById(cleanerId)
@@ -135,10 +135,12 @@ public class CleanerService {
                     ratingNumber += cleanerReviewInfo.getCleanerActivities().size();
                     for (CleanerActivity info : cleanerReviewInfo.getCleanerActivities()) {
                         sumRating += info.getRatingScore();
-                        item.setReview(info.getReview());
-                        item.setRatingScore(info.getRatingScore());
-                        item.setWorkDate(HMSUtil.formatDate(info.getWorkDate(), HMSUtil.DDMMYYYY_FORMAT));
-                        history.add(item);
+                        CleanerHistoryResponse clone = new CleanerHistoryResponse();
+                        BeanUtils.copyProperties(item, clone);
+                        clone.setReview(info.getReview());
+                        clone.setRatingScore(info.getRatingScore());
+                        clone.setWorkDate(HMSUtil.formatDate(info.getWorkDate(), HMSUtil.DDMMYYYY_FORMAT));
+                        history.add(clone);
                     }
                 }
             }
@@ -186,13 +188,12 @@ public class CleanerService {
                         "insertCleaner: can't find any branch with id: ".concat(cleanerUpdateRequest.getBranchId().toString())));
         Set<com.module.project.model.Service> serviceIds = new HashSet<>(
                 serviceRepository.findAllById(cleanerUpdateRequest.getServiceIds()));
-
         cleaner.setAddress(cleanerUpdateRequest.getAddress());
         cleaner.setIdCard(cleanerUpdateRequest.getIdCard());
         cleaner.setBranch(branch);
         cleaner.setStatus(Constant.COMMON_STATUS.ACTIVE.equals(cleanerUpdateRequest.getStatus())
-                        ? Constant.COMMON_STATUS.ACTIVE
-                        : Constant.COMMON_STATUS.INACTIVE);
+                ? Constant.COMMON_STATUS.ACTIVE
+                : Constant.COMMON_STATUS.INACTIVE);
         cleaner.setServices(serviceIds);
 
         return HMSUtil.buildResponse(ResponseCode.SUCCESS, cleanerRepository.save(cleaner));
@@ -205,7 +206,6 @@ public class CleanerService {
                 ? Constant.COMMON_STATUS.ACTIVE
                 : Constant.COMMON_STATUS.INACTIVE;
         cleaner.setStatus(status);
-
         return HMSUtil.buildResponse(ResponseCode.SUCCESS, cleanerRepository.save(cleaner));
     }
 
@@ -272,9 +272,9 @@ public class CleanerService {
                     ratingNumber += cleanerReviewInfo.getCleanerActivities().size();
                 }
             }
+            history.setAverageRating(ratingNumber != 0 ? Math.round(sumRating / ratingNumber) : ratingNumber);
+            history.setRatingNumber(ratingNumber);
         }
-        history.setAverageRating(ratingNumber != 0 ? Math.round(sumRating / ratingNumber) : ratingNumber);
-        history.setRatingNumber(ratingNumber);
         return history;
     }
 }

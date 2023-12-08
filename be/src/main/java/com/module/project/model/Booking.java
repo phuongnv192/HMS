@@ -50,7 +50,6 @@ public class Booking {
     @Column(name = "review", length = 1000)
     private String review;
     private String rejectedReason;
-    
 
     @JsonIgnore
     @Column(name = "rawRequest", length = 5000)

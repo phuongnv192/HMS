@@ -29,6 +29,7 @@ public interface Constant {
     String FLOOR_INFO = "/floor-info";
     String UPDATE_WITHDRAW = "/schedule/withdraw";
     String SERVICE = "/service";
+
     interface COMMON_STATUS {
         String ACTIVE = "ACTIVE";
         String INACTIVE = "INACTIVE";

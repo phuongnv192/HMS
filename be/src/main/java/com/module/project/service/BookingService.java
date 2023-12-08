@@ -80,7 +80,7 @@ public class BookingService {
         }
         booking.setStatus(ConfirmStatus.CONFIRMED.name());
         processBookingSchedule(booking, userId);
-        
+
         String mailTo = getListMailCleanerFromBooking(booking);
         mailService.sendMailForCleaners(mailTo, booking.getHostName(), booking.getHostAddress(), booking.getHostPhone(),
                 HMSUtil.formatDate(booking.getCreateDate(), HMSUtil.DDMMYYYYHHMMSS_FORMAT));
@@ -152,7 +152,7 @@ public class BookingService {
         bookingRepository.save(booking);
         // TODO: define scope for updating booking
 
-       String mailTo = getListMailCleanerFromBooking(booking);
+        String mailTo = getListMailCleanerFromBooking(booking);
         mailService.sendMailUpdateOfBooking(mailTo, booking.getHostName(), booking.getHostAddress(), booking.getHostPhone(),
                 HMSUtil.formatDate(booking.getCreateDate(), HMSUtil.DDMMYYYYHHMMSS_FORMAT),
                 HMSUtil.formatDate(new Date(), HMSUtil.DDMMYYYYHHMMSS_FORMAT));

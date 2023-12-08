@@ -22,7 +22,6 @@ import java.time.LocalDate;
 import static com.module.project.dto.Constant.API_V1;
 import static com.module.project.dto.Constant.CLEANER;
 import static com.module.project.dto.Constant.CLEANERS;
-import static com.module.project.dto.Constant.CLEANER_HISTORY;
 import static com.module.project.dto.Constant.CLEANER_AVAILABLE;
 import static com.module.project.dto.Constant.CLEANER_HISTORY_DETAIL;
 import static com.module.project.dto.Constant.CLEANER_SCHEDULES;
@@ -42,11 +41,11 @@ public class CleanerController {
         return ResponseEntity.ok(cleanerService.getCleaners(page, size));
     }
 
-    // @GetMapping(CLEANER_HISTORY)
-    // public ResponseEntity<Object> getCleanerHistory(@RequestParam(name = "page") Integer page,
-    //                                                 @RequestParam(name = "size") Integer size) {
-    //     return ResponseEntity.ok(cleanerService.getCleanerHistory(page, size));
-    // }
+//    @GetMapping(CLEANER_HISTORY)
+//    public ResponseEntity<Object> getCleanerHistory(@RequestParam(name = "page") Integer page,
+//                                                    @RequestParam(name = "size") Integer size) {
+//        return ResponseEntity.ok(cleanerService.getCleanerHistory(page, size));
+//    }
 
     @GetMapping(CLEANER_HISTORY_DETAIL)
     public ResponseEntity<Object> getCleanerHistoryDetail(@RequestParam(name = "cleanerId") Long cleanerId) {
@@ -75,11 +74,6 @@ public class CleanerController {
         return ResponseEntity.ok(cleanerService.updateStatusSchedule(request, userId));
     }
 
-    @GetMapping(CLEANER_AVAILABLE)
-    public ResponseEntity<Object> getListCleanerAvailable(@RequestParam(name = "workDate") LocalDate workDate,
-                                                          @RequestParam(name = "serviceTypeId") Long serviceTypeId,
-                                                          @RequestParam(name = "servicePackageId") Long servicePackageId) {
-        return ResponseEntity.ok(cleanerService.getListCleanerAvailable(workDate, serviceTypeId, servicePackageId));
     @GetMapping(CLEANER_SCHEDULES)
     public ResponseEntity<Object> getCleanerSchedule(@RequestParam(name = "cleanerId") Long cleanerId,
                                                      @RequestParam(name = "page") Integer page,
@@ -88,5 +82,12 @@ public class CleanerController {
         String userId = (String) httpServletRequest.getAttribute(ClaimEnum.USER_ID.name);
         String roleName = (String) httpServletRequest.getAttribute(ClaimEnum.ROLE_NAME.name);
         return ResponseEntity.ok(cleanerService.getCleanerSchedule(cleanerId, page, size, userId, roleName));
+    }
+
+    @GetMapping(CLEANER_AVAILABLE)
+    public ResponseEntity<Object> getListCleanerAvailable(@RequestParam(name = "workDate") LocalDate workDate,
+                                                          @RequestParam(name = "serviceTypeId") Long serviceTypeId,
+                                                          @RequestParam(name = "servicePackageId") Long servicePackageId) {
+        return ResponseEntity.ok(cleanerService.getListCleanerAvailable(workDate, serviceTypeId, servicePackageId));
     }
 }

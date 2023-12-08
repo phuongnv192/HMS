@@ -2,11 +2,8 @@ package com.module.project.service;
 
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import com.module.project.util.HMSUtil;
 
 import javax.mail.Authenticator;
 import javax.mail.Message;
@@ -32,8 +29,8 @@ public class MailService {
         StringBuilder content = new StringBuilder();
         content.append("Click this link for verify your account:\n");
         content.append("http://localhost:8888/api/v1/auth/verify")
-            .append("?username=")
-            .append(username);
+                .append("?username=")
+                .append(username);
         send(recipientEmail, subject, content.toString(), false);
     }
 
@@ -124,13 +121,11 @@ public class MailService {
 
             // Set the subject and text of the email
             message.setSubject(subject);
-            
             if (isHtml) {
                 message.setContent(content, "text/html; charset=UTF-8");
             } else {
                 message.setText(content);
             }
-
             // Send the email
             Transport.send(message);
 

@@ -10,12 +10,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserInfoRequest {
-  private Long userId;
-  private String firstName;
-  private String lastName;
-  private String gender;
-  private String email;
-  private String phoneNumber;
-  private String status;
-  private Long roleId;
+    private Long userId;
+    private String firstName;
+    private String lastName;
+    private String gender;
+    private String email;
+    private String phoneNumber;
+    private String status;
+    private Long roleId;
 }

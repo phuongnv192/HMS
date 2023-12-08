@@ -10,10 +10,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SubmitReviewRequest {
-  private Long bookingId;
-  private Long scheduleId;
-  private Long cleanerId;
-  private Boolean reviewBooking;
-  private Integer ratingScore;
-  private String review;
+    private Long bookingId;
+    private Long scheduleId;
+    private Long cleanerId;
+    private Boolean reviewBooking;
+    private Integer ratingScore;
+    private String review;
 }

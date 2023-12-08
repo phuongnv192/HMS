@@ -11,7 +11,6 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class ServiceRequest {
     private Long serviceId;
     private String serviceName;

@@ -55,7 +55,7 @@ public class ServiceAddOnController {
         String roleName = (String) httpServletRequest.getAttribute(ClaimEnum.ROLE_NAME.name);
         return ResponseEntity.ok(serviceCommonService.updateServiceAddOn(request, roleName));
     }
-    
+
     @GetMapping(SERVICE)
     public ResponseEntity<Object> getAllService() {
         return ResponseEntity.ok(serviceCommonService.getAllService());
