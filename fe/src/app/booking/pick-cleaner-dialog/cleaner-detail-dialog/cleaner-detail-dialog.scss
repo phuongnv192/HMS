@@ -1446,17 +1446,17 @@
   border: 0em;
   // background-color: #232323;
   max-width: 960px;
-  height: 155px;
-  margin: -10px 30px 0 30px;
-  // padding: 1.4rem;
+  height: 151px;
+  margin: 0 32px 10px 32px;
+
   label {
     margin-bottom: -2rem !important;
   }
 
   .selected {
-    background-color: #fce793 !important;
+    background-color: #232323 !important;
     color: #795200 !important;
-    border-color: 1px solid #fce793 !important;
+    border-color: 1px solid #232323 !important;
   }
 
   .carousel-cell {
@@ -1538,7 +1538,8 @@
     height: 150px;
     display: flex;
     // cursor: grab;
-    margin: -20px 30px 0 30px;
+    margin: -10px 60px 0 60px;
+    padding: 1.4rem;
 
     .datetimeBtn {
       border-radius: 10px;
@@ -1549,8 +1550,6 @@
       margin: 32px 12px 32px 0px;
       color: #795200;
       text-align: center;
-      padding: 1.4rem;
-
 
       &:hover {
         box-shadow: 1px 1px 1px 1px #fce793;
@@ -1608,7 +1607,7 @@
   }
 }
 
-::ng-deep .calendar-pick mat-dialog-container {
+::ng-deep .add-service mat-dialog-container {
   padding: 0 !important;
   overflow-x: visible !important;
   overflow-y: visible !important;
@@ -1620,7 +1619,7 @@
 
 
 
-::ng-deep .calendar-pick .mat-dialog-actions {
+::ng-deep .add-service .mat-dialog-actions {
   padding: 0;
 }
 
@@ -1646,8 +1645,8 @@ h6 {
   padding: 10px 20px 20px 20px;
   /* height: calc(100vh - 225px); */
   ;
-  overflow-y: scroll;
-  overflow-x: hidden;
+  // overflow-y: scroll;
+  // overflow-x: hidden;
   min-height: 325px !important;
 
 }
@@ -1728,17 +1727,7 @@ h6 {
 } */
 
 @media (max-width: 992px) {
-  ::ng-deep .bank_note {
-    top: 50px;
-  }
-
-  .hr_select_info_dialog {
-    border-bottom: solid 1px #888888;
-    border-bottom-style: solid;
-    margin-top: 10px;
-    margin-bottom: 0;
-    border-top: none;
-  }
+  
 
   .content-item {
     width: 100%;
@@ -1809,94 +1798,14 @@ h6 {
   ::ng-deep .modal-open .cdk-overlay-container {
     display: block;
   } */
-  ::ng-deep .calendar-pick mat-dialog-container {
+  ::ng-deep .add-service mat-dialog-container {
     min-height: auto !important;
   }
 
 }
 
-.bank_note {
-  padding: 0 10px;
-  text-align: initial;
-}
-
-.bank_note_title {
-  font-size: 13px;
-  font-weight: 400;
-  line-height: 16px;
-  margin-bottom: 0;
-}
-
-.bank_note_title img {
-  width: 48px;
-  height: 20px;
-  margin: 13px 16px 13px 0;
-}
-
-.bank_note_description {
-  font-size: 12px;
-  font-weight: 400;
-  line-height: 16px;
-
-}
-
 .content-scroll {
   overflow: auto;
-}
-
-.content-calendar{
-  width: 100%;
-  display: flex;
-}
-
-.input-information{
-  width: 50%;
-  display: block;
-}
-
-.pickTime{
-  width: 50%;
-}
-
-.calender-pick-info{
-  width: 100%;
-  display: block;
-  margin-top: 4rem;
-}
-
-.inputTime{
-  width: 100%;
-
-  .in_input_time{
-    width: 20%;
-  }
-}
-
-.title_note {
-  text-align: left;
-  font-size: 15px;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  // padding: 0 10px;
-}
-
-.booking-detail-information {
-  font-size: 13px;
-  font-weight: 400;
-  width: 80%;
-  p {
-    font-size: 13px;
-    font-weight: 300;
-    margin-bottom: 0.3rem;
-  }
-}
-
-.note {
-  padding: 0px 10px;
-  font-weight: 700;
-  text-align: left;
-  font-size: 13px;
-  margin-top: 10px;
 }
 
 
@@ -1913,15 +1822,17 @@ hr {
   margin-bottom: 0.5rem;
 }
 
+
+
 .input-group input {
   height: 35px !important;
-  width: 35%;
+  width: 20%;
 }
 
 .input-group p {
   padding-top: 5px;
   padding-right: 15px;
-  width: 30%;
+  width: 15%;
   margin-bottom: 1rem;
 }
 
@@ -1937,96 +1848,23 @@ h6 {
   font-weight: 600;
 }
 
-#servicePackage {
-  height: 35px;
-  width: 70%;
-  text-align: center;
-}
-
-#serviceType {
-  height: 35px;
-  width: 70%;
-  text-align: center;
-}
-
-#time {
-  height: 35px;
-  width: 35%;
-  text-align: center;
-}
-
-.red_border, .red_border_no_background {
-  border: 1px solid red!important;
-  margin-bottom: 5px!important;
-}
-
-.error {
-  font-size: 11px;
-  color: #FF0000;
-  // margin-bottom: 15px;
-  float: left;
-  width: 100%;
-}
-
-.date-pickertime {
-  display: flex;
-  margin-top: 1rem;
-
-  .pickday {
-    width: 15%;
-    height: 36px;
-    font-size: 11px;
-    margin-right: 3rem;
-  }
-
-  .showTime {
-    width: 50%;
-    margin-top: 1rem;
-    span {
-      font-weight: 700;
-    }
-  }
-}
-
-.hide-selected-date {
-   color: #525f7f!important;
-}
-.hide-selected-date {
-   background-color:  #fff!important; 
-}
-// .hide-selected-date .ngb-dp-day,
-// .hide-selected-date .ngb-dp-month,
-// .hide-selected-date .ngb-dp-year {
-//   display: none;
-// }
-
-// .hide-selected-date .ngb-dp-day.today {
-//   /* Hiển thị lại ngày hiện tại nếu muốn */
-//   display: block;
-// }
-
-.carrousel-cell i {
-  position: absolute;
-  top: 0;
-  right: 0;
-  cursor: pointer;
-}
-
-.datetimeBtn i {
-  position: absolute;
-  top: 0;
-  right: 0;
-  cursor: pointer;
-}
-
-::ng-deep .custom-margin {
-  margin-bottom: 10rem;
-}
-
-::ng-deep .custom-icon {
-  font-size: 24px; /* Điều chỉnh kích cỡ của icon theo mong muốn */
-}
-
-.bottom{
+.rednoti{
   font-size: 13px;
+  color: rgb(203, 13, 13);
+  margin-bottom: 0.5rem;
+}
+
+.title_note{
+  font-weight: 700;
+}
+
+.listAdvanceService{
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.button-submit{
+  bottom: 4rem;
+  text-align: center;
+  position: relative;
 }

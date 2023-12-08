@@ -19,6 +19,7 @@ export interface CleanerData {
 
 export interface PickCleanerData {
   data: any;
+  date: any;
 }
 
 export interface CalendarDialogData {
@@ -256,10 +257,12 @@ export class BookingComponent implements OnInit {
     // this.dialogService.sendDataDialog(true);
     this.renderer.addClass(document.body, 'modal-open');
     this.cleanerDialogRef = this.dialog.open(PickCleanerDialog, {
-      width: '600px',
+      width: '1000px',
       maxHeight: '80%',
       data: {
-        data: this.dataCleaner
+        data: this.dataCleaner,
+        date: this.pickDay,
+
       },
       panelClass: ['pick-cleaner']
     });

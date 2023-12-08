@@ -216,7 +216,7 @@ export class CalendarDialog implements OnDestroy, OnInit {
       let b = 'month'; // Đơn vị thời gian là tháng
 
       // Chuyển đổi ngày đầu vào từ chuỗi sang kiểu Date
-      inputDate = new Date('12-04-2023');
+      // inputDate = new Date(date);
 
       for (let i = 0; i < a; i++) {
         // Thêm số tháng vào ngày đầu vào
@@ -225,6 +225,7 @@ export class CalendarDialog implements OnDestroy, OnInit {
         this.dateArray.push(formattedDate);
       }
       console.log('Mảng tháng:', this.dateArray);
+      console.log('selectedServicePackageId:', this.selectedServicePackageId);
     }
   }
 

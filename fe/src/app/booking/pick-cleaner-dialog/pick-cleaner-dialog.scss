@@ -1535,10 +1535,11 @@
   .select-date-container {
     overflow: hidden;
     width: 95%;
-    height: 150px;
+    height: 190px;
     display: flex;
     // cursor: grab;
-    margin: -20px 30px 0 30px;
+    margin: -10px 60px 0 60px;
+    padding: 1.4rem;
 
     .datetimeBtn {
       border-radius: 10px;
@@ -1549,8 +1550,6 @@
       margin: 32px 12px 32px 0px;
       color: #795200;
       text-align: center;
-      padding: 1.4rem;
-
 
       &:hover {
         box-shadow: 1px 1px 1px 1px #fce793;
@@ -1608,7 +1607,7 @@
   }
 }
 
-::ng-deep .calendar-pick mat-dialog-container {
+::ng-deep .pick-cleaner mat-dialog-container {
   padding: 0 !important;
   overflow-x: visible !important;
   overflow-y: visible !important;
@@ -1620,7 +1619,7 @@
 
 
 
-::ng-deep .calendar-pick .mat-dialog-actions {
+::ng-deep .pick-cleaner .mat-dialog-actions {
   padding: 0;
 }
 
@@ -1646,8 +1645,8 @@ h6 {
   padding: 10px 20px 20px 20px;
   /* height: calc(100vh - 225px); */
   ;
-  overflow-y: scroll;
-  overflow-x: hidden;
+  // overflow-y: scroll;
+  // overflow-x: hidden;
   min-height: 325px !important;
 
 }
@@ -1809,7 +1808,7 @@ h6 {
   ::ng-deep .modal-open .cdk-overlay-container {
     display: block;
   } */
-  ::ng-deep .calendar-pick mat-dialog-container {
+  ::ng-deep .pick-cleaner mat-dialog-container {
     min-height: auto !important;
   }
 
@@ -1937,22 +1936,13 @@ h6 {
   font-weight: 600;
 }
 
-#servicePackage {
+#namesearch {
   height: 35px;
-  width: 70%;
-  text-align: center;
-}
-
-#serviceType {
-  height: 35px;
-  width: 70%;
-  text-align: center;
-}
-
-#time {
-  height: 35px;
-  width: 35%;
-  text-align: center;
+  width: 30%;
+  text-align: left;
+  margin-right: 2rem;
+  padding-left: 1rem;
+  margin-left: 1rem;
 }
 
 .red_border, .red_border_no_background {
