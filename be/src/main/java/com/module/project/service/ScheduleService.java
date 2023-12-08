@@ -91,7 +91,8 @@ public class ScheduleService {
         long totalPriceAddOn = serviceAddOns.stream().mapToLong(ServiceAddOn::getPrice).sum();
         long totalPriceFloorAre = floorInfoEnum.getPrice() * request.getFloorNumber();
         long priceChoosingCleaner = isAutoChoosing ? choosingCleanerPrice : 0;
-        long totalBookingPrice = totalPriceFloorAre + priceChoosingCleaner;
+        long distancePrice = request.getDistancePrice() != null ? request.getDistancePrice() : 0;
+        long totalBookingPrice = totalPriceFloorAre + priceChoosingCleaner + distancePrice;
         long totalSchedulePrice = totalPriceFloorAre + totalPriceAddOn;
 
         BookingSchedule bookingSchedule = BookingSchedule.builder()
@@ -295,6 +296,7 @@ public class ScheduleService {
         double totalBookingPrice = totalPriceFloorAre * bookingTransaction.getTotalBookingDate();
         boolean isAutoChoosing = request.getCleanerIds() == null;
         totalBookingPrice += isAutoChoosing ? choosingCleanerPrice : 0;
+        totalBookingPrice += request.getDistancePrice() != null ? request.getDistancePrice() : 0;
         bookingTransaction.setTotalBookingPrice(totalBookingPrice);
         bookingTransactionRepository.save(bookingTransaction);
 
