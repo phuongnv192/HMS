@@ -34,10 +34,11 @@ export class BookingService {
     return this.http.get<any>(`${this.SERVICEADDON + id}`, { headers });
   }
 
-  getCleanerAvaiable(): Observable<any> {
+  getCleanerAvaiable(date: any, typeId: any, packageId: any): Observable<any> {
     const headers = this.getHeadersWithToken();
-    return this.http.get<any>(`${this.CLEANERAVAIBLAE}`, { headers });
+    return this.http.get<any>(`${this.CLEANERAVAIBLAE + '?workDate=' + date + '&serviceTypeId=' + typeId + '&servicePackageId=' + packageId}`, { headers });
   }
+
 
   getBookingDetail(id: any): Observable<any> {
     if (id == 1) {

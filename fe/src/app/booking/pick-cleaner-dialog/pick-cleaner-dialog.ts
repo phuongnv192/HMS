@@ -38,7 +38,9 @@ export class PickCleanerDialog implements OnDestroy, OnInit {
   }
 
   ngOnInit(): void {
-    this.listCleaner = [];
+    this.listCleaner = this.data.data;
+    console.log(this.listCleaner, 11111111111111);
+    
   }
 
 

@@ -1,5 +1,6 @@
 .star-rating i {
   color: gold;
+  text-align: center;
 }
 
 .design-table {
@@ -1446,7 +1447,7 @@
   border: 0em;
   // background-color: #232323;
   max-width: 960px;
-  height: 155px;
+  height: 250px;
   margin: -10px 30px 0 30px;
   // padding: 1.4rem;
   label {
@@ -1462,12 +1463,12 @@
   .carousel-cell {
     border-radius: 10px;
     background-color: rgba(255, 255, 255, 0.19);
-    height: 87px;
+    height: 170px;
     width: 130px;
     border: 2px solid #fce793 !important;
     margin: 32px 12px 32px 0px;
     color: #795200;
-    padding: 1.4rem;
+    // padding: 1.4rem;
     text-align: center;
 
     &:hover {
@@ -1535,17 +1536,17 @@
   .select-date-container {
     overflow: hidden;
     width: 95%;
-    height: 190px;
+    height: 250px;
     display: flex;
     // cursor: grab;
     margin: -10px 60px 0 60px;
-    padding: 1.4rem;
+    // padding: 1.4rem;
 
     .datetimeBtn {
       border-radius: 10px;
       background-color: rgba(255, 255, 255, 0.19);
-      height: 87px;
-      width: 130px !important;
+      height: 170px;
+      width: 150px !important;
       border: 2px solid #fce793 !important;
       margin: 32px 12px 32px 0px;
       color: #795200;
@@ -1571,19 +1572,15 @@
 
       .left {
         float: left;
-        font-size: 35px;
-        font-family: "Inter";
-        font-style: normal;
-        font-weight: 800;
         width: 48px;
         height: 48px;
-        margin: 18px 1px 20px 10px;
-        text-align: right;
+        margin: 5px;
       }
 
       .top{
         font-size: 14px;
         font-weight: bold;
+        height: 55%;
       }
 
       .right {

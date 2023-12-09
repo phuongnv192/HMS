@@ -5,7 +5,7 @@
     </div>
     <div class="content">
       <div class="content-scroll">
-        <div class="filter-search">Tên: <input #namesearch id="namesearch" placeholder="tên nhân viên" type="text"
+        <div class="filter-search">Tên: <input #namesearch id="namesearch" placeholder="Tên nhân viên" type="text"
             aria-describedby="name-search-help" maxlength="50"><span>
             <button mat-button class="filter_btn" (click)="searchCleaner()">Tìm kiếm</button>
           </span></div>
@@ -13,21 +13,23 @@
       <div class="table-responsive">
         <div class="showtime-options">
           <div class="select-date-container" height="140px" cellsToShow="4" *ngIf="listCleaner.length > 0">
-            <div [ngClass]="{'selected':selectedCleaner===cleaner}" class="datetimeBtn"
-              (click)="viewDetailCleaner(cleaner)" *ngFor="let cleaner of listCleaner">
+            <!-- [ngClass]="{'selected':selectedCleaner===cleaner.cleanerId}" -->
+            <div class="datetimeBtn" (click)="viewDetailCleaner(cleaner)" *ngFor="let cleaner of listCleaner">
               <div class="top">
-                <div class="left"><img src=""></div>
+                <!-- <img src=""> -->
+                {{cleaner.name}}
               </div>
-              <div class="right">{{cleaner.name}} - {{cleaner.gender}} 
+              <div class="bottom">
+                <div class="cleaner-name">{{cleaner.name}}
+                  <div style="font-size: 13px;"> Giới tính: {{cleaner.gender}} </div>
+                </div>
+                <div class="d-flex align-items-center">
+                  <span class="mr-2" *ngIf="cleaner.averageRating != 0">{{cleaner.averageRating}}</span>
+                  <div class="star-rating" [innerHTML]="generateStarRating(cleaner.averageRating) + ' (' + cleaner.ratingNumber + ')'"> </div>
+                </div>
               </div>
             </div>
-            <div class="bottom">
-              <div class="d-flex align-items-center">
-                <span class="mr-2">{{cleaner.ratingScore}}</span>
 
-                <div class="star-rating" [innerHTML]="generateStarRating(cleaner.ratingScore)"></div>
-              </div>
-            </div>
             <i *ngIf="serviceAddOns" class="fas fa-check-square" (click)="removeAddOns()"></i>
           </div>
         </div>

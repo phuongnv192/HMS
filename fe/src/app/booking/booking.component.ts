@@ -255,23 +255,31 @@ export class BookingComponent implements OnInit {
 
   pickCleaner() {
     // this.dialogService.sendDataDialog(true);
-    this.renderer.addClass(document.body, 'modal-open');
-    this.cleanerDialogRef = this.dialog.open(PickCleanerDialog, {
-      width: '1000px',
-      maxHeight: '80%',
-      data: {
-        data: this.dataCleaner,
-        date: this.pickDay,
-
-      },
-      panelClass: ['pick-cleaner']
-    });
-
-    this.cleanerDialogRef.afterClosed().subscribe(result => {
-      // console.log('The dialog was closed');
-      this.renderer.removeClass(document.body, 'modal-open');
-      // this.dialogService.sendDataDialog(false);
-    });
+    this.bookingServicee.getCleanerAvaiable('2023-11-22', 3, 3).subscribe(item =>{
+      console.log(item);
+      console.log(item.data);
+      
+      this.dataCleaner =  item.data;
+      this.renderer.addClass(document.body, 'modal-open');
+      this.cleanerDialogRef = this.dialog.open(PickCleanerDialog, {
+        width: '1000px',
+        maxHeight: '80%',
+        data: {
+          data: this.dataCleaner,
+          date: this.pickDay,
+  
+        },
+        panelClass: ['pick-cleaner']
+      });
+      console.log("dataCleaner", this.dataCleaner);
+      
+      this.cleanerDialogRef.afterClosed().subscribe(result => {
+        // console.log('The dialog was closed');
+        this.renderer.removeClass(document.body, 'modal-open');
+        // this.dialogService.sendDataDialog(false);
+      });
+    })
+   
   }
 
   Order() {
