@@ -49,12 +49,12 @@ public class MailService {
         send(recipientEmail, subject, content, true);
     }
 
-    public void sendMailCancelOfBooking(String recipientEmail,
-                                        String hostName,
-                                        String hostAddress,
-                                        String hostPhone,
-                                        String date,
-                                        String cancelTime) {
+    public void sendMailCancelOfBookingToCleaners(String recipientEmail,
+                                                  String hostName,
+                                                  String hostAddress,
+                                                  String hostPhone,
+                                                  String date,
+                                                  String cancelTime) {
         String subject = "Notification for change of booking status that you have been enrolled in";
         String content = "A booking that you have been enrolled in has been updated to <b>cancelled</b> by customer.<br>" +
                 "Host name: <b>" + hostName + "</b><br>" +
@@ -62,6 +62,20 @@ public class MailService {
                 "Host phone: <b>" + hostPhone + "</b><br>" +
                 "Booking date: <b>" + date + "</b><br>" +
                 "Cancelled time: - <b>" + cancelTime + "</b>";
+        send(recipientEmail, subject, content, true);
+    }
+
+    public void sendMailCancelOfBookingToCustomer(String recipientEmail,
+                                                  String rejectedReason,
+                                                  String hostName,
+                                                  String date,
+                                                  String cancelTime) {
+        String subject = "Notification for change of booking status that you created";
+        String content = "A booking that you have created has been updated to <b>cancelled</b> by cleaner who being enrolled in.<br>" +
+                "Host Name: <b>" + hostName + "</b><br>" +
+                "Booking date: <b>" + date + "</b><br>" +
+                "Cancelled time: - <b>" + cancelTime + "</b>" +
+                "Rejected reason: <b>" + rejectedReason + "</b><br>";
         send(recipientEmail, subject, content, true);
     }
 

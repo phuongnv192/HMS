@@ -98,7 +98,7 @@ public class BookingService {
             scheduleService.cancelBooking(booking, user);
 
             String mailTo = getListMailCleanerFromBooking(booking);
-            mailService.sendMailCancelOfBooking(mailTo, booking.getHostName(), booking.getHostAddress(), booking.getHostPhone(),
+            mailService.sendMailCancelOfBookingToCleaners(mailTo, booking.getHostName(), booking.getHostAddress(), booking.getHostPhone(),
                     HMSUtil.formatDate(booking.getCreateDate(), HMSUtil.DDMMYYYYHHMMSS_FORMAT),
                     HMSUtil.formatDate(new Date(), HMSUtil.DDMMYYYYHHMMSS_FORMAT));
 
@@ -145,12 +145,17 @@ public class BookingService {
         if (!userId.equals(booking.getUser().getId().toString())) {
             throw new HmsException(HmsErrorCode.INVALID_REQUEST, "user dont have permission to execute");
         }
+        BookingTransaction bookingTransaction = bookingTransactionRepository.findByBooking(booking)
+                .orElseThrow(() -> new HmsException(HmsErrorCode.INTERNAL_SERVER_ERROR, "can't find any booking transaction by ".concat(booking.getId().toString())));
+        List<String> status = List.of(ConfirmStatus.RECEIVED.name());
+        if (!checkBookingToBeUpdated(bookingTransaction, status)) {
+            throw new HmsException(HmsErrorCode.INVALID_REQUEST, "booking is no longer allowed to be updated");
+        }
         booking.setHostName(request.getHostName());
         booking.setHostAddress(request.getHostAddress());
         booking.setHostPhone(request.getHostPhone());
         booking.setHostDistance(request.getHostDistance());
         bookingRepository.save(booking);
-        // TODO: define scope for updating booking
 
         String mailTo = getListMailCleanerFromBooking(booking);
         mailService.sendMailUpdateOfBooking(mailTo, booking.getHostName(), booking.getHostAddress(), booking.getHostPhone(),
@@ -219,5 +224,9 @@ public class BookingService {
             User u = e.getUser();
             return u.getEmail();
         }).collect(Collectors.joining(","));
+    }
+
+    public boolean checkBookingToBeUpdated(BookingTransaction bookingTransaction, List<String> status) {
+        return bookingScheduleRepository.getScheduleStatusByTransactionIdAndStatusContain(bookingTransaction, status) == bookingTransaction.getTotalBookingDate();
     }
 }

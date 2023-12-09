@@ -17,11 +17,11 @@ INSERT INTO hms.tb_user (create_date, role_id, update_by, update_date, email, fi
 
 INSERT INTO hms.tb_branch (create_date, manager_id, update_date, branch_address, branch_name, description, status) VALUES ('2023-11-30 21:12:27.374000', null, '2023-11-30 21:12:27.374000', null, 'Ha Noi', null, 'ACTIVE');
 
-INSERT INTO hms.tb_cleaner (branch_id, create_date, user_id, review, address, id_card, status) VALUES (1, '2023-11-30 21:12:27.719000', 3, null, 'Số 12, ngõ 38 Thanh Xuân, Hà Nội', '1', 'ACTIVE');
-INSERT INTO hms.tb_cleaner (branch_id, create_date, user_id, review, address, id_card, status) VALUES (1, '2023-11-30 21:12:27.721000', 4, null, 'Khu tập thể 1A Đống Đa, Hà Nội', '2', 'ACTIVE');
-INSERT INTO hms.tb_cleaner (branch_id, create_date, user_id, review, address, id_card, status) VALUES (1, '2023-11-30 21:12:27.724000', 5, null, 'Số 34, ngách 6/24 Cầu Giấy, Hà Nội', '2', 'ACTIVE');
-INSERT INTO hms.tb_cleaner (branch_id, create_date, user_id, review, address, id_card, status) VALUES (1, '2023-11-30 21:12:27.724000', 7, null, 'Khu tập thể 1A Đống Đa, Hà Nội', '2', 'ACTIVE');
-INSERT INTO hms.tb_cleaner (branch_id, create_date, user_id, review, address, id_card, status) VALUES (1, '2023-11-30 21:12:27.722000', 6, '{"1":{"cleanerActivities":[{"bookingScheduleId":1,"workDate":1701277200000,"ratingScore":5,"review":"very good"}]}}', 'Số 6 ngách 371/9 Kim Mã, Ba Đình, Hà Nội', '2', 'ACTIVE');
+INSERT INTO hms.tb_cleaner (branch_id, create_date, user_id, review, address, id_card, dob, status) VALUES (1, '2023-11-30 21:12:27.719000', 3, null, 'Số 12, ngõ 38 Thanh Xuân, Hà Nội', '1', '1985-01-01', 'ACTIVE');
+INSERT INTO hms.tb_cleaner (branch_id, create_date, user_id, review, address, id_card, dob, status) VALUES (1, '2023-11-30 21:12:27.721000', 4, null, 'Khu tập thể 1A Đống Đa, Hà Nội', '2', '1985-01-01', 'ACTIVE');
+INSERT INTO hms.tb_cleaner (branch_id, create_date, user_id, review, address, id_card, dob, status) VALUES (1, '2023-11-30 21:12:27.724000', 5, null, 'Số 34, ngách 6/24 Cầu Giấy, Hà Nội', '2', '1985-01-01', 'ACTIVE');
+INSERT INTO hms.tb_cleaner (branch_id, create_date, user_id, review, address, id_card, dob, status) VALUES (1, '2023-11-30 21:12:27.724000', 7, null, 'Khu tập thể 1A Đống Đa, Hà Nội', '2', '1985-01-01', 'ACTIVE');
+INSERT INTO hms.tb_cleaner (branch_id, create_date, user_id, review, address, id_card, dob, status) VALUES (1, '2023-11-30 21:12:27.722000', 6, '{"1":{"cleanerActivities":[{"bookingScheduleId":1,"workDate":1701277200000,"ratingScore":5,"review":"very good"}]}}', 'Số 6 ngách 371/9 Kim Mã, Ba Đình, Hà Nội', '2', '1985-01-01', 'ACTIVE');
 
 INSERT INTO hms.tb_service_type (service_type_name) VALUES ('Daily on the basis');
 INSERT INTO hms.tb_service_type (service_type_name) VALUES ('Weekly on the basis');

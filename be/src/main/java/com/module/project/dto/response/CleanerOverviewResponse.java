@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDate;
+
 @Data
 @SuperBuilder
 @AllArgsConstructor
@@ -16,6 +18,7 @@ public class CleanerOverviewResponse {
     private String gender;
     private String idCard;
     private String address;
+    private String dob;
     private String email;
     private String phoneNumber;
     private String status;

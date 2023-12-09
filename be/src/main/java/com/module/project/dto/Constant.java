@@ -17,7 +17,7 @@ public interface Constant {
     String BOOKING_CANCEL = "/booking/cancel";
     String CLEANER = "/cleaner";
     String CLEANERS = "/cleaners";
-    String CLEANER_HISTORY = "/cleaner/history";
+    String CLEANER_REJECT_BOOKING = "/cleaner/reject/booking";
     String CLEANER_HISTORY_DETAIL = "/cleaner/history/detail";
     String CLEANER_STATUS = "/cleaner/status";
     String CLEANER_SCHEDULES = "/cleaner/schedules";

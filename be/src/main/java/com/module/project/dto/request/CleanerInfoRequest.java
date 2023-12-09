@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.NotBlank;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -16,6 +17,7 @@ public class CleanerInfoRequest {
     private String address;
     @NotBlank
     private String idCard;
+    private LocalDate dob;
     @NotBlank
     private Long userId;
     private Long branchId;

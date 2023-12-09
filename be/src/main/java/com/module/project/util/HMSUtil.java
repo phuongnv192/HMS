@@ -27,15 +27,6 @@ public class HMSUtil {
     public static final String DDMMYYYY_FORMAT = "dd/MM/yyyy";
     public static final String DDMMYYYYHHMMSS_FORMAT = "dd/MM/yyyy HH:mm:ss";
 
-    public static String convertCleanersToIds(List<Cleaner> cleaners) {
-        if (cleaners == null || CollectionUtils.isEmpty(cleaners)) {
-            return StringUtils.EMPTY;
-        }
-        StringBuilder sb = new StringBuilder();
-        cleaners.forEach(e -> sb.append(e.getId()).append(COMMA));
-        return sb.deleteCharAt(sb.length() - 1).toString();
-    }
-
     public static String convertToFullName(String firstName, String lastName) {
         return firstName + SPACE + lastName;
     }

@@ -3,9 +3,11 @@ package com.module.project.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.module.project.dto.CleanerActivity;
 import com.module.project.dto.CleanerReviewInfo;
+import com.module.project.dto.ConfirmStatus;
 import com.module.project.dto.Constant;
 import com.module.project.dto.ResponseCode;
 import com.module.project.dto.TransactionStatus;
+import com.module.project.dto.request.BookingStatusRequest;
 import com.module.project.dto.request.CleanerInfoRequest;
 import com.module.project.dto.request.CleanerUpdateRequest;
 import com.module.project.dto.request.ScheduleConfirmRequest;
@@ -17,10 +19,12 @@ import com.module.project.exception.HmsErrorCode;
 import com.module.project.exception.HmsException;
 import com.module.project.exception.HmsResponse;
 import com.module.project.model.Booking;
+import com.module.project.model.BookingTransaction;
 import com.module.project.model.Branch;
 import com.module.project.model.Cleaner;
 import com.module.project.model.User;
 import com.module.project.repository.BookingRepository;
+import com.module.project.repository.BookingTransactionRepository;
 import com.module.project.repository.BranchRepository;
 import com.module.project.repository.CleanerRepository;
 import com.module.project.repository.ServiceRepository;
@@ -35,6 +39,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -55,6 +60,8 @@ public class CleanerService {
     private final BookingRepository bookingRepository;
     private final ScheduleService scheduleService;
     private final BookingService bookingService;
+    private final MailService mailService;
+    private final BookingTransactionRepository bookingTransactionRepository;
 
     public HmsResponse<List<CleanerOverviewResponse>> getCleaners(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -171,6 +178,7 @@ public class CleanerService {
         Cleaner cleaner = Cleaner.builder()
                 .address(cleanerInfoRequest.getAddress())
                 .idCard(cleanerInfoRequest.getIdCard())
+                .dob(cleanerInfoRequest.getDob())
                 .branch(branch)
                 .status(Constant.COMMON_STATUS.ACTIVE)
                 .user(user)
@@ -191,6 +199,7 @@ public class CleanerService {
         cleaner.setAddress(cleanerUpdateRequest.getAddress());
         cleaner.setIdCard(cleanerUpdateRequest.getIdCard());
         cleaner.setBranch(branch);
+        cleaner.setDob(cleanerUpdateRequest.getDob());
         cleaner.setStatus(Constant.COMMON_STATUS.ACTIVE.equals(cleanerUpdateRequest.getStatus())
                 ? Constant.COMMON_STATUS.ACTIVE
                 : Constant.COMMON_STATUS.INACTIVE);
@@ -238,6 +247,31 @@ public class CleanerService {
         return HMSUtil.buildResponse(ResponseCode.SUCCESS, response);
     }
 
+    public HmsResponse<Object> rejectBooking(BookingStatusRequest request, String userId) {
+        Booking booking = bookingRepository.findById(request.getBookingId())
+                .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "relevant booking is not existed on system"));
+        User user = userRepository.findById(Long.parseLong(userId))
+                .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "can't find any user by ".concat(userId)));
+        Cleaner cleaner = cleanerRepository.findByUser(user)
+                .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "user dont have permission to execute"));
+        List<Long> cleanerIds = booking.getCleaners().stream().map(Cleaner::getId).toList();
+        if (!cleanerIds.contains(cleaner.getId())) {
+            throw new HmsException(HmsErrorCode.INVALID_REQUEST, "user dont have permission to execute");
+        }
+        BookingTransaction bookingTransaction = bookingTransactionRepository.findByBooking(booking)
+                .orElseThrow(() -> new HmsException(HmsErrorCode.INTERNAL_SERVER_ERROR, "can't find any booking transaction by ".concat(booking.getId().toString())));
+        List<String> status = List.of(ConfirmStatus.RECEIVED.name());
+        if (!bookingService.checkBookingToBeUpdated(bookingTransaction, status)) {
+            throw new HmsException(HmsErrorCode.INVALID_REQUEST, "booking is no longer allowed to be rejected");
+        }
+        booking.setRejectedReason(request.getRejectedReason());
+        scheduleService.cancelBooking(booking, user);
+        mailService.sendMailCancelOfBookingToCustomer(booking.getUser().getEmail(), request.getRejectedReason(), booking.getHostName(),
+                HMSUtil.formatDate(booking.getCreateDate(), HMSUtil.DDMMYYYYHHMMSS_FORMAT),
+                HMSUtil.formatDate(new Date(), HMSUtil.DDMMYYYYHHMMSS_FORMAT));
+        return HMSUtil.buildResponse(ResponseCode.SUCCESS, null);
+    }
+
     private CleanerOverviewResponse getCleanerOverview(Cleaner cleaner) {
         Map<Long, CleanerReviewInfo> reviewList = JsonService.strToObject(cleaner.getReview(), new TypeReference<>() {
         });
@@ -247,6 +281,7 @@ public class CleanerService {
                 .gender(cleaner.getUser().getGender())
                 .idCard(cleaner.getIdCard())
                 .address(cleaner.getAddress())
+                .dob(HMSUtil.formatDate(Date.from(cleaner.getDob().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()), HMSUtil.DDMMYYYY_FORMAT))
                 .email(cleaner.getUser().getEmail())
                 .phoneNumber(cleaner.getUser().getPhoneNumber())
                 .status(cleaner.getStatus())

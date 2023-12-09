@@ -11,4 +11,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class BookingStatusRequest {
     private Long bookingId;
+    private String rejectedReason;
 }

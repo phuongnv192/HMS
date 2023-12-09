@@ -20,6 +20,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Set;
 
@@ -30,7 +31,7 @@ import java.util.Set;
 @Entity
 @Table(name = "tb_cleaner")
 @ToString(exclude = {"user", "services"})
-@EqualsAndHashCode(exclude= {"user", "services"})
+@EqualsAndHashCode(exclude = {"user", "services"})
 @JsonIgnoreProperties({"services", "user"})
 public class Cleaner {
     @Id
@@ -38,6 +39,7 @@ public class Cleaner {
     private Long id;
     private String address;
     private String idCard;
+    private LocalDate dob;
     private String status;
 
     @OneToOne()
