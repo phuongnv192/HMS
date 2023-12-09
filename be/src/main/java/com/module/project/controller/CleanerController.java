@@ -88,8 +88,8 @@ public class CleanerController {
 
     @GetMapping(CLEANER_AVAILABLE)
     public ResponseEntity<Object> getListCleanerAvailable(@RequestParam(name = "workDate") LocalDate workDate,
-                                                          @RequestParam(name = "serviceTypeId") Long serviceTypeId,
-                                                          @RequestParam(name = "servicePackageId") Long servicePackageId) {
+                                                          @RequestParam(name = "serviceTypeId", required = false) Long serviceTypeId,
+                                                          @RequestParam(name = "servicePackageId", required = false) Long servicePackageId) {
         return ResponseEntity.ok(cleanerService.getListCleanerAvailable(workDate, serviceTypeId, servicePackageId));
     }
 

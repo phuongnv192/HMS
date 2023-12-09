@@ -374,27 +374,31 @@ public class ScheduleService {
     }
 
     public List<Cleaner> getListCleanerAvailable(LocalDate workDate, Long serviceTypeId, Long servicePackageId) {
-        ServiceType serviceType = serviceTypeRepository.findById(serviceTypeId)
-                .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "can't find any service type by ".concat(serviceTypeId.toString())));
-        ServicePackage servicePackage = servicePackageRepository.findById(servicePackageId)
-                .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "can't find any service package by ".concat(servicePackageId.toString())));
-        List<LocalDate> periodDate;
+        List<LocalDate> periodDate = new ArrayList<>();
         Calendar startDay = Calendar.getInstance();
         startDay.setTime(Date.from(workDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
-        Calendar periodRange = Calendar.getInstance();
-        periodRange.setTime(Date.from(workDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
-        periodRange.add(Calendar.MONTH, Integer.parseInt(servicePackage.getServicePackageName()));
-        switch (serviceType.getServiceTypeId().toString()) {
-            case "1" -> {
-                periodDate = HMSUtil.getDatesBetweenFromDate(startDay.getTime(), periodRange.getTime());
+        if (serviceTypeId != null && servicePackageId != null) {
+            ServiceType serviceType = serviceTypeRepository.findById(serviceTypeId)
+                    .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "can't find any service type by ".concat(serviceTypeId.toString())));
+            ServicePackage servicePackage = servicePackageRepository.findById(servicePackageId)
+                    .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "can't find any service package by ".concat(servicePackageId.toString())));
+            Calendar periodRange = Calendar.getInstance();
+            periodRange.setTime(Date.from(workDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
+            periodRange.add(Calendar.MONTH, Integer.parseInt(servicePackage.getServicePackageName()));
+            switch (serviceType.getServiceTypeId().toString()) {
+                case "1" -> {
+                    periodDate = HMSUtil.getDatesBetweenFromDate(startDay.getTime(), periodRange.getTime());
+                }
+                case "2" -> {
+                    periodDate = HMSUtil.weeksInCalendar(HMSUtil.convertDateToLocalDate(startDay.getTime()), HMSUtil.convertDateToLocalDate(periodRange.getTime()));
+                }
+                case "3" -> {
+                    periodDate = HMSUtil.monthsInCalendar(HMSUtil.convertDateToLocalDate(startDay.getTime()), HMSUtil.convertDateToLocalDate(periodRange.getTime()));
+                }
+                default -> throw new HmsException(HmsErrorCode.INVALID_REQUEST, "not support service package ".concat(serviceTypeId.toString()));
             }
-            case "2" -> {
-                periodDate = HMSUtil.weeksInCalendar(HMSUtil.convertDateToLocalDate(startDay.getTime()), HMSUtil.convertDateToLocalDate(periodRange.getTime()));
-            }
-            case "3" -> {
-                periodDate = HMSUtil.monthsInCalendar(HMSUtil.convertDateToLocalDate(startDay.getTime()), HMSUtil.convertDateToLocalDate(periodRange.getTime()));
-            }
-            default -> throw new HmsException(HmsErrorCode.INVALID_REQUEST, "not support service package ".concat(serviceTypeId.toString()));
+        } else {
+            periodDate.add(workDate);
         }
         Set<Long> cleanerIds = filterOnlyAvailable(cleanerRepository.countCleanerByStatusEquals(Constant.COMMON_STATUS.ACTIVE), periodDate);
         return cleanerRepository.findAllById(cleanerIds);
