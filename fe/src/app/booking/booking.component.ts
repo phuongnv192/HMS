@@ -255,7 +255,7 @@ export class BookingComponent implements OnInit {
 
   pickCleaner() {
     // this.dialogService.sendDataDialog(true);
-    this.bookingServicee.getCleanerAvaiable('2023-11-22', 3, 3).subscribe(item =>{
+    this.bookingServicee.getCleanerAvaiable('2023-11-24', 3, 3).subscribe(item =>{
       console.log(item);
       console.log(item.data);
       

@@ -25,6 +25,8 @@ export class PickCleanerDialog implements OnDestroy, OnInit {
   public listCleaner: any;
   dataCleaner: any;
   selectedCleaner: any;
+  listA: any;
+  listB: any;
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -39,6 +41,9 @@ export class PickCleanerDialog implements OnDestroy, OnInit {
 
   ngOnInit(): void {
     this.listCleaner = this.data.data;
+    this.listA = this.listCleaner.slice(0, 3);
+    this.listB = this.listCleaner.slice(3);
+
     console.log(this.listCleaner, 11111111111111);
     
   }
@@ -109,5 +114,9 @@ export class PickCleanerDialog implements OnDestroy, OnInit {
        this.renderer.removeClass(document.body, 'modal-open');
        // this.dialogService.sendDataDialog(false);
      });
+  }
+
+  addCleaner(cleaner: any){
+    
   }
 }

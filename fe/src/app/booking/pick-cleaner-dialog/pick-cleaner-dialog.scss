@@ -1455,9 +1455,9 @@
   }
 
   .selected {
-    background-color: #fce793 !important;
-    color: #795200 !important;
-    border-color: 1px solid #fce793 !important;
+    // background-color: #fce793 !important;
+    // color: #795200 !important;
+    // border-color: 1px solid #fce793 !important;
   }
 
   .carousel-cell {
@@ -1465,30 +1465,30 @@
     background-color: rgba(255, 255, 255, 0.19);
     height: 170px;
     width: 130px;
-    border: 2px solid #fce793 !important;
+    border: 1px solid #000 !important;
     margin: 32px 12px 32px 0px;
     color: #795200;
     // padding: 1.4rem;
     text-align: center;
 
     &:hover {
-      box-shadow: 1px 1px 1px 1px #fce793;
-      background-color: #fce793;
+      box-shadow: 1px 1px 1px 1px #ddd;
+      // background-color: #fce793;
       color: #795200;
       cursor: pointer;
     }
 
     &:active {
-      box-shadow: 1px 1px 1px 1px #fce793;
-      background-color: #fce793;
+      box-shadow: 1px 1px 1px 1px #ddd;
+      // background-color: #fce793;
       color: #795200;
       transform: translateY(2px);
       cursor: pointer;
     }
 
     &:after {
-      box-shadow: 1px 1px 1px 1px #fce793;
-      background-color: #fce793;
+      box-shadow: 1px 1px 1px 1px #ddd;
+      // background-color: #fce793;
       color: #795200;
       cursor: pointer;
 
@@ -1536,7 +1536,7 @@
   .select-date-container {
     overflow: hidden;
     width: 95%;
-    height: 250px;
+    height: 220px;
     display: flex;
     // cursor: grab;
     margin: -10px 60px 0 60px;
@@ -1545,28 +1545,29 @@
     .datetimeBtn {
       border-radius: 10px;
       background-color: rgba(255, 255, 255, 0.19);
-      height: 170px;
+      height: 180px;
       width: 150px !important;
-      border: 2px solid #fce793 !important;
+      border: 1px solid #000 !important;
       margin: 32px 12px 32px 0px;
       color: #795200;
       text-align: center;
+      position: relative;
 
       &:hover {
-        box-shadow: 1px 1px 1px 1px #fce793;
-        background-color: #fce793;
+        box-shadow: 1px 1px 1px 1px #ddd;
+        // background-color: #fce793;
         color: #795200;
       }
 
       &:active {
-        box-shadow: 1px 1px 1px 1px #fce793;
-        background-color: #fce793;
+        box-shadow: 1px 1px 1px 1px #ddd;
+        // background-color: #fce793;
         color: #795200;
       }
 
       &:after {
-        box-shadow: 1px 1px 1px 1px #fce793;
-        background-color: #fce793;
+        box-shadow: 1px 1px 1px 1px #ddd;
+        // background-color: #fce793;
         color: #795200;
       }
 
@@ -1580,7 +1581,7 @@
       .top{
         font-size: 14px;
         font-weight: bold;
-        height: 55%;
+        height: 63%;
       }
 
       .right {
@@ -1599,6 +1600,28 @@
           font-size: 16px;
           line-height: 22px;
         }
+      }
+      .addIcon {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        background-color: gray;
+        color: #fff;
+        border-radius: 50%;
+        padding: 5px;
+        cursor: pointer;
+      }
+      .closeIcon{
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        background-color: gray;
+        color: #fff;
+        border-radius: 50%;
+        padding: 2px;
+        cursor: pointer;
+        width: 20px;
+        height: 20px;
       }
     }
   }
@@ -1640,10 +1663,9 @@ h6 {
   background: #fff;
   border-radius: 0 0 3px 3px;
   padding: 10px 20px 20px 20px;
-  /* height: calc(100vh - 225px); */
-  ;
-  // overflow-y: scroll;
-  // overflow-x: hidden;
+  height: calc(100vh - 250px); 
+  overflow-x: hidden;
+  overflow-y: auto;
   min-height: 325px !important;
 
 }
@@ -1934,8 +1956,8 @@ h6 {
 }
 
 #namesearch {
-  height: 35px;
-  width: 30%;
+  height: 30px;
+  width: 25%;
   text-align: left;
   margin-right: 2rem;
   padding-left: 1rem;
@@ -2016,4 +2038,15 @@ h6 {
 
 .bottom{
   font-size: 13px;
+}
+
+img{
+  width: 140px;
+  height: 105px;
+}
+
+.list-title{
+  font-size: 14px;
+  font-weight: 500;
+  margin-top: 1rem;
 }
