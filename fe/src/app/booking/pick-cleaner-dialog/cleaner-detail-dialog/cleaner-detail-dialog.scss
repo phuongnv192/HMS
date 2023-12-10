@@ -1607,7 +1607,7 @@
   }
 }
 
-::ng-deep .add-service mat-dialog-container {
+::ng-deep .cleaner-detail mat-dialog-container {
   padding: 0 !important;
   overflow-x: visible !important;
   overflow-y: visible !important;
@@ -1619,7 +1619,7 @@
 
 
 
-::ng-deep .add-service .mat-dialog-actions {
+::ng-deep .cleaner-detail .mat-dialog-actions {
   padding: 0;
 }
 
@@ -1648,7 +1648,6 @@ h6 {
   // overflow-y: scroll;
   // overflow-x: hidden;
   min-height: 325px !important;
-
 }
 
 .content-item {
@@ -1798,7 +1797,7 @@ h6 {
   ::ng-deep .modal-open .cdk-overlay-container {
     display: block;
   } */
-  ::ng-deep .add-service mat-dialog-container {
+  ::ng-deep .cleaner-detail mat-dialog-container {
     min-height: auto !important;
   }
 
@@ -1867,4 +1866,26 @@ h6 {
   bottom: 4rem;
   text-align: center;
   position: relative;
+}
+
+.cleaner-information{
+  display: flex;
+  width: 100%;
+}
+
+.left{
+  min-width: 150px;
+  height: 150px;
+  float: left;
+  img{
+    width: 165px;
+    height: 135px;
+  }
+}
+
+.right{
+  min-width: 400px;
+  height: 150px;
+  float: left;
+  margin-left: 2rem;
 }

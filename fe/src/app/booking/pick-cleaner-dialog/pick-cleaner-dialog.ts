@@ -96,17 +96,17 @@ export class PickCleanerDialog implements OnDestroy, OnInit {
     return stars.join('');
   }
 
-  viewDetailinSchedule(cleanerId: any){
+  viewDetailCleaner(cleanerId: any){
     this.selectedCleaner = cleanerId;
      // this.dialogService.sendDataDialog(true);
      this.renderer.addClass(document.body, 'modal-open');
      this.dialogRefCleaner = this.dialog.open(CleanerDetailDialog, {
-       width: '700px',
-       maxHeight: '60%',
+       width: '900px',
+       maxHeight: '70%',
        data: {
          data: cleanerId,
        },
-       panelClass: ['add-service']
+       panelClass: ['cleaner-detail']
      });
  
      this.dialogRefCleaner.afterClosed().subscribe(result => {

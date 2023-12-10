@@ -263,7 +263,7 @@ export class BookingComponent implements OnInit {
       this.renderer.addClass(document.body, 'modal-open');
       this.cleanerDialogRef = this.dialog.open(PickCleanerDialog, {
         width: '1000px',
-        maxHeight: '80%',
+        maxHeight: '85%',
         data: {
           data: this.dataCleaner,
           date: this.pickDay,

@@ -11,6 +11,7 @@ export class BookingService {
   private baseUrl = environment.apiUrl;
   private SERVICETYPE = this.baseUrl + "/service-types";
   private CLEANERAVAIBLAE = this.baseUrl + "/cleaner/available";
+  private CLEANERPICKDETAIL = this.baseUrl + "/cleaner/history/detail?cleanerId=";
   private SERVICEADDON = this.baseUrl + "/service-add-ons?addOnId=";
   // getEmployees(params: HttpParams): Observable<any> {
   //   return this.http.get<any>(`${this.baseUrl}/cleaners`, { params });
@@ -37,6 +38,11 @@ export class BookingService {
   getCleanerAvaiable(date: any, typeId: any, packageId: any): Observable<any> {
     const headers = this.getHeadersWithToken();
     return this.http.get<any>(`${this.CLEANERAVAIBLAE + '?workDate=' + date + '&serviceTypeId=' + typeId + '&servicePackageId=' + packageId}`, { headers });
+  }
+
+  getCleanerHistory(id: any): Observable<any> {
+    const headers = this.getHeadersWithToken();
+    return this.http.get<any>(`${this.CLEANERPICKDETAIL + id}`, { headers });
   }
 
 

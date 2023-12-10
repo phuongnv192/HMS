@@ -13,10 +13,10 @@
       <!-- listPick.length > 0  -->
       <div class="table-responsive" *ngIf="true">
         <div class="showtime-options">
-          <div style="margin-top: 1rem;">Các nhân viên dọn dẹp đã được chọn:</div>
+          <div style="margin-top: 2rem; font-size: 14px;">Các nhân viên dọn dẹp đã được chọn:</div>
           <!-- listPick.length > 0  -->
-          <div class="select-date-container" height="140px" *ngIf="true">
-            <div class="datetimeBtn" (click)="viewDetailCleaner(cleaner)" *ngFor="let cleaner of listA">
+          <div class="select-date-container" style="margin-top: -20px;" height="140px" *ngIf="true">
+            <div class="datetimeBtn" (click)="viewDetailCleaner(cleaner.cleanerId)" *ngFor="let cleaner of listA">
               <i class="add-icon fas fa-times closeIcon" (click)="addCleaner(cleaner)"></i>
               <div class="top">
                 <img src="../hms/assets/img/{{cleaner.gender}}.jpg">
@@ -41,8 +41,8 @@
             bạn:</div>
           <div class="error">(*Danh sách nhân viên sẽ thay đổi nếu khách hàng thay đổi lịch dọn)</div>
           <!-- listCleaner.length < 6 && listCleaner.length > 0 -->
-          <div class="select-date-container" height="140px" *ngIf="true" style="padding-top: -1rem;">
-            <div class="datetimeBtn" (click)="viewDetailCleaner(cleanerA)" *ngFor="let cleanerA of listCleaner">
+          <div class="select-date-container"  style="margin-top: -20px;" height="140px" *ngIf="true" style="padding-top: -1rem;">
+            <div class="datetimeBtn" (click)="viewDetailCleaner(cleanerA.cleanerId)" *ngFor="let cleanerA of listCleaner">
               <i class="add-icon fas fa-plus addIcon" (click)="addCleaner(cleanerA)"></i>
               <div class="top">
                 <img src="../hms/assets/img/{{cleanerA.gender}}.jpg">
@@ -64,7 +64,7 @@
         <div class="showtime-options">
           <!-- listCleaner.length < 11 && listCleaner.length > 5 -->
           <div class="select-date-container" height="140px" *ngIf="true">
-            <div class="datetimeBtn" (click)="viewDetailCleaner(cleanerB)" *ngFor="let cleanerB of listB">
+            <div class="datetimeBtn" (click)="viewDetailCleaner(cleanerB.cleanerId)" *ngFor="let cleanerB of listB">
               <i class="add-icon fas fa-plus addIcon" (click)="addCleaner(cleanerB)"></i>
               <div class="top">
                 <img src="../hms/assets/img/{{cleanerB.gender}}.jpg">
