@@ -1,17 +1,28 @@
-import { Injectable } from '@angular/core';
-import { CanActivate, Router } from '@angular/router';
-import { AuthService } from '../services/auth.service';
+import { Injectable } from "@angular/core";
+import {
+  ActivatedRouteSnapshot,
+  CanActivate,
+  Router,
+  RouterStateSnapshot,
+} from "@angular/router";
+import { AuthService } from "../services/auth.service";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class AuthGuard implements CanActivate {
   constructor(private authService: AuthService, private router: Router) {}
 
-  canActivate(): boolean {
+  canActivate(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): boolean {
+    console.log(state.url);
+    console.log(this.authService.isTokenExpired());
+
     if (this.authService.isTokenExpired()) {
-      // Token is expired, redirect to login or another page
-      this.router.navigate(['/login']);
+      sessionStorage.removeItem("token");
+      this.router.navigate(["/login"]);
       return false;
     }
     return true;

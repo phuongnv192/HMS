@@ -23,17 +23,17 @@ import { CustomerHistoryComponent } from "./customer/customer-booking/customer-b
 import { AuthGuard } from "./shared/auth.guard";
 
 const routes: Routes = [
-  { path: 'home', component: HomeComponent , canActivate: [AuthGuard] },
+  { path: 'home', component: HomeComponent  },
   { path: 'profile', component: ProfileComponent , canActivate: [AuthGuard] },
   { path: 'register', component: SignupComponent},
   { path: 'introduction', component: IntroductionComponent , canActivate: [AuthGuard] },
   { path: 'booking', component: BookingComponent , canActivate: [AuthGuard] },
-  { path: 'login', component: LoginComponent },
+  { path: 'login', component: LoginComponent  },
   { path: 'forgot-password', component: ForgotPWComponent , canActivate: [AuthGuard] },
   { path: 'dashboard', component: DashboardComponent , canActivate: [AuthGuard] },
   { path: 'list-cleaner', component: ListCleanerComponent , canActivate: [AuthGuard] },
   { path: 'list-customer', component: ListCustomerComponent , canActivate: [AuthGuard] },
-  { path: 'user-profile/:id', component: UserProfileComponent , canActivate: [AuthGuard] },
+  { path: 'user-profile/:cleanerId', component: UserProfileComponent , canActivate: [AuthGuard] },
   { path: 'customer-profile', component: CustomerProfileComponent , canActivate: [AuthGuard] },
   { path: 'history', component: HistoryComponent , canActivate: [AuthGuard] },
   { path: 'customer-history', component: CustomerHistoryComponent , canActivate: [AuthGuard] },

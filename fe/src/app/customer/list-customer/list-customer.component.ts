@@ -16,8 +16,15 @@ export class ListCustomerComponent implements OnInit {
     this.customerService.getCustomers(null).subscribe({
       next: (res) => {
         console.log(res);
+        if (res && res.data) {
+          this.listCustomer = res.data;
+        } else {
+          this.listCustomer = [];
+        }
       },
-      error: () => {},
+      error: (error) => {
+        console.log(error);
+      },
     });
 
     this.listCustomer = [

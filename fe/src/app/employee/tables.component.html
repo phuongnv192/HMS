@@ -78,8 +78,9 @@
             <thead class="thead-light">
               <tr>
                 <th scope="col">Tên người dùng</th>
-                <th scope="col">Ngày sinh</th>
+                <th scope="col">CMT/CMND</th>
                 <th scope="col">Giới tính</th>
+                <th scope="col">Chi nhánh</th>
                 <th scope="col">Trạng thái</th>
                 <th scope="col">Chất lượng phục vụ</th>
                 <th scope="col"></th>
@@ -89,8 +90,8 @@
               <tr *ngFor="let cleaner of listCleaner">
                 <th scope="row">
                   <div class="media align-items-center">
-                    <a [routerLink]="['/user-profile', cleaner.id]" class="avatar rounded-circle mr-3">
-                      <img alt="Image placeholder" src="../assets/img/theme/bootstrap.jpg">
+                    <a [routerLink]="['/user-profile/', cleaner.cleanerId]" class="avatar rounded-circle mr-3">
+                       <img alt="Image placeholder" src="../assets/img/theme/bootstrap.jpg">
                     </a>
                     <div class="media-body">
                       <span class="mb-0 text-sm">{{cleaner.name}}</span>
@@ -98,10 +99,13 @@
                   </div>
                 </th>
                 <td>
-                  {{cleaner.dob}}
+                  {{cleaner.idCard}}
                 </td>
                 <td>
                   {{cleaner.gender}}
+                </td>
+                <td>
+                  {{cleaner.branch.branchName}}
                 </td>
                 <td>
                   <span class="badge badge-dot mr-4">
@@ -130,7 +134,7 @@
                       <i class="fas fa-ellipsis-v"></i>
                     </a>
                     <div ngbDropdownMenu class=" dropdown-menu-right dropdown-menu-arrow">
-                      <a class="dropdown-item" href="/user-profile?cleanerId={{cleaner.cleanerId}}">Xem thông tin</a>
+                      <a class="dropdown-item" href="/hms/user-profile?cleanerId={{cleaner.cleanerId}}">Xem thông tin</a>
                       <a class="dropdown-item" (click)="changeStatus()">Đổi trạng thái</a>
                       <a class="dropdown-item" (click)="removeUser(cleaner.cleanerId)">Xóa</a>
                     </div>

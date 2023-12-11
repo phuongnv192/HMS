@@ -45,18 +45,18 @@ export class AuthService {
   signout() {
     // Xóa jwt token khỏi sessionStorage
     var a = this.http.post<any>(this.LOGOUT, {});
-    sessionStorage.removeItem("jwtToken");
+    sessionStorage.removeItem("token");
     this.jwtToken = null;
     return a;
   }
 
   isAuthenticated(): boolean {
     // Kiểm tra xem jwt token đã tồn tại trong sessionStorage hay chưa
-    return !!sessionStorage.getItem("jwtToken");
+    return !!sessionStorage.getItem("token");
   }
 
   getJwtToken(): string {
-    return this.jwtToken || sessionStorage.getItem("jwtToken");
+    return this.jwtToken || sessionStorage.getItem("token");
   }
 
   getHeaders(): HttpHeaders {
@@ -72,7 +72,7 @@ export class AuthService {
     }
     return true;
   }
-  
+
   private getExpirationDate(token: string): Date | null {
     const decodedToken: any = jwtDecode(token);
 
