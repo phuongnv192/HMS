@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 
@@ -12,6 +12,7 @@ export const ROUTES: RouteInfo[] = [
   { path: '/dashboard', title: 'Thống kê', icon: 'ni-tv-2', class: '' },
   { path: '/maps', title: 'Bản đồ', icon: 'ni-pin-3 text-orange', class: '' },
   { path: '/list-cleaner', title: 'Danh sách nhân viên', icon: 'ni-bullet-list-67 text-red', class: '' },
+  { path: '/list-customer', title: 'Danh sách khách hàng', icon: 'people-fill', class: '' },
   { path: '/schedule', title: 'Lịch công việc', icon: 'ni-calendar-grid-58', class: '' },
   { path: '/history', title: 'Lịch sử công việc', icon: 'fas fa-history', class: '' },
   { path: '/user-profile', title: 'Thông tin cá nhân', icon: 'fas fa-user', class: '' },
@@ -26,16 +27,17 @@ export class SidebarComponent implements OnInit {
 
   public menuItems: any[];
   public isCollapsed = true;
-  adminNavbar = false;
+  @Input() public adminNavbar: any;
+  @Input() public cleanerNavbar: any;
 
   constructor(private router: Router, private route: ActivatedRoute, private authService: AuthService) {
     this.menuItems = this.setActiveClass(ROUTES);
   }
 
   ngOnInit() {
-    if (this.authService.getJwtToken()) {
-      this.adminNavbar = true;
-    }
+    // if (this.authService.getJwtToken()) {
+    //   this.adminNavbar = true;
+    // }
     this.route.url.subscribe(segments => {
       const currentUrl = segments.join('/');
       this.menuItems = this.setActiveClass(ROUTES, currentUrl);

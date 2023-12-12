@@ -39,7 +39,7 @@
           <div class="text-center">
 
             <div class="col-12 text-right">
-              <a href="/change-password" class="btn btn-sm btn-primary">Đổi mật khẩu</a>
+              <a [routerLink]="['/change-password']" class="btn btn-sm btn-primary">Đổi mật khẩu</a>
             </div>
           </div>
         </div>
@@ -50,13 +50,13 @@
         <div class="card-header bg-white border-0">
           <div class="row align-items-center">
             <div class="col-8">
-              <h3 class="mb-0">{{name}}</h3>
+              <h3 class="mb-0">{{firstName}} {{lastName}}</h3>
             </div>
             <div class="col-2 text-right">
-              <a href="/customer-schedule" class="btn btn-sm btn-primary">Lịch sử</a>
+              <a [routerLink]="['/customer-history']" class="btn btn-sm btn-primary">Lịch sử</a>
             </div>
             <div class="col-2 text-right">
-              <a href="/customer-history" class="btn btn-sm btn-primary">Đơn đã đặt</a>
+              <a [routerLink]="['/customer-schedule']" class="btn btn-sm btn-primary">Đơn đã đặt</a>
             </div>
           </div>
         </div>
@@ -65,34 +65,34 @@
             <h6 class="heading-small text-muted mb-4">Thông tin người dùng</h6>
             <div class="pl-lg-4">
               <div class="row">
-                <div class="col-lg-6">
+                <div class="col-lg-3">
                   <div class="form-group">
-                    <label class="form-control-label" for="input-username">Họ và tên</label>
-                    <input type="text" id="input-username" class="form-control form-control-alternative"
-                      placeholder="Nguyen Van A" value="{{name}}" [(ngModel)]="name">
+                    <label class="form-control-label" for="input-username">Tên</label>
+                    <input type="text" id="input-firstname" class="form-control form-control-alternative"
+                      placeholder="Nguyen Van A" [(ngModel)]="firstName">
+                  </div>
+                </div>
+                <div class="col-lg-3">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-username">Họ</label>
+                    <input type="text" id="input-lastname" class="form-control form-control-alternative"
+                      placeholder="Nguyen Van A" [(ngModel)]="lastName">
                   </div>
                 </div>
                 <div class="col-lg-6">
                   <div class="form-group">
                     <label class="form-control-label" for="input-email">Email</label>
                     <input type="email" id="input-email" class="form-control form-control-alternative"
-                      placeholder="abc@example.com" value="{{email}}" [(ngModel)]="email">
+                      placeholder="abc@example.com" [(ngModel)]="email">
                   </div>
                 </div>
               </div>
               <div class="row">
-                <div class="col-lg-4">
-                  <div class="form-group">
-                    <label class="form-control-label" for="input-first-name">Ngày sinh</label>
-                    <input type="text" id="dob" class="form-control form-control-alternative" placeholder="01/01/2020"
-                      value="{{dob}}" [(ngModel)]="dob">
-                  </div>
-                </div>
                 <div class="col-lg-3">
                   <div class="form-group">
                     <label class="form-control-label" for="input-last-name">Giới tính</label>
-                    <input type="text" id="gender" class="form-control form-control-alternative" placeholder="Last name"
-                      value="Jesse">
+                    <input type="text" id="gender" class="form-control form-control-alternative" placeholder="Nam/Nữ"
+                     [(ngModel)]="gender">
                   </div>
                 </div>
 
@@ -107,7 +107,7 @@
                   <div class="form-group">
                     <label class="form-control-label" for="input-address">Địa chỉ</label>
                     <input id="input-address" class="form-control form-control-alternative"
-                      placeholder="Số 1 Kim Mã, Hà Nội" value="{{address}}" [(ngModel)]="address" type="text">
+                      placeholder="Số 1 Kim Mã, Hà Nội" [(ngModel)]="address" type="text">
                   </div>
                 </div>
               </div>
@@ -115,21 +115,12 @@
                 <div class="col-lg-4">
                   <div class="form-group">
                     <label class="form-control-label" for="input-country">Số điện thoại</label>
-                    <input type="number" id="input-phone" class="form-control form-control-alternative"
-                      placeholder="0987654321" value="{{phoneNumber}}" [(ngModel)]="phoneNumber">
+                    <input type="text" id="input-phone" class="form-control form-control-alternative"
+                      placeholder="0987654321" [(ngModel)]="phoneNumber">
                   </div>
                 </div>
               </div>
             </div>
-            <!-- <hr class="my-4" />
-            <h6 class="heading-small text-muted mb-4">Giới thiệu</h6>
-            <div class="pl-lg-4">
-              <div class="form-group">
-                <label>Sở thích</label>
-                <textarea rows="4" class="form-control form-control-alternative"
-                  placeholder="A few words about you ..."></textarea>
-              </div>
-            </div> -->
           </form>
         </div>
       </div>

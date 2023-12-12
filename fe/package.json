@@ -18,7 +18,7 @@
     "@angular/compiler": "^13.3.1",
     "@angular/core": "^13.3.1",
     "@angular/elements": "^13.3.1",
-    "@angular/forms": "^13.3.1",
+    "@angular/forms": "^13.3.9",
     "@angular/localize": "13.3.1",
     "@angular/material": "^9.2.3",
     "@angular/platform-browser": "^13.3.1",

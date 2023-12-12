@@ -20,7 +20,6 @@ export class AuthInterceptor implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
     const authToken = this.authService.getToken();
-    console.log(authToken);
     // Clone the request and add the token to the headers
     if (authToken) {
       req = req.clone({
@@ -33,7 +32,6 @@ export class AuthInterceptor implements HttpInterceptor {
       tap({
         next: (event: HttpEvent<any>) => {
           if (event instanceof HttpResponse) {
-            console.log("aaaaa " + event.status);
             // Check the status code in the response
             if (event.status === 403) {
               // Redirect to the login screen
@@ -44,7 +42,6 @@ export class AuthInterceptor implements HttpInterceptor {
           }
         },
         error: (error) => {
-          console.log(error);
           sessionStorage.removeItem("token");
           this.router.navigate(["/login"]);
         },

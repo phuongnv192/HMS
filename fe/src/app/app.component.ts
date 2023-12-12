@@ -2,7 +2,7 @@ import { Component, OnInit, Inject, Renderer2, ElementRef, ViewChild, HostListen
 import { Router, NavigationEnd } from '@angular/router';
 import { DOCUMENT } from '@angular/common';
 import { LocationStrategy, PlatformLocation, Location } from '@angular/common';
-import { filter, Subscription } from 'rxjs';
+import { filter, Observable, Subscription } from 'rxjs';
 import { AuthService } from './services/auth.service';
 
 var didScroll;
@@ -18,7 +18,14 @@ var navbarHeight = 0;
 export class AppComponent implements OnInit {
     private _router: Subscription;
     adminNavbar = false;
-
+    cleanerNavbar = false;
+    customerNavbar = false;
+    guestNavbar = false;
+    isAuthenticated = false;
+    isAuthenticated$: Observable<boolean>;
+    username: any;
+    id: any;
+    
     constructor(private authService: AuthService, private renderer: Renderer2, private router: Router, @Inject(DOCUMENT,) private document: any, private element: ElementRef, public location: Location) { }
     @HostListener('window:scroll', ['$event'])
     hasScrolled() {
@@ -54,8 +61,45 @@ export class AppComponent implements OnInit {
         lastScrollTop = st;
     };
     ngOnInit() {
-        if (this.authService.getJwtToken()) {
-            this.adminNavbar = true;
+        this.isAuthenticated$ = this.authService.isAuthenticated$;
+
+        this.authService.isAuthenticated$.subscribe((status) => {
+            this.isAuthenticated = status;            
+            if(status){
+                this.guestNavbar = false;
+                this.authService.getUserInfor().subscribe(user => {      
+                this.username = user.data.username;
+                this.id = user.data.id;
+                    if(user.data.role.name == "CLEANER"){
+                        this.cleanerNavbar = true;                        
+                    } else if (user.data.role.name == "CUSTOMER"){
+                        this.customerNavbar = true;
+                    } else if(user.data.role.name == "MANAGER"){
+                        this.adminNavbar = true;
+                    }
+                // },
+                // (error) => {
+                //   // Handle error
+                //   console.error('Error fetching user information:', error);
+                });
+            } else {
+                this.guestNavbar = true;
+
+            }
+          });
+        
+        if (this.authService.getJwtToken()) {            
+            this.authService.getUserInfor().subscribe(user => {                
+                if(user.data.role.name == "CLEANER"){
+                    this.cleanerNavbar = true;                    
+                } else if (user.data.role.name == "CUSTOMER"){
+                    this.customerNavbar = true;
+                } else if(user.data.role.name == "MANAGER"){
+                    this.adminNavbar = true;
+                }
+            })
+        } else {
+            this.guestNavbar = true;
         }
         var navbar: HTMLElement = this.element.nativeElement.children[0].children[0];
         this._router = this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {

@@ -2,9 +2,9 @@
   <div class="container-fluid">
     <div class="header-body">
       <!-- Card stats -->
-      <div class="row">
+      <div class="row" style="padding: 0 5rem;">
         <div class="col-xl-4 col-lg-6">
-          <div class="card card-stats mb-4 mb-xl-0">
+          <div class="card card-stats" style="height: 85px !important; padding: 0 !important;">
             <div class="card-body">
               <div class="row">
                 <div class="col search-emp">
@@ -13,15 +13,7 @@
                     <input #serviceName id="serviceName" placeholder="Booking #1" [(ngModel)]="name" type="text"
                       aria-describedby="serviceName-help" maxlength="50">
                   </div>
-
-                  <!-- <div class="search-date">
-                    <h5 class="card-title text-uppercase text-muted mb-0 font14">Ngày làm</h5>
-                    <input placeholder="Booking #1" [(ngModel)]="date" type="text"
-                      aria-describedby="date-help" maxlength="50">
-                  </div> -->
-
                 </div>
-
                 <div class="col-auto">
                   <div class="icon icon-shape bg-danger text-white rounded-circle shadow" style="cursor: pointer;"
                     (click)="search()">
@@ -37,39 +29,15 @@
   </div>
 </div>
 <!-- Page content -->
-<div class="container-fluid mt--7">
+<div class="container-fluid mt--7" style="min-height: 440px !important;">
   <!-- Table -->
-  <div class="row">
+  <div class="row" style="padding: 0 5rem;">
     <div class="col">
       <div class="card shadow">
         <div class="card-header border-0">
           <h3 class="mb-0 font20">Danh sách đơn dịch vụ:</h3>
         </div>
-        <!-- <div class="table-responsive">
-          <div class="showtime-options" *ngFor="let date of dateSchedule">
-            <label> - {{date.name}}: <span>({{date.startTime}} - {{date.endTime}})</span></label>
-            <carousel height="87px" cellsToShow="7" *ngIf="date.workDate && date.workDate.length >= 7">
-              <div [ngClass]="{'selected':selectedDate===showtime}" class="carousel-cell"
-                *ngFor="let showtime of date.workDate" (click)="viewDetailinSchedule(date.id, showtime)">
-                <div class="left">{{getDay(showtime)}}</div>
-                <div class="right"><span>/{{getMonth(showtime)}}
-                  </span><span>{{getDateMonth(showtime)}}</span>
-                </div>
-              </div>
-            </carousel>
-
-            <div class="select-date-container" height="87px" cellsToShow="7"
-              *ngIf="date.workDate && date.workDate.length < 7">
-              <div [ngClass]="{'selected':selectedDate===showtime}" class="datetimeBtn"
-                *ngFor="let showtime of date.workDate" (click)="viewDetailinSchedule(date.id, showtime)">
-                <div class="left">{{getDay(showtime)}}</div>
-                <div class="right"><span>/{{getMonth(showtime)}}
-                  </span><span>{{getDateMonth(showtime)}}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div> -->
+       
         <div class="table-responsive" style="margin-top: 2rem;">
           <div class="showtime-bydate" *ngFor="let date of dateList">
             <span> - {{date.name}}: ({{date.startTime}} - {{date.endTime}}): </span>
@@ -77,31 +45,7 @@
             <u (click)="viewDetailinSchedule(date.id, date.workDate)"> (Xem chi tiết)</u>
           </div>
         </div>
-        <!-- <div class="card-footer py-4">
-          <nav aria-label="...">
-            <ul class="pagination justify-content-end mb-0">
-              <li class="page-item disabled">
-                <a class="page-link" href="javascript:void(0)" tabindex="-1">
-                  <i class="fas fa-angle-left"></i>
-                  <span class="sr-only">Previous</span>
-                </a>
-              </li>
-              <li class="page-item active">
-                <a class="page-link" href="javascript:void(0)">1</a>
-              </li>
-              <li class="page-item">
-                <a class="page-link" href="javascript:void(0)">2 <span class="sr-only">(current)</span></a>
-              </li>
-              <li class="page-item"><a class="page-link" href="javascript:void(0)">3</a></li>
-              <li class="page-item">
-                <a class="page-link" href="javascript:void(0)">
-                  <i class="fas fa-angle-right"></i>
-                  <span class="sr-only">Next</span>
-                </a>
-              </li>
-            </ul>
-          </nav>
-        </div> -->
+       
       </div>
     </div>
   </div>

@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from 'src/app/services/auth.service';
+import { BookingService } from 'src/app/services/booking.service';
 
 @Component({
   selector: 'app-customer-history',
@@ -15,9 +17,17 @@ export class CustomerHistoryComponent implements OnInit {
   houseType: string[];
   searchRate: any;
   searchHouseType: string;
-  constructor() { }
+  customerId: any;
+  constructor(private authService: AuthService,
+    private bookingService: BookingService) { }
 
   ngOnInit() {
+    this.authService.getUserInfor().subscribe(cus => {
+      this.customerId = cus.data.id;
+      this.bookingService.getBookingHistory(this.customerId).subscribe(res => {
+        
+      })
+    })
     this.data = {
       "ratingOverview": {
         "cleanerId": 1,

@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import { Router, NavigationEnd, NavigationStart } from "@angular/router";
 import { Location, PopStateEvent } from "@angular/common";
 import { ROUTES } from "../sidebar/sidebar.component";
@@ -15,30 +15,24 @@ export class NavbarComponent implements OnInit {
   private lastPoppedUrl: string;
   private yScrollStack: number[] = [];
   listTitles: any[];
-<<<<<<< HEAD
-=======
-  adminNavbar = false;
->>>>>>> d15a1657bfc7f05681c843344bc133d35448396b
+  @Input() public adminNavbar: any;
+  @Input() public cleanerNavbar: any;
+  @Input() public customerNavbar: any;
+  @Input() public guestNavbar: any;
+  @Input() public username: any;
+  @Input() public id: any;
 
   constructor(
     public location: Location,
     private router: Router,
     private authService: AuthService
-  ) {}
-<<<<<<< HEAD
+  ) { }
 
   ngOnInit() {
-    this.listTitles = ROUTES.filter((listTitle) => listTitle);
-
-=======
-
-  ngOnInit() {
-    if(this.authService.getJwtToken()){
-      this.adminNavbar = true;
+    if (!this.authService.getJwtToken()) {
+      this.username = '';
     }
     this.listTitles = ROUTES.filter((listTitle) => listTitle);
-
->>>>>>> d15a1657bfc7f05681c843344bc133d35448396b
     this.router.events.subscribe((event) => {
       this.isCollapsed = true;
       if (event instanceof NavigationStart) {
@@ -91,6 +85,7 @@ export class NavbarComponent implements OnInit {
   logout() {
     this.authService.signout().subscribe({
       next: () => {
+        this.authService.setAuthenticationStatus(false);
         this.router.navigate(["/login"]);
       },
     });

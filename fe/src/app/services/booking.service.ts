@@ -13,6 +13,7 @@ export class BookingService {
   private CLEANERAVAIBLAE = this.baseUrl + "/cleaner/available";
   private CLEANERPICKDETAIL = this.baseUrl + "/cleaner/history/detail?cleanerId=";
   private SERVICEADDON = this.baseUrl + "/service-add-ons?addOnId=";
+  private AREA = this.baseUrl + "/floor-info";
   // getEmployees(params: HttpParams): Observable<any> {
   //   return this.http.get<any>(`${this.baseUrl}/cleaners`, { params });
   // }
@@ -44,6 +45,17 @@ export class BookingService {
     const headers = this.getHeadersWithToken();
     return this.http.get<any>(`${this.CLEANERPICKDETAIL + id}`, { headers });
   }
+
+  getBookingHistory(id: any): Observable<any> {
+    const headers = this.getHeadersWithToken();
+    return this.http.get<any>(`${this.CLEANERPICKDETAIL + id}`, { headers });
+  }
+
+  getDataService(): Observable<any> {
+    const headers = this.getHeadersWithToken();
+    return this.http.get<any>(`${this.AREA}`, { headers });
+  }
+
 
 
   getBookingDetail(id: any): Observable<any> {

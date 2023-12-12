@@ -52,7 +52,36 @@ export class BookingComponent implements OnInit {
   houseTypes: string[] = ['Nhà đất', 'Chung cư'];
   serviceTypes: string[] = ['Tổng vệ sinh', 'Theo khu vực/Diện tích'];
   timeTypes: string[] = ['Sử dụng 1 lần', 'Định kỳ'];
-  areaTypes: string[] = ['dưới 30m2', 'từ 30 - 50m2', 'trên 50m2', 'từ 50-70m2', 'trên 70m2'];
+  areaTypes: any[] = [
+    {
+      title: 'dưới 30m2',
+      value: 30
+    },
+    {
+      title: 'từ 30-50m2',
+      value: 50
+    },
+    {
+      title: 'từ 50-70m2',
+      value: 70
+    },
+    {
+      title: 'từ 70m2 - 90m2',
+      value: 90
+    },
+    {
+      title: 'từ 90m2-100m2',
+      value: 100
+    },
+    {
+      title: 'từ 100m2-120m2',
+      value: 120
+    },
+    {
+      title: 'từ 120m2-150m2',
+      value: 150
+    },
+  ];
   selectedFloors: number; // Biến lưu trữ số tầng được chọn
   selectedHouseType: string; // Biến lưu trữ loại hình nhà được chọn
   selectedAreaType: string; // Biến lưu trữ loại diện tích sàn ước chừng được chọn
@@ -112,7 +141,12 @@ export class BookingComponent implements OnInit {
   serviceTypeData: any;
   priceList: any;
   textListAdvanceService: string;
-
+  public account_name = '';
+  public phone_number = '';
+  res: any;
+  cleanerNum: any;
+  duration: any;
+  dateValue: string;
 
   onResize(event) {
     if (this.TermsDialogRef) {
@@ -149,13 +183,18 @@ export class BookingComponent implements OnInit {
 
     });
 
+    this.bookingServicee.getDataService().subscribe(res => {
+      this.res = res.data;
+    });
     this.selectedPaymentMethod = 'cash';
     this.selectedFloors = this.floors[0];
     this.selectedHouseType = this.houseTypes[0];
-    this.selectedAreaType = this.areaTypes[0];
+    this.selectedAreaType = this.areaTypes[0].title;
+    console.log("this.selectedAreaType", this.selectedAreaType);
+    
     this.selectedServiceType = this.serviceTypes[0];
     this.selectedTimeType = this.timeTypes[0];
-
+    
   }
 
   pickDate() {
@@ -163,10 +202,14 @@ export class BookingComponent implements OnInit {
   }
 
   hideDatePicker() {
+    console.log(this.selectedDate, 'this.selectedDate');
+    
     if (this.selectedDate) {
       const jsDate = new Date(this.selectedDate.year, this.selectedDate.month - 1, this.selectedDate.day);
       const formattedDate = format(jsDate, 'dd/MM/yyyy');
-      console.log(formattedDate); // In giá trị theo định dạng giờ
+      const formattedDate2 = format(jsDate, 'yyyy-MM-dd');
+      console.log(formattedDate2); // In giá trị theo định dạng giờ
+      this.dateValue = formattedDate2
       this.showDatePicker = false; // Ẩn datepicker  }
       this.datePicker = formattedDate;
       this.datePickerShow = this.convertDateToVietnameseFormat(formattedDate);
@@ -255,31 +298,59 @@ export class BookingComponent implements OnInit {
 
   pickCleaner() {
     // this.dialogService.sendDataDialog(true);
-    this.bookingServicee.getCleanerAvaiable('2023-11-24', 3, 3).subscribe(item =>{
-      console.log(item);
-      console.log(item.data);
-      
-      this.dataCleaner =  item.data;
-      this.renderer.addClass(document.body, 'modal-open');
-      this.cleanerDialogRef = this.dialog.open(PickCleanerDialog, {
-        width: '1000px',
-        maxHeight: '85%',
-        data: {
-          data: this.dataCleaner,
-          date: this.pickDay,
+    if(this.selectedTimeType == 'Sử dụng 1 lần'){
+      this.bookingServicee.getCleanerAvaiable(this.dateValue, '', '').subscribe(item => {
+        console.log(item);
+        console.log(item.data);
   
-        },
-        panelClass: ['pick-cleaner']
-      });
-      console.log("dataCleaner", this.dataCleaner);
-      
-      this.cleanerDialogRef.afterClosed().subscribe(result => {
-        // console.log('The dialog was closed');
-        this.renderer.removeClass(document.body, 'modal-open');
-        // this.dialogService.sendDataDialog(false);
-      });
-    })
-   
+        this.dataCleaner = item.data;
+        this.renderer.addClass(document.body, 'modal-open');
+        this.cleanerDialogRef = this.dialog.open(PickCleanerDialog, {
+          width: '1000px',
+          maxHeight: '85%',
+          data: {
+            data: this.dataCleaner,
+            date: this.pickDay,
+  
+          },
+          panelClass: ['pick-cleaner']
+        });
+        console.log("dataCleaner", this.dataCleaner);
+  
+        this.cleanerDialogRef.afterClosed().subscribe(result => {
+          // console.log('The dialog was closed');
+          this.renderer.removeClass(document.body, 'modal-open');
+          // this.dialogService.sendDataDialog(false);
+        });
+      })
+    } else {
+      this.bookingServicee.getCleanerAvaiable('2023-11-24', 3, 3).subscribe(item => {
+        console.log(item);
+        console.log(item.data);
+  
+        this.dataCleaner = item.data;
+        this.renderer.addClass(document.body, 'modal-open');
+        this.cleanerDialogRef = this.dialog.open(PickCleanerDialog, {
+          width: '1000px',
+          maxHeight: '85%',
+          data: {
+            data: this.dataCleaner,
+            date: this.pickDay,
+  
+          },
+          panelClass: ['pick-cleaner']
+        });
+        console.log("dataCleaner", this.dataCleaner);
+  
+        this.cleanerDialogRef.afterClosed().subscribe(result => {
+          // console.log('The dialog was closed');
+          this.renderer.removeClass(document.body, 'modal-open');
+          // this.dialogService.sendDataDialog(false);
+        });
+      })
+    }
+    
+
   }
 
   Order() {
@@ -304,6 +375,19 @@ export class BookingComponent implements OnInit {
       // this.dialogService.sendDataDialog(false);
     });
   }
+
+  onAreaChange(value: any) {
+    console.log('Selected Floors:', value);
+    let found = false; // Biến kiểm soát vòng lặp
+      this.res.forEach(element => {
+        if (!found && value < element.floorArea) {
+          // Nếu tìm thấy phần tử thỏa mãn điều kiện, lưu giá trị và thoát vòng lặp
+          this.cleanerNum = element.cleanerNum;
+          this.duration = element.duration;
+          found = true;
+        }
+      });
+   }
 
 }
 

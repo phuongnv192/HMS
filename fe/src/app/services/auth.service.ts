@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { BehaviorSubject, Observable } from "rxjs";
 import { tap } from "rxjs/operators";
 import { environment } from "src/environments/environment";
 import { jwtDecode } from "jwt-decode";
@@ -11,7 +11,10 @@ export class AuthService {
   private REGISTER = this.baseUrl + "/register";
   private CHANGE_PASS = this.baseUrl + "/change-password";
   private LOGOUT = this.baseUrl + "/logout";
-
+  private USERINFOR = environment.apiUrl + "/user/info";
+  private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
+  isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
+  
   constructor(private http: HttpClient) {}
 
   getToken() {
@@ -84,5 +87,22 @@ export class AuthService {
       console.error("Failed to decode JWT or missing expiration date.");
     }
     return new Date();
+  }
+
+  private getHeadersWithToken(): HttpHeaders {
+    const token = sessionStorage.getItem('token');
+    return new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    });
+  }
+
+  getUserInfor(): Observable<any> {
+    const headers = this.getHeadersWithToken();
+    return this.http.get<any>(`${this.USERINFOR}`, { headers });
+  }
+
+  setAuthenticationStatus(status: boolean) {
+    this.isAuthenticatedSubject.next(status);
   }
 }

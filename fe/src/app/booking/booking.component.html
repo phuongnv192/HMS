@@ -47,13 +47,13 @@
                     <!-- (keypress)="omit_special_char_email($event)" [(ngModel)]="account_name" -->
                     <!-- (blur)="changeHandler('account')" (focus)="focusAccount()" -->
                     <input #account id="account" placeholder="Nguyen Van A" type="text" aria-describedby="account-help"
-                      maxlength="50">
+                      maxlength="50" [(ngModel)]="account_name">
 
                   </div>
                   <div class="input-group">
                     <p>Số điện thoại(*): </p>
                     <input #phonenumber id="phonenumber" placeholder="0987654321" type="text"
-                      aria-describedby="phone-help" maxlength="12">
+                      aria-describedby="phone-help" maxlength="12" [(ngModel)]="phone_number">
                   </div>
                   <!-- <div *ngIf="account_name" class="delete" (click)="clearEmail()">
                     <img style="float: right;" src="assets/img/bnpl/Close.svg" />
@@ -91,11 +91,12 @@
                   </div>
                   <div class="input-group">
                     <p>Diện tích sàn(*): </p>
-                    <select [(ngModel)]="selectedAreaType" id="area" aria-describedby="areaType-help"
+                    <select (ngModelChange)="onAreaChange($event)" [(ngModel)]="selectedAreaType" id="area" aria-describedby="areaType-help"
                       title="Diện tích sàn">
-                      <option *ngFor="let area of areaTypes" [value]="area">{{ area }}</option>
+                      <option *ngFor="let area of areaTypes" [value]="area.value">{{ area.title }}</option>
                     </select>
                   </div>
+                    <p class="description">Số lượng người dọn và giá (ước tính): <b>{{cleanerNum}} người dọn dẹp</b> trong thời gian <b> {{duration}} tiếng </b></p>
                   <h6 class="text-primary text-uppercase">Tiện ích bổ sung</h6>
                   <p class="description">Các loại hình dịch vụ tiện ích bổ sung là bao gồm
                     các khu vực và thiết bị không bao gồm trong dịch vụ dọn dẹp.</p>

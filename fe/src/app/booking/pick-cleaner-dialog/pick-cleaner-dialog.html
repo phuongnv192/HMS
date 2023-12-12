@@ -12,16 +12,20 @@
       </div>
       <!-- listPick.length > 0  -->
       <div class="table-responsive" *ngIf="true">
-        <div class="showtime-options">
+        <div *ngIf="listPick.length < 1">
+          <div style="margin-top: 2rem; font-size: 14px;">Các nhân viên dọn dẹp đã được chọn:</div>
+          <div *ngIf="listPick.length < 1" style="margin-top: 2rem; font-size: 14px;">Hiện người dùng chưa chọn nhân viên. (Hệ thống sẽ mặc định chọn nhân viên phù hợp với tiêu chí)</div>
+        </div>
+        <div class="showtime-options" *ngIf="listPick.length > 0">
           <div style="margin-top: 2rem; font-size: 14px;">Các nhân viên dọn dẹp đã được chọn:</div>
           <!-- listPick.length > 0  -->
-          <div class="select-date-container" style="margin-top: -20px;" height="140px" *ngIf="true">
-            <div class="datetimeBtn" (click)="viewDetailCleaner(cleaner.cleanerId)" *ngFor="let cleaner of listA">
-              <i class="add-icon fas fa-times closeIcon" (click)="addCleaner(cleaner)"></i>
+          <div class="select-date-container" style="margin-top: -20px;" height="140px" *ngIf="listPick.length > 0">
+            <div class="datetimeBtn"  *ngFor="let cleaner of listPick, let i = index">
+              <i class="add-icon fas fa-times closeIcon" (click)="removeCleaner(i)"></i>
               <div class="top">
                 <img src="../hms/assets/img/{{cleaner.gender}}.jpg">
               </div>
-              <div class="bottom">
+              <div class="bottom" (click)="viewDetailCleaner(cleaner.cleanerId)">
                 <div class="cleaner-name">{{cleaner.name}}
                   <div style="font-size: 13px;"> Giới tính: {{cleaner.gender == 'Male' ? 'Nam' : 'Nữ' }} </div>
                 </div>
@@ -36,18 +40,18 @@
         </div>
         <!-- listPick.length > 0  -->
         <hr *ngIf="true">
-        <div class="showtime-options">
+        <div class="showtime-options" *ngIf="listA.length > 0">
           <div style="margin-top: 1rem;" class="list-title">Danh sách nhân viên dọn dẹp sẵn sàng đối với lịch dọn của
             bạn:</div>
           <div class="error">(*Danh sách nhân viên sẽ thay đổi nếu khách hàng thay đổi lịch dọn)</div>
           <!-- listCleaner.length < 6 && listCleaner.length > 0 -->
-          <div class="select-date-container"  style="margin-top: -20px;" height="140px" *ngIf="true" style="padding-top: -1rem;">
-            <div class="datetimeBtn" (click)="viewDetailCleaner(cleanerA.cleanerId)" *ngFor="let cleanerA of listCleaner">
+          <div class="select-date-container"  style="margin-top: -20px;" height="140px" *ngIf="listA.length > 0" style="padding-top: -1rem;">
+            <div class="datetimeBtn" *ngFor="let cleanerA of listA">
               <i class="add-icon fas fa-plus addIcon" (click)="addCleaner(cleanerA)"></i>
               <div class="top">
                 <img src="../hms/assets/img/{{cleanerA.gender}}.jpg">
               </div>
-              <div class="bottom">
+              <div class="bottom" (click)="viewDetailCleaner(cleanerA.cleanerId)">
                 <div class="cleaner-name">{{cleanerA.name}}
                   <div style="font-size: 13px;"> Giới tính: {{cleanerA.gender == 'Male' ? 'Nam' : 'Nữ' }} </div>
                 </div>
@@ -61,15 +65,15 @@
           </div>
         </div>
         <!-- listCleaner.length < 11 && listCleaner.length > 5 -->
-        <div class="showtime-options">
+        <div class="showtime-options" *ngIf="listB.length > 0">
           <!-- listCleaner.length < 11 && listCleaner.length > 5 -->
-          <div class="select-date-container" height="140px" *ngIf="true">
-            <div class="datetimeBtn" (click)="viewDetailCleaner(cleanerB.cleanerId)" *ngFor="let cleanerB of listB">
+          <div class="select-date-container" height="140px" *ngIf="listB.length > 0">
+            <div class="datetimeBtn"  *ngFor="let cleanerB of listB">
               <i class="add-icon fas fa-plus addIcon" (click)="addCleaner(cleanerB)"></i>
               <div class="top">
                 <img src="../hms/assets/img/{{cleanerB.gender}}.jpg">
               </div>
-              <div class="bottom">
+              <div class="bottom" (click)="viewDetailCleaner(cleanerB.cleanerId)">
                 <div class="cleaner-name">{{cleanerB.name}}
                   <div style="font-size: 13px;"> Giới tính: {{cleanerB.gender == 'Male' ? 'Nam' : 'Nữ' }} </div>
                 </div>

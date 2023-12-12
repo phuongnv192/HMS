@@ -22,12 +22,27 @@ export class LoginComponent implements OnInit {
   login() {
     this.authService.signin(this.account_name, this.password).subscribe({
       next: (res) => {
-        this.router.navigate(["/home"]);
-        if (res.data.role == "admin") {
-          this.router.navigate(["detail/dashboard"]);
-        } else {
-          this.router.navigate(["/home"]);
-        }
+        this.authService.getUserInfor().subscribe(data => {
+          if (data.data.role.name == "CUSTOMER") {
+            this.authService.setAuthenticationStatus(true);
+            this.router.navigate(["/home"]);
+          } else {
+            this.authService.setAuthenticationStatus(true);
+            this.router.navigate(["/dashboard"]);
+          }
+        })
+        // this.authService.setAuthenticationStatus(true);
+        // this.router.navigate(["/home"]);
+
+        // if (res.data.role == "admin") {
+        //   this.authService.setAuthenticationStatus(true);
+
+        //   this.router.navigate(["detail/dashboard"]);
+        // } else {
+        //   this.authService.setAuthenticationStatus(true);
+
+        //   this.router.navigate(["/home"]);
+        // }
       }, // nextHandler
       error: (err) => {
         console.log(err);

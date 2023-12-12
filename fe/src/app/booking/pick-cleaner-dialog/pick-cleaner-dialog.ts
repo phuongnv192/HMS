@@ -27,6 +27,7 @@ export class PickCleanerDialog implements OnDestroy, OnInit {
   selectedCleaner: any;
   listA: any;
   listB: any;
+  listPick: any;
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -41,11 +42,9 @@ export class PickCleanerDialog implements OnDestroy, OnInit {
 
   ngOnInit(): void {
     this.listCleaner = this.data.data;
-    this.listA = this.listCleaner.slice(0, 3);
-    this.listB = this.listCleaner.slice(3);
-
-    console.log(this.listCleaner, 11111111111111);
-    
+    this.listA = this.listCleaner.slice(0, 5);
+    this.listB = this.listCleaner.slice(5);    
+    this.listPick = [];    
   }
 
 
@@ -117,6 +116,12 @@ export class PickCleanerDialog implements OnDestroy, OnInit {
   }
 
   addCleaner(cleaner: any){
-    
+    this.listPick.push(cleaner);
+    console.log(this.listPick, "listPick");
+  }
+
+  removeCleaner(index: any){
+    this.listPick.splice(index, 1);
+
   }
 }
