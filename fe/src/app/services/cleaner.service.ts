@@ -19,7 +19,8 @@ export class CleanerService {
   }
 
   getCleanerHistoryDetail(id: string): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/cleaner/history/detail`, { id });
+    return this.http.get<any>(`${this.baseUrl}/cleaner/history/detail/`, {
+      params: { cleanerId: id },
+    });
   }
-
 }
