@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { AuthService } from "../../services/auth.service";
 import { Router } from "@angular/router";
+import { CacheService } from "src/app/services/cache.service";
 
 @Component({
   selector: "app-login",
@@ -15,9 +16,15 @@ export class LoginComponent implements OnInit {
   account_name: any;
   accountBlur = false;
   password: string;
-  constructor(private authService: AuthService, private router: Router) { }
+  isCacheCleared = false;
+  constructor(private authService: AuthService, private router: Router, private cacheService: CacheService) { }
 
-  ngOnInit() { }
+  ngOnInit(): void {
+    // if (!this.cacheService.getHasClearedCache()) {
+    //   this.clearCache();
+    //   this.cacheService.setHasClearedCache(true);
+    // }
+  }
 
   login() {
     this.authService.signin(this.account_name, this.password).subscribe({
@@ -26,28 +33,27 @@ export class LoginComponent implements OnInit {
           if (data.data.role.name == "CUSTOMER") {
             this.authService.setAuthenticationStatus(true);
             this.router.navigate(["/home"]);
-          } else {
+          } else if((data.data.role.name == "MANAGER") || (data.data.role.name == "ADMIN")) {
             this.authService.setAuthenticationStatus(true);
             this.router.navigate(["/dashboard"]);
+          } else if(data.data.role.name == "CLEANER"){
+            this.authService.setAuthenticationStatus(true);
+            this.router.navigate(["/schedule"]);
+          } else {
+            this.authService.setAuthenticationStatus(true);
+            this.router.navigate(["/customer-profile"]);
           }
         })
-        // this.authService.setAuthenticationStatus(true);
-        // this.router.navigate(["/home"]);
-
-        // if (res.data.role == "admin") {
-        //   this.authService.setAuthenticationStatus(true);
-
-        //   this.router.navigate(["detail/dashboard"]);
-        // } else {
-        //   this.authService.setAuthenticationStatus(true);
-
-        //   this.router.navigate(["/home"]);
-        // }
       }, // nextHandler
       error: (err) => {
         console.log(err);
       }, // errorHandler
     });
+  }
+
+  clearCache() {
+    // Reload the page to clear browser cache
+    window.location.reload();
   }
 
   omit_special_char_email(event) {

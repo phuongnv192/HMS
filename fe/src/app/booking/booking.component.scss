@@ -44,6 +44,12 @@ h6 {
   text-align: center;
 }
 
+#time{
+  height: 35px;
+  width: 38%;
+  text-align: center;
+}
+
 #floors {
   height: 35px;
   width: 5%;
@@ -371,4 +377,12 @@ span i {
 
 .custom-margin{
   margin-bottom: 10rem;
+}
+
+.error {
+  font-size: 11px;
+  color: #FF0000;
+  // margin-bottom: 15px;
+  float: left;
+  width: 100%;
 }

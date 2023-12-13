@@ -134,7 +134,6 @@ export class BookingComponent implements OnInit {
   private termCondition: any;
   totalAmount: any;
   validPayment = true;
-  @ViewChild("termsDiv") termsDiv: ElementRef<HTMLElement>;
   data: any;
   dataCleaner: any;
   pickDay: any;
@@ -147,6 +146,13 @@ export class BookingComponent implements OnInit {
   cleanerNum: any;
   duration: any;
   dateValue: string;
+  public service_address = '';
+  @ViewChild("termsDiv") termsDiv: ElementRef<HTMLElement>;
+  flag: any;
+  scheduleTimeDescription: string;
+  c_time: boolean;
+  public _inTime: any;
+
 
   onResize(event) {
     if (this.TermsDialogRef) {
@@ -168,7 +174,6 @@ export class BookingComponent implements OnInit {
     const today = new Date();
     this.minSelectableDate = new NgbDate(today.getFullYear(), today.getMonth() + 1, today.getDate());
     this.maxSelectableDate = new NgbDate(today.getFullYear(), today.getMonth() + 2, today.getDate());
-    console.log("maxSelectableDate", this.maxSelectableDate);
 
   }
 
@@ -179,8 +184,6 @@ export class BookingComponent implements OnInit {
 
     this.bookingServicee.getServiceAddOns("-1").subscribe(data => {
       if (data) this.priceList = data.data;
-      console.log(this.priceList, "---priceList");
-
     });
 
     this.bookingServicee.getDataService().subscribe(res => {
@@ -190,11 +193,9 @@ export class BookingComponent implements OnInit {
     this.selectedFloors = this.floors[0];
     this.selectedHouseType = this.houseTypes[0];
     this.selectedAreaType = this.areaTypes[0].title;
-    console.log("this.selectedAreaType", this.selectedAreaType);
-    
     this.selectedServiceType = this.serviceTypes[0];
     this.selectedTimeType = this.timeTypes[0];
-    
+
   }
 
   pickDate() {
@@ -202,14 +203,11 @@ export class BookingComponent implements OnInit {
   }
 
   hideDatePicker() {
-    console.log(this.selectedDate, 'this.selectedDate');
-    
     if (this.selectedDate) {
       const jsDate = new Date(this.selectedDate.year, this.selectedDate.month - 1, this.selectedDate.day);
       const formattedDate = format(jsDate, 'dd/MM/yyyy');
       const formattedDate2 = format(jsDate, 'yyyy-MM-dd');
-      console.log(formattedDate2); // In giá trị theo định dạng giờ
-      this.dateValue = formattedDate2
+      this.dateValue = formattedDate2;
       this.showDatePicker = false; // Ẩn datepicker  }
       this.datePicker = formattedDate;
       this.datePickerShow = this.convertDateToVietnameseFormat(formattedDate);
@@ -274,7 +272,6 @@ export class BookingComponent implements OnInit {
     });
 
     this.dialogRef.afterClosed().subscribe(result => {
-      // console.log('The dialog was closed');
       this.renderer.removeClass(document.body, 'modal-open');
       // this.dialogService.sendDataDialog(false);
     });
@@ -298,11 +295,8 @@ export class BookingComponent implements OnInit {
 
   pickCleaner() {
     // this.dialogService.sendDataDialog(true);
-    if(this.selectedTimeType == 'Sử dụng 1 lần'){
+    if (this.selectedTimeType == 'Sử dụng 1 lần') {
       this.bookingServicee.getCleanerAvaiable(this.dateValue, '', '').subscribe(item => {
-        console.log(item);
-        console.log(item.data);
-  
         this.dataCleaner = item.data;
         this.renderer.addClass(document.body, 'modal-open');
         this.cleanerDialogRef = this.dialog.open(PickCleanerDialog, {
@@ -311,23 +305,17 @@ export class BookingComponent implements OnInit {
           data: {
             data: this.dataCleaner,
             date: this.pickDay,
-  
+
           },
           panelClass: ['pick-cleaner']
         });
-        console.log("dataCleaner", this.dataCleaner);
-  
         this.cleanerDialogRef.afterClosed().subscribe(result => {
-          // console.log('The dialog was closed');
           this.renderer.removeClass(document.body, 'modal-open');
           // this.dialogService.sendDataDialog(false);
         });
       })
     } else {
       this.bookingServicee.getCleanerAvaiable('2023-11-24', 3, 3).subscribe(item => {
-        console.log(item);
-        console.log(item.data);
-  
         this.dataCleaner = item.data;
         this.renderer.addClass(document.body, 'modal-open');
         this.cleanerDialogRef = this.dialog.open(PickCleanerDialog, {
@@ -336,20 +324,17 @@ export class BookingComponent implements OnInit {
           data: {
             data: this.dataCleaner,
             date: this.pickDay,
-  
+
           },
           panelClass: ['pick-cleaner']
         });
-        console.log("dataCleaner", this.dataCleaner);
-  
         this.cleanerDialogRef.afterClosed().subscribe(result => {
-          // console.log('The dialog was closed');
           this.renderer.removeClass(document.body, 'modal-open');
           // this.dialogService.sendDataDialog(false);
         });
       })
     }
-    
+
 
   }
 
@@ -370,25 +355,141 @@ export class BookingComponent implements OnInit {
     });
 
     this.dialogRefPriceList.afterClosed().subscribe(result => {
-      // console.log('The dialog was closed');
       this.renderer.removeClass(document.body, 'modal-open');
       // this.dialogService.sendDataDialog(false);
     });
   }
 
   onAreaChange(value: any) {
-    console.log('Selected Floors:', value);
     let found = false; // Biến kiểm soát vòng lặp
-      this.res.forEach(element => {
-        if (!found && value < element.floorArea) {
-          // Nếu tìm thấy phần tử thỏa mãn điều kiện, lưu giá trị và thoát vòng lặp
-          this.cleanerNum = element.cleanerNum;
-          this.duration = element.duration;
-          found = true;
-        }
-      });
-   }
+    this.res.forEach(element => {
+      if (!found && value < element.floorArea) {
+        // Nếu tìm thấy phần tử thỏa mãn điều kiện, lưu giá trị và thoát vòng lặp
+        this.cleanerNum = element.cleanerNum;
+        this.duration = element.duration;
+        found = true;
+      }
+    });
+  }
 
+
+
+  ValidateExpDate(_val: any, event) {
+    this.c_time = false;
+    // this.error_post_message = '';
+    var ua = navigator.userAgent.toLowerCase();
+    let v = '';
+    // check for safari macbook
+    if (ua.indexOf('safari') != -1 && this.isMacintosh()) {
+      if (ua.indexOf('chrome') > -1) {
+        this._inTime = _val.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+        v = this._inTime;
+      } else {
+        if (_val.value) {
+          if (event.keyCode === 8 || event.key === "Backspace" || event.inputType == 'deleteContentBackward') {
+            if (event.target.name == 'exp_date' && this._inTime) {
+              if (this._inTime.length != 3) {
+                this._inTime = this._inTime.slice(0, -1);
+              } else {
+                this._inTime = this._inTime.slice(0, -2);
+              }
+            }
+            event.preventDefault();
+          } else if (!isNaN(_val.value.substr(_val.value.length - 1)) && event.inputType == 'insertCompositionText') {
+            this._inTime = this._inTime + _val.value.substr(_val.value.length - 1);
+          }
+        } else {
+          this._inTime = '';
+        }
+        v = this._inTime;
+      }
+    } else {
+      this._inTime = _val.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+      v = this._inTime;
+    }
+    const newdate = this.time_format(v);
+    _val.value = newdate;
+    this._inTime = newdate;
+    if (this.validTime(this._inTime)) {
+      this.c_time = false;
+    } else {
+
+    }
+    // this.enablePayNow();
+  }
+  isMacintosh() {
+    return navigator.platform.toLowerCase().indexOf('mac') > -1
+  }
+
+  time_format(value) {
+    let v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+    if (v.length === 2 && this.flag.length === 3 && this.flag.charAt(this.flag.length - 1) === ':') {
+      v = '';
+    }
+    if (v && !v.startsWith('0') && !v.startsWith('1')) {
+      if (v.length === 1) {
+        v = '0' + v + ':';
+      } else if (v.length === 2) {
+        v = v + ':';
+      }
+    } else if ((v <= 19 && v >= 8) || v.length === 2) {
+      v = v + ':';
+    }
+    const matches = v.match(/\d{2,4}/g);
+    const match = matches && matches[0] || '';
+    const parts = [];
+    for (let i = 0, len = match.length; i < len; i += 2) {
+      parts.push(match.substring(i, i + 2));
+      if (len === 2) {
+        parts.push('');
+      }
+    }
+    if (parts.length) {
+      this.flag = parts.join(':');
+      return parts.join(':');
+    } else {
+      this.flag = value;
+      return value;
+    }
+  }
+
+  public blurExpDate(_val: any): void {
+    this.scheduleTimeDescription = '';
+    this.c_time = !(this.validTime(this._inTime));
+    const v = this._inTime.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+    const newdate = this.time_format(v);
+    _val.value = newdate;
+    this._inTime = newdate;
+    if (!this.c_time) {
+      this.scheduleTimeDescription = this.convertTimeFormat(newdate);
+    }
+  }
+
+  convertTimeFormat(inputTime: string): string {
+    // Kiểm tra xem inputTime có đúng định dạng hh:mm không
+    const timeRegex = /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
+    if (!timeRegex.test(inputTime)) {
+      // Nếu không đúng định dạng, trả về thông báo lỗi hoặc giá trị ban đầu
+      return 'Invalid time format';
+    }
+
+    // Chuyển đổi thành đối tượng Date để dễ xử lý
+    const inputDate = new Date(`1970-01-01T${inputTime}:00Z`);
+
+    // Lấy giờ và phút
+    const hours = inputDate.getHours();
+    const minutes = inputDate.getMinutes();
+
+    // Tạo chuỗi kết quả
+    const result = `${hours} giờ ${minutes} phút`;
+
+    return result;
+  }
+
+  validTime(value) {
+    return ((value.length == 4 && value.search('/') == -1) || value.length == 5) && parseInt(value.split(':')[0], 0) >= 8
+      && (parseInt(value.split(':')[0], 0) < 20) && (parseInt(value.split(':')[1], 0) <= 60)
+  }
 }
 
 @Component({

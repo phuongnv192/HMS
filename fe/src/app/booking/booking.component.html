@@ -13,7 +13,7 @@
         <span></span>
         <span></span>
       </div>
-      <div class="container py-lg-md d-flex">
+      <div class="container d-flex">
         <div class="col px-0">
           <div class="row">
             <div class="col-lg-6">
@@ -62,10 +62,12 @@
                   <h6 class="text-primary text-uppercase">Thông tin nhà/khu vực vệ sinh</h6>
                   <div class="input-group">
                     <p>Nơi làm việc: </p>
-                    <button type="button" class="btn btn-primary">Nhập địa chỉ</button>
-
-
+                    <input #address id="address" placeholder="Số 1Kim Mã, Ba Đình, Hà Nội" type="text"
+                      aria-describedby="address-help" maxlength="100" [(ngModel)]="service_address">
                   </div>
+                    <!-- <button type="button" class="btn btn-primary">Nhập địa chỉ</button> -->
+
+
                   <p class="takenote">*Free phí di chuyển từ cơ sở gần nhất khi khoảng cách dưới 3km. Trên 3km, phí
                     dịch vụ và di
                     chuyển sẽ được tính 10.000đ/km</p>
@@ -127,9 +129,22 @@
                       title="Loại hình thức thời gian">
                       <option *ngFor="let time of timeTypes" [value]="time">{{ time }}</option>
                     </select>
+                    <div class="input-group" *ngIf="selectedTimeType == 'Sử dụng 1 lần'">
+                      <p style="width: 20%;">Giờ bắt đầu(*): </p>
+                      <div>                    
+                        <!-- Sử dụng trường input kiểu số -->
+                          <input type="tel" name="time" id="time"
+                          [class.red_border]="c_time"
+                          [class.red_border_no_background]="c_time && (_inTime.length === 0 || _inTime.trim().length === 0)"
+                          (blur)="blurExpDate(time)" pattern="\d*" placeholder="08:30" [(ngModel)]="_inTime" #time
+                          maxlength="5" (input)="ValidateExpDate(time, $event)" style="padding: 0.5rem !important"/>
+                      </div>
+                      <div *ngIf="c_time" style="width: 100%;" class="error">Vui lòng nhập thời gian trong khoảng 8h sáng tới trước 8h tối.</div>
+                    </div>
                   </div>
 
                   <div class="date-pickertime" *ngIf="selectedTimeType == 'Sử dụng 1 lần'">
+                    
                     <button type="button" class="btn btn-primary pickday" (click)="pickDate()">Chọn ngày
                       <i></i></button>
                     <ngb-datepicker class="calendar" *ngIf="showDatePicker" #dp [(ngModel)]="selectedDate"

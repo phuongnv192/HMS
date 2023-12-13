@@ -76,8 +76,6 @@ export class CleanerDetailDialog implements OnDestroy, OnInit {
 
 
   checkService(service: any){
-    console.log("this.parentService 222", this.listAdvanceService);
-
     const index = this.listAdvanceService.indexOf(service);
     if (index === -1) {
       // Nếu giá trị không tồn tại, thêm vào mảng

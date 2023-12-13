@@ -18,11 +18,13 @@ export class AddServiceDialog implements OnDestroy, OnInit {
   public name: any;
   public id: any;
   date: any;
-  parentService: any;
+  parentService = [];
   selectedServiceList: any;
-  listAdvanceService: any;
+  listAdvanceService = [];
   textListAdvanceService: any;
   checkTickService = false;
+  listService: any;
+  listAdvanceServiceId: any;
 
   constructor(
     public dialogRef: MatDialogRef<AddServiceDialog>,
@@ -34,8 +36,18 @@ export class AddServiceDialog implements OnDestroy, OnInit {
 
   ngOnInit(): void {  
     this.date = this.data.data;
-    this.parentService = this.data.addonService;
+    this.listService = this.data.addonService;
     this.selectedServiceList = this.data.servicePick;
+    this.data.addonService.forEach(val => {
+      let checkedValue = false;
+      if(this.selectedServiceList && this.selectedServiceList.includes(val.parent.name)){
+        checkedValue = true;
+      }
+      this.parentService.push({
+        name: val,
+        checked: checkedValue 
+        });
+    });    
   }
 
 
@@ -58,22 +70,24 @@ export class AddServiceDialog implements OnDestroy, OnInit {
     if (this.dialogRef) {
       this.ngZone.run(() => {
         console.log('Đóng dialog');
-        this.dialogRef.close(this.selectedServiceList);
+        this.dialogRef.close(this.listAdvanceServiceId);
       });
     } else {
       console.warn('dialogRef không tồn tại.');
     }
   }
 
-  checkService(service: any){
+  checkService(service: any, id: any){
     const index = this.listAdvanceService.indexOf(service);
     if (index === -1) {
       // Nếu giá trị không tồn tại, thêm vào mảng
       this.listAdvanceService.push(service);
+      this.listAdvanceServiceId.push(id);
     } else {
       // Nếu giá trị đã tồn tại, loại bỏ khỏi mảng
       this.listAdvanceService.splice(index, 1);
+      this.listAdvanceServiceId.splice(index, 1);
     }
-    this.textListAdvanceService = this.listAdvanceService.join(', ')
+    this.textListAdvanceService = this.listAdvanceService.join(', ');
   }
 }

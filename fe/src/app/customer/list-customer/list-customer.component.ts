@@ -12,10 +12,9 @@ export class ListCustomerComponent implements OnInit {
 
   constructor(private customerService: CustomerService) {}
 
-  ngOnInit() {
+  ngOnInit() {    
     this.customerService.getCustomers(null).subscribe({
       next: (res) => {
-        console.log(res);
         if (res && res.data) {
           this.listCustomer = res.data;
         } else {

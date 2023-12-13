@@ -63,7 +63,6 @@ export class CustomerHistoryComponent implements OnInit {
       ]
     }
     this.history = this.data.history;
-    console.log("this.history", this.history);
     this.searchRate = '4 - 5';
     this.searchHouseType = 'APARTMENT';
     this.houseType = ['APARTMENT', 'NORMAL', 'Villa'];

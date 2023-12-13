@@ -57,6 +57,10 @@ export class CalendarDialog implements OnDestroy, OnInit {
   _inTime: any;
   flag: any;
   scheduleTimeDescription: any;
+  dataPick: any;
+  dateValue: string;
+  typeId: any;
+  dataPickTemp: any[];
 
   constructor(
     public dialogRef: MatDialogRef<CalendarDialog>,
@@ -101,7 +105,6 @@ export class CalendarDialog implements OnDestroy, OnInit {
     this.packagesTemp.forEach(element => {
       this.servicePackages.push(element.servicePackageName + ' - ' + element.unit);
     });
-
   }
 
   selectedService(event: any) {
@@ -121,7 +124,45 @@ export class CalendarDialog implements OnDestroy, OnInit {
     if (this.pickServiceType == 1 || this.pickServiceType == 3) {
       this.selectedTimeType = true;
     }
+
+    this.data.type.forEach(type => {
+      if (this.selectedServiceTypeId == type.serviceTypeName) {
+        this.typeId = type.serviceTypeId;
+      }
+    })
     this.hideDatePicker();
+
+  }
+
+  selectedPackage(event: any) {
+    // this.servicePackages = [];
+    // // this.dateArray = [];
+    // // this.selectedDate = null;
+    // // this.showDatePicker = true;
+    // this.datePickerShow = false;
+
+    // this.pickServiceType = this.getId(this.data.type, this.selectedServiceTypeId);
+    // this.packagesTemp = this.data.type[this.pickServiceType - 1].servicePackages;
+
+    // this.packagesTemp.forEach(element => {
+    //   this.servicePackages.push(
+    //     {
+    //       title: element.servicePackageName + ' - ' + element.unit,
+    //       value:  element.servicePackageId
+    //     }
+    // );
+    // });
+
+    // if (this.pickServiceType == 1 || this.pickServiceType == 3) {
+    //   this.selectedTimeType = true;
+    // }
+
+    // this.data.type.forEach(type => {
+    //   if(this.selectedServiceTypeId == type.serviceTypeName){
+    //     this.typeId = type.serviceTypeId;
+    //   }
+    // })
+    // this.hideDatePicker();
 
   }
 
@@ -141,6 +182,22 @@ export class CalendarDialog implements OnDestroy, OnInit {
     this._subscription.unsubscribe();
   }
 
+  pickCalendar() {
+    this.dataPickTemp =
+      [{
+        servicePackageId: this.selectedServicePackageId,
+        serviceTypeId: this.typeId,
+        schedule: this.dataPick
+      }];
+
+    if (this.dialogRef) {
+      this.ngZone.run(() => {
+        console.log('Đóng dialog');
+        this.dialogRef.close(this.dataPickTemp);
+      });
+    }
+  }
+
   getDay(todayin) {
     let today = new Date(todayin);
     let day = today.getDate().toString().padStart(2, '0');
@@ -155,7 +212,7 @@ export class CalendarDialog implements OnDestroy, OnInit {
     let formattedMonth = monthValue.toString();
     // let today = new Date(todayin);
     // console.log("today", today);
-    
+
     // let month = (today.getMonth() + 1).toString().padStart(2, '0');
     return formattedMonth;
   }
@@ -180,11 +237,11 @@ export class CalendarDialog implements OnDestroy, OnInit {
 
     // Định dạng giá trị tháng thành chuỗi
     let formattedMonth = monthValue.toString();
-    return today.getDate()  + '/' + formattedMonth + '/' + today.getFullYear();
+    return today.getDate() + '/' + formattedMonth + '/' + today.getFullYear();
   }
 
 
-  getListDay(id: any, month:any, date: string) {
+  getListDay(id: any, month: any, date: string) {
     this.dateArray = [];
     // Giả sử a là số ngày và b là đơn vị thời gian (tháng, ngày, năm)
     let a = 0;
@@ -199,8 +256,6 @@ export class CalendarDialog implements OnDestroy, OnInit {
         const formattedDate = format(currentDate, 'MM-dd-yyyy');
         this.dateArray.push(formattedDate);
       }
-      console.log('Mảng ngày:', this.dateArray);
-
     } else if (id == 2) {
       a = 12;
       b = 'week';
@@ -209,8 +264,6 @@ export class CalendarDialog implements OnDestroy, OnInit {
         const formattedDate = format(currentDate, 'MM-dd-yyyy');
         this.dateArray.push(formattedDate);
       }
-      console.log('Mảng tháng:', this.dateArray);
-
     } else if (id == 3) {
       let a = month; // Lấy 6 giá trị
       let b = 'month'; // Đơn vị thời gian là tháng
@@ -224,8 +277,6 @@ export class CalendarDialog implements OnDestroy, OnInit {
         const formattedDate = format(currentDate, 'MM-dd-yyyy');
         this.dateArray.push(formattedDate);
       }
-      console.log('Mảng tháng:', this.dateArray);
-      console.log('selectedServicePackageId:', this.selectedServicePackageId);
     }
   }
 
@@ -268,43 +319,54 @@ export class CalendarDialog implements OnDestroy, OnInit {
       const formattedDate = format(jsDate, 'MM/dd/yyyy');
       this.showDatePicker = false; // Ẩn datepicker  }
       this.datePicker = formattedDate;
+      const formattedDate2 = format(jsDate, 'yyyy-MM-dd');
+      this.dateValue = formattedDate2;
       this.datePickerShow = this.convertDateToVietnameseFormat(formattedDate);
       this.getListDay(this.pickServiceType, 6, this.datePicker);
       let dateDay = ''
-      if(this.pickServiceType == 2){
+      if (this.pickServiceType == 2) {
         dateDay = this.getDateMonth(this.datePicker);
         this.scheduleDescription = dateDay + ' hàng tuần'
-      } else if(this.pickServiceType == 3){
+      } else if (this.pickServiceType == 3) {
         dateDay = this.getDay(this.datePicker)
         this.scheduleDescription = 'Ngày ' + dateDay + ' hàng tháng'
       }
     }
   }
 
-  viewDetailinSchedule(showtime: any){
+  viewDetailinSchedule(showtime: any) {
     this.selectedDate = showtime;
-     // this.dialogService.sendDataDialog(true);
-     this.renderer.addClass(document.body, 'modal-open');
-     this.dialogRefAddOn = this.dialog.open(AddServiceDialog, {
-       width: '500px',
-       maxHeight: '50%',
-       data: {
-         data: showtime,
-         addonService: this.data.addonService,
-         servicePick: this.selectedPick
-       },
-       panelClass: ['add-service']
-     });
- 
-     this.dialogRefAddOn.afterClosed().subscribe(result => {
+    // this.dialogService.sendDataDialog(true);
+    this.renderer.addClass(document.body, 'modal-open');
+    this.dialogRefAddOn = this.dialog.open(AddServiceDialog, {
+      width: '500px',
+      maxHeight: '50%',
+      data: {
+        data: showtime,
+        addonService: this.data.addonService,
+        servicePick: this.selectedPick
+      },
+      panelClass: ['add-service']
+    });
+
+    this.dialogRefAddOn.afterClosed().subscribe(result => {
       console.log(result);
-      if(result){
+      if (result) {
+        this.dataPick.push(
+          {
+            floorNumber: 1,
+            workDate: this.dateValue,
+            startTime: null,
+            endTime: null,
+            serviceAddOnIds: result
+          }
+        )
         this.selectedPick = result;
       }
-       // console.log('The dialog was closed');
-       this.renderer.removeClass(document.body, 'modal-open');
-       // this.dialogService.sendDataDialog(false);
-     });
+      // console.log('The dialog was closed');
+      this.renderer.removeClass(document.body, 'modal-open');
+      // this.dialogService.sendDataDialog(false);
+    });
   }
 
   ValidateExpDate(_val: any, event) {
@@ -346,12 +408,12 @@ export class CalendarDialog implements OnDestroy, OnInit {
     if (this.validTime(this._inTime)) {
       this.c_time = false;
     } else {
-      
+
     }
     this.enablePayNow();
   }
 
-  
+
   isMacintosh() {
     return navigator.platform.toLowerCase().indexOf('mac') > -1
   }
@@ -363,12 +425,12 @@ export class CalendarDialog implements OnDestroy, OnInit {
     }
     if (v && !v.startsWith('0') && !v.startsWith('1')) {
       if (v.length === 1) {
-          v = '0' + v + ':';
+        v = '0' + v + ':';
       } else if (v.length === 2) {
         v = v + ':';
       }
     } else if ((v <= 19 && v >= 8) || v.length === 2) {
-        v = v + ':';
+      v = v + ':';
     }
     const matches = v.match(/\d{2,4}/g);
     const match = matches && matches[0] || '';
@@ -381,11 +443,9 @@ export class CalendarDialog implements OnDestroy, OnInit {
     }
     if (parts.length) {
       this.flag = parts.join(':');
-      console.log("length", v.length);
       return parts.join(':');
     } else {
       this.flag = value;
-      console.log("length", v.length);
       return value;
     }
   }
@@ -397,9 +457,8 @@ export class CalendarDialog implements OnDestroy, OnInit {
     const newdate = this.time_format(v);
     _val.value = newdate;
     this._inTime = newdate;
-    if(!this.c_time){
+    if (!this.c_time) {
       this.scheduleTimeDescription = this.convertTimeFormat(newdate);
-      console.log("scheduleTimeDescription", this.scheduleTimeDescription);
     }
   }
 
@@ -410,32 +469,30 @@ export class CalendarDialog implements OnDestroy, OnInit {
       // Nếu không đúng định dạng, trả về thông báo lỗi hoặc giá trị ban đầu
       return 'Invalid time format';
     }
-  
-    // Chuyển đổi thành đối tượng Date để dễ xử lý
+
+    // Chuyển đổi thành đối tượng Date để dễ xử lý-
     const inputDate = new Date(`1970-01-01T${inputTime}:00Z`);
-  
+
     // Lấy giờ và phút
     const hours = inputDate.getHours();
     const minutes = inputDate.getMinutes();
-  
+
     // Tạo chuỗi kết quả
     const result = `${hours} giờ ${minutes} phút`;
-  
+
     return result;
   }
 
   validTime(value) {
-    console.log("value", value.length);
-    
     return ((value.length == 4 && value.search('/') == -1) || value.length == 5) && parseInt(value.split(':')[0], 0) >= 8
       && (parseInt(value.split(':')[0], 0) < 20) && (parseInt(value.split(':')[1], 0) <= 60)
   }
 
-  removeAddOns(){
+  removeAddOns() {
 
   }
 
-  enablePayNow(){
+  enablePayNow() {
 
   }
 }

@@ -7,11 +7,11 @@ import { AuthService } from "src/app/services/auth.service";
 import { CacheService } from "src/app/services/cache.service";
 
 @Component({
-  selector: "app-navbar",
-  templateUrl: "./navbar.component.html",
-  styleUrls: ["./navbar.component.scss"],
+  selector: "app-navbar-customer",
+  templateUrl: "./navbar-customer.component.html",
+  styleUrls: ["./navbar-customer.component.scss"],
 })
-export class NavbarComponent implements OnInit {
+export class NavbarCustomerComponent implements OnInit {
   public isCollapsed = true;
   public focus;
   private lastPoppedUrl: string;
@@ -37,15 +37,7 @@ export class NavbarComponent implements OnInit {
     if (!this.authService.getJwtToken()) {
       this.username = '';
     }
-    if(this.cleanerNavbar){
-      this.listTitles = ROUTES1.filter((listTitle) => listTitle);
-      console.log("123123", this.listTitles);
-      
-    } else if(this.managerNavbar){
-      this.listTitles = ROUTES2.filter((listTitle) => listTitle);
-      console.log("234234", this.listTitles);
 
-    }
     this.router.events.subscribe((event) => {
       this.isCollapsed = true;
       if (event instanceof NavigationStart) {
@@ -72,15 +64,27 @@ export class NavbarComponent implements OnInit {
       return false;
     }
   }
+  isDocumentation() {
+    var titlee = this.location.prepareExternalUrl(this.location.path());
+    if (titlee === "documentation") {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
-  getTitle() {    
-    var titlee =this.location.path();
+  getTitle() {
+    var titlee = this.location.prepareExternalUrl(this.location.path());
+    if (titlee.charAt(0) === "#") {
+      titlee = titlee.slice(1);
+    }
+
     for (var item = 0; item < this.listTitles.length; item++) {
       if (this.listTitles[item].path === titlee) {
         return this.listTitles[item].title;
       }
     }
-    return "";
+    return "Dashboard";
   }
 
   logout() {

@@ -85,8 +85,16 @@
         </div>
       </form>
       <!-- Navigation -->
-      <ul class="navbar-nav">
-        <li *ngFor="let menuItem of menuItems" class="{{menuItem.class}} nav-item">
+      <ul class="navbar-nav" *ngIf="cleanerNavbar">
+        <li *ngFor="let menuItem of menuItemsCleaner" class="{{menuItem.class}} nav-item">
+          <a routerLinkActive="active" [routerLink]="[menuItem.path]" class="nav-link">
+            <i class="ni {{menuItem.icon}}"></i>
+            {{menuItem.title}}
+          </a>
+        </li>
+      </ul>
+      <ul class="navbar-nav" *ngIf="managerNavbar">
+        <li *ngFor="let menuItem of menuItemsManager" class="{{menuItem.class}} nav-item">
           <a routerLinkActive="active" [routerLink]="[menuItem.path]" class="nav-link">
             <i class="ni {{menuItem.icon}}"></i>
             {{menuItem.title}}

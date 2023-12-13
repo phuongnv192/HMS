@@ -10,6 +10,7 @@ import { IntroductionComponent } from "./introduction/introduction.component";
 import { ProfileComponent } from "./profile/profile.component";
 import { HomeComponent } from "./home/home.component";
 import { NavbarComponent } from "./shared/navbar/navbar.component";
+import { NavbarCustomerComponent } from "./shared/navbar-customer/navbar-customer.component";
 import { FooterComponent } from "./shared/footer/footer.component";
 import { CalendarDialog } from "./booking/calendar-dialog/calendar-dialog";
 import { PickCleanerDialog } from "./booking/pick-cleaner-dialog/pick-cleaner-dialog";
@@ -46,6 +47,8 @@ import { PriceListDialog } from "./booking/price-list-dialog/price-list-dialog";
 import { PriceFormatPipe } from "./pipe/currency.pipe";
 import { AddServiceDialog } from "./booking/calendar-dialog/add-service-dialog/add-service-dialog";
 import { CleanerDetailDialog } from "./booking/pick-cleaner-dialog/cleaner-detail-dialog/cleaner-detail-dialog";
+import { CacheService } from "./services/cache.service";
+import { BookingService } from "./services/booking.service";
 // import { FormsModule } from '@angular/forms';
 
 @NgModule({
@@ -55,6 +58,7 @@ import { CleanerDetailDialog } from "./booking/pick-cleaner-dialog/cleaner-detai
     BookingComponent,
     ProfileComponent,
     NavbarComponent,
+    NavbarCustomerComponent,
     SidebarComponent,
     FooterComponent,
     LoginComponent,
@@ -100,6 +104,8 @@ import { CleanerDetailDialog } from "./booking/pick-cleaner-dialog/cleaner-detai
       multi: true,
     },
     AuthService,
+    CacheService,
+    BookingService,
     { provide: MatDialogRef, useValue: {} },
   ],
   bootstrap: [AppComponent],

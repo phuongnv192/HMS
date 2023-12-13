@@ -21,6 +21,7 @@ export class AppComponent implements OnInit {
     cleanerNavbar = false;
     customerNavbar = false;
     guestNavbar = false;
+    managerNavbar = false;
     isAuthenticated = false;
     isAuthenticated$: Observable<boolean>;
     username: any;
@@ -63,44 +64,41 @@ export class AppComponent implements OnInit {
     ngOnInit() {
         this.isAuthenticated$ = this.authService.isAuthenticated$;
 
-        this.authService.isAuthenticated$.subscribe((status) => {
-            this.isAuthenticated = status;            
-            if(status){
-                this.guestNavbar = false;
-                this.authService.getUserInfor().subscribe(user => {      
-                this.username = user.data.username;
-                this.id = user.data.id;
-                    if(user.data.role.name == "CLEANER"){
-                        this.cleanerNavbar = true;                        
-                    } else if (user.data.role.name == "CUSTOMER"){
-                        this.customerNavbar = true;
-                    } else if(user.data.role.name == "MANAGER"){
-                        this.adminNavbar = true;
-                    }
-                // },
-                // (error) => {
-                //   // Handle error
-                //   console.error('Error fetching user information:', error);
-                });
-            } else {
-                this.guestNavbar = true;
-
-            }
-          });
-        
-        if (this.authService.getJwtToken()) {            
-            this.authService.getUserInfor().subscribe(user => {                
-                if(user.data.role.name == "CLEANER"){
-                    this.cleanerNavbar = true;                    
-                } else if (user.data.role.name == "CUSTOMER"){
-                    this.customerNavbar = true;
-                } else if(user.data.role.name == "MANAGER"){
-                    this.adminNavbar = true;
-                }
-            })
-        } else {
             this.guestNavbar = true;
-        }
+            this.authService.isAuthenticated$.subscribe((status) => {
+                this.isAuthenticated = status;            
+                if(status){
+                    this.guestNavbar = false;
+                    this.authService.getUserInfor().subscribe(user => {      
+                    this.username = user.data.username;
+                    this.id = user.data.id;
+                        if(user.data.role.name == "CLEANER"){
+                            this.cleanerNavbar = true;                        
+                        } else if (user.data.role.name == "CUSTOMER"){
+                            this.customerNavbar = true;
+                        } else if(user.data.role.name == "MANAGER"){
+                            this.managerNavbar = true;
+                        } else if(user.data.role.name == "ADMIN"){
+                            this.adminNavbar = true;
+                        }
+                    },
+                    (error) => {
+                      // Handle error
+                      console.error('Error fetching user information:', error);
+                    });
+                } else {
+                    this.guestNavbar = true;
+                    this.customerNavbar = false;
+                    this.adminNavbar = false;
+                    this.cleanerNavbar = false;                        
+                    this.managerNavbar = false;                        
+                }
+              });
+        // }
+
+        
+        
+        
         var navbar: HTMLElement = this.element.nativeElement.children[0].children[0];
         this._router = this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
             if (window.outerWidth > 991) {

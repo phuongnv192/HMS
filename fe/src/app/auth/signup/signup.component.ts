@@ -60,9 +60,7 @@ export class SignupComponent implements OnInit {
         phone_number: this.tel,
         gender: this.gender,
         role: "CUSTOMER",
-      };
-      console.log(123123123);
-      
+      };      
       this.authService.register(reqBody).subscribe({
         next: () => {
           // Đăng ký thành công

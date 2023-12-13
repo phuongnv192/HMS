@@ -30,7 +30,6 @@ export class PriceListDialog implements OnDestroy, OnInit {
 
 
   ngOnInit(): void {
-    console.log(this.data, "priceList DATA");
     this.data.data.forEach(element => {
       
     });

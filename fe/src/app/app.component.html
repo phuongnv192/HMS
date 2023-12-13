@@ -1,24 +1,24 @@
 <!-- Màn hình guest/customer -->
 <div *ngIf="(customerNavbar || guestNavbar) && isAuthenticated$ | async">
-    <app-navbar [customerNavbar]="customerNavbar" [guestNavbar]="guestNavbar" [username]="username"></app-navbar>
+    <app-navbar-customer [customerNavbar]="customerNavbar" [guestNavbar]="guestNavbar" [username]="username"></app-navbar-customer>
     <!-- Sidenav -->
     <router-outlet></router-outlet>
     <app-footer *ngIf="customerNavbar"></app-footer>
 </div>
 
 <!-- Màn hình quản lý -->
-<div *ngIf="(cleanerNavbar || adminNavbar) && isAuthenticated$ | async">
-    <app-sidebar [cleanerNavbar]="cleanerNavbar" [adminNavbar]="adminNavbar" [username]="username"></app-sidebar>
+<div *ngIf="(cleanerNavbar || adminNavbar || managerNavbar) && isAuthenticated$ | async">
+    <app-sidebar [cleanerNavbar]="cleanerNavbar" [adminNavbar]="adminNavbar" [managerNavbar]="managerNavbar" [username]="username"></app-sidebar>
     <div class="main-content">
         <!-- Top navbar -->
-        <app-navbar [cleanerNavbar]="cleanerNavbar" [adminNavbar]="adminNavbar" [username]="username"></app-navbar>
+        <app-navbar [cleanerNavbar]="cleanerNavbar" [managerNavbar]="managerNavbar" [adminNavbar]="adminNavbar" [username]="username"></app-navbar>
         <!-- Pages -->
         <router-outlet></router-outlet>
     </div>
 </div>
 
 <div #guestCustomerTemplate *ngIf="guestNavbar">
-    <app-navbar [customerNavbar]="customerNavbar" [guestNavbar]="guestNavbar" [username]="username"></app-navbar>
+    <app-navbar-customer [customerNavbar]="customerNavbar" [guestNavbar]="guestNavbar" [username]="username"></app-navbar-customer>
     <!-- Sidenav -->
     <router-outlet></router-outlet>
     <app-footer *ngIf="customerNavbar"></app-footer>

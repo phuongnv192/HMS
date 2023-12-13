@@ -40,7 +40,6 @@ export class UserProfileComponent implements OnInit {
 
   ngOnInit() {
     this.jwtToken = this.authService.getJwtToken();
-    console.log("this.jwtToken", this.jwtToken);
     let id = this.route.snapshot.paramMap.get('id');
     this.cleanService.getEmployeeById(id).subscribe( data => {
       this.cleaner = data;

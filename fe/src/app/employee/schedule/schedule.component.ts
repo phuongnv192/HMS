@@ -44,10 +44,7 @@ export class ScheduleComponent implements OnInit {
   ngOnInit() {
 
     this.bookingService.getListBooking().subscribe((data) => {
-      console.log('aaaa');
-
       this.bookingList = data.data;
-      console.log('this.bookingList', this.bookingList);
     });
 
 
@@ -105,7 +102,6 @@ export class ScheduleComponent implements OnInit {
     let detail: any;
     this.bookingService.getBookingDetail(id).subscribe((data) => {
       detail = data.data;
-      console.log(222222222, detail);
       this.renderer.addClass(document.body, 'modal-open');
       this.dialogRef = this.dialog.open(BookingDetailDialog, {
         width: '1500px',
@@ -125,9 +121,6 @@ export class ScheduleComponent implements OnInit {
         this.renderer.removeClass(document.body, 'modal-open');
       });
     });
-    console.log(111111111);
-
-
   }
 
   search() {

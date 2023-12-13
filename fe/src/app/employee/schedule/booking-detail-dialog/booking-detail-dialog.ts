@@ -38,11 +38,8 @@ export class BookingDetailDialog implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    console.log('BookingDetailDialog oninit');
     this.id = this.data.id;
     this.detail = this.data.detail;
-    console.log("name", this.detail);
-
     // }
 
     // this.dateSchedule = [
@@ -97,16 +94,12 @@ export class BookingDetailDialog implements OnInit, OnDestroy {
     this.scheduleAddOns = this.data.detail.scheduleList[0].serviceAddOns;
     this.namesOfScheduleDay = this.scheduleAddOns.map(item => item.name).join(', ');
     this.scheduleDayList = this.detail.scheduleList.map(item => item.workDate);
-    console.log("scheduleDayList", this.scheduleDayList);
 
     this.dateSchedule = [{
       id: this.id,
       workDate: this.scheduleDayList
     }];
     this.date = this.dateSchedule.find((item) => item.id == this.data.id);
-
-    console.log("dateSchedule", this.dateSchedule);
-
   }
 
 

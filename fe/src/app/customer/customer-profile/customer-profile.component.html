@@ -4,7 +4,7 @@
   <span class="mask bg-gradient-danger opacity-8" style="height: 100px;"></span>
   <!-- Header container -->
 </div>
-<div class="container-fluid" style="margin-top: 0rem !important">
+<div class="container-fluid" style="margin-top: 0rem !important; margin-bottom: 0.75rem !important;">
   <div class="row">
     <div class="col-xl-4 order-xl-2 mb-5 mb-xl-0">
       <div class="card card-profile shadow">
@@ -47,12 +47,12 @@
     </div>
     <div class="col-xl-8 order-xl-1">
       <div class="card bg-secondary shadow">
-        <div class="card-header bg-white border-0">
+        <div class="card-header bg-white border-0" style="padding-top: 1rem; padding-bottom: 1rem;">
           <div class="row align-items-center">
             <div class="col-8">
               <h3 class="mb-0">{{firstName}} {{lastName}}</h3>
             </div>
-            <div class="col-2 text-right">
+            <div class="col-2 text-right" style="margin-right: -2rem;">
               <a [routerLink]="['/customer-history']" class="btn btn-sm btn-primary">Lịch sử</a>
             </div>
             <div class="col-2 text-right">
@@ -69,21 +69,21 @@
                   <div class="form-group">
                     <label class="form-control-label" for="input-username">Tên</label>
                     <input type="text" id="input-firstname" class="form-control form-control-alternative"
-                      placeholder="Nguyen Van A" [(ngModel)]="firstName">
+                      placeholder="Nguyen Van A" [value]="firstName">
                   </div>
                 </div>
                 <div class="col-lg-3">
                   <div class="form-group">
                     <label class="form-control-label" for="input-username">Họ</label>
                     <input type="text" id="input-lastname" class="form-control form-control-alternative"
-                      placeholder="Nguyen Van A" [(ngModel)]="lastName">
+                      placeholder="Nguyen Van A" [value]="lastName">
                   </div>
                 </div>
                 <div class="col-lg-6">
                   <div class="form-group">
                     <label class="form-control-label" for="input-email">Email</label>
                     <input type="email" id="input-email" class="form-control form-control-alternative"
-                      placeholder="abc@example.com" [(ngModel)]="email">
+                      placeholder="abc@example.com" [value]="email">
                   </div>
                 </div>
               </div>
@@ -92,13 +92,13 @@
                   <div class="form-group">
                     <label class="form-control-label" for="input-last-name">Giới tính</label>
                     <input type="text" id="gender" class="form-control form-control-alternative" placeholder="Nam/Nữ"
-                     [(ngModel)]="gender">
+                     [value]="gender">
                   </div>
                 </div>
 
               </div>
             </div>
-            <hr class="my-4" />
+            <hr class="my-3" />
             <!-- Address -->
             <h6 class="heading-small text-muted mb-4">Thông tin liên hệ</h6>
             <div class="pl-lg-4">
@@ -107,7 +107,7 @@
                   <div class="form-group">
                     <label class="form-control-label" for="input-address">Địa chỉ</label>
                     <input id="input-address" class="form-control form-control-alternative"
-                      placeholder="Số 1 Kim Mã, Hà Nội" [(ngModel)]="address" type="text">
+                      placeholder="Số 1 Kim Mã, Hà Nội" [value]="address" type="text">
                   </div>
                 </div>
               </div>
@@ -116,7 +116,7 @@
                   <div class="form-group">
                     <label class="form-control-label" for="input-country">Số điện thoại</label>
                     <input type="text" id="input-phone" class="form-control form-control-alternative"
-                      placeholder="0987654321" [(ngModel)]="phoneNumber">
+                      placeholder="0987654321" [value]="phoneNumber">
                   </div>
                 </div>
               </div>

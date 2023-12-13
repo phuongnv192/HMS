@@ -109,7 +109,6 @@ export class PickCleanerDialog implements OnDestroy, OnInit {
      });
  
      this.dialogRefCleaner.afterClosed().subscribe(result => {
-       // console.log('The dialog was closed');
        this.renderer.removeClass(document.body, 'modal-open');
        // this.dialogService.sendDataDialog(false);
      });
@@ -117,7 +116,6 @@ export class PickCleanerDialog implements OnDestroy, OnInit {
 
   addCleaner(cleaner: any){
     this.listPick.push(cleaner);
-    console.log(this.listPick, "listPick");
   }
 
   removeCleaner(index: any){

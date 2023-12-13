@@ -3,6 +3,7 @@ import { CleanerService } from "../services/cleaner.service";
 import { HttpParams } from "@angular/common/http";
 import { NgbToast } from "@ng-bootstrap/ng-bootstrap";
 import { Router } from "@angular/router";
+import { AuthService } from "../services/auth.service";
 
 @Component({
   selector: "app-tables",
@@ -20,8 +21,9 @@ export class ListCleanerComponent implements OnInit {
   empName = "";
   size: number = 10;
   page: number = 0;
+  jwtToken: any;
 
-  constructor(private cleanService: CleanerService, private router: Router) {}
+  constructor(private cleanService: CleanerService, private router: Router, private authService: AuthService) {}
 
   getListCleaner() {
     var req = new HttpParams()
@@ -38,10 +40,12 @@ export class ListCleanerComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.jwtToken = this.authService.getJwtToken();
     this.ageRange = ["18 - 25", "25 - 35", "35 - 45", "> 45"];
     this.rateRange = ["0 - 1", "1 - 2", "2 - 3", "3 - 4", "4 - 5"];
     this.statusRange = ["Đang hoạt động", "Không hoạt động"];
     this.getListCleaner();
+    
   }
 
   removeUser() {}
