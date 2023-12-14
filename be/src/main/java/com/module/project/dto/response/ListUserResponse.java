@@ -13,4 +13,7 @@ public class ListUserResponse {
     private Long userId;
     private String username;
     private String fullName;
+    private String gender;
+    private String address;
+    private String bod;
 }

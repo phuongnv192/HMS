@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static com.module.project.dto.Constant.API_V1;
 import static com.module.project.dto.Constant.USERS;
+import static com.module.project.dto.Constant.USER_BOOKING;
 import static com.module.project.dto.Constant.USER_CHANGE_PASSWORD;
 import static com.module.project.dto.Constant.USER_INFO;
 import static com.module.project.dto.Constant.USER_INFO_BY_ID;
@@ -67,5 +68,11 @@ public class UserController {
         String userId = (String) httpServletRequest.getAttribute(ClaimEnum.USER_ID.name);
         String roleName = (String) httpServletRequest.getAttribute(ClaimEnum.ROLE_NAME.name);
         return ResponseEntity.ok(userService.changePassword(request, userId, roleName));
+    }
+
+    @GetMapping(USER_BOOKING)
+    public ResponseEntity<Object> getBookingForUser(HttpServletRequest httpServletRequest) {
+        String userId = (String) httpServletRequest.getAttribute(ClaimEnum.USER_ID.name);
+        return ResponseEntity.ok(userService.getBookingForUser(userId));
     }
 }

@@ -24,8 +24,8 @@ application:
   choosing-cleaner-price: 20000
   default-rating: 4
   mail:
-    mail: hoangson99201@gmail.com
-    password: "fyzq mxpc pyla hddk"
+    mail: "bin.luoi.pc@gmail.com"
+    password: "bnbo mxwr mnmc cifx"
   security:
     jwt:
       secret-key: e893d203a96a80a688c1c61d6fab849bb999516b6d3af3f7d4f0c188ffae21bc

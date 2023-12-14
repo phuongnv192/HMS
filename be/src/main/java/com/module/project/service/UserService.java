@@ -7,6 +7,7 @@ import com.module.project.dto.TransactionStatus;
 import com.module.project.dto.request.ChangePasswordRequest;
 import com.module.project.dto.request.SubmitReviewRequest;
 import com.module.project.dto.request.UserInfoRequest;
+import com.module.project.dto.response.BookingDetailResponse;
 import com.module.project.dto.response.ListUserResponse;
 import com.module.project.exception.HmsErrorCode;
 import com.module.project.exception.HmsException;
@@ -40,6 +41,7 @@ public class UserService {
     private final ScheduleService scheduleService;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
+    private final BookingService bookingService;
 
     public HmsResponse<User> getUserInfo(String userId) {
         User user = userRepository.findById(Long.parseLong(userId)).orElseThrow(
@@ -69,6 +71,7 @@ public class UserService {
             ListUserResponse userResponse = ListUserResponse.builder()
                     .userId(user.getId())
                     .username(user.getUsername())
+                    .gender(user.getGender())
                     .fullName(HMSUtil.convertToFullName(user.getFirstName(), user.getLastName()))
                     .build();
             response.add(userResponse);
@@ -138,6 +141,19 @@ public class UserService {
         }
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         return HMSUtil.buildResponse(ResponseCode.SUCCESS, userRepository.save(user));
+    }
+
+    public HmsResponse<List<BookingDetailResponse>> getBookingForUser(String userId) {
+        User user = userRepository.findById(Long.parseLong(userId)).orElseThrow(
+                () -> new HmsException(HmsErrorCode.INVALID_REQUEST, "can't find any user by ".concat(userId)));
+        List<Booking> bookings = bookingRepository.findAllByUser(user);
+        List<BookingDetailResponse> responses = new ArrayList<>();
+        for (Booking booking : bookings) {
+            if (!TransactionStatus.DONE.name().equals(booking.getStatus())) {
+                responses.add(bookingService.getBookingDetail(booking.getId(), userId, RoleEnum.CUSTOMER.name(), true));
+            }
+        }
+        return HMSUtil.buildResponse(ResponseCode.SUCCESS, responses);
     }
 
     private User validateUpdateUser(String userId, String roleName, Long userUpdateId) {
