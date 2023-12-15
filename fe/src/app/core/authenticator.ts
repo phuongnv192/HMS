@@ -10,10 +10,15 @@ import { Observable } from "rxjs";
 import { AuthService } from "../services/auth.service";
 import { tap } from "rxjs/operators";
 import { Router } from "@angular/router";
+import { ToastrService } from "ngx-toastr";
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private toastr: ToastrService
+  ) {}
 
   intercept(
     req: HttpRequest<any>,
@@ -37,11 +42,12 @@ export class AuthInterceptor implements HttpInterceptor {
               // Redirect to the login screen
               sessionStorage.removeItem("token");
               this.router.navigate(["/login"]);
-            } else {
             }
           }
         },
         error: (error) => {
+          console.log('authenticator: ', error);
+          this.toastr.error('Lỗi hệ thống', 'Có lỗi xảy ra');
           sessionStorage.removeItem("token");
           this.router.navigate(["/login"]);
         },

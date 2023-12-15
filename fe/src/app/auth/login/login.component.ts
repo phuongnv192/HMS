@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from "@angular/core";
 import { AuthService } from "../../services/auth.service";
 import { Router } from "@angular/router";
 import { CacheService } from "src/app/services/cache.service";
+import { ToastrService } from "ngx-toastr";
 
 @Component({
   selector: "app-login",
@@ -17,33 +18,37 @@ export class LoginComponent implements OnInit {
   accountBlur = false;
   password: string;
   isCacheCleared = false;
-  constructor(private authService: AuthService, private router: Router, private cacheService: CacheService) { }
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private cacheService: CacheService,
+    private toastr: ToastrService
+  ) {}
 
   ngOnInit(): void {
-    // if (!this.cacheService.getHasClearedCache()) {
-    //   this.clearCache();
-    //   this.cacheService.setHasClearedCache(true);
-    // }
   }
 
   login() {
     this.authService.signin(this.account_name, this.password).subscribe({
       next: (res) => {
-        this.authService.getUserInfor().subscribe(data => {
+        this.authService.getUserInfor().subscribe((data) => {
           if (data.data.role.name == "CUSTOMER") {
             this.authService.setAuthenticationStatus(true);
             this.router.navigate(["/home"]);
-          } else if((data.data.role.name == "MANAGER") || (data.data.role.name == "ADMIN")) {
+          } else if (
+            data.data.role.name == "MANAGER" ||
+            data.data.role.name == "ADMIN"
+          ) {
             this.authService.setAuthenticationStatus(true);
             this.router.navigate(["/dashboard"]);
-          } else if(data.data.role.name == "CLEANER"){
+          } else if (data.data.role.name == "CLEANER") {
             this.authService.setAuthenticationStatus(true);
             this.router.navigate(["/schedule"]);
           } else {
             this.authService.setAuthenticationStatus(true);
             this.router.navigate(["/customer-profile"]);
           }
-        })
+        });
       }, // nextHandler
       error: (err) => {
         console.log(err);

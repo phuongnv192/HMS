@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core";
+import { ToastrService } from "ngx-toastr";
 
 @Component({
   selector: "app-home",
@@ -14,7 +15,8 @@ export class HomeComponent implements OnInit {
 
   focus;
   focus1;
-  constructor() {}
+  constructor(
+  ) {}
 
   ngOnInit() {}
 }

@@ -1,8 +1,6 @@
-import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
-import { RouterModule } from "@angular/router";
 import { AppRoutingModule } from "./app.routing";
 
 import { AppComponent } from "./app.component";
@@ -35,20 +33,24 @@ import { ListCleanerComponent } from "./employee/tables.component";
 import { AuthService } from "./services/auth.service";
 import { HTTP_INTERCEPTORS, HttpClientModule } from "@angular/common/http";
 import { IvyCarouselModule } from "angular-responsive-carousel";
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogModule, MatDialogRef } from "@angular/material/dialog";
 import { ListCustomerComponent } from "./customer/list-customer/list-customer.component";
 import { CustomerProfileComponent } from "./customer/customer-profile/customer-profile.component";
 import { ChangePassComponent } from "./auth/change-password/change-password.component";
 import { CustomerHistoryComponent } from "./customer/customer-booking/customer-booking-history/customer-history.component";
 import { CustomerScheduleComponent } from "./customer/customer-booking/customer-booking-list/customer-schedule.component";
 import { AuthInterceptor } from "./core/authenticator";
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { PriceListDialog } from "./booking/price-list-dialog/price-list-dialog";
 import { PriceFormatPipe } from "./pipe/currency.pipe";
 import { AddServiceDialog } from "./booking/calendar-dialog/add-service-dialog/add-service-dialog";
 import { CleanerDetailDialog } from "./booking/pick-cleaner-dialog/cleaner-detail-dialog/cleaner-detail-dialog";
 import { CacheService } from "./services/cache.service";
 import { BookingService } from "./services/booking.service";
+import { ToastrModule } from "ngx-toastr";
+import { BrowserModule } from "@angular/platform-browser";
+import { RouterModule } from '@angular/router';
+
 // import { FormsModule } from '@angular/forms';
 
 @NgModule({
@@ -86,16 +88,22 @@ import { BookingService } from "./services/booking.service";
     CleanerDetailDialog,
   ],
   imports: [
-    BrowserModule,
     NgbModule,
     FormsModule,
-    RouterModule,
     AppRoutingModule,
     HomeModule,
     HttpClientModule,
     IvyCarouselModule,
     MatDialogModule,
+    RouterModule,
+    BrowserModule,
     BrowserAnimationsModule,
+    ToastrModule.forRoot({
+      timeOut: 30000, // 15 seconds
+      closeButton: true,
+      progressBar: true,
+      preventDuplicates: true,
+    }),
   ],
   providers: [
     {
@@ -109,7 +117,13 @@ import { BookingService } from "./services/booking.service";
     { provide: MatDialogRef, useValue: {} },
   ],
   bootstrap: [AppComponent],
-  entryComponents: [BookingDetailDialog, CalendarDialog, TermAndConditionDialog, PickCleanerDialog, CleanerRateDialog],
+  entryComponents: [
+    BookingDetailDialog,
+    CalendarDialog,
+    TermAndConditionDialog,
+    PickCleanerDialog,
+    CleanerRateDialog,
+  ],
   exports: [],
 })
 export class AppModule {}
