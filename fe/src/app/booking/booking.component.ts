@@ -152,6 +152,11 @@ export class BookingComponent implements OnInit {
   scheduleTimeDescription: string;
   c_time: boolean;
   public _inTime: any;
+  servicePackageId: any;
+  serviceTypeId: any;
+  calendarResult: any;
+  servicePackageName: any;
+  // serviceTypeIdTemp: any;
 
 
   onResize(event) {
@@ -272,11 +277,31 @@ export class BookingComponent implements OnInit {
     });
 
     this.dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        console.log(result, "RESULT CALENDAR");
+        this.calendarResult = result[0];
+        this.pickDay = result[0].schedule[0].workDate;
+        this.serviceTypeId = result[0].serviceTypeId;
+        let servicePackageName = result[0].servicePackageId.split(' - ');
+        this.servicePackageId = this.getServicePackageId(servicePackageName);
+      }
       this.renderer.removeClass(document.body, 'modal-open');
       // this.dialogService.sendDataDialog(false);
     });
   }
 
+  getServicePackageId(servicePackageName) {
+    for (const serviceType of this.serviceTypeData) {
+      for (const servicePackage of serviceType.servicePackages) {
+        if (servicePackage.servicePackageName == servicePackageName) {
+          return servicePackage.servicePackageId;
+        }
+      }
+    }
+    return null; // Trả về null nếu không tìm thấy
+  }
+  
+  // Sử dụng hàm để lấy giá trị
   FieldsChangeTermAndCondition(values: any) {
     this.termAndCondition = true;
   }
@@ -304,7 +329,7 @@ export class BookingComponent implements OnInit {
           maxHeight: '85%',
           data: {
             data: this.dataCleaner,
-            date: this.pickDay,
+            date: this.dateValue,
 
           },
           panelClass: ['pick-cleaner']
@@ -315,7 +340,7 @@ export class BookingComponent implements OnInit {
         });
       })
     } else {
-      this.bookingServicee.getCleanerAvaiable('2023-11-24', 3, 3).subscribe(item => {
+      this.bookingServicee.getCleanerAvaiable(this.pickDay, this.serviceTypeId, this.servicePackageId).subscribe(item => {
         this.dataCleaner = item.data;
         this.renderer.addClass(document.body, 'modal-open');
         this.cleanerDialogRef = this.dialog.open(PickCleanerDialog, {

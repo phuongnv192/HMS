@@ -20,22 +20,22 @@
                 </div>
                 <div class="input-group">
                   <p>Thời gian định kỳ(*): </p>
-                  <select [(ngModel)]="selectedServicePackageId" (ngModelChange)="selectedPackage($event)" id="serviceType" aria-describedby="serviceType-help"
-                    title="Thời gian định kỳ">
-                    <option *ngFor="let package of servicePackages" [value]="package.id">{{ package.title }}</option>
+                  <select [(ngModel)]="selectedServicePackageId" (ngModelChange)="selectedPackage($event)"
+                    id="serviceType" aria-describedby="serviceType-help" title="Thời gian định kỳ">
+                    <option *ngFor="let package of servicePackages" [value]="package">{{ package }}</option>
                   </select>
                 </div>
                 <div class="input-group">
                   <p>Giờ bắt đầu(*): </p>
-                  <div>                    
+                  <div>
                     <!-- Sử dụng trường input kiểu số -->
-                      <input type="tel" name="time" id="time"
-                      [class.red_border]="c_time"
+                    <input type="tel" name="time" id="time" [class.red_border]="c_time"
                       [class.red_border_no_background]="c_time && (_inTime.length === 0 || _inTime.trim().length === 0)"
                       (blur)="blurExpDate(time)" pattern="\d*" placeholder="08:30" [(ngModel)]="_inTime" #time
                       maxlength="5" (input)="ValidateExpDate(time, $event)" />
                   </div>
-                  <div *ngIf="c_time" style="width: 100%;" class="error">Vui lòng nhập thời gian trong khoảng 8h sáng tới trước 8h tối.</div>
+                  <div *ngIf="c_time" style="width: 100%;" class="error">Vui lòng nhập thời gian trong khoảng 8h sáng
+                    tới trước 8h tối.</div>
 
                 </div>
               </div>
@@ -90,6 +90,9 @@
             </div>
           </div>
 
+        </div>
+        <div class="button-submit">
+          <button mat-button class="btn" (click)="pickCalendar()">Thêm lịch định kỳ</button>
         </div>
         <!-- <div class="table-responsive" style="margin-top: 2rem;">
           <div class="showtime-bydate" *ngFor="let date of dateList">

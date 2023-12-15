@@ -24,7 +24,7 @@ export class AddServiceDialog implements OnDestroy, OnInit {
   textListAdvanceService: any;
   checkTickService = false;
   listService: any;
-  listAdvanceServiceId: any;
+  listAdvanceServiceId = [];
 
   constructor(
     public dialogRef: MatDialogRef<AddServiceDialog>,
@@ -37,7 +37,7 @@ export class AddServiceDialog implements OnDestroy, OnInit {
   ngOnInit(): void {  
     this.date = this.data.data;
     this.listService = this.data.addonService;
-    this.selectedServiceList = this.data.servicePick;
+    this.selectedServiceList = this.data.servicePick;    
     this.data.addonService.forEach(val => {
       let checkedValue = false;
       if(this.selectedServiceList && this.selectedServiceList.includes(val.parent.name)){
@@ -79,13 +79,20 @@ export class AddServiceDialog implements OnDestroy, OnInit {
 
   checkService(service: any, id: any){
     const index = this.listAdvanceService.indexOf(service);
+    const idex = this.listAdvanceServiceId.indexOf(id);
     if (index === -1) {
       // Nếu giá trị không tồn tại, thêm vào mảng
       this.listAdvanceService.push(service);
-      this.listAdvanceServiceId.push(id);
     } else {
       // Nếu giá trị đã tồn tại, loại bỏ khỏi mảng
       this.listAdvanceService.splice(index, 1);
+      // this.listAdvanceServiceId.splice(index, 1);
+    }
+
+    if(idex == -1){
+      this.listAdvanceServiceId.push(id);
+    } else {
+      // Nếu giá trị đã tồn tại, loại bỏ khỏi mảng
       this.listAdvanceServiceId.splice(index, 1);
     }
     this.textListAdvanceService = this.listAdvanceService.join(', ');

@@ -57,7 +57,7 @@ export class CalendarDialog implements OnDestroy, OnInit {
   _inTime: any;
   flag: any;
   scheduleTimeDescription: any;
-  dataPick: any;
+  dataPick = [];
   dateValue: string;
   typeId: any;
   dataPickTemp: any[];
@@ -92,6 +92,7 @@ export class CalendarDialog implements OnDestroy, OnInit {
 
     } else {
       this.selectedServiceTypeId = this.data.type[0].serviceTypeName;
+      this.selectedServicePackageId = this.data.type[0].servicePackageName;
     }
 
     this.pickServiceType = this.getId(this.data.type, this.selectedServiceTypeId);
@@ -352,15 +353,15 @@ export class CalendarDialog implements OnDestroy, OnInit {
     this.dialogRefAddOn.afterClosed().subscribe(result => {
       console.log(result);
       if (result) {
-        this.dataPick.push(
-          {
+        this.dataPick.push({
             floorNumber: 1,
             workDate: this.dateValue,
             startTime: null,
             endTime: null,
             serviceAddOnIds: result
-          }
-        )
+          });
+        console.log("this.dataPick", this.dataPick);
+        
         this.selectedPick = result;
       }
       // console.log('The dialog was closed');
