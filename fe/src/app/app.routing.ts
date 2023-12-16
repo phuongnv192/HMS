@@ -35,7 +35,7 @@ const routes: Routes = [
   { path: 'list-customer', component: ListCustomerComponent , canActivate: [AuthGuard] },
   { path: 'user-profile', component: UserProfileComponent , canActivate: [AuthGuard] },
   { path: 'customer-profile', component: CustomerProfileComponent , canActivate: [AuthGuard] },
-  { path: 'history', component: HistoryComponent , canActivate: [AuthGuard] },
+  { path: 'history/:id', component: HistoryComponent , canActivate: [AuthGuard] },
   { path: 'customer-history', component: CustomerHistoryComponent , canActivate: [AuthGuard] },
   { path: 'schedule', component: ScheduleComponent , canActivate: [AuthGuard] },
   { path: 'customer-schedule', component: CustomerScheduleComponent , canActivate: [AuthGuard] },

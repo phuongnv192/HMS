@@ -39,7 +39,7 @@ export class CalendarDialog implements OnDestroy, OnInit {
   scheduleDayList: any;
   selectedServiceTypeId: string; // Biến lưu trữ loại dịch vụ sàn được chọn
   serviceTypes: any[] = [];
-  selectedServicePackageId: number; // Biến lưu trữ loại dịch vụ sàn được chọn
+  selectedServicePackageId = ''; // Biến lưu trữ loại dịch vụ sàn được chọn
   servicePackages: any[] = [];
   service: any;
   packagesTemp: any[] = [];
@@ -51,7 +51,7 @@ export class CalendarDialog implements OnDestroy, OnInit {
   datePicker: string;
   datePickerShow: any;
   scheduleDescription = '';
-  selectedPick: any;
+  selectedPick = {};
   servicePick: any;
   c_time = false;
   _inTime: any;
@@ -61,6 +61,8 @@ export class CalendarDialog implements OnDestroy, OnInit {
   dateValue: string;
   typeId: any;
   dataPickTemp: any[];
+  calendarResult: any;
+  workDate: any;
 
   constructor(
     public dialogRef: MatDialogRef<CalendarDialog>,
@@ -87,14 +89,23 @@ export class CalendarDialog implements OnDestroy, OnInit {
   }
 
   ngOnInit(): void {
-    this.pickDay = this.data.pickDay;
-    if (this.pickDay) {
-
+    this.calendarResult = this.data.calendarResult;
+    if (this.calendarResult) {
+      console.log("this.calendarResult", this.calendarResult);
+      
+      this.selectedServiceTypeId = this.calendarResult.serviceTypeId;
+      this.selectedServicePackageId = this.calendarResult.servicePackageId;
+      this.pickDay = this.calendarResult.pickDay;
+      this.selectedDate = this.convertStringToNgbDate(this.calendarResult.pickDay);
+      this.dataPick = this.calendarResult.schedule;
     } else {
       this.selectedServiceTypeId = this.data.type[0].serviceTypeName;
-      this.selectedServicePackageId = this.data.type[0].servicePackageName;
+      this.selectedServicePackageId = this.data.type[0].servicePackages[0].servicePackageName + ' - ' + this.data.type[0].servicePackages[0].unit;
+      this.pickDay = '';
+      this.dataPick = [];
     }
-
+    console.log("this.selectedServicePackageId", this.selectedServicePackageId);
+    
     this.pickServiceType = this.getId(this.data.type, this.selectedServiceTypeId);
 
     this.data.type.forEach(element => {
@@ -108,8 +119,23 @@ export class CalendarDialog implements OnDestroy, OnInit {
     });
   }
 
+  private convertStringToNgbDate(dateString: string): NgbDate | null {
+    try {
+      const dateParts = dateString.split('-');
+      const year = parseInt(dateParts[0], 10);
+      const month = parseInt(dateParts[1], 10);
+      const day = parseInt(dateParts[2], 10);
+
+      return new NgbDate(year, month, day);
+    } catch (error) {
+      console.error('Error converting string to NgbDate', error);
+      return null;
+    }
+  }
+
   selectedService(event: any) {
     this.servicePackages = [];
+    this.dataPick = [];
     // this.dateArray = [];
     // this.selectedDate = null;
     // this.showDatePicker = true;
@@ -117,6 +143,7 @@ export class CalendarDialog implements OnDestroy, OnInit {
 
     this.pickServiceType = this.getId(this.data.type, this.selectedServiceTypeId);
     this.packagesTemp = this.data.type[this.pickServiceType - 1].servicePackages;
+    this.selectedServicePackageId = this.data.type[this.pickServiceType - 1].servicePackages[0].servicePackageName + ' - ' + this.data.type[this.pickServiceType - 1].servicePackages[0].unit;
 
     this.packagesTemp.forEach(element => {
       this.servicePackages.push(element.servicePackageName + ' - ' + element.unit);
@@ -136,6 +163,7 @@ export class CalendarDialog implements OnDestroy, OnInit {
   }
 
   selectedPackage(event: any) {
+    this.dataPick = [];
     // this.servicePackages = [];
     // // this.dateArray = [];
     // // this.selectedDate = null;
@@ -187,8 +215,10 @@ export class CalendarDialog implements OnDestroy, OnInit {
     this.dataPickTemp =
       [{
         servicePackageId: this.selectedServicePackageId,
-        serviceTypeId: this.typeId,
-        schedule: this.dataPick
+        typeId: this.typeId,
+        serviceTypeId: this.selectedServiceTypeId,
+        schedule: this.dataPick,
+        dateValue: this.dateValue
       }];
 
     if (this.dialogRef) {
@@ -283,8 +313,8 @@ export class CalendarDialog implements OnDestroy, OnInit {
 
   convertDateToVietnameseFormat(dateStr) {
     const dateParts = dateStr.split('/');
-    const day = parseInt(dateParts[0], 10);
-    const month = parseInt(dateParts[1], 10);
+    const day = parseInt(dateParts[1], 10);
+    const month = parseInt(dateParts[0], 10);
     const year = parseInt(dateParts[2], 10);
 
     const monthNames = [
@@ -316,6 +346,8 @@ export class CalendarDialog implements OnDestroy, OnInit {
 
   hideDatePicker() {
     if (this.selectedDate) {
+      console.log("selectedDate", this.selectedDate);
+      
       const jsDate = new Date(this.selectedDate.year, this.selectedDate.month - 1, this.selectedDate.day);
       const formattedDate = format(jsDate, 'MM/dd/yyyy');
       this.showDatePicker = false; // Ẩn datepicker  }
@@ -335,9 +367,9 @@ export class CalendarDialog implements OnDestroy, OnInit {
     }
   }
 
-  viewDetailinSchedule(showtime: any) {
-    this.selectedDate = showtime;
-    // this.dialogService.sendDataDialog(true);
+  viewDetailinSchedule(showtime: any, index: any) {
+    // this.selectedDate = showtime;
+    const existingIndex = this.dataPick.findIndex(item => item.index === index);    
     this.renderer.addClass(document.body, 'modal-open');
     this.dialogRefAddOn = this.dialog.open(AddServiceDialog, {
       width: '500px',
@@ -345,7 +377,7 @@ export class CalendarDialog implements OnDestroy, OnInit {
       data: {
         data: showtime,
         addonService: this.data.addonService,
-        servicePick: this.selectedPick
+        servicePick: this.dataPick[existingIndex] ? this.dataPick[existingIndex] : []
       },
       panelClass: ['add-service']
     });
@@ -353,16 +385,37 @@ export class CalendarDialog implements OnDestroy, OnInit {
     this.dialogRefAddOn.afterClosed().subscribe(result => {
       console.log(result);
       if (result) {
-        this.dataPick.push({
+        const existingIndex = this.dataPick.findIndex(item => item.index === index);
+
+        if (existingIndex !== -1) {
+          // Nếu đã tồn tại, thì cập nhật giá trị của mảng đó
+          if(result.length < 1){
+            this.dataPick.splice(existingIndex, 1);
+          } else {
+            this.dataPick[existingIndex] = {
+              floorNumber: 1,
+              workDate: showtime,
+              startTime: null,
+              endTime: null,
+              serviceAddOnIds: result,
+              index: index  // Giữ nguyên index để xác định mảng cần cập nhật
+            };
+          }
+          
+        } else {
+          // Nếu chưa tồn tại, thì thêm mảng mới vào this.dataPick
+          this.dataPick.push({
             floorNumber: 1,
-            workDate: this.dateValue,
+            workDate: showtime,
             startTime: null,
             endTime: null,
-            serviceAddOnIds: result
+            serviceAddOnIds: result,
+            index: index  // Gán index để xác định mảng
           });
-        console.log("this.dataPick", this.dataPick);
-        
-        this.selectedPick = result;
+        }
+        if (this.selectedPick) {
+          this.selectedPick[index] = [...result];
+        }
       }
       // console.log('The dialog was closed');
       this.renderer.removeClass(document.body, 'modal-open');

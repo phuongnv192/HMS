@@ -26,6 +26,7 @@ export interface CalendarDialogData {
   type: any;
   pickDay: any;
   addonService: any;
+  calendarResult: any;
 }
 
 export interface PriceListDialogData {
@@ -45,6 +46,7 @@ export class BookingComponent implements OnInit {
   note: any;
 
   showDatePicker = false;
+  typeId: any;
   selectedDate: NgbDateStruct;
   listAdvanceService = [];
   activeBadges: { [key: string]: boolean } = {};
@@ -262,6 +264,10 @@ export class BookingComponent implements OnInit {
 
   }
 
+  changeTimeType(){
+    this.pickDay = '';
+  }
+
   pickCalendar(): void {
     // this.dialogService.sendDataDialog(true);
     this.renderer.addClass(document.body, 'modal-open');
@@ -271,7 +277,8 @@ export class BookingComponent implements OnInit {
       data: {
         type: this.serviceTypeData,
         pickDay: this.pickDay,
-        addonService: this.priceList
+        addonService: this.priceList,
+        calendarResult: this.calendarResult
       },
       panelClass: ['calendar-pick', 'custom-margin']
     });
@@ -280,10 +287,14 @@ export class BookingComponent implements OnInit {
       if(result){
         console.log(result, "RESULT CALENDAR");
         this.calendarResult = result[0];
-        this.pickDay = result[0].schedule[0].workDate;
-        this.serviceTypeId = result[0].serviceTypeId;
+        if(result[0]){
+          this.pickDay = result[0].dateValue;
+        }
+        this.typeId = result[0].typeId;
         let servicePackageName = result[0].servicePackageId.split(' - ');
-        this.servicePackageId = this.getServicePackageId(servicePackageName);
+        console.log("servicePackageName", servicePackageName);
+        
+        this.servicePackageId = this.getServicePackageId(servicePackageName[0]);
       }
       this.renderer.removeClass(document.body, 'modal-open');
       // this.dialogService.sendDataDialog(false);
@@ -291,8 +302,10 @@ export class BookingComponent implements OnInit {
   }
 
   getServicePackageId(servicePackageName) {
+    
     for (const serviceType of this.serviceTypeData) {
       for (const servicePackage of serviceType.servicePackages) {
+        console.log("servicePackage", servicePackage.servicePackageName);
         if (servicePackage.servicePackageName == servicePackageName) {
           return servicePackage.servicePackageId;
         }
@@ -340,7 +353,7 @@ export class BookingComponent implements OnInit {
         });
       })
     } else {
-      this.bookingServicee.getCleanerAvaiable(this.pickDay, this.serviceTypeId, this.servicePackageId).subscribe(item => {
+      this.bookingServicee.getCleanerAvaiable(this.pickDay, this.typeId, this.servicePackageId).subscribe(item => {
         this.dataCleaner = item.data;
         this.renderer.addClass(document.body, 'modal-open');
         this.cleanerDialogRef = this.dialog.open(PickCleanerDialog, {

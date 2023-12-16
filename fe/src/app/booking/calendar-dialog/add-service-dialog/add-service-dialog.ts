@@ -37,17 +37,35 @@ export class AddServiceDialog implements OnDestroy, OnInit {
   ngOnInit(): void {  
     this.date = this.data.data;
     this.listService = this.data.addonService;
-    this.selectedServiceList = this.data.servicePick;    
-    this.data.addonService.forEach(val => {
-      let checkedValue = false;
-      if(this.selectedServiceList && this.selectedServiceList.includes(val.parent.name)){
-        checkedValue = true;
-      }
-      this.parentService.push({
-        name: val,
-        checked: checkedValue 
-        });
-    });    
+    this.selectedServiceList = this.data.servicePick;
+    console.log(".this.data.servicePick",this.data.servicePick);
+
+    if(this.data.servicePick && this.selectedServiceList.serviceAddOnIds){
+      console.log("this.selectedServiceList",this.selectedServiceList);
+      
+      this.data.addonService.forEach(val => {
+        let checkedValue = false;
+        if(this.selectedServiceList && this.selectedServiceList.serviceAddOnIds.includes(val.parent.id)){
+          checkedValue = true;
+        }
+        this.parentService.push({
+          name: val,
+          checked: checkedValue 
+          });
+      });    
+    } else {
+      this.data.addonService.forEach(val => {
+        let checkedValue = false;        
+        if(this.selectedServiceList.length > 0 && this.selectedServiceList.serviceAddOnIds.includes(val.parent.id)){
+          checkedValue = true;
+        }
+        this.parentService.push({
+          name: val,
+          checked: checkedValue 
+          });
+      });    
+    }
+    
   }
 
 

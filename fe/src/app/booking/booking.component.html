@@ -125,7 +125,7 @@
                   <p class="description" style="margin-bottom: 5px;">Khoảng thời gian sử dụng dịch vụ trong ngày bắt đầu từ: <b>8h sáng</b> cho tới trước <b>8h tối</b></p>
                   <div class="input-group">
                     <p style="width: 20%;">Hình thức sử dụng: </p>
-                    <select [(ngModel)]="selectedTimeType" id="timeType" aria-describedby="timeType-help"
+                    <select [(ngModel)]="selectedTimeType" (ngModelChange)="changeTimeType()" id="timeType" aria-describedby="timeType-help"
                       title="Loại hình thức thời gian">
                       <option *ngFor="let time of timeTypes" [value]="time">{{ time }}</option>
                     </select>

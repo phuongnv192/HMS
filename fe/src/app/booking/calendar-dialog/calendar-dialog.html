@@ -40,7 +40,7 @@
                 </div>
               </div>
             </div>
-            <div class="calender-pick-info">
+            <div class="calender-pick-info" *ngIf="pickServiceType != 1 && dateArray && dateArray.length > 0">
               <p class="showTime title_note" *ngIf="true">* Thông tin lịch định kỳ (ngày bắt đầu dịch vụ):</p>
               <div>{{
                 datePickerShow
@@ -63,13 +63,15 @@
         </div>
         <hr style="margin-top: 1rem;">
         <div class="serviceType">
-          - Danh sách ngày dọn theo định kỳ
+          - Danh sách ngày dọn theo định kỳ:
+          <div style="margin: 1rem 0 2rem; font-size: 12.5px; font-style: italic;" *ngIf="(dateArray && dateArray.length < 1)">*Vui lòng chọn ngày và các gói dịch vụ tương ứng để tạo ra <b>Lịch dọn định kỳ</b> tương ứng</div>
         </div>
-        <div class="table-responsive">
-          <div class="showtime-options">
+        
+        <div class="table-responsive" *ngIf="(dateArray && dateArray.length >= 7) || (dateArray && dateArray.length > 0 && dateArray.length < 7)">
+          <div class="showtime-options" *ngIf="(dateArray && dateArray.length >= 7) || (dateArray && dateArray.length > 0 && dateArray.length < 7)">
             <carousel height="87px" cellsToShow="7" *ngIf="dateArray && dateArray.length >= 7">
               <div [ngClass]="{'selected':selectedDate===showtime}" class="carousel-cell"
-                (click)="viewDetailinSchedule(showtime)" *ngFor="let showtime of dateArray">
+                (click)="viewDetailinSchedule(showtime, i)" *ngFor="let showtime of dateArray; let i = index">
                 <div class="top">{{getDay(showtime)}} <span>/{{getMonth(showtime)}}
                   </span></div>
                 <div class="bottom">{{getDateMonth(showtime)}}
@@ -78,9 +80,9 @@
               </div>
             </carousel>
 
-            <div class="select-date-container" height="87px" cellsToShow="7" *ngIf="dateArray && dateArray.length < 7">
+            <div class="select-date-container" height="87px" cellsToShow="7" *ngIf="dateArray && dateArray.length > 0 && dateArray.length < 7">
               <div [ngClass]="{'selected':selectedDate===showtime}" class="datetimeBtn"
-                (click)="viewDetailinSchedule(showtime)" *ngFor="let showtime of dateArray">
+                (click)="viewDetailinSchedule(showtime, i)" *ngFor="let showtime of dateArray; let i = index">
                 <div class="top">{{getDay(showtime)}} <span>/{{getMonth(showtime)}}
                   </span></div>
                 <div class="bottom">{{getDateMonth(showtime)}}

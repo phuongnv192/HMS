@@ -40,13 +40,13 @@ export class UserProfileComponent implements OnInit {
 
   ngOnInit() {
     this.jwtToken = this.authService.getJwtToken();
-    let id = this.route.snapshot.paramMap.get('id');
-    this.cleanService.getEmployeeById(id).subscribe( data => {
+    let id = this.route.snapshot.paramMap.get("id");
+    this.cleanService.getEmployeeById(id).subscribe((data) => {
       this.cleaner = data;
       this.cleanerId = data.id;
-    });
-    this.cleanService.getCleanerHistoryDetail(id).subscribe( data => {
-      this.data = data;
+      this.cleanService.getCleanerHistoryDetail(id).subscribe((data) => {
+        this.data = data;
+      });
     });
     // this.data = {
     //   ratingOverview: {
