@@ -28,6 +28,9 @@ export class PickCleanerDialog implements OnDestroy, OnInit {
   listA: any;
   listB: any;
   listPick: any;
+  listPickData = [];
+  searchname = '';
+  noDataSearch = false;
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -43,8 +46,21 @@ export class PickCleanerDialog implements OnDestroy, OnInit {
   ngOnInit(): void {
     this.listCleaner = this.data.data;
     this.listA = this.listCleaner.slice(0, 5);
-    this.listB = this.listCleaner.slice(5);    
-    this.listPick = [];    
+    this.listB = this.listCleaner.slice(5);
+    if(this.data.listPick){
+      this.listPickData = this.data.listPick;
+      this.filterCleaners();
+    } else {
+      this.listPickData = [];
+      this.listPick = [];
+    }
+    console.log("listCleaner", this.listCleaner);
+    console.log("LOAD listPick", this.listPick);
+    console.log("LOAD listPickData", this.listPickData);
+  }
+
+  filterCleaners(): void {
+    this.listPick = this.listCleaner.filter(cleaner => this.listPickData.includes(cleaner.cleanerId));
   }
 
 
@@ -75,8 +91,15 @@ export class PickCleanerDialog implements OnDestroy, OnInit {
     });
   }
 
-  searchCleaner() {
-
+  searchCleaner(searchname: any) {
+    this.listCleaner = []
+    this.data.data.forEach(res => {
+      if(res.name.includes(searchname)){
+        this.listCleaner.push(res);
+      } else {
+        this.noDataSearch = true;
+      }
+    })
   }
 
   generateStarRating(rating: number): string {
@@ -116,10 +139,50 @@ export class PickCleanerDialog implements OnDestroy, OnInit {
 
   addCleaner(cleaner: any){
     this.listPick.push(cleaner);
+    this.listPickData = this.listPick.map(cleaner => cleaner.cleanerId);
+    console.log("ADD listPick", this.listPick);
+    console.log("ADD listPickData", this.listPickData);
   }
 
   removeCleaner(index: any){
     this.listPick.splice(index, 1);
+    this.listPickData = this.listPick.map(cleaner => cleaner.cleanerId);
+    console.log("REMOVE listPick", this.listPick);
+    console.log("REMOVE listPickData", this.listPickData);
+  }
 
+  pickCleaner(){
+    this.cleanerDialogRef.close(this.listPickData);
   }
 }
+
+
+// {
+//   "hostName": "hms system",
+//   "hostPhone": "0369156413",
+//   "hostAddress": "số 6, Minh Khai, Hà Nội",
+//   "hostDistance": "6km",
+//   "distancePrice": 10000,
+//   "houseType": "APARTMENT",
+//   "floorNumber": 2,
+//   "floorArea": "M260",
+//   "cleanerIds": null,
+//   "bookingSchedules": [
+//       {
+//           "floorNumber": 4,
+//           "workDate": "2023-12-03",
+//           "startTime": null,
+//           "endTime": null,
+//           "serviceAddOnIds": []
+//       }
+//   ],
+//   "serviceTypeId": 3,
+//   "servicePackageId": 3,
+//   "serviceAddOnIds": [3],
+//   "section": "MOR",
+//   "startTime": "2023-12-03T10:12:27.374+00:00",
+//   "endTime": "2023-12-03T16:12:27.374+00:00",
+//   "workDate": "2023-12-03",
+//   "dayOfTheWeek": null,
+//   "note": "không có gì"
+// }

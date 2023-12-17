@@ -38,6 +38,12 @@ export class CustomerScheduleComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    // this.authService.getUserInfor().subscribe(cus => {
+    //   this.customerId = cus.data.id;
+    //   this.bookingService.getCustomerBookingHistory().subscribe(res => {
+    //     this.data = res.data
+    //   })
+    // })
     this.dateSchedule = [
       {
         id: 's1',

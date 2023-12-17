@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { AuthService } from "src/app/services/auth.service";
+import { BookingService } from "src/app/services/booking.service";
 import { CleanerService } from "src/app/services/cleaner.service";
 // import { ApiService } from 'src/app/services/api.service';
 // import { AuthService } from 'src/app/services/auth.service';
@@ -35,17 +36,20 @@ export class UserProfileComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private cleanService: CleanerService,
+    private bookingService: BookingService,
     private route: ActivatedRoute
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.jwtToken = this.authService.getJwtToken();
-    let id = this.route.snapshot.paramMap.get("id");
-    this.cleanService.getEmployeeById(id).subscribe((data) => {
-      this.cleaner = data;
-      this.cleanerId = data.id;
-      this.cleanService.getCleanerHistoryDetail(id).subscribe((data) => {
-        this.data = data;
+    this.authService.getUserInfor().subscribe(user => {
+      this.id = user.data.id
+      this.cleanService.getEmployeeById(this.id).subscribe((data) => {
+        this.cleaner = data;
+        this.cleanerId = data.id;
+        this.bookingService.getBookingHistory(this.id).subscribe((data) => {
+          this.data = data;
+        });
       });
     });
     // this.data = {
@@ -160,5 +164,5 @@ export class UserProfileComponent implements OnInit {
     return stars.join("");
   }
 
-  showMore(id: any) {}
+  showMore(id: any) { }
 }

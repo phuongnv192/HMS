@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { AuthService } from "src/app/services/auth.service";
+import { BookingService } from "src/app/services/booking.service";
 import { CleanerService } from "src/app/services/cleaner.service";
 
 @Component({
@@ -18,16 +19,21 @@ export class HistoryComponent implements OnInit {
   searchRate: any;
   searchHouseType: string;
   jwtToken: string;
+  cleanerId: any;
   constructor(
-    private cleanService: CleanerService,
+    private authService: AuthService,
+    private bookingService: BookingService,
     private route: ActivatedRoute
   ) {}
 
   ngOnInit() {
-    let id = this.route.snapshot.paramMap.get("id");
-    this.cleanService.getCleanerHistoryDetail(id).subscribe((data) => {
+    // let id = this.route.snapshot.paramMap.get("id");
+    this.authService.getUserInfor().subscribe(data=> {
+      this.cleanerId = data.data.id;
+    this.bookingService.getBookingHistory(this.cleanerId).subscribe((data) => {
       this.data = data;
     });
+  });
     console.log("this.history", this.history);
     this.searchRate = "4 - 5";
     this.searchHouseType = "APARTMENT";

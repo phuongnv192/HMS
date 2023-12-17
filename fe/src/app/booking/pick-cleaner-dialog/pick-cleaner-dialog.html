@@ -6,8 +6,9 @@
     <div class="content">
       <div class="content-scroll">
         <div class="filter-search">Tên: <input #namesearch id="namesearch" placeholder="Tên nhân viên" type="text"
-            aria-describedby="name-search-help" maxlength="50"><span>
-            <button mat-button class="filter_btn" (click)="searchCleaner()">Tìm kiếm</button>
+            aria-describedby="name-search-help" maxlength="50" [value]="searchname"><span>
+            <button mat-button class="filter_btn" (click)="searchCleaner(searchname)">Tìm kiếm</button>
+            <div class="error" *ngIf="noDataSearch"> *không có tên nhân viên dọn dẹp tương ứng</div>
           </span></div>
       </div>
       <!-- listPick.length > 0  -->
@@ -87,7 +88,9 @@
           </div>
         </div>
       </div>
-
+      <div class="button-submit">
+        <button mat-button class="btn" (click)="pickCleaner()">Xác nhận</button>
+      </div>
     </div>
   </div>
 </div>

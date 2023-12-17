@@ -22,12 +22,12 @@ export class CustomerHistoryComponent implements OnInit {
     private bookingService: BookingService) { }
 
   ngOnInit() {
-    this.authService.getUserInfor().subscribe(cus => {
-      this.customerId = cus.data.id;
-      this.bookingService.getBookingHistory(this.customerId).subscribe(res => {
-        
-      })
-    })
+    // this.authService.getUserInfor().subscribe(cus => {
+    //   this.customerId = cus.data.id;
+    //   this.bookingService.getCustomerBookingHistory().subscribe(res => {
+    //     this.data = res.data
+    //   })
+    // })
     this.data = {
       "ratingOverview": {
         "cleanerId": 1,

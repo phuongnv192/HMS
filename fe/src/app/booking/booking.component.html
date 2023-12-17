@@ -48,12 +48,13 @@
                     <!-- (blur)="changeHandler('account')" (focus)="focusAccount()" -->
                     <input #account id="account" placeholder="Nguyen Van A" type="text" aria-describedby="account-help"
                       maxlength="50" [(ngModel)]="account_name">
-
+                    <p class="error" *ngIf="nameNull">Vui lòng ko để trống thông tin tên</p>
                   </div>
                   <div class="input-group">
                     <p>Số điện thoại(*): </p>
                     <input #phonenumber id="phonenumber" placeholder="0987654321" type="text"
                       aria-describedby="phone-help" maxlength="12" [(ngModel)]="phone_number">
+                    <p class="error" *ngIf="phoneNull">Vui lòng ko để trống thông tin điện thoại</p>
                   </div>
                   <!-- <div *ngIf="account_name" class="delete" (click)="clearEmail()">
                     <img style="float: right;" src="assets/img/bnpl/Close.svg" />
@@ -64,6 +65,7 @@
                     <p>Nơi làm việc: </p>
                     <input #address id="address" placeholder="Số 1Kim Mã, Ba Đình, Hà Nội" type="text"
                       aria-describedby="address-help" maxlength="100" [(ngModel)]="service_address">
+                    <p class="error" *ngIf="addressNull">Vui lòng ko để trống thông tin địa chỉ</p>
                   </div>
                     <!-- <button type="button" class="btn btn-primary">Nhập địa chỉ</button> -->
 
@@ -109,7 +111,7 @@
                   <div class="extension-service">
                     <span *ngFor="let extends of priceList" class="badge badge-pill badge-primary"
                       [ngClass]="{'active': activeBadges[extends.parent.name]}" style="cursor: pointer;"
-                      (click)="extendsDialog(extends.parent.name)">{{extends.parent.name}}
+                      (click)="extendsDialog(extends.parent.name, extends.parent.id)">{{extends.parent.name}}
                       <i class="fas"
                         [ngClass]="{'fa-plus': !activeBadges[extends.parent.name], 'fa-minus': activeBadges[extends.parent.name]}"></i>
                     </span>
@@ -147,6 +149,8 @@
                     
                     <button type="button" class="btn btn-primary pickday" (click)="pickDate()">Chọn ngày
                       <i></i></button>
+                      <p class="error" *ngIf="dateNull">Vui lòng ko để trống thông tin ngày dọn</p>
+
                     <ngb-datepicker class="calendar" *ngIf="showDatePicker" #dp [(ngModel)]="selectedDate"
                       (dateSelect)="hideDatePicker()" (navigate)="datePickerNavigate($event)"
                       [minDate]="minSelectableDate" [maxDate]="maxSelectableDate"></ngb-datepicker>
@@ -157,6 +161,8 @@
                   <div class="date-pickertime" *ngIf="selectedTimeType != 'Sử dụng 1 lần'">
                     <button type="button" class="btn btn-primary pickday" (click)="pickCalendar()">Chọn lịch
                       <i></i></button>
+                      <p class="error" *ngIf="dateNull">Vui lòng ko để trống thông tin ngày dọn</p>
+                  
                   </div>
                   <p *ngIf="selectedTimeType != 'Sử dụng 1 lần'" class="takenote">*Đối với dịch vụ định kỳ, khách hàng
                     nên lưu ý về thời gian đặt lịch
@@ -223,8 +229,8 @@
                     <!-- {{totalAmount}} -->
                     VNĐ
                   </div>
-                  <button class="btn btn-primary btn-pay" (click)="Order()"
-                    [class.disabled]=" !validPayment || !termAndCondition">
+                  <button class="btn btn-primary btn-pay" (click)="Booking()"
+                    [class.disabled]=" !termAndCondition || !account_name || !phone_number || !address || !(pickDay || dateValue)">
                     Đặt lịch
                   </button>
                 </div>

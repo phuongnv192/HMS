@@ -25,7 +25,8 @@
           <p>Đánh giá & phản hồi của người dùng</p>
         </div>
         <div class="table-responsive">
-          <table class="table align-items-center table-flush">
+          <div style="font-size: 12.5px; font-style: italic; margin-bottom:2rem;" *ngIf="history.length < 1"> *Hiện tại nhân viên dọn dẹp {{cleanerName}} chưa có đánh giá/phản hồi khi thực hiện dịch vụ</div>
+          <table class="table align-items-center table-flush" *ngIf="history.length > 0">
             <thead class="thead-light">
               <tr>
                 <th scope="col">Tên đơn dịch vụ</th>
@@ -73,7 +74,7 @@
             </tbody>
           </table>
         </div>
-        <div class="card-footer py-4">
+        <div class="card-footer py-4" *ngIf="history.length > 4">
           <nav aria-label="...">
             <ul class="pagination justify-content-end mb-0">
               <li class="page-item disabled">

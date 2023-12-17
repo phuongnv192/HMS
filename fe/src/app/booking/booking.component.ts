@@ -1,7 +1,7 @@
 import { Component, ElementRef, Inject, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbDateStruct, NgbDate } from '@ng-bootstrap/ng-bootstrap';
-import { format, isAfter, isBefore, subMonths } from 'date-fns';
+import { format, isAfter, isBefore, parse, subMonths } from 'date-fns';
 // import { DialogService } from 'src/app/services/dialog.service';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CalendarDialog } from './calendar-dialog/calendar-dialog';
@@ -20,6 +20,7 @@ export interface CleanerData {
 export interface PickCleanerData {
   data: any;
   date: any;
+  listPick: any;
 }
 
 export interface CalendarDialogData {
@@ -158,6 +159,15 @@ export class BookingComponent implements OnInit {
   serviceTypeId: any;
   calendarResult: any;
   servicePackageName: any;
+  listAdvanceServiceId = [];
+  schedule = [];
+  nameNull = false;
+  cleanerIds = [];
+  phoneNull = false;
+  addressNull = false;
+  typeNull = false;
+  dateNull = false;
+  bookingSchedules = [];
   // serviceTypeIdTemp: any;
 
 
@@ -250,8 +260,9 @@ export class BookingComponent implements OnInit {
     return result;
   }
 
-  extendsDialog(service: string) {
+  extendsDialog(service: string, id: any) {
     const index = this.listAdvanceService.indexOf(service);
+    const indexId = this.listAdvanceService.indexOf(id);
     this.activeBadges[service] = !this.activeBadges[service];
     if (index === -1) {
       // Nếu giá trị không tồn tại, thêm vào mảng
@@ -260,11 +271,20 @@ export class BookingComponent implements OnInit {
       // Nếu giá trị đã tồn tại, loại bỏ khỏi mảng
       this.listAdvanceService.splice(index, 1);
     }
+
+    if (indexId === -1) {
+      // Nếu giá trị không tồn tại, thêm vào mảng
+      this.listAdvanceServiceId.push(id);
+    } else {
+      // Nếu giá trị đã tồn tại, loại bỏ khỏi mảng
+      this.listAdvanceServiceId.splice(indexId, 1);
+    }
+
     this.textListAdvanceService = this.listAdvanceService.join(', ')
 
   }
 
-  changeTimeType(){
+  changeTimeType() {
     this.pickDay = '';
   }
 
@@ -284,16 +304,17 @@ export class BookingComponent implements OnInit {
     });
 
     this.dialogRef.afterClosed().subscribe(result => {
-      if(result){
+      if (result) {
         console.log(result, "RESULT CALENDAR");
         this.calendarResult = result[0];
-        if(result[0]){
+        if (result[0]) {
           this.pickDay = result[0].dateValue;
         }
         this.typeId = result[0].typeId;
+        this.schedule = result[0].schedule;
         let servicePackageName = result[0].servicePackageId.split(' - ');
-        console.log("servicePackageName", servicePackageName);
-        
+        console.log("schedule", result[0].schedule);
+
         this.servicePackageId = this.getServicePackageId(servicePackageName[0]);
       }
       this.renderer.removeClass(document.body, 'modal-open');
@@ -302,7 +323,7 @@ export class BookingComponent implements OnInit {
   }
 
   getServicePackageId(servicePackageName) {
-    
+
     for (const serviceType of this.serviceTypeData) {
       for (const servicePackage of serviceType.servicePackages) {
         console.log("servicePackage", servicePackage.servicePackageName);
@@ -313,7 +334,7 @@ export class BookingComponent implements OnInit {
     }
     return null; // Trả về null nếu không tìm thấy
   }
-  
+
   // Sử dụng hàm để lấy giá trị
   FieldsChangeTermAndCondition(values: any) {
     this.termAndCondition = true;
@@ -343,11 +364,14 @@ export class BookingComponent implements OnInit {
           data: {
             data: this.dataCleaner,
             date: this.dateValue,
-
+            listPick: this.cleanerIds
           },
           panelClass: ['pick-cleaner']
         });
         this.cleanerDialogRef.afterClosed().subscribe(result => {
+          if (result) {
+            this.cleanerIds = result;
+          }
           this.renderer.removeClass(document.body, 'modal-open');
           // this.dialogService.sendDataDialog(false);
         });
@@ -367,6 +391,9 @@ export class BookingComponent implements OnInit {
           panelClass: ['pick-cleaner']
         });
         this.cleanerDialogRef.afterClosed().subscribe(result => {
+          if (result) {
+            this.cleanerIds = result;
+          }
           this.renderer.removeClass(document.body, 'modal-open');
           // this.dialogService.sendDataDialog(false);
         });
@@ -527,6 +554,84 @@ export class BookingComponent implements OnInit {
   validTime(value) {
     return ((value.length == 4 && value.search('/') == -1) || value.length == 5) && parseInt(value.split(':')[0], 0) >= 8
       && (parseInt(value.split(':')[0], 0) < 20) && (parseInt(value.split(':')[1], 0) <= 60)
+  }
+
+  removeIndexFromBookingSchedules(body: any): void {
+    return body.forEach(schedule => {
+      const parsedDate = parse(schedule.workDate, 'MM-dd-yyyy', new Date());
+      schedule.workDate = format(parsedDate, 'yyyy-MM-dd');
+      // delete schedule.index;
+    });
+  }
+
+  // changeDateFormat(): void {
+  //   this.bookingSchedules.forEach(schedule => {
+  //     const parsedDate = parse(schedule.workDate, 'MM-dd-yyyy', new Date());
+  //     schedule.workDate = format(parsedDate, 'yyyy/MM/dd');
+  //   });
+  // }
+
+  Booking() {
+    console.log("this.schedule", this.schedule);
+    
+    let body = {
+      hostName: this.account_name,
+      hostPhone: this.phone_number,
+      hostAddress: this.service_address,
+      hostDistance: '6km',
+      distanceprice: 10000,
+      houseType: 'APARTMENT',  //houseType: this.selectedHouseType,
+      floorNumber: this.selectedFloors,
+      floorArea: 'M260',  //'M' + this.selectedAreaType  chưa thống nhất đc BE FE
+      cleanerIds: this.cleanerIds,
+      bookingSchedules:[
+        {
+          "floorNumber": 1,
+          "workDate": "2023-12-16",
+          "startTime": null,
+          "endTime": null,
+          "serviceAddOnIds": [1]
+        },
+        {
+          "floorNumber": 1,
+          "workDate": "2023-12-23",
+          "startTime": null,
+          "endTime": null,
+          "serviceAddOnIds": [1]
+        }
+      ],
+      serviceTypeId: this.typeId,
+      servicePackageId: this.servicePackageId,
+      serviceAddOnIds: this.listAdvanceServiceId,
+      section: "MOR",
+      startTime: "2023-12-03T10:12:27.374+00:00",
+      endTime: "2023-12-03T16:12:27.374+00:00",
+      workDate: this.pickDay ? this.pickDay : this.dateValue,
+      dayOfTheWeek: null,
+      note: this.note ? this.note : ''
+    }
+
+    if (!this.account_name) {
+      this.nameNull = true;
+    } else if (!this.phone_number) {
+      this.phoneNull = true;
+    } else if (!this.service_address) {
+      this.addressNull = true;
+    } else if (!this.selectedAreaType && !this.selectedFloors) {
+      this.typeNull = true;
+    } else if (!this.schedule && !(this.pickDay || this.dateValue)) {
+      this.dateNull = true;
+    } else {
+      console.log("bodybodybodybody", body);
+      this.bookingServicee.booking(body).subscribe({
+        next: () => {
+          // Chuyển hướng sang trang Home và truyền thông báo thành công
+          this.router.navigate(["/introduction"], { queryParams: { success: true } });
+        },
+        error: () => { },
+      });;
+    }
+
   }
 }
 

@@ -12,8 +12,10 @@ export class BookingService {
   private SERVICETYPE = this.baseUrl + "/service-types";
   private CLEANERAVAIBLAE = this.baseUrl + "/cleaner/available";
   private CLEANERPICKDETAIL = this.baseUrl + "/cleaner/history/detail?cleanerId=";
+  private CUSPICKDETAIL = this.baseUrl + "/user/booking";
   private SERVICEADDON = this.baseUrl + "/service-add-ons?addOnId=";
   private AREA = this.baseUrl + "/floor-info";
+  private BOOKING = this.baseUrl + "/booking";
   // getEmployees(params: HttpParams): Observable<any> {
   //   return this.http.get<any>(`${this.baseUrl}/cleaners`, { params });
   // }
@@ -51,9 +53,19 @@ export class BookingService {
     return this.http.get<any>(`${this.CLEANERPICKDETAIL + id}`, { headers });
   }
 
+  getCustomerBookingHistory(): Observable<any> {
+    const headers = this.getHeadersWithToken();
+    return this.http.get<any>(`${this.CUSPICKDETAIL}`, { headers });
+  }
+
   getDataService(): Observable<any> {
     const headers = this.getHeadersWithToken();
     return this.http.get<any>(`${this.AREA}`, { headers });
+  }
+
+  booking(body: any): Observable<any> {
+    const headers = this.getHeadersWithToken();
+    return this.http.post<any>(`${this.BOOKING}`, body, { headers });
   }
 
 
