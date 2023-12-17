@@ -31,6 +31,7 @@ export class PickCleanerDialog implements OnDestroy, OnInit {
   listPickData = [];
   searchname = '';
   noDataSearch = false;
+  searchResults: any[];
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -45,18 +46,15 @@ export class PickCleanerDialog implements OnDestroy, OnInit {
 
   ngOnInit(): void {
     this.listCleaner = this.data.data;
-    this.listA = this.listCleaner.slice(0, 5);
-    this.listB = this.listCleaner.slice(5);
-    if(this.data.listPick){
+    this.listA = this.listCleaner.slice(0, 10);
+    // this.listB = this.listCleaner.slice(5);
+    if (this.data.listPick) {
       this.listPickData = this.data.listPick;
       this.filterCleaners();
     } else {
       this.listPickData = [];
       this.listPick = [];
     }
-    console.log("listCleaner", this.listCleaner);
-    console.log("LOAD listPick", this.listPick);
-    console.log("LOAD listPickData", this.listPickData);
   }
 
   filterCleaners(): void {
@@ -91,15 +89,31 @@ export class PickCleanerDialog implements OnDestroy, OnInit {
     });
   }
 
-  searchCleaner(searchname: any) {
-    this.listCleaner = []
+  searchCleaner() {
+    console.log(111111111, this.searchname);
+    this.searchResults = [];
+    this.noDataSearch = false;
+
     this.data.data.forEach(res => {
-      if(res.name.includes(searchname)){
-        this.listCleaner.push(res);
-      } else {
-        this.noDataSearch = true;
+      const isPicked = this.listPick.some(pickedCleaner => pickedCleaner.cleanerId === res.cleanerId);
+      // Nếu cleaner chưa được chọn và tên chứa trong searchname
+      if (!isPicked && res.name.includes(this.searchname)) {
+        this.searchResults.push(res);
       }
-    })
+    });
+
+    // Hiển thị kết quả tìm kiếm hoặc thông báo không có dữ liệu
+    if (this.searchResults.length === 0) {
+      console.log("no data search found");
+      this.noDataSearch = true;
+    } else {
+      console.log("have data");
+      this.noDataSearch = false;
+      // Cập nhật listCleaner để hiển thị kết quả tìm kiếm
+      this.listCleaner = this.searchResults;
+      this.listA = this.listCleaner.slice(0, 10);
+
+    }
   }
 
   generateStarRating(rating: number): string {
@@ -118,87 +132,52 @@ export class PickCleanerDialog implements OnDestroy, OnInit {
     return stars.join('');
   }
 
-  viewDetailCleaner(cleanerId: any){
+  viewDetailCleaner(cleanerId: any) {
     this.selectedCleaner = cleanerId;
-     // this.dialogService.sendDataDialog(true);
-     this.renderer.addClass(document.body, 'modal-open');
-     this.dialogRefCleaner = this.dialog.open(CleanerDetailDialog, {
-       width: '900px',
-       maxHeight: '70%',
-       data: {
-         data: cleanerId,
-       },
-       panelClass: ['cleaner-detail']
-     });
- 
-     this.dialogRefCleaner.afterClosed().subscribe(result => {
-       this.renderer.removeClass(document.body, 'modal-open');
-       // this.dialogService.sendDataDialog(false);
-     });
+    // this.dialogService.sendDataDialog(true);
+    this.renderer.addClass(document.body, 'modal-open');
+    this.dialogRefCleaner = this.dialog.open(CleanerDetailDialog, {
+      width: '900px',
+      maxHeight: '70%',
+      data: {
+        data: cleanerId,
+      },
+      panelClass: ['cleaner-detail']
+    });
+
+    this.dialogRefCleaner.afterClosed().subscribe(result => {
+      this.renderer.removeClass(document.body, 'modal-open');
+      // this.dialogService.sendDataDialog(false);
+    });
   }
 
-  // addCleaner(cleaner: any){
-  //   this.listPick.push(cleaner);
-  //   this.listPickData = this.listPick.map(cleaner => cleaner.cleanerId);
-  // }
-
-  // removeCleaner(index: any){
-  //   this.listPick.splice(index, 1);
-  //   this.listPickData = this.listPick.map(cleaner => cleaner.cleanerId);
-  // }
-
-  addCleaner(cleaner: any): void {
+  addCleaner(cleaner: any, index: any): void {
     this.listPick.push(cleaner);
     this.listPickData = this.listPick.map(cleaner => cleaner.cleanerId);
-    this.updateListA();
-  }
-  
-  removeCleaner(index: any): void {
-    this.listPick.splice(index, 1)[0];
-    this.listPickData = this.listPick.map(cleaner => cleaner.cleanerId);
-    this.updateListA();
-  }
-  
-  updateListA(): void {
-    this.listCleaner.forEach(cleanerA => {
-      cleanerA.selected = this.listPick.some(cleanerPick => cleanerPick.cleanerId === cleanerA.cleanerId);
-    });
-    this.listA = this.listCleaner.slice(0, 5);
-    this.listB = this.listCleaner.slice(5);
+    this.listCleaner = this.listCleaner.filter((item, i) => i !== index);
+    this.listA = this.listCleaner.slice(0, 10);
+    // this.updateListCleaner(index, 'remove', cleaner);
   }
 
-  pickCleaner(){
+  removeCleaner(index: any): void {
+    const removedCleaner = this.listPick.splice(index, 1)[0];
+    this.listCleaner.push(removedCleaner);
+    this.listPickData = this.listPick.map(cleaner => cleaner.cleanerId);
+    this.listA = this.listCleaner.slice(0, 10);
+    // this.updateListCleaner(index, 'add', []);
+  }
+
+  // updateListCleaner(index: any, type:string, cleaner:any): void {
+  //   if(type == 'add'){
+  //     this.listCleaner.push(cleaner);
+  //   } else if (type == 'remove') {
+  //     this.listCleaner.splice(index, 1)[0];
+  //   }
+
+  //   this.listA = this.listCleaner.slice(0, 10);
+  // }
+
+  pickCleaner() {
     this.cleanerDialogRef.close(this.listPickData);
   }
 }
-
-
-// {
-//   "hostName": "hms system",
-//   "hostPhone": "0369156413",
-//   "hostAddress": "số 6, Minh Khai, Hà Nội",
-//   "hostDistance": "6km",
-//   "distancePrice": 10000,
-//   "houseType": "APARTMENT",
-//   "floorNumber": 2,
-//   "floorArea": "M260",
-//   "cleanerIds": null,
-//   "bookingSchedules": [
-//       {
-//           "floorNumber": 4,
-//           "workDate": "2023-12-03",
-//           "startTime": null,
-//           "endTime": null,
-//           "serviceAddOnIds": []
-//       }
-//   ],
-//   "serviceTypeId": 3,
-//   "servicePackageId": 3,
-//   "serviceAddOnIds": [3],
-//   "section": "MOR",
-//   "startTime": "2023-12-03T10:12:27.374+00:00",
-//   "endTime": "2023-12-03T16:12:27.374+00:00",
-//   "workDate": "2023-12-03",
-//   "dayOfTheWeek": null,
-//   "note": "không có gì"
-// }
