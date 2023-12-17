@@ -7,11 +7,11 @@
 </div>
 
 <!-- Màn hình quản lý -->
-<div *ngIf="(cleanerNavbar || adminNavbar || managerNavbar) && isAuthenticated$ | async">
-    <app-sidebar [cleanerNavbar]="cleanerNavbar" [adminNavbar]="adminNavbar" [managerNavbar]="managerNavbar" [username]="username"></app-sidebar>
+<div *ngIf="(cleanerNavbar || adminNavbar || managerNavbar || leadNavbar) && isAuthenticated$ | async">
+    <app-sidebar [cleanerNavbar]="cleanerNavbar" [leadNavbar]="leadNavbar" [adminNavbar]="adminNavbar" [managerNavbar]="managerNavbar" [username]="username"></app-sidebar>
     <div class="main-content">
         <!-- Top navbar -->
-        <app-navbar [cleanerNavbar]="cleanerNavbar" [managerNavbar]="managerNavbar" [adminNavbar]="adminNavbar" [username]="username"></app-navbar>
+        <app-navbar [cleanerNavbar]="cleanerNavbar" [leadNavbar]="leadNavbar" [managerNavbar]="managerNavbar" [adminNavbar]="adminNavbar" [username]="username"></app-navbar>
         <!-- Pages -->
         <router-outlet></router-outlet>
     </div>

@@ -3,6 +3,8 @@ import { Router, NavigationEnd, NavigationStart } from "@angular/router";
 import { Location, PopStateEvent } from "@angular/common";
 import { ROUTES1 } from "../sidebar/sidebar.component";
 import { ROUTES2 } from "../sidebar/sidebar.component";
+import { ROUTES3 } from "../sidebar/sidebar.component";
+import { ROUTES4 } from "../sidebar/sidebar.component";
 import { AuthService } from "src/app/services/auth.service";
 import { CacheService } from "src/app/services/cache.service";
 
@@ -39,13 +41,14 @@ export class NavbarComponent implements OnInit {
     }
     if(this.cleanerNavbar){
       this.listTitles = ROUTES1.filter((listTitle) => listTitle);
-      console.log("123123", this.listTitles);
-      
     } else if(this.managerNavbar){
       this.listTitles = ROUTES2.filter((listTitle) => listTitle);
-      console.log("234234", this.listTitles);
-
+    } else if(this.leadNavbar){
+      this.listTitles = ROUTES3.filter((listTitle) => listTitle);
+    } else if(this.adminNavbar){
+      this.listTitles = ROUTES4.filter((listTitle) => listTitle);
     }
+
     this.router.events.subscribe((event) => {
       this.isCollapsed = true;
       if (event instanceof NavigationStart) {

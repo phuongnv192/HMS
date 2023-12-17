@@ -3,6 +3,8 @@ import { Router, NavigationEnd, NavigationStart } from "@angular/router";
 import { Location, PopStateEvent } from "@angular/common";
 import { ROUTES1 } from "../sidebar/sidebar.component";
 import { ROUTES2 } from "../sidebar/sidebar.component";
+import { ROUTES3 } from "../sidebar/sidebar.component";
+import { ROUTES4 } from "../sidebar/sidebar.component";
 import { AuthService } from "src/app/services/auth.service";
 import { CacheService } from "src/app/services/cache.service";
 

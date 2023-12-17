@@ -63,6 +63,8 @@ export class CalendarDialog implements OnDestroy, OnInit {
   dataPickTemp: any[];
   calendarResult: any;
   workDate: any;
+  minSelectableDate: NgbDate;
+  maxSelectableDate: NgbDate;
 
   constructor(
     public dialogRef: MatDialogRef<CalendarDialog>,
@@ -70,6 +72,9 @@ export class CalendarDialog implements OnDestroy, OnInit {
     @Inject(MAT_DIALOG_DATA) public data: CalendarDialogData,
     public dialog: MatDialog, private renderer: Renderer2,
     private ngZone: NgZone) {
+      const today = new Date();
+      this.minSelectableDate = new NgbDate(today.getFullYear(), today.getMonth() + 1, today.getDate());
+      this.maxSelectableDate = new NgbDate(today.getFullYear(), today.getMonth() + 2, today.getDate());
   }
 
   getServiceTypeNames(): string[] {

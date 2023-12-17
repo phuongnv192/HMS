@@ -213,7 +213,8 @@ export class BookingComponent implements OnInit {
     this.selectedPaymentMethod = 'cash';
     this.selectedFloors = this.floors[0];
     this.selectedHouseType = this.houseTypes[0];
-    this.selectedAreaType = this.areaTypes[0].title;
+    this.selectedAreaType = this.areaTypes[0].value;
+    this.onAreaChange(this.selectedAreaType);
     this.selectedServiceType = this.serviceTypes[0];
     this.selectedTimeType = this.timeTypes[0];
 

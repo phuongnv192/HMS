@@ -22,6 +22,7 @@ export class AppComponent implements OnInit {
     customerNavbar = false;
     guestNavbar = false;
     managerNavbar = false;
+    leadNavbar = false;
     isAuthenticated = false;
     isAuthenticated$: Observable<boolean>;
     username: any;
@@ -78,6 +79,8 @@ export class AppComponent implements OnInit {
                             this.customerNavbar = true;
                         } else if(user.data.role.name == "MANAGER"){
                             this.managerNavbar = true;
+                        } else if(user.data.role.name == "LEAD"){
+                            this.leadNavbar = true;
                         } else if(user.data.role.name == "ADMIN"){
                             this.adminNavbar = true;
                         }
@@ -92,6 +95,7 @@ export class AppComponent implements OnInit {
                     this.adminNavbar = false;
                     this.cleanerNavbar = false;                        
                     this.managerNavbar = false;                        
+                    this.leadNavbar = false;                        
                 }
               });
         // }
