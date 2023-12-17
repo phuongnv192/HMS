@@ -92,21 +92,35 @@ export class CalendarDialog implements OnDestroy, OnInit {
     this.calendarResult = this.data.calendarResult;
     if (this.calendarResult) {
       console.log("this.calendarResult", this.calendarResult);
-      
       this.selectedServiceTypeId = this.calendarResult.serviceTypeId;
       this.selectedServicePackageId = this.calendarResult.servicePackageId;
-      this.pickDay = this.calendarResult.pickDay;
-      this.selectedDate = this.convertStringToNgbDate(this.calendarResult.pickDay);
+      this.pickDay = this.calendarResult.dateValue;      
+      this.selectedDate = this.convertStringToNgbDate(this.pickDay);
+      this.loadData();
+      this.hideDatePicker();
       this.dataPick = this.calendarResult.schedule;
     } else {
       this.selectedServiceTypeId = this.data.type[0].serviceTypeName;
       this.selectedServicePackageId = this.data.type[0].servicePackages[0].servicePackageName + ' - ' + this.data.type[0].servicePackages[0].unit;
       this.pickDay = '';
       this.dataPick = [];
+      this.loadData();
     }
-    console.log("this.selectedServicePackageId", this.selectedServicePackageId);
-    
-    this.pickServiceType = this.getId(this.data.type, this.selectedServiceTypeId);
+    this.data.type.forEach(type => {
+      if (this.selectedServiceTypeId == type.serviceTypeName) {
+        this.typeId = type.serviceTypeId;
+      }
+    });
+  }
+
+  loadData(){
+    this.data.type.forEach(type => {
+      if (this.selectedServiceTypeId == type.serviceTypeName) {
+        this.typeId = type.serviceTypeId;
+      }
+    });
+
+    this.pickServiceType = this.getId(this.data.type, this.selectedServiceTypeId);    
 
     this.data.type.forEach(element => {
       this.serviceTypes.push(element.serviceTypeName);
@@ -120,17 +134,13 @@ export class CalendarDialog implements OnDestroy, OnInit {
   }
 
   private convertStringToNgbDate(dateString: string): NgbDate | null {
-    try {
-      const dateParts = dateString.split('-');
+      const dateParts = dateString.split('-');  
       const year = parseInt(dateParts[0], 10);
       const month = parseInt(dateParts[1], 10);
       const day = parseInt(dateParts[2], 10);
-
+      console.log("new NgbDate(year, month, day)", year, month, day);
+      
       return new NgbDate(year, month, day);
-    } catch (error) {
-      console.error('Error converting string to NgbDate', error);
-      return null;
-    }
   }
 
   selectedService(event: any) {
@@ -218,7 +228,8 @@ export class CalendarDialog implements OnDestroy, OnInit {
         typeId: this.typeId,
         serviceTypeId: this.selectedServiceTypeId,
         schedule: this.dataPick,
-        dateValue: this.dateValue
+        dateValue: this.dateValue,
+        datePickerShow: this.datePickerShow
       }];
 
     if (this.dialogRef) {
@@ -273,6 +284,8 @@ export class CalendarDialog implements OnDestroy, OnInit {
 
 
   getListDay(id: any, month: any, date: string) {
+    console.log("id", id, month, date);
+    
     this.dateArray = [];
     // Giả sử a là số ngày và b là đơn vị thời gian (tháng, ngày, năm)
     let a = 0;
@@ -347,7 +360,6 @@ export class CalendarDialog implements OnDestroy, OnInit {
   hideDatePicker() {
     if (this.selectedDate) {
       console.log("selectedDate", this.selectedDate);
-      
       const jsDate = new Date(this.selectedDate.year, this.selectedDate.month - 1, this.selectedDate.day);
       const formattedDate = format(jsDate, 'MM/dd/yyyy');
       this.showDatePicker = false; // Ẩn datepicker  }
@@ -363,6 +375,8 @@ export class CalendarDialog implements OnDestroy, OnInit {
       } else if (this.pickServiceType == 3) {
         dateDay = this.getDay(this.datePicker)
         this.scheduleDescription = 'Ngày ' + dateDay + ' hàng tháng'
+      } else {
+        this.scheduleDescription = '- Lịch dọn hàng ngày'
       }
     }
   }
@@ -383,7 +397,6 @@ export class CalendarDialog implements OnDestroy, OnInit {
     });
 
     this.dialogRefAddOn.afterClosed().subscribe(result => {
-      console.log(result);
       if (result) {
         const existingIndex = this.dataPick.findIndex(item => item.index === index);
 

@@ -67,7 +67,7 @@
                       aria-describedby="address-help" maxlength="100" [(ngModel)]="service_address">
                     <p class="error" *ngIf="addressNull">Vui lòng ko để trống thông tin địa chỉ</p>
                   </div>
-                    <!-- <button type="button" class="btn btn-primary">Nhập địa chỉ</button> -->
+                  <!-- <button type="button" class="btn btn-primary">Nhập địa chỉ</button> -->
 
 
                   <p class="takenote">*Free phí di chuyển từ cơ sở gần nhất khi khoảng cách dưới 3km. Trên 3km, phí
@@ -80,13 +80,13 @@
                       <option *ngFor="let type of houseTypes" [value]="type">{{ type }}</option>
                     </select>
                   </div>
-                  <div class="input-group">
+                  <!-- <div class="input-group">
                     <p>Loại dịch vụ(*): </p>
                     <select [(ngModel)]="selectedServiceType" id="serviceType" aria-describedby="serviceType-help"
                       title="Loại dịch vụ">
                       <option *ngFor="let service of serviceTypes" [value]="service">{{ service }}</option>
                     </select>
-                  </div>
+                  </div> -->
                   <div class="input-group">
                     <p>Số tầng(*): </p>
                     <select [(ngModel)]="selectedFloors" id="floors" aria-describedby="floors-help" title="Số tầng">
@@ -95,12 +95,15 @@
                   </div>
                   <div class="input-group">
                     <p>Diện tích sàn(*): </p>
-                    <select (ngModelChange)="onAreaChange($event)" [(ngModel)]="selectedAreaType" id="area" aria-describedby="areaType-help"
-                      title="Diện tích sàn">
-                      <option *ngFor="let area of areaTypes" [value]="area.value">{{ area.title }}</option>
+                    <select (ngModelChange)="onAreaChange($event)" [(ngModel)]="selectedAreaType" id="area"
+                      aria-describedby="areaType-help" title="Diện tích sàn">
+                      <option *ngFor="let area of areaTypes" [value]="area.value">{{ area.title + 'm²' }}</option>
                     </select>
                   </div>
-                    <p class="description">Số lượng người dọn và giá (ước tính): <b>{{cleanerNum}} người dọn dẹp</b> trong thời gian <b> {{duration}} tiếng </b></p>
+                  <p class="description">Số lượng người dọn và giá (ước tính): <span *ngIf="cleanerNum && duration">
+                    <b>{{cleanerNum}} người dọn dẹp</b> trong
+                    thời gian <b> {{duration}} tiếng </b>
+                  </span> </p>
                   <h6 class="text-primary text-uppercase">Tiện ích bổ sung</h6>
                   <p class="description">Các loại hình dịch vụ tiện ích bổ sung là bao gồm
                     các khu vực và thiết bị không bao gồm trong dịch vụ dọn dẹp.</p>
@@ -124,45 +127,50 @@
                   <h6 class="text-primary text-uppercase">Thời gian</h6>
                   <p class="description" style="margin-bottom: 5px;">Có 2 sự lựa chọn cho khách hàng khi sử dụng dịch vụ
                     dọn dẹp đó là: <b>Sử dụng duy nhất</b> và <b>định kỳ</b></p>
-                  <p class="description" style="margin-bottom: 5px;">Khoảng thời gian sử dụng dịch vụ trong ngày bắt đầu từ: <b>8h sáng</b> cho tới trước <b>8h tối</b></p>
+                  <p class="description" style="margin-bottom: 5px;">Khoảng thời gian sử dụng dịch vụ trong ngày bắt đầu
+                    từ: <b>8h sáng</b> cho tới trước <b>8h tối</b></p>
                   <div class="input-group">
                     <p style="width: 20%;">Hình thức sử dụng: </p>
-                    <select [(ngModel)]="selectedTimeType" (ngModelChange)="changeTimeType()" id="timeType" aria-describedby="timeType-help"
-                      title="Loại hình thức thời gian">
+                    <select [(ngModel)]="selectedTimeType" (ngModelChange)="changeTimeType()" id="timeType"
+                      aria-describedby="timeType-help" title="Loại hình thức thời gian">
                       <option *ngFor="let time of timeTypes" [value]="time">{{ time }}</option>
                     </select>
-                    <div class="input-group" *ngIf="selectedTimeType == 'Sử dụng 1 lần'">
+                    <div class="input-group">
                       <p style="width: 20%;">Giờ bắt đầu(*): </p>
-                      <div>                    
+                      <div>
                         <!-- Sử dụng trường input kiểu số -->
-                          <input type="tel" name="time" id="time"
-                          [class.red_border]="c_time"
+                        <input type="tel" name="time" id="time" [class.red_border]="c_time"
                           [class.red_border_no_background]="c_time && (_inTime.length === 0 || _inTime.trim().length === 0)"
                           (blur)="blurExpDate(time)" pattern="\d*" placeholder="08:30" [(ngModel)]="_inTime" #time
-                          maxlength="5" (input)="ValidateExpDate(time, $event)" style="padding: 0.5rem !important"/>
+                          maxlength="5" (input)="ValidateExpDate(time, $event)" style="padding: 0.5rem !important" />
                       </div>
-                      <div *ngIf="c_time" style="width: 100%;" class="error">Vui lòng nhập thời gian trong khoảng 8h sáng tới trước 8h tối.</div>
+                      <div *ngIf="c_time" style="width: 100%;" class="error">Vui lòng nhập thời gian trong khoảng 8h
+                        sáng tới trước 8h tối.</div>
                     </div>
                   </div>
 
                   <div class="date-pickertime" *ngIf="selectedTimeType == 'Sử dụng 1 lần'">
-                    
+
                     <button type="button" class="btn btn-primary pickday" (click)="pickDate()">Chọn ngày
                       <i></i></button>
-                      <p class="error" *ngIf="dateNull">Vui lòng ko để trống thông tin ngày dọn</p>
+                    <p class="error" *ngIf="dateNull">Vui lòng ko để trống thông tin ngày dọn</p>
 
                     <ngb-datepicker class="calendar" *ngIf="showDatePicker" #dp [(ngModel)]="selectedDate"
                       (dateSelect)="hideDatePicker()" (navigate)="datePickerNavigate($event)"
                       [minDate]="minSelectableDate" [maxDate]="maxSelectableDate"></ngb-datepicker>
-                    <p class="showTime" *ngIf="!showDatePicker && datePickerShow">* Lịch ngày dọn: <span>{{
+                    <p class="showTime" *ngIf="(!showDatePicker && datePickerShow)">*
+                      Lịch ngày dọn: <span>{{
                         datePickerShow
                         }}</span></p>
                   </div>
                   <div class="date-pickertime" *ngIf="selectedTimeType != 'Sử dụng 1 lần'">
                     <button type="button" class="btn btn-primary pickday" (click)="pickCalendar()">Chọn lịch
                       <i></i></button>
-                      <p class="error" *ngIf="dateNull">Vui lòng ko để trống thông tin ngày dọn</p>
-                  
+                    <p class="error" *ngIf="dateNull">Vui lòng ko để trống thông tin ngày dọn</p>
+                    <p class="showTime" *ngIf="(servicePackageId && typeId)">*
+                      Lịch ngày dọn: <span>{{
+                        datePickerShow
+                        }}</span></p>
                   </div>
                   <p *ngIf="selectedTimeType != 'Sử dụng 1 lần'" class="takenote">*Đối với dịch vụ định kỳ, khách hàng
                     nên lưu ý về thời gian đặt lịch
@@ -170,7 +178,8 @@
                   <h6 class="text-primary text-uppercase">Nhân viên dọn dẹp</h6>
                   <p class="description mt-3">Dịch vụ được lựa chọn theo các tiêu chí liên quan tới diện tích, khu vực
                     dọn dẹp, HSM sẽ cung cấp những người dọn dẹp thích hợp và tốt nhất tới khách hàng.<span>Người dùng
-                      cũng có thể </span><span class="action-cleaner" (click)="pickCleaner()"> <u><b>chọn người dọn dẹp</b></u>
+                      cũng có thể </span><span class="action-cleaner" (click)="pickCleaner()"> <u><b>chọn người dọn
+                          dẹp</b></u>
                     </span></p>
 
                   <h6 class="text-primary text-uppercase">Phương thức thanh toán</h6>

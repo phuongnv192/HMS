@@ -1,13 +1,14 @@
 import { Component, ElementRef, Inject, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbDateStruct, NgbDate } from '@ng-bootstrap/ng-bootstrap';
-import { format, isAfter, isBefore, parse, subMonths } from 'date-fns';
+import { format, isAfter, isBefore, parse, parseISO, subMonths } from 'date-fns';
 // import { DialogService } from 'src/app/services/dialog.service';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CalendarDialog } from './calendar-dialog/calendar-dialog';
 import { PickCleanerDialog } from './pick-cleaner-dialog/pick-cleaner-dialog';
 import { BookingService } from '../services/booking.service';
 import { PriceListDialog } from './price-list-dialog/price-list-dialog';
+import { ToastrService } from 'ngx-toastr';
 
 export interface DialogData {
   data: string;
@@ -57,31 +58,31 @@ export class BookingComponent implements OnInit {
   timeTypes: string[] = ['Sử dụng 1 lần', 'Định kỳ'];
   areaTypes: any[] = [
     {
-      title: 'dưới 30m2',
+      title: 'dưới 30',
       value: 30
     },
     {
-      title: 'từ 30-50m2',
+      title: 'từ 30-60',
       value: 50
     },
     {
-      title: 'từ 50-70m2',
+      title: 'từ 60-80',
       value: 70
     },
     {
-      title: 'từ 70m2 - 90m2',
+      title: 'từ 80 - 100',
       value: 90
     },
     {
-      title: 'từ 90m2-100m2',
+      title: 'từ 100 - 120',
       value: 100
     },
     {
-      title: 'từ 100m2-120m2',
+      title: 'từ 120 - 150',
       value: 120
     },
     {
-      title: 'từ 120m2-150m2',
+      title: 'từ 150 - 200',
       value: 150
     },
   ];
@@ -168,6 +169,7 @@ export class BookingComponent implements OnInit {
   typeNull = false;
   dateNull = false;
   bookingSchedules = [];
+  scheduleData:any;
   // serviceTypeIdTemp: any;
 
 
@@ -186,6 +188,8 @@ export class BookingComponent implements OnInit {
     public dialogRef: MatDialogRef<CalendarDialog>,
     public dialogRefPriceList: MatDialogRef<PriceListDialog>,
     public cleanerDialogRef: MatDialogRef<PickCleanerDialog>,
+    public warningDialogRef: MatDialogRef<PickCLeanerWarningDialog>,
+    private toastr: ToastrService,
     private bookingServicee: BookingService
   ) {
     const today = new Date();
@@ -286,6 +290,11 @@ export class BookingComponent implements OnInit {
 
   changeTimeType() {
     this.pickDay = '';
+    this.schedule = [];
+    this.scheduleData = [];
+    this.typeId = null;
+    this.servicePackageId = null;
+    this.datePickerShow = '';
   }
 
   pickCalendar(): void {
@@ -305,28 +314,38 @@ export class BookingComponent implements OnInit {
 
     this.dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        console.log(result, "RESULT CALENDAR");
         this.calendarResult = result[0];
         if (result[0]) {
           this.pickDay = result[0].dateValue;
+        }        
+        if(result[0].typeId){
+          this.typeId = result[0].typeId;
+        } else if(result[0].serviceTypeId){
+          
         }
-        this.typeId = result[0].typeId;
         this.schedule = result[0].schedule;
-        let servicePackageName = result[0].servicePackageId.split(' - ');
-        console.log("schedule", result[0].schedule);
-
+        let servicePackageName = result[0].servicePackageId.split(' - ');        
         this.servicePackageId = this.getServicePackageId(servicePackageName[0]);
+        this.scheduleData = this.removeIndexFromBookingSchedules(result[0].schedule);
+        this.datePickerShow = result[0].datePickerShow;
+        console.log("scheduleData", this.scheduleData);
+        
+      } else {
+        console.log(result, "RESULT CALENDAR 2");
+        console.log(this.pickDay, "pickDay 2");
+        console.log(" this.typeId 2",  this.typeId);
+        console.log(" this.this.servicePackageId 2",  this.servicePackageId);
+
       }
+
       this.renderer.removeClass(document.body, 'modal-open');
       // this.dialogService.sendDataDialog(false);
     });
   }
 
   getServicePackageId(servicePackageName) {
-
     for (const serviceType of this.serviceTypeData) {
       for (const servicePackage of serviceType.servicePackages) {
-        console.log("servicePackage", servicePackage.servicePackageName);
         if (servicePackage.servicePackageName == servicePackageName) {
           return servicePackage.servicePackageId;
         }
@@ -354,53 +373,69 @@ export class BookingComponent implements OnInit {
 
   pickCleaner() {
     // this.dialogService.sendDataDialog(true);
-    if (this.selectedTimeType == 'Sử dụng 1 lần') {
-      this.bookingServicee.getCleanerAvaiable(this.dateValue, '', '').subscribe(item => {
-        this.dataCleaner = item.data;
-        this.renderer.addClass(document.body, 'modal-open');
-        this.cleanerDialogRef = this.dialog.open(PickCleanerDialog, {
-          width: '1000px',
-          maxHeight: '85%',
-          data: {
-            data: this.dataCleaner,
-            date: this.dateValue,
-            listPick: this.cleanerIds
-          },
-          panelClass: ['pick-cleaner']
-        });
-        this.cleanerDialogRef.afterClosed().subscribe(result => {
-          if (result) {
-            this.cleanerIds = result;
-          }
-          this.renderer.removeClass(document.body, 'modal-open');
-          // this.dialogService.sendDataDialog(false);
-        });
-      })
-    } else {
-      this.bookingServicee.getCleanerAvaiable(this.pickDay, this.typeId, this.servicePackageId).subscribe(item => {
-        this.dataCleaner = item.data;
-        this.renderer.addClass(document.body, 'modal-open');
-        this.cleanerDialogRef = this.dialog.open(PickCleanerDialog, {
-          width: '1000px',
-          maxHeight: '85%',
-          data: {
-            data: this.dataCleaner,
-            date: this.pickDay,
+      if (this.selectedTimeType == 'Sử dụng 1 lần' && this.dateValue) {
+        this.bookingServicee.getCleanerAvaiable(this.dateValue, '', '').subscribe(item => {
+          this.dataCleaner = item.data;
+          this.renderer.addClass(document.body, 'modal-open');
+          this.cleanerDialogRef = this.dialog.open(PickCleanerDialog, {
+            width: '1000px',
+            maxHeight: '85%',
+            data: {
+              data: this.dataCleaner,
+              date: this.dateValue,
+              listPick: this.cleanerIds
+            },
+            panelClass: ['pick-cleaner']
+          });
+          this.cleanerDialogRef.afterClosed().subscribe(result => {
+            if (result) {
+              this.cleanerIds = result;
+            }
+            this.renderer.removeClass(document.body, 'modal-open');
+            // this.dialogService.sendDataDialog(false);
+          });
+        })
+      } else if ( this.selectedTimeType = 'Định kỳ' && this.pickDay && this.typeId && this.servicePackageId) {
+        this.bookingServicee.getCleanerAvaiable(this.pickDay, this.typeId, this.servicePackageId).subscribe(item => {
+          this.dataCleaner = item.data;
+          this.renderer.addClass(document.body, 'modal-open');
+          this.cleanerDialogRef = this.dialog.open(PickCleanerDialog, {
+            width: '1000px',
+            maxHeight: '85%',
+            data: {
+              data: this.dataCleaner,
+              date: this.pickDay,
+              listPick: this.cleanerIds
+            },
+            panelClass: ['pick-cleaner']
+          });
+          this.cleanerDialogRef.afterClosed().subscribe(result => {
+            if (result) {
+              this.cleanerIds = result;
+            }
+            this.renderer.removeClass(document.body, 'modal-open');
+            // this.dialogService.sendDataDialog(false);
+          });
+        })
+      } else {
+      this.toastr.error('Thiếu thông tin diện tích/thời gian dọn dẹp');
 
-          },
-          panelClass: ['pick-cleaner']
-        });
-        this.cleanerDialogRef.afterClosed().subscribe(result => {
-          if (result) {
-            this.cleanerIds = result;
-          }
-          this.renderer.removeClass(document.body, 'modal-open');
-          // this.dialogService.sendDataDialog(false);
-        });
-      })
+      // this.renderer.addClass(document.body, 'modal-open');
+      //     this.warningDialogRef = this.dialog.open(PickCLeanerWarningDialog, {
+      //       width: '500px',
+      //       maxHeight: '20%',
+      //       data: {
+              
+      //       },
+      //       panelClass: ['waining-cleaner']
+      //     });
+      //     this.cleanerDialogRef.afterClosed().subscribe(result => {
+      //       if (result) {
+      //       }
+      //       this.renderer.removeClass(document.body, 'modal-open');
+      //       // this.dialogService.sendDataDialog(false);
+      //     });
     }
-
-
   }
 
   Order() {
@@ -556,24 +591,21 @@ export class BookingComponent implements OnInit {
       && (parseInt(value.split(':')[0], 0) < 20) && (parseInt(value.split(':')[1], 0) <= 60)
   }
 
-  removeIndexFromBookingSchedules(body: any): void {
+  removeIndexFromBookingSchedules(body: any[]): void {
     return body.forEach(schedule => {
+      console.log("schedule", schedule.workDate); 
+  
+      // Use parse with custom format
       const parsedDate = parse(schedule.workDate, 'MM-dd-yyyy', new Date());
+      console.log("parsedDate", parsedDate);
+  
+      // Format the date without time
       schedule.workDate = format(parsedDate, 'yyyy-MM-dd');
-      // delete schedule.index;
     });
   }
 
-  // changeDateFormat(): void {
-  //   this.bookingSchedules.forEach(schedule => {
-  //     const parsedDate = parse(schedule.workDate, 'MM-dd-yyyy', new Date());
-  //     schedule.workDate = format(parsedDate, 'yyyy/MM/dd');
-  //   });
-  // }
 
-  Booking() {
-    console.log("this.schedule", this.schedule);
-    
+  Booking() {    
     let body = {
       hostName: this.account_name,
       hostPhone: this.phone_number,
@@ -622,9 +654,9 @@ export class BookingComponent implements OnInit {
     } else if (!this.schedule && !(this.pickDay || this.dateValue)) {
       this.dateNull = true;
     } else {
-      console.log("bodybodybodybody", body);
       this.bookingServicee.booking(body).subscribe({
         next: () => {
+          this.toastr.success('Đơn dịch vụ đã được đặt thành công, vui lòng kiểm tra email thông tin chi tiết', 'Thành công');
           // Chuyển hướng sang trang Home và truyền thông báo thành công
           this.router.navigate(["/introduction"], { queryParams: { success: true } });
         },
@@ -646,6 +678,27 @@ export class TermAndConditionDialog {
 
   constructor(
     public DialogRef: MatDialogRef<TermAndConditionDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+  ) {
+  }
+
+  onNoClick(): void {
+    this.DialogRef.close();
+  }
+}
+
+
+@Component({
+  selector: "pick-cleaner-warining-dialog",
+  templateUrl: "pick-cleaner-warining-dialog/pick-cleaner-warining.html",
+  styleUrls: ["pick-cleaner-warining-dialog/pick-cleaner-warining.scss"],
+})
+
+export class PickCLeanerWarningDialog {
+  cancel_description = "";
+
+  constructor(
+    public DialogRef: MatDialogRef<PickCLeanerWarningDialog>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
   ) {
   }

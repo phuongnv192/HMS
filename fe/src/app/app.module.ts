@@ -15,6 +15,7 @@ import { PickCleanerDialog } from "./booking/pick-cleaner-dialog/pick-cleaner-di
 import { CleanerRateDialog } from "./booking/cleaner-rate-dialog/cleaner-rate-dialog";
 import {
   TermAndConditionDialog,
+  PickCLeanerWarningDialog,
   BookingComponent,
 } from "./booking/booking.component";
 import { TermAndConditionsComponent } from "./template/term-and-conditions/term-and-conditions.component";
@@ -67,6 +68,7 @@ import { RouterModule } from '@angular/router';
     CalendarDialog,
     TermAndConditionsComponent,
     TermAndConditionDialog,
+    PickCLeanerWarningDialog,
     PickCleanerDialog,
     CleanerRateDialog,
     ForgotPWComponent,

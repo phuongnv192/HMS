@@ -137,18 +137,34 @@ export class PickCleanerDialog implements OnDestroy, OnInit {
      });
   }
 
-  addCleaner(cleaner: any){
+  // addCleaner(cleaner: any){
+  //   this.listPick.push(cleaner);
+  //   this.listPickData = this.listPick.map(cleaner => cleaner.cleanerId);
+  // }
+
+  // removeCleaner(index: any){
+  //   this.listPick.splice(index, 1);
+  //   this.listPickData = this.listPick.map(cleaner => cleaner.cleanerId);
+  // }
+
+  addCleaner(cleaner: any): void {
     this.listPick.push(cleaner);
     this.listPickData = this.listPick.map(cleaner => cleaner.cleanerId);
-    console.log("ADD listPick", this.listPick);
-    console.log("ADD listPickData", this.listPickData);
+    this.updateListA();
   }
-
-  removeCleaner(index: any){
-    this.listPick.splice(index, 1);
+  
+  removeCleaner(index: any): void {
+    this.listPick.splice(index, 1)[0];
     this.listPickData = this.listPick.map(cleaner => cleaner.cleanerId);
-    console.log("REMOVE listPick", this.listPick);
-    console.log("REMOVE listPickData", this.listPickData);
+    this.updateListA();
+  }
+  
+  updateListA(): void {
+    this.listCleaner.forEach(cleanerA => {
+      cleanerA.selected = this.listPick.some(cleanerPick => cleanerPick.cleanerId === cleanerA.cleanerId);
+    });
+    this.listA = this.listCleaner.slice(0, 5);
+    this.listB = this.listCleaner.slice(5);
   }
 
   pickCleaner(){
