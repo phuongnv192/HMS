@@ -1,0 +1,71 @@
+<div mat-dialog-actions class="guide_class">
+    <div class="dialog-container">
+      <div class="header-background"></div>
+      <div class="header">
+        <h6>Đăng ký thêm nhân viên dọn dẹp </h6>
+      </div>
+      <div class="content">
+        <div class="content-scroll">
+          <form role="form">
+            <div class="form-group margin0" style="display: flex;">
+              <div class="input-group-alternative mb-3" style="display: flex; width: 45%; margin-right: 2rem;">
+                <div class="" style="display: flex;">
+                  <span class="input-group-text"><i class="fas fa-user"></i></span>
+                </div>
+                <input class="form-control" #account id="account" (keypress)="omit_special_char_email($event)"
+                  (blur)="changeHandler('account')" placeholder="Tài khoản" type="text" aria-describedby="email-help"
+                  maxlength="50" [value]="account_name">
+              </div>
+              <div class="input-group-alternative mb-3" style="display: flex; width: 35%;">
+                <div class="" style="display: flex;">
+                  <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                </div>
+                <input class="form-control" (keypress)="omit_special_char_email($event)" placeholder="Ngày sinh"
+                  [value]="dob">
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="input-group input-group-alternative mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="fas fa-map-marker"></i></span>
+                </div>
+                <input class="form-control" #address id="address" placeholder="Địa chỉ nhà" type="text"
+                  aria-describedby="email-help" maxlength="50" [value]="account_address">
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="input-group input-group-alternative mb-3" style="display: flex; width: 45%;">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="fas fa-credit-card"></i></span>
+                </div>
+                <input class="form-control" placeholder="CCCD/CMT" [maxLength]="10" [value]="idCard" type="text">
+              </div>
+            </div>
+  
+            <div class="form-group">
+              <div class="input-group">
+                <p style="padding-right: 1rem;">Cơ sở làm việc(*): </p>
+                <select style="height: 30px;" [(ngModel)]="selectedHouseType" id="houseType"
+                  aria-describedby="houseType-help" title="Loại hình nhà">
+                  <option *ngFor="let type of houseTypes" [value]="type">{{ type }}</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="input-group">
+                <div class="title_note rednoti"> *Dịch vụ tiện ích:</div>
+                <div class="table-responsive" *ngFor="let list of parentService">
+                  <input type="checkbox" [(ngModel)]="list.checked "
+                    (click)="checkService(list.name.parent.name, list.name.parent.id)"> {{ list.name.parent.name }}
+                </div>
+              </div>
+            </div>
+            <div class="text-center">
+              <button type="button" class="btn btn-primary mt-4" (click)="addCleaner()">Thêm Nhân viên dọn dẹp</button>
+            </div>
+          </form>
+        </div>
+        <button mat-button class="button" (click)="onNoClick()"><img src="./assets/img/x-dialog.svg" /></button>
+      </div>
+    </div>
+  </div>

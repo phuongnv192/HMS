@@ -9,11 +9,11 @@ import { AuthService } from "src/app/services/auth.service";
 import { CacheService } from "src/app/services/cache.service";
 
 @Component({
-  selector: "app-navbar-customer",
-  templateUrl: "./navbar-customer.component.html",
-  styleUrls: ["./navbar-customer.component.scss"],
+  selector: "app-navbar",
+  templateUrl: "./navbar.component.html",
+  styleUrls: ["./navbar.component.scss"],
 })
-export class NavbarCustomerComponent implements OnInit {
+export class NavbarComponent implements OnInit {
   public isCollapsed = true;
   public focus;
   private lastPoppedUrl: string;
@@ -38,6 +38,15 @@ export class NavbarCustomerComponent implements OnInit {
   ngOnInit() {
     if (!this.authService.getJwtToken()) {
       this.username = '';
+    }
+    if(this.cleanerNavbar){
+      this.listTitles = ROUTES1.filter((listTitle) => listTitle);
+    } else if(this.managerNavbar){
+      this.listTitles = ROUTES2.filter((listTitle) => listTitle);
+    } else if(this.leadNavbar){      
+      this.listTitles = ROUTES4.filter((listTitle) => listTitle);      
+    } else if(this.adminNavbar){
+      this.listTitles = ROUTES3.filter((listTitle) => listTitle);
     }
 
     this.router.events.subscribe((event) => {
@@ -66,27 +75,18 @@ export class NavbarCustomerComponent implements OnInit {
       return false;
     }
   }
-  isDocumentation() {
-    var titlee = this.location.prepareExternalUrl(this.location.path());
-    if (titlee === "documentation") {
-      return true;
-    } else {
-      return false;
-    }
-  }
 
-  getTitle() {
-    var titlee = this.location.prepareExternalUrl(this.location.path());
-    if (titlee.charAt(0) === "#") {
-      titlee = titlee.slice(1);
-    }
-
+  getTitle() {    
+    var titlee = this.location.path();
     for (var item = 0; item < this.listTitles.length; item++) {
+      console.log("this.listTitles[item].path", this.listTitles[item].path);
+      console.log("this.location.path();", this.location.path());
+      
       if (this.listTitles[item].path === titlee) {
         return this.listTitles[item].title;
       }
     }
-    return "Dashboard";
+    return "";
   }
 
   logout() {

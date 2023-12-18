@@ -8,7 +8,8 @@ import { jwtDecode } from "jwt-decode";
 export class AuthService {
   private baseUrl = environment.apiUrl + "/auth";
   private jwtToken: string;
-  private REGISTER = this.baseUrl + "/register";
+  private REGISTER = environment.apiUrl + "/cleaner";
+  private REGISTERCLEANER = this.baseUrl + "/register";
   private CHANGE_PASS = this.baseUrl + "/change-password";
   private LOGOUT = this.baseUrl + "/logout";
   private USERINFOR = environment.apiUrl + "/user/info";
@@ -43,6 +44,11 @@ export class AuthService {
 
   register(req: any): Observable<any> {
     return this.http.post<any>(this.REGISTER, req);
+  }
+
+  addCleaner(req: any): Observable<any> {
+    const headers = this.getHeadersWithToken();
+    return this.http.post<any>(this.REGISTERCLEANER, req, { headers });
   }
 
   signout() {

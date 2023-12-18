@@ -1,67 +1,100 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
-import { AuthService } from "../../services/auth.service";
-import { Router } from "@angular/router";
-import { CacheService } from "src/app/services/cache.service";
-import { ToastrService } from "ngx-toastr";
+import { Subscription } from 'rxjs';
+import { ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { Component, Inject, OnDestroy } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { CleanerData } from '../../customer/list-customer/list-customer.component';
+import { BookingService } from 'src/app/services/booking.service';
+import { AuthService } from 'src/app/services/auth.service';
+import { Toast, ToastrService } from 'ngx-toastr';
+
+// import { DialogService } from 'src/app/services/dialog.service';
 
 @Component({
-  selector: "app-login",
-  templateUrl: "./login.component.html",
-  styleUrls: ["./login.component.css"],
+  selector: 'app-add-cleaner-dialog',
+  templateUrl: './add-cleaner-dialog.html',
+  styleUrls: ['./add-cleaner-dialog.css']
 })
-export class LoginComponent implements OnInit {
-  @ViewChild("account") accountElement: any;
 
-  focus;
-  focus1;
+export class AddCleanerDialog implements OnDestroy, OnInit {
+  @ViewChild("account", { static: false }) accountElement: ElementRef;
+
+  public mobile: any;
+  private _subscription = Subscription.EMPTY;
+  public listCleaner: any;
   account_name: any;
-  accountBlur = false;
-  password: string;
-  isCacheCleared = false;
-  account_wrong = false;
-  constructor(
-    private authService: AuthService,
-    private router: Router,
-    private cacheService: CacheService,
-    private toastr: ToastrService
-  ) { }
+  dataCleaner: any;
+  body: any;
+  account_email: any;
+  houseTypes: string[] = ['Hà Nội'];
+  selectedHouseType: string; // Biến lưu trữ loại hình nhà được chọn
+  address: any;
+  account_address = '';
+  idCard = '';
+  dob = '';
+  listAdvanceServiceId: any;
+  parentService = [];
+  failureAddCleaner: boolean;
 
-  ngOnInit(): void {
+  constructor(
+    public dialog: MatDialog, private renderer: Renderer2,
+    private bookingServicee: BookingService,
+    // private dialogService: DialogService,
+    public cleanerDialogRef: MatDialogRef<AddCleanerDialog>,
+    private authService: AuthService,
+    private toastr: ToastrService,
+    @Inject(MAT_DIALOG_DATA) public data: CleanerData) {
   }
 
-  login() {
-    this.authService.signin(this.account_name, this.password).subscribe({
-      next: (res) => {
-        this.authService.getUserInfor().subscribe((data) => {
-          if (data.data.role.name == "CUSTOMER") {
-            this.authService.setAuthenticationStatus(true);
-            this.router.navigate(["/home"]);
-          } else if (
-            data.data.role.name == "MANAGER"
-          ) {
-            this.authService.setAuthenticationStatus(true);
-            this.router.navigate(["/dashboard"]);
-          } else if (data.data.role.name == "CLEANER") {
-            this.authService.setAuthenticationStatus(true);
-            this.router.navigate(["/schedule"]);
-          } else if (data.data.role.name == "ADMIN") {
-            this.authService.setAuthenticationStatus(true);
-            this.router.navigate(["/list-customer"]);
-          } else if (data.data.role.name == "LEADER") {
-            this.authService.setAuthenticationStatus(true);
-            this.router.navigate(["/list-cleaner"]);
-          }
+  ngOnInit(): void {
+    this.selectedHouseType = 'Hà Nội';
+    this.bookingServicee.getServiceAddOns("-1").subscribe(data => {
+      if (data) {
+        data.data.forEach(val => {
+          let checkedValue = false;
+          this.parentService.push({
+            name: val,
+            checked: checkedValue
+          });
         });
-      }, // nextHandler
-      error: (err) => {
-        console.log(err);
-      }, // errorHandler
+      }
     });
   }
 
-  clearCache() {
-    // Reload the page to clear browser cache
-    window.location.reload();
+
+  onNoClick(): void {
+    this.cleanerDialogRef.close();
+  }
+
+  ngOnDestroy() {
+    this._subscription.unsubscribe();
+  }
+
+  cleanerRateDetail() {
+
+  }
+
+  addCleaner() {
+    const body = {
+      address: this.account_address,
+      idCard: this.idCard,
+      dob: this.dob ? this.dob : "1988-01-01",
+      userId: this.account_name,
+      branchId: "1",
+      serviceIds: this.listAdvanceServiceId
+    }
+    if(this.body){
+      this.authService.addCleaner(body).subscribe({
+        next: () => {
+          this.toastr.success('Người dọn ' + this.account_name + ' đã được bổ sung vào danh sách nhân viên');
+          this.cleanerDialogRef.close();
+        },
+        error: () => { 
+          this.toastr.error('Thêm người dọn thất bại');
+          this.failureAddCleaner = true;
+        },
+      });
+    }
+    
   }
 
   omit_special_char_email(event) {
@@ -81,16 +114,13 @@ export class LoginComponent implements OnInit {
           : ""
       );
     }
-  }
-
-  clearAccount() {
-    this.accountBlur = false;
-    this.account_name = "";
-    this.accountElement.nativeElement.focus();
-  }
-
-  focusAccount() {
-    this.accountBlur = false;
+    if (name == "email") {
+      this.account_email = this.change_specific_alias_email(
+        this.account_email
+          ? this.account_email.toString().trim().replace(/  +/g, " ")
+          : ""
+      );
+    }
   }
 
   change_specific_alias_email(alias) {
@@ -148,5 +178,16 @@ export class LoginComponent implements OnInit {
     str = str.replace(/Đ/g, "D");
     str = str.trim();
     return str;
+  }
+
+  checkService(id: any) {
+    const idex = this.listAdvanceServiceId.indexOf(id);
+
+    if (idex == -1) {
+      this.listAdvanceServiceId.push(id);
+    } else {
+      // Nếu giá trị đã tồn tại, loại bỏ khỏi mảng
+      this.listAdvanceServiceId.splice(idex, 1);
+    }
   }
 }

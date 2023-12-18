@@ -90,7 +90,6 @@ export class PickCleanerDialog implements OnDestroy, OnInit {
   }
 
   searchCleaner() {
-    console.log(111111111, this.searchname);
     this.searchResults = [];
     this.noDataSearch = false;
 

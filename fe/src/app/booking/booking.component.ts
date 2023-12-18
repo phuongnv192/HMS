@@ -9,6 +9,7 @@ import { PickCleanerDialog } from './pick-cleaner-dialog/pick-cleaner-dialog';
 import { BookingService } from '../services/booking.service';
 import { PriceListDialog } from './price-list-dialog/price-list-dialog';
 import { ToastrService } from 'ngx-toastr';
+import { BillBookingDialog } from './bill-booking/bill-booking-dialog';
 
 export interface DialogData {
   data: string;
@@ -33,6 +34,14 @@ export interface CalendarDialogData {
 
 export interface PriceListDialogData {
   data: any;
+}
+
+export interface BillDialogData {
+  data: any;
+  cleanerNum: any;
+  duration: any;
+  datePickerShow: any;
+  cleanerList: any;
 }
 
 @Component({
@@ -169,7 +178,8 @@ export class BookingComponent implements OnInit {
   typeNull = false;
   dateNull = false;
   bookingSchedules = [];
-  scheduleData:any;
+  scheduleData: any;
+  cleanerList: any;
   // serviceTypeIdTemp: any;
 
 
@@ -189,6 +199,7 @@ export class BookingComponent implements OnInit {
     public dialogRefPriceList: MatDialogRef<PriceListDialog>,
     public cleanerDialogRef: MatDialogRef<PickCleanerDialog>,
     public warningDialogRef: MatDialogRef<PickCLeanerWarningDialog>,
+    public billDialogRef: MatDialogRef<BillBookingDialog>,
     private toastr: ToastrService,
     private bookingServicee: BookingService
   ) {
@@ -318,24 +329,24 @@ export class BookingComponent implements OnInit {
         this.calendarResult = result[0];
         if (result[0]) {
           this.pickDay = result[0].dateValue;
-        }        
-        if(result[0].typeId){
+        }
+        if (result[0].typeId) {
           this.typeId = result[0].typeId;
-        } else if(result[0].serviceTypeId){
-          
+        } else if (result[0].serviceTypeId) {
+
         }
         this.schedule = result[0].schedule;
-        let servicePackageName = result[0].servicePackageId.split(' - ');        
+        let servicePackageName = result[0].servicePackageId.split(' - ');
         this.servicePackageId = this.getServicePackageId(servicePackageName[0]);
         this.scheduleData = this.removeIndexFromBookingSchedules(result[0].schedule);
         this.datePickerShow = result[0].datePickerShow;
         console.log("scheduleData", this.scheduleData);
-        
+
       } else {
         console.log(result, "RESULT CALENDAR 2");
         console.log(this.pickDay, "pickDay 2");
-        console.log(" this.typeId 2",  this.typeId);
-        console.log(" this.this.servicePackageId 2",  this.servicePackageId);
+        console.log(" this.typeId 2", this.typeId);
+        console.log(" this.this.servicePackageId 2", this.servicePackageId);
 
       }
 
@@ -374,51 +385,51 @@ export class BookingComponent implements OnInit {
 
   pickCleaner() {
     // this.dialogService.sendDataDialog(true);
-      if (this.selectedTimeType == 'Sử dụng 1 lần' && this.dateValue) {
-        this.bookingServicee.getCleanerAvaiable(this.dateValue, '', '').subscribe(item => {
-          this.dataCleaner = item.data;
-          this.renderer.addClass(document.body, 'modal-open');
-          this.cleanerDialogRef = this.dialog.open(PickCleanerDialog, {
-            width: '1000px',
-            maxHeight: '85%',
-            data: {
-              data: this.dataCleaner,
-              date: this.dateValue,
-              listPick: this.cleanerIds
-            },
-            panelClass: ['pick-cleaner']
-          });
-          this.cleanerDialogRef.afterClosed().subscribe(result => {
-            if (result) {
-              this.cleanerIds = result;
-            }
-            this.renderer.removeClass(document.body, 'modal-open');
-            // this.dialogService.sendDataDialog(false);
-          });
-        })
-      } else if ( this.selectedTimeType = 'Định kỳ' && this.pickDay && this.typeId && this.servicePackageId) {
-        this.bookingServicee.getCleanerAvaiable(this.pickDay, this.typeId, this.servicePackageId).subscribe(item => {
-          this.dataCleaner = item.data;
-          this.renderer.addClass(document.body, 'modal-open');
-          this.cleanerDialogRef = this.dialog.open(PickCleanerDialog, {
-            width: '1000px',
-            maxHeight: '85%',
-            data: {
-              data: this.dataCleaner,
-              date: this.pickDay,
-              listPick: this.cleanerIds
-            },
-            panelClass: ['pick-cleaner']
-          });
-          this.cleanerDialogRef.afterClosed().subscribe(result => {
-            if (result) {
-              this.cleanerIds = result;
-            }
-            this.renderer.removeClass(document.body, 'modal-open');
-            // this.dialogService.sendDataDialog(false);
-          });
-        })
-      } else {
+    if (this.selectedTimeType == 'Sử dụng 1 lần' && this.dateValue) {
+      this.bookingServicee.getCleanerAvaiable(this.dateValue, '', '').subscribe(item => {
+        this.dataCleaner = item.data;
+        this.renderer.addClass(document.body, 'modal-open');
+        this.cleanerDialogRef = this.dialog.open(PickCleanerDialog, {
+          width: '1000px',
+          maxHeight: '85%',
+          data: {
+            data: this.dataCleaner,
+            date: this.dateValue,
+            listPick: this.cleanerIds
+          },
+          panelClass: ['pick-cleaner']
+        });
+        this.cleanerDialogRef.afterClosed().subscribe(result => {
+          if (result) {
+            this.cleanerIds = result;
+          }
+          this.renderer.removeClass(document.body, 'modal-open');
+          // this.dialogService.sendDataDialog(false);
+        });
+      })
+    } else if (this.selectedTimeType = 'Định kỳ' && this.pickDay && this.typeId && this.servicePackageId) {
+      this.bookingServicee.getCleanerAvaiable(this.pickDay, this.typeId, this.servicePackageId).subscribe(item => {
+        this.dataCleaner = item.data;
+        this.renderer.addClass(document.body, 'modal-open');
+        this.cleanerDialogRef = this.dialog.open(PickCleanerDialog, {
+          width: '1000px',
+          maxHeight: '85%',
+          data: {
+            data: this.dataCleaner,
+            date: this.pickDay,
+            listPick: this.cleanerIds
+          },
+          panelClass: ['pick-cleaner']
+        });
+        this.cleanerDialogRef.afterClosed().subscribe(result => {
+          if (result) {
+            this.cleanerIds = result;
+          }
+          this.renderer.removeClass(document.body, 'modal-open');
+          // this.dialogService.sendDataDialog(false);
+        });
+      })
+    } else {
       this.toastr.error('Thiếu thông tin diện tích/thời gian dọn dẹp');
 
       // this.renderer.addClass(document.body, 'modal-open');
@@ -426,7 +437,7 @@ export class BookingComponent implements OnInit {
       //       width: '500px',
       //       maxHeight: '20%',
       //       data: {
-              
+
       //       },
       //       panelClass: ['waining-cleaner']
       //     });
@@ -594,19 +605,19 @@ export class BookingComponent implements OnInit {
 
   removeIndexFromBookingSchedules(body: any[]): void {
     return body.forEach(schedule => {
-      console.log("schedule", schedule.workDate); 
-  
+      console.log("schedule", schedule.workDate);
+
       // Use parse with custom format
       const parsedDate = parse(schedule.workDate, 'MM-dd-yyyy', new Date());
       console.log("parsedDate", parsedDate);
-  
+
       // Format the date without time
       schedule.workDate = format(parsedDate, 'yyyy-MM-dd');
     });
   }
 
 
-  Booking() {    
+  Booking() {
     let body = {
       hostName: this.account_name,
       hostPhone: this.phone_number,
@@ -617,7 +628,7 @@ export class BookingComponent implements OnInit {
       floorNumber: this.selectedFloors,
       floorArea: 'M260',  //'M' + this.selectedAreaType  chưa thống nhất đc BE FE
       cleanerIds: this.cleanerIds,
-      bookingSchedules:[
+      bookingSchedules: [
         {
           "floorNumber": 1,
           "workDate": "2023-12-16",
@@ -665,6 +676,64 @@ export class BookingComponent implements OnInit {
       });;
     }
 
+  }
+
+  viewBill() {
+    let body = {
+      "hostName": "longtk",
+      "hostPhone": "0966069299",
+      "hostAddress": "so 8 giai phong",
+      "hostDistance": "6km",
+      "distanceprice": 10000,
+      "houseType": "APARTMENT",
+      "floorNumber": 1,
+      "floorArea": "M260",
+      "cleanerIds": [1,2,3],
+      "bookingSchedules": [
+        {
+          "floorNumber": 1,
+          "workDate": "2023-12-02",
+          "startTime": null,
+          "endTime": null,
+          "serviceAddOnIds": [1]
+        },
+        {
+          "floorNumber": 1,
+          "workDate": "2023-12-12",
+          "startTime": null,
+          "endTime": null,
+          "serviceAddOnIds": [1]
+        }
+      ],
+      "serviceTypeId": 2,
+      "servicePackageId": 2,
+      "serviceAddOnIds": [1],
+      "section": "MOR",
+      "startTime": "2023-12-03T10:12:27.374+00:00",
+      "endTime": "2023-12-03T16:12:27.374+00:00",
+      "workDate": "2023-12-10",
+      "dayOfTheWeek": null,
+      "note": ""
+    }
+    this.renderer.addClass(document.body, 'modal-open');
+        this.billDialogRef = this.dialog.open(BillBookingDialog, {
+          width: '1000px',
+          maxHeight: '85%',
+          data: {
+            data: body,
+            cleanerNum: this.cleanerNum,
+            duration: this.duration,
+            datePickerShow: this.datePickerShow,
+            cleanerList: this.cleanerList,
+          },
+          panelClass: ['bill-booking']
+        });
+        this.billDialogRef.afterClosed().subscribe(result => {
+          if (result) {
+          }
+          this.renderer.removeClass(document.body, 'modal-open');
+          // this.dialogService.sendDataDialog(false);
+        });
   }
 }
 

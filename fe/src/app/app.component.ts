@@ -79,7 +79,9 @@ export class AppComponent implements OnInit {
                             this.customerNavbar = true;
                         } else if(user.data.role.name == "MANAGER"){
                             this.managerNavbar = true;
-                        } else if(user.data.role.name == "LEAD"){
+                        } else if(user.data.role.name == "LEADER"){
+                            console.log(1111111111);
+                            
                             this.leadNavbar = true;
                         } else if(user.data.role.name == "ADMIN"){
                             this.adminNavbar = true;

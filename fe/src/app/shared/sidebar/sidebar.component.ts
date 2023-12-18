@@ -40,7 +40,7 @@ export const ROUTES1: RouteInfoCleaner[] = [
 export const ROUTES2: RouteInfoManager[] = [
   { path: '/dashboard', title: 'Thống kê', icon: 'ni-tv-2', class: '' },
   // { path: '/list-customer', title: 'Danh sách nhân vi', icon: 'ni-bullet-list-67 text-red', class: '' },
-  { path: '/booking-management', title: 'Quản lý dịch vụ', icon: 'ni-bullet-list-67 text-red', class: '' },
+  // { path: '/booking-management', title: 'Quản lý dịch vụ', icon: 'ni-bullet-list-67 text-red', class: '' },
 ];
 
 export const ROUTES3: RouteInfoAdmin[] = [
@@ -75,8 +75,8 @@ export class SidebarComponent implements OnInit {
   constructor(private router: Router, private route: ActivatedRoute, private authService: AuthService, private cacheService: CacheService) {
     this.menuItemsCleaner = this.setActiveClassCleaner(ROUTES1);
     this.menuItemsManager = this.setActiveClassManager(ROUTES2);
-    this.menuItemsAdmin = this.setActiveClassManager(ROUTES3);
-    this.menuItemsLead = this.setActiveClassManager(ROUTES4);
+    this.menuItemsAdmin = this.setActiveClassAdmin(ROUTES3);
+    this.menuItemsLead = this.setActiveClassLead(ROUTES4);
   }
 
   ngOnInit() {
@@ -97,7 +97,7 @@ export class SidebarComponent implements OnInit {
       } else if(this.adminNavbar){
         this.menuItemsAdmin = this.setActiveClassAdmin(ROUTES3, currentUrl);
         this.menuItemsAdmin = ROUTES3.filter(menuItem => menuItem);
-      } else if(this.leadNavbar){
+      } else if(this.leadNavbar){        
         this.menuItemsLead = this.setActiveClassLead(ROUTES4, currentUrl);
         this.menuItemsLead = ROUTES4.filter(menuItem => menuItem);
       }

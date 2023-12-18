@@ -113,7 +113,7 @@
           </a>
         </li>
         <li *ngIf="guestNavbar" class="nav-item d-none d-lg-block ml-lg-4">
-          <a [routerLink]="['/register']" target="_blank"
+          <a routerLinkActive="active" [routerLink]="['/register']" target="_blank"
             class="btn btn-neutral btn-icon">
             <span class="btn-inner--icon">
               <i class="fa fa-key mr-2"></i>
@@ -122,7 +122,7 @@
           </a>
         </li>
         <li *ngIf="guestNavbar" class="nav-item d-none d-lg-block ml-lg-4">
-          <a [routerLink]="['/login']" target="_blank"
+          <a routerLinkActive="active" [routerLink]="['/login']" target="_blank"
             class="btn btn-neutral btn-icon">
             <span class="btn-inner--icon">
               <i class="fa fa-lock mr-2"></i>

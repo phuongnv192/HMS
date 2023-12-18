@@ -1,9 +1,12 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, Renderer2 } from "@angular/core";
 import { CleanerService } from "../services/cleaner.service";
 import { HttpParams } from "@angular/common/http";
 import { NgbToast } from "@ng-bootstrap/ng-bootstrap";
 import { Router } from "@angular/router";
 import { AuthService } from "../services/auth.service";
+import { ToastrService } from "ngx-toastr";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { AddCleanerDialog } from "./add-cleaner/add-cleaner-dialog";
 
 @Component({
   selector: "app-tables",
@@ -22,8 +25,13 @@ export class ListCleanerComponent implements OnInit {
   size: number = 10;
   page: number = 0;
   jwtToken: any;
+  data: any;
 
-  constructor(private cleanService: CleanerService, private router: Router, private authService: AuthService) {}
+  constructor(private cleanService: CleanerService, private router: Router, private authService: AuthService,
+    private renderer: Renderer2,
+    public dialogRef: MatDialogRef<AddCleanerDialog>,
+    public dialog: MatDialog,
+    private toastr: ToastrService,) {}
 
   getListCleaner() {
     var req = new HttpParams()
@@ -37,6 +45,26 @@ export class ListCleanerComponent implements OnInit {
       },
       error: (error) => {},
     });
+  }
+
+  addCleaner(){
+    console.log(12121212);
+    
+    this.renderer.addClass(document.body, 'modal-open');
+          this.dialogRef = this.dialog.open(AddCleanerDialog, {
+            width: '700px',
+            maxHeight: '65%',
+            data: {
+              data: this.data,
+            },
+            panelClass: ['add-cleaner']
+          });
+          this.dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+            }
+            this.renderer.removeClass(document.body, 'modal-open');
+            // this.dialogService.sendDataDialog(false);
+          });
   }
 
   ngOnInit() {
