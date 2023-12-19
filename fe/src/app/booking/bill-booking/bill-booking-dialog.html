@@ -1,17 +1,101 @@
 <div mat-dialog-actions class="guide_class">
-    <div class="dialog-container">
-      <div class="header-background"></div>
-      <div class="header">
-        <h6>Thông tin đơn dịch vụ</h6>
-      </div>
-      <div class="content">
-        <div class="content-scroll">
-          <div class="title_note"> *Vui lòng xác nhận lại thông tin đơn hàng bao gồm thông tin cá nhân và thời gian/dịch vụ/ người dọn</div>
-          <div class="title_note rednoti"> Dịch vụ bổ sung không được tính phí vào đơn dịch vụ, phí sẽ được bổ sung sau khi người dọn xác nhận và thông báo lại</div>
-          <div>
-            
+  <div class="dialog-container">
+    <div class="header-background"></div>
+    <div class="header">
+      <h6>Đơn dịch vụ</h6>
+    </div>
+    <div class="content">
+      <div class="content-scroll">
+        <div class="title_note"> *Vui lòng xác nhận lại thông tin đơn hàng bao gồm thông tin cá nhân và dịch vụ</div>
+        <div class="title_note rednoti"> Dịch vụ bổ sung không được tính phí vào đơn dịch vụ, phí sẽ được bổ sung sau
+          khi người dọn xác nhận và thông báo lại</div>
+        <div class="information">
+          <div class="infor-col1">
+            <h6 class="text-primary text-uppercase resize">Thông tin người dùng</h6>
+            <div class="input-group">
+              <p style="width: 90%; display: block;">
+                Tên chủ nhà(*): {{billDetail.hostName}}
+              </p>
+              <p style="width: 90%; display: block;">Số điện thoại(*): {{billDetail.hostPhone}}</p>
+            </div>
+            <h6 *ngIf="billDay" class="text-primary text-uppercase resize">Tiện ích bổ sung</h6>
+            <p class="listAdvanceService" style="padding-top: 1rem;" *ngIf="billDay">* Danh sách tiện ích đã đăng
+              ký: <span style="font-weight: 700; font-size: 15px; color: darkred;">{{
+                textListAdvanceService
+                }}</span></p>
+            <h6 class="text-primary text-uppercase resize">Thời gian<span *ngIf="billDay">(dịch vụ theo ngày) </span>
+              <span *ngIf="billSchedule">(dịch vụ định kỳ) </span>:
+            </h6>
+            <div class="date-pickertime">
+              <p class="" style="padding-bottom: 0; margin-bottom: 0;">*
+                Lịch ngày dọn: <span>{{
+                  datePickerShow
+                  }}</span></p>
+            </div>
+            <div class="input-group">
+              <div class="input-group">
+                <p>Giờ bắt đầu(*): {{startTime}}</p>
+              </div>
+            </div>
+            <h6 class="text-primary text-uppercase resize">Phương thức thanh toán </h6>
+            <p style="font-size: 1rem;
+          font-weight: 300;
+          line-height: 1.7;
+          color: #000000de;
+          text-transform: lowercase;">
+              Thanh toán bằng tiền mặt
+            </p>
           </div>
+          <div class="infor-col2">
+            <h6 class="text-primary text-uppercase resize">Thông tin nhà/khu vực vệ sinh</h6>
+            <div class="input-group">
+              <p>Loại hình nhà(*): {{billDetail.houseType}}</p>
+            </div>
+            <div class="input-group">
+              <p>Địa chỉ nơi dọn: {{billDetail.hostAddress}}</p>
+            </div>
+            <div class="input-group">
+              <p style="width: 90%; display: block;">Số tầng(*): {{billDetail.floorNumber}}</p>
+              <p style="width: 90%; display: block;">Diện tích
+                sàn(*): {{billDetail.floorArea}}</p>
+              <p class="description">Số lượng người dọn và giá (ước tính): <span>
+                  <b>{{cleanerNum}} người dọn dẹp</b> trong
+                  thời gian <b> {{duration}} tiếng </b>
+                </span> </p>
+            </div>
+            <h6 class="text-primary text-uppercase resize">Nhân viên dọn dẹp </h6>
+            <p style="font-size: 1rem;
+              font-weight: 300;
+              line-height: 1.7;
+              color: #000000de;
+              text-transform: lowercase;">
+              {{cleanerList}}
+            </p>
+          </div>
+
         </div>
-        <button mat-button class="button" (click)="onNoClick()"><img src="./assets/img/x-dialog.svg" /></button>
+        <!-- {{billDay}} {{cleanerNum}} -->
+
+
+        <h6 class="text-primary text-uppercase resize">Ghi chú</h6>
+        <div class="note-section">
+          <textarea style="width: 50%; padding-left: 1rem; padding-top: 0.5rem;" [value]="billDetail.note" rows="3"
+            placeholder="Nhập ghi chú của bạn cho dịch vụ đăng ký"></textarea>
+        </div>
+      </div>
+      <div class="button-payment" style="display: flex; width: 100%;">
+        <div style="text-align: end; justify-content: center; margin-right: 1rem; width: 100%; padding-top: 10px;">
+          Tổng tiền:
+          {{ totalAmount }}
+          <button style="height: 35px; font-size: 11px; display: inline; margin-left: 3rem;"
+            class="btn btn-primary btn-pay" (click)="Booking()">
+            Đặt lịch
+          </button>
+        </div>
+
       </div>
     </div>
+
+    <button mat-button class="button" (click)="onNoClick()"><img src="./assets/img/x-dialog.svg" /></button>
+  </div>
+</div>

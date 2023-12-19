@@ -27,7 +27,7 @@ export class AppComponent implements OnInit {
     isAuthenticated$: Observable<boolean>;
     username: any;
     id: any;
-    
+
     constructor(private authService: AuthService, private renderer: Renderer2, private router: Router, @Inject(DOCUMENT,) private document: any, private element: ElementRef, public location: Location) { }
     @HostListener('window:scroll', ['$event'])
     hasScrolled() {
@@ -64,47 +64,73 @@ export class AppComponent implements OnInit {
     };
     ngOnInit() {
         this.isAuthenticated$ = this.authService.isAuthenticated$;
-
+        if(!sessionStorage.getItem("roleName")){
             this.guestNavbar = true;
-            this.authService.isAuthenticated$.subscribe((status) => {
-                this.isAuthenticated = status;            
-                if(status){
-                    this.guestNavbar = false;
-                    this.authService.getUserInfor().subscribe(user => {      
+        }
+        this.authService.isAuthenticated$.subscribe((status) => {
+            this.isAuthenticated = status;
+            if (status) {
+                this.guestNavbar = false;
+                this.authService.getUserInfor().subscribe(user => {
                     this.username = user.data.username;
+                    sessionStorage.setItem("Username", user.data.username);
                     this.id = user.data.id;
-                        if(user.data.role.name == "CLEANER"){
-                            this.cleanerNavbar = true;                        
-                        } else if (user.data.role.name == "CUSTOMER"){
-                            this.customerNavbar = true;
-                        } else if(user.data.role.name == "MANAGER"){
-                            this.managerNavbar = true;
-                        } else if(user.data.role.name == "LEADER"){
-                            console.log(1111111111);
-                            
-                            this.leadNavbar = true;
-                        } else if(user.data.role.name == "ADMIN"){
-                            this.adminNavbar = true;
-                        }
-                    },
+                    if (user.data.role.name == "CLEANER") {
+                        this.cleanerNavbar = true;
+                    } else if (user.data.role.name == "CUSTOMER") {
+                        this.customerNavbar = true;
+                    } else if (user.data.role.name == "MANAGER") {
+                        this.managerNavbar = true;
+                    } else if (user.data.role.name == "LEADER") {
+                        this.leadNavbar = true;
+                    } else if (user.data.role.name == "ADMIN") {
+                        this.adminNavbar = true;
+                    }
+                    sessionStorage.setItem("roleName", user.data.role.name);
+                },
                     (error) => {
-                      // Handle error
-                      console.error('Error fetching user information:', error);
+                        // Handle error
+                        console.error('Error fetching user information:', error);
                     });
+            } else {
+                let session = sessionStorage.getItem("roleName");
+                console.log("sessionStorage.getItem() 1", sessionStorage.getItem("roleName"));
+
+                if (session) {
+                    if (session == "CLEANER") {
+                        this.cleanerNavbar = true;
+                    } else if (session == "CUSTOMER") {
+                        this.customerNavbar = true;
+                        console.log("this.customerNavbar 0", this.customerNavbar);
+                    } else if (session == "MANAGER") {
+                        this.managerNavbar = true;
+                    } else if (session == "LEADER") {
+                        this.leadNavbar = true;
+                    } else if (session == "ADMIN") {
+                        this.adminNavbar = true;
+                    }
                 } else {
+                    console.log("this.guestNavbar 0", this.guestNavbar);
                     this.guestNavbar = true;
                     this.customerNavbar = false;
                     this.adminNavbar = false;
-                    this.cleanerNavbar = false;                        
-                    this.managerNavbar = false;                        
-                    this.leadNavbar = false;                        
+                    this.cleanerNavbar = false;
+                    this.managerNavbar = false;
+                    this.leadNavbar = false;
                 }
-              });
+
+            }
+
+            console.log("this.cleanerNavbar 0", this.cleanerNavbar);
+            console.log("this.managerNavbar 0", this.managerNavbar);
+            console.log("this.adminNavba 0r", this.adminNavbar);
+            console.log("this.leadNavbar 0", this.leadNavbar);
+        });
         // }
 
-        
-        
-        
+
+
+
         var navbar: HTMLElement = this.element.nativeElement.children[0].children[0];
         this._router = this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
             if (window.outerWidth > 991) {

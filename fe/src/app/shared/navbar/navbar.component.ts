@@ -39,14 +39,15 @@ export class NavbarComponent implements OnInit {
     if (!this.authService.getJwtToken()) {
       this.username = '';
     }
-    if(this.cleanerNavbar){
+
+    if (this.cleanerNavbar) {
       this.listTitles = ROUTES1.filter((listTitle) => listTitle);
-    } else if(this.managerNavbar){
+    } else if (this.managerNavbar) {
       this.listTitles = ROUTES2.filter((listTitle) => listTitle);
-    } else if(this.leadNavbar){
-      this.listTitles = ROUTES3.filter((listTitle) => listTitle);
-    } else if(this.adminNavbar){
+    } else if (this.leadNavbar) {
       this.listTitles = ROUTES4.filter((listTitle) => listTitle);
+    } else if (this.adminNavbar) {
+      this.listTitles = ROUTES3.filter((listTitle) => listTitle);
     }
 
     this.router.events.subscribe((event) => {
@@ -76,8 +77,8 @@ export class NavbarComponent implements OnInit {
     }
   }
 
-  getTitle() {    
-    var titlee =this.location.path();
+  getTitle() {
+    var titlee = this.location.path();
     for (var item = 0; item < this.listTitles.length; item++) {
       if (this.listTitles[item].path === titlee) {
         return this.listTitles[item].title;
@@ -89,15 +90,15 @@ export class NavbarComponent implements OnInit {
   logout() {
     this.authService.signout().subscribe({
       next: () => {
+        sessionStorage.removeItem("roleName");
         this.authService.setAuthenticationStatus(false);
-        this.refresh();
         this.cacheService.setHasClearedCache(true);
         this.router.navigate(["/login"]);
       },
     });
   }
 
-  refresh(){
+  refresh() {
     this.cleanerNavbar = false;
     this.managerNavbar = false;
     this.adminNavbar = false;

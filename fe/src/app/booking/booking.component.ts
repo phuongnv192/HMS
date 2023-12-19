@@ -42,6 +42,11 @@ export interface BillDialogData {
   duration: any;
   datePickerShow: any;
   cleanerList: any;
+  textListAdvanceService: any;
+  startTime: any;
+  totalAmount: any;
+  billDay: any;
+  billSchedule: any;
 }
 
 @Component({
@@ -180,6 +185,7 @@ export class BookingComponent implements OnInit {
   bookingSchedules = [];
   scheduleData: any;
   cleanerList: any;
+  cleanerPrice = 500000;
   // serviceTypeIdTemp: any;
 
 
@@ -220,12 +226,12 @@ export class BookingComponent implements OnInit {
 
     this.bookingServicee.getDataService().subscribe(res => {
       this.res = res.data;
+      this.selectedAreaType = this.areaTypes[0].value;
+      this.onAreaChange(this.selectedAreaType);
     });
     this.selectedPaymentMethod = 'cash';
     this.selectedFloors = this.floors[0];
     this.selectedHouseType = this.houseTypes[0];
-    this.selectedAreaType = this.areaTypes[0].value;
-    this.onAreaChange(this.selectedAreaType);
     this.selectedServiceType = this.serviceTypes[0];
     this.selectedTimeType = this.timeTypes[0];
 
@@ -343,10 +349,6 @@ export class BookingComponent implements OnInit {
         console.log("scheduleData", this.scheduleData);
 
       } else {
-        console.log(result, "RESULT CALENDAR 2");
-        console.log(this.pickDay, "pickDay 2");
-        console.log(" this.typeId 2", this.typeId);
-        console.log(" this.this.servicePackageId 2", this.servicePackageId);
 
       }
 
@@ -401,7 +403,8 @@ export class BookingComponent implements OnInit {
         });
         this.cleanerDialogRef.afterClosed().subscribe(result => {
           if (result) {
-            this.cleanerIds = result;
+            this.cleanerIds = result.listPickData;
+            this.cleanerList = result.listPickDataName.join(', ');
           }
           this.renderer.removeClass(document.body, 'modal-open');
           // this.dialogService.sendDataDialog(false);
@@ -423,7 +426,8 @@ export class BookingComponent implements OnInit {
         });
         this.cleanerDialogRef.afterClosed().subscribe(result => {
           if (result) {
-            this.cleanerIds = result;
+            this.cleanerIds = result.listPickData;
+            this.cleanerList = result.listPickDataName.join(', ');
           }
           this.renderer.removeClass(document.body, 'modal-open');
           // this.dialogService.sendDataDialog(false);
@@ -473,6 +477,8 @@ export class BookingComponent implements OnInit {
   }
 
   onAreaChange(value: any) {
+    console.log("onChange firstLoad");
+
     let found = false; // Biến kiểm soát vòng lặp
     this.res.forEach(element => {
       if (!found && value < element.floorArea) {
@@ -666,20 +672,45 @@ export class BookingComponent implements OnInit {
     } else if (!this.schedule && !(this.pickDay || this.dateValue)) {
       this.dateNull = true;
     } else {
-      this.bookingServicee.booking(body).subscribe({
-        next: () => {
-          this.toastr.success('Đơn dịch vụ đã được đặt thành công, vui lòng kiểm tra email thông tin chi tiết', 'Thành công');
-          // Chuyển hướng sang trang Home và truyền thông báo thành công
-          this.router.navigate(["/introduction"], { queryParams: { success: true } });
+      // this.bookingServicee.booking(body).subscribe({
+      //   next: () => {
+      //     this.toastr.success('Đơn dịch vụ đã được đặt thành công, vui lòng kiểm tra email thông tin chi tiết', 'Thành công');
+      //     // Chuyển hướng sang trang Home và truyền thông báo thành công
+      //     this.router.navigate(["/introduction"], { queryParams: { success: true } });
+      //   },
+      //   error: () => { },
+      // });
+      this.totalAmount = this.cleanerPrice + body.distanceprice;
+      this.renderer.addClass(document.body, 'modal-open');
+      this.billDialogRef = this.dialog.open(BillBookingDialog, {
+        width: '820px',
+        maxHeight: '85%',
+        data: {
+          data: body,
+          cleanerNum: this.cleanerNum,
+          duration: this.duration,
+          datePickerShow: this.datePickerShow,
+          cleanerList: this.cleanerList,
+          textListAdvanceService: this.textListAdvanceService,
+          startTime: this._inTime,
+          totalAmount: this.totalAmount,
+          billDay: this.selectedTimeType == 'Sử dụng 1 lần' ? true : false,
+          billSchedule: this.selectedTimeType == 'Định kỳ' ? true : false,
         },
-        error: () => { },
-      });;
+        panelClass: ['bill-booking']
+      });
+      this.billDialogRef.afterClosed().subscribe(result => {
+        if (result) {
+        }
+        this.renderer.removeClass(document.body, 'modal-open');
+        // this.dialogService.sendDataDialog(false);
+      });
     }
 
   }
 
   viewBill() {
-    let body = {
+    let body ={
       "hostName": "longtk",
       "hostPhone": "0966069299",
       "hostAddress": "so 8 giai phong",
@@ -715,25 +746,29 @@ export class BookingComponent implements OnInit {
       "dayOfTheWeek": null,
       "note": ""
     }
+    this.totalAmount = this.cleanerPrice + body.distanceprice;
     this.renderer.addClass(document.body, 'modal-open');
-        this.billDialogRef = this.dialog.open(BillBookingDialog, {
-          width: '1000px',
-          maxHeight: '85%',
-          data: {
-            data: body,
-            cleanerNum: this.cleanerNum,
-            duration: this.duration,
-            datePickerShow: this.datePickerShow,
-            cleanerList: this.cleanerList,
-          },
-          panelClass: ['bill-booking']
-        });
-        this.billDialogRef.afterClosed().subscribe(result => {
-          if (result) {
-          }
-          this.renderer.removeClass(document.body, 'modal-open');
-          // this.dialogService.sendDataDialog(false);
-        });
+    this.billDialogRef = this.dialog.open(BillBookingDialog, {
+      width: '820px',
+      maxHeight: '85%',
+      data: {
+        data: body,
+        cleanerNum: this.cleanerNum,
+        duration: this.duration,
+        datePickerShow: this.datePickerShow,
+        cleanerList: this.cleanerList,
+        textListAdvanceService: this.textListAdvanceService,
+        startTime: this._inTime,
+        totalAmount: this.totalAmount
+      },
+      panelClass: ['bill-booking']
+    });
+    this.billDialogRef.afterClosed().subscribe(result => {
+      if (result) {
+      }
+      this.renderer.removeClass(document.body, 'modal-open');
+      // this.dialogService.sendDataDialog(false);
+    });
   }
 }
 

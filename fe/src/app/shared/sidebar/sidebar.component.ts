@@ -85,7 +85,7 @@ export class SidebarComponent implements OnInit {
       
     //   this.cacheService.setHasClearedCache(false);
     // }
-
+    
     this.route.url.subscribe(segments => {
       const currentUrl = segments.join('/');
       if(this.cleanerNavbar){

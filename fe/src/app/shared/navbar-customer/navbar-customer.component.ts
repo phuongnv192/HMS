@@ -9,11 +9,11 @@ import { AuthService } from "src/app/services/auth.service";
 import { CacheService } from "src/app/services/cache.service";
 
 @Component({
-  selector: "app-navbar",
-  templateUrl: "./navbar.component.html",
-  styleUrls: ["./navbar.component.scss"],
+  selector: "app-navbar-customer",
+  templateUrl: "./navbar-customer.component.html",
+  styleUrls: ["./navbar-customer.component.scss"],
 })
-export class NavbarComponent implements OnInit {
+export class NavbarCustomerComponent implements OnInit {
   public isCollapsed = true;
   public focus;
   private lastPoppedUrl: string;
@@ -25,8 +25,9 @@ export class NavbarComponent implements OnInit {
   @Input() public customerNavbar: any;
   @Input() public guestNavbar: any;
   @Input() public leadNavbar: any;
-  @Input() public username: any;
+  // @Input() public username: any;
   @Input() public id: any;
+  username: string;
 
   constructor(
     public location: Location,
@@ -39,14 +40,9 @@ export class NavbarComponent implements OnInit {
     if (!this.authService.getJwtToken()) {
       this.username = '';
     }
-    if(this.cleanerNavbar){
-      this.listTitles = ROUTES1.filter((listTitle) => listTitle);
-    } else if(this.managerNavbar){
-      this.listTitles = ROUTES2.filter((listTitle) => listTitle);
-    } else if(this.leadNavbar){      
-      this.listTitles = ROUTES4.filter((listTitle) => listTitle);      
-    } else if(this.adminNavbar){
-      this.listTitles = ROUTES3.filter((listTitle) => listTitle);
+
+    if(sessionStorage.getItem("Username")){
+      this.username = sessionStorage.getItem("Username");
     }
 
     this.router.events.subscribe((event) => {
@@ -75,26 +71,36 @@ export class NavbarComponent implements OnInit {
       return false;
     }
   }
+  isDocumentation() {
+    var titlee = this.location.prepareExternalUrl(this.location.path());
+    if (titlee === "documentation") {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
-  getTitle() {    
-    var titlee = this.location.path();
+  getTitle() {
+    var titlee = this.location.prepareExternalUrl(this.location.path());
+    if (titlee.charAt(0) === "#") {
+      titlee = titlee.slice(1);
+    }
+
     for (var item = 0; item < this.listTitles.length; item++) {
-      console.log("this.listTitles[item].path", this.listTitles[item].path);
-      console.log("this.location.path();", this.location.path());
-      
       if (this.listTitles[item].path === titlee) {
         return this.listTitles[item].title;
       }
     }
-    return "";
+    return "Dashboard";
   }
 
   logout() {
     this.authService.signout().subscribe({
       next: () => {
+        sessionStorage.removeItem("roleName");
         this.authService.setAuthenticationStatus(false);
-        this.refresh();
-        this.cacheService.setHasClearedCache(true);
+        // this.refresh();
+        console.log("CUSTOMER LOG OUT", sessionStorage.getItem("roleName"));
         this.router.navigate(["/login"]);
       },
     });

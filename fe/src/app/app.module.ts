@@ -52,6 +52,7 @@ import { ToastrModule } from "ngx-toastr";
 import { BrowserModule } from "@angular/platform-browser";
 import { RouterModule } from '@angular/router';
 import { AddCleanerDialog } from "./employee/add-cleaner/add-cleaner-dialog";
+import { BillBookingDialog } from "./booking/bill-booking/bill-booking-dialog";
 
 // import { FormsModule } from '@angular/forms';
 
@@ -90,6 +91,7 @@ import { AddCleanerDialog } from "./employee/add-cleaner/add-cleaner-dialog";
     AddServiceDialog,
     CleanerDetailDialog,
     AddCleanerDialog,
+    BillBookingDialog
   ],
   imports: [
     NgbModule,

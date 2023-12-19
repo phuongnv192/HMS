@@ -1,9 +1,11 @@
 <!-- Màn hình guest/customer -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha384-wvfXpqpZZVQl6GGbT1BXEjXJ2uq79SLW6RGDwBV6RNjG/6Bq0E1a26AdgoDA2t6E" crossorigin="anonymous">
+
 <nav *ngIf="customerNavbar || guestNavbar" id="navbar-main"
   class="navbar navbar-main navbar-expand-lg navbar-transparent navbar-light headroom headroom--top headroom--pinned">
   <div class="container">
     <a class="navbar-brand mr-lg-5" [routerLink]="['/home']">
-      <img src="./assets/img/brand/argon-white.png">
+      <img src="./assets/img/brand/hms.png">
     </a>
     <button class="navbar-toggler" type="button" (click)="isCollapsed = !isCollapsed"
       [attr.aria-expanded]="!isCollapsed" aria-controls="navbar_global">
@@ -31,19 +33,13 @@
         <li class="nav-item dropdown">
           <a class="nav-link no-caret" data-toggle="dropdown" role="button">
             <i class="ni ni-collection d-lg-none"></i>
-            <span class="nav-link-inner--text" [routerLink]="['/introduction']">Trang chủ</span>
+            <span style="cursor: pointer;" class="nav-link-inner--text" [routerLink]="['/home']">Trang chủ</span>
           </a>
-          <!-- <div class="dropdown-menu">
-            <a [routerLink]="['/introduction']" class="dropdown-item">Giới thiệu</a>
-            <a [routerLink]="['/customer-profile']" class="dropdown-item">Thông tin cá nhân</a>
-            <a [routerLink]="['/login']" class="dropdown-item">Đăng nhập</a>
-            <a [routerLink]="['/register']" class="dropdown-item">Đăng ký</a>
-          </div> -->
         </li>
         <li class="nav-item dropdown">
           <a class="nav-link no-caret" data-toggle="dropdown" role="button">
             <i class="ni ni-ui-04 d-lg-none"></i>
-            <span class="nav-link-inner--text">Dịch vụ</span>
+            <span style="cursor: pointer;" class="nav-link-inner--text">Dịch vụ</span>
           </a>
           <div class="dropdown-menu-xl dropdown-menu">
             <div class="dropdown-menu-inner">
@@ -88,21 +84,21 @@
         <li class="nav-item">
           <a class="nav-link nav-link-icon" href="https://www.facebook.com" target="_blank" data-toggle="tooltip"
             title="HMS's Facebook">
-            <i class="fa fa-facebook-square"></i>
+            <i class="fab fa-facebook-f"></i>
             <span class="nav-link-inner--text d-lg-none">Facebook</span>
           </a>
         </li>
         <li class="nav-item">
           <a class="nav-link nav-link-icon" href="https://www.instagram.com" target="_blank" data-toggle="tooltip"
             title="HMS's Instagram">
-            <i class="fa fa-instagram"></i>
+            <i class="fab fa-instagram"></i>
             <span class="nav-link-inner--text d-lg-none">Instagram</span>
           </a>
         </li>
         <li class="nav-item">
           <a class="nav-link nav-link-icon" href="https://twitter.com" target="_blank" data-toggle="tooltip"
             title="Twitter">
-            <i class="fa fa-twitter-square"></i>
+            <i class="fab fa-twitter"></i>
             <span class="nav-link-inner--text d-lg-none">Twitter</span>
           </a>
         </li>
@@ -113,7 +109,7 @@
           </a>
         </li>
         <li *ngIf="guestNavbar" class="nav-item d-none d-lg-block ml-lg-4">
-          <a routerLinkActive="active" [routerLink]="['/register']" target="_blank"
+          <a routerLinkActive="active" [routerLink]="['/register']"
             class="btn btn-neutral btn-icon">
             <span class="btn-inner--icon">
               <i class="fa fa-key mr-2"></i>
@@ -122,7 +118,7 @@
           </a>
         </li>
         <li *ngIf="guestNavbar" class="nav-item d-none d-lg-block ml-lg-4">
-          <a routerLinkActive="active" [routerLink]="['/login']" target="_blank"
+          <a routerLinkActive="active" [routerLink]="['/login']"
             class="btn btn-neutral btn-icon">
             <span class="btn-inner--icon">
               <i class="fa fa-lock mr-2"></i>

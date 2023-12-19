@@ -32,6 +32,8 @@ export class PickCleanerDialog implements OnDestroy, OnInit {
   searchname = '';
   noDataSearch = false;
   searchResults: any[];
+  listPickNameData: any;
+  dataPickInfo: { listPickData: any[]; listPickDataName: any; };
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -46,14 +48,27 @@ export class PickCleanerDialog implements OnDestroy, OnInit {
 
   ngOnInit(): void {
     this.listCleaner = this.data.data;
-    this.listA = this.listCleaner.slice(0, 10);
     // this.listB = this.listCleaner.slice(5);
-    if (this.data.listPick) {
+    if (this.data.listPick && this.data.listPick.length > 0) {
       this.listPickData = this.data.listPick;
       this.filterCleaners();
+      console.log(1111, this.listPick);
+      console.log(3333, this.listCleaner);
+
+      this.listCleaner.forEach(element => {
+
+        const index = this.listPick.findIndex(res => res.cleanerId == element.cleanerId);
+        console.log(4444, index);
+        if (index !== -1) {
+          this.listCleaner = this.listCleaner.filter((item, i) => i !== index);
+          console.log(555, this.listA);
+        }
+      });
+      this.listA = this.listCleaner.slice(0, 10);
     } else {
       this.listPickData = [];
       this.listPick = [];
+      this.listA = this.listCleaner.slice(0, 10);
     }
   }
 
@@ -153,6 +168,7 @@ export class PickCleanerDialog implements OnDestroy, OnInit {
   addCleaner(cleaner: any, index: any): void {
     this.listPick.push(cleaner);
     this.listPickData = this.listPick.map(cleaner => cleaner.cleanerId);
+    this.listPickNameData = this.listPick.map(cleaner => cleaner.name);
     this.listCleaner = this.listCleaner.filter((item, i) => i !== index);
     this.listA = this.listCleaner.slice(0, 10);
     // this.updateListCleaner(index, 'remove', cleaner);
@@ -162,6 +178,7 @@ export class PickCleanerDialog implements OnDestroy, OnInit {
     const removedCleaner = this.listPick.splice(index, 1)[0];
     this.listCleaner.push(removedCleaner);
     this.listPickData = this.listPick.map(cleaner => cleaner.cleanerId);
+    this.listPickNameData = this.listPick.map(cleaner => cleaner.name);
     this.listA = this.listCleaner.slice(0, 10);
     // this.updateListCleaner(index, 'add', []);
   }
@@ -177,6 +194,13 @@ export class PickCleanerDialog implements OnDestroy, OnInit {
   // }
 
   pickCleaner() {
-    this.cleanerDialogRef.close(this.listPickData);
+    this.dataPickInfo = {
+      listPickData: this.listPickData,
+      listPickDataName: this.listPickNameData
+    }
+    console.log("this.dataPickInfo", this.dataPickInfo);
+
+    this.cleanerDialogRef.close(this.dataPickInfo);
+    this._subscription.unsubscribe();
   }
 }
