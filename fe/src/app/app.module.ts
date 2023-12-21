@@ -53,6 +53,8 @@ import { BrowserModule } from "@angular/platform-browser";
 import { RouterModule } from '@angular/router';
 import { AddCleanerDialog } from "./employee/add-cleaner/add-cleaner-dialog";
 import { BillBookingDialog } from "./booking/bill-booking/bill-booking-dialog";
+import { BookingManagementComponent } from "./employee/booking-management/booking-management.component";
+import { SupportHelpComponent } from "./auth/support-help/support.component";
 
 // import { FormsModule } from '@angular/forms';
 
@@ -91,7 +93,10 @@ import { BillBookingDialog } from "./booking/bill-booking/bill-booking-dialog";
     AddServiceDialog,
     CleanerDetailDialog,
     AddCleanerDialog,
-    BillBookingDialog
+    BillBookingDialog,
+    BookingManagementComponent,
+    SupportHelpComponent,
+    AddServiceDialog
   ],
   imports: [
     NgbModule,

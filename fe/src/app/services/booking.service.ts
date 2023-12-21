@@ -16,6 +16,7 @@ export class BookingService {
   private SERVICEADDON = this.baseUrl + "/service-add-ons?addOnId=";
   private AREA = this.baseUrl + "/floor-info";
   private BOOKING = this.baseUrl + "/booking";
+  private ADDSERVICE = this.baseUrl + "/service-add-on";
   // getEmployees(params: HttpParams): Observable<any> {
   //   return this.http.get<any>(`${this.baseUrl}/cleaners`, { params });
   // }
@@ -66,6 +67,11 @@ export class BookingService {
   booking(body: any): Observable<any> {
     const headers = this.getHeadersWithToken();
     return this.http.post<any>(`${this.BOOKING}`, body, { headers });
+  }
+
+  addService(body: any): Observable<any> {
+    const headers = this.getHeadersWithToken();
+    return this.http.post<any>(`${this.ADDSERVICE}`, body, { headers });
   }
 
 

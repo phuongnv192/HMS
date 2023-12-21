@@ -1382,7 +1382,7 @@
 }
 
 .search-name {
-  width: 35%;
+  width: 30%;
   margin-right: 10px;
 
   input {
@@ -1391,7 +1391,7 @@
 }
 
 .search-status {
-  width: 30%;
+  width: 20%;
   margin-right: 10px;
 }
 
@@ -1427,10 +1427,22 @@
   .search-emp {
     display: block;
   }
-
   .icon {
     margin-top: 1rem !important;
     width: 2rem !important;
     height: 2rem !important;
 }
+}
+
+.pricelist-title{
+  margin: 0.5rem 0;
+}
+
+.btn-pay{
+  height: 30px;
+  width: 125px;
+  font-size: 12px;
+  padding: 5px;
+  margin-left: 1.5rem;
+  margin-bottom: 0.5rem;
 }

@@ -21,6 +21,8 @@ import { ChangePassComponent } from "./auth/change-password/change-password.comp
 import { CustomerScheduleComponent } from "./customer/customer-booking/customer-booking-list/customer-schedule.component";
 import { CustomerHistoryComponent } from "./customer/customer-booking/customer-booking-history/customer-history.component";
 import { AuthGuard } from "./shared/auth.guard";
+import { BookingManagementComponent } from "./employee/booking-management/booking-management.component";
+import { SupportHelpComponent } from "./auth/support-help/support.component";
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent  },
@@ -41,6 +43,8 @@ const routes: Routes = [
   { path: 'customer-schedule', component: CustomerScheduleComponent , canActivate: [AuthGuard] },
   { path: 'forgot-password', component: ForgotPWComponent , canActivate: [AuthGuard] },
   { path: 'change-password', component: ChangePassComponent , canActivate: [AuthGuard] },
+  { path: 'booking-management', component: BookingManagementComponent , canActivate: [AuthGuard] },
+  { path: 'support-help', component: SupportHelpComponent , canActivate: [AuthGuard] },
   { path: '', redirectTo: 'home', pathMatch: 'full' }
 ];
 

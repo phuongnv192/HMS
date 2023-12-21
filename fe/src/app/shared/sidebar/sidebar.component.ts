@@ -39,7 +39,7 @@ export const ROUTES1: RouteInfoCleaner[] = [
 
 export const ROUTES2: RouteInfoManager[] = [
   { path: '/dashboard', title: 'Thống kê', icon: 'ni-tv-2', class: '' },
-  // { path: '/list-customer', title: 'Danh sách nhân vi', icon: 'ni-bullet-list-67 text-red', class: '' },
+  // { path: '/list-customer', title: 'Danh sách nhân viên', icon: 'ni-bullet-list-67 text-red', class: '' },
   // { path: '/booking-management', title: 'Quản lý dịch vụ', icon: 'ni-bullet-list-67 text-red', class: '' },
 ];
 
@@ -49,7 +49,7 @@ export const ROUTES3: RouteInfoAdmin[] = [
 ];
 
 export const ROUTES4: RouteInfoLead[] = [
-  { path: '/list-cleaner', title: 'Danh sách nhân viên', icon: 'ni-bullet-list-67 text-red', class: '' },
+  // { path: '/list-cleaner', title: 'Danh sách nhân viên', icon: 'ni-bullet-list-67 text-red', class: '' },
   { path: '/booking-management', title: 'Quản lý dịch vụ', icon: 'ni-bullet-list-67 text-red', class: '' },
   { path: '/support-help', title: 'Thông báo hỗ trợ', icon: 'people-fill', class: '' },
 ];
