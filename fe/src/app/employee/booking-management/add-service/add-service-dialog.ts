@@ -52,6 +52,10 @@ export class AddServiceManagementDialog implements OnDestroy, OnInit {
     this._subscription.unsubscribe();
   }
 
+  cleanerRateDetail() {
+
+  }
+
   addService() {
     let body = {
       name: this.name,

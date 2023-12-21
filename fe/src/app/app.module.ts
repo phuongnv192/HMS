@@ -55,6 +55,7 @@ import { AddCleanerDialog } from "./employee/add-cleaner/add-cleaner-dialog";
 import { BillBookingDialog } from "./booking/bill-booking/bill-booking-dialog";
 import { BookingManagementComponent } from "./employee/booking-management/booking-management.component";
 import { SupportHelpComponent } from "./auth/support-help/support.component";
+import { AddServiceManagementDialog } from "./employee/booking-management/add-service/add-service-dialog";
 
 // import { FormsModule } from '@angular/forms';
 
@@ -96,7 +97,7 @@ import { SupportHelpComponent } from "./auth/support-help/support.component";
     BillBookingDialog,
     BookingManagementComponent,
     SupportHelpComponent,
-    AddServiceDialog
+    AddServiceManagementDialog
   ],
   imports: [
     NgbModule,
@@ -134,6 +135,13 @@ import { SupportHelpComponent } from "./auth/support-help/support.component";
     TermAndConditionDialog,
     PickCleanerDialog,
     CleanerRateDialog,
+    AddServiceManagementDialog,
+    BillBookingDialog,
+    PriceListDialog,
+    CleanerDetailDialog,
+    CleanerRateDialog,
+    AddCleanerDialog,
+    AddServiceDialog
   ],
   exports: [],
 })
