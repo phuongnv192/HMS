@@ -49,6 +49,8 @@ public class BookingSchedule {
     private String paymentNote;
     private String cashbackStatus;
 
+    private String addOnNote;
+
     @ManyToOne()
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "transaction_id")

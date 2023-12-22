@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @Builder
 @NoArgsConstructor
@@ -12,8 +14,7 @@ import lombok.NoArgsConstructor;
 public class SubmitReviewRequest {
     private Long bookingId;
     private Long scheduleId;
-    private Long cleanerId;
     private Boolean reviewBooking;
-    private Integer ratingScore;
+    private List<CleanerReviewRequest> cleaners;
     private String review;
 }

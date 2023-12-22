@@ -115,9 +115,11 @@ public class CleanerService {
 //        return HMSUtil.buildResponse(ResponseCode.SUCCESS, response);
 //    }
 
-    public HmsResponse<CleanerDetailHistoryResponse> getCleanerHistoryDetail(Long cleanerId) {
-        Cleaner cleaner = cleanerRepository.findById(cleanerId)
-                .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "getCleanerDetailHistory: can't find any cleaner by id: ".concat(cleanerId.toString())));
+    public HmsResponse<CleanerDetailHistoryResponse> getCleanerHistoryDetail(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "can't find any user by id: ".concat(userId.toString())));
+        Cleaner cleaner = cleanerRepository.findByUser(user)
+                .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "getCleanerDetailHistory: can't find any cleaner by id: ".concat(user.getId().toString())));
         Map<Long, CleanerReviewInfo> reviewList = JsonService.strToObject(cleaner.getReview(), new TypeReference<>() {
         });
         double sumRating = 0;
@@ -153,7 +155,7 @@ public class CleanerService {
             }
         }
         CleanerOverviewResponse ratingOverview = CleanerOverviewResponse.builder()
-                .cleanerId(cleanerId)
+                .cleanerId(cleaner.getId())
                 .name(HMSUtil.convertToFullName(cleaner.getUser().getFirstName(), cleaner.getUser().getLastName()))
                 .gender(cleaner.getUser().getGender())
                 .activityYear(HMSUtil.calculateActivityYear(cleaner.getCreateDate(), new Date()))
@@ -223,16 +225,18 @@ public class CleanerService {
         return HMSUtil.buildResponse(ResponseCode.SUCCESS, null);
     }
 
-    public HmsResponse<List<BookingDetailResponse>> getCleanerSchedule(Long cleanerId, Integer page, Integer size,
-                                                                       String userId, String roleName) {
-        Cleaner cleaner = cleanerRepository.findById(cleanerId)
-                .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "can't find any cleaner by id ".concat(cleanerId.toString())));
+    public HmsResponse<List<BookingDetailResponse>> getCleanerSchedule(Long userId, Integer page, Integer size,
+                                                                       String userIdLogin, String roleName) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "can't find any user by id: ".concat(userId.toString())));
+        Cleaner cleaner = cleanerRepository.findByUser(user)
+                .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "can't find any cleaner by id ".concat(user.getId().toString())));
         Pageable pageable = PageRequest.of(page, size);
         List<Booking> bookingList = bookingRepository.findAllByCleanersIn(Set.of(cleaner), pageable).getContent();
         List<BookingDetailResponse> responses = new ArrayList<>();
         for (Booking booking : bookingList) {
             if (!TransactionStatus.DONE.name().equals(booking.getStatus())) {
-                responses.add(bookingService.getBookingDetail(booking.getId(), userId, roleName, true));
+                responses.add(bookingService.getBookingDetail(booking.getId(), cleaner.getId().toString(), roleName, true));
             }
         }
         return HMSUtil.buildResponse(ResponseCode.SUCCESS, responses);

@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FloorInfoResponse {
-    private int floorArea;
+    private String key;
+    private String floorArea;
     private int cleanerNum;
     private int duration;
     private long price;

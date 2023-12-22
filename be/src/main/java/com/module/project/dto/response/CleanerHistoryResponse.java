@@ -15,6 +15,6 @@ public class CleanerHistoryResponse {
     private String workDate;
     private String houseType;
     private int floorNumber;
-    private float floorArea;
+    private String floorArea;
     private String review;
 }

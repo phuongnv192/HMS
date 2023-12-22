@@ -50,8 +50,8 @@ public class CleanerController {
 //    }
 
     @GetMapping(CLEANER_HISTORY_DETAIL)
-    public ResponseEntity<Object> getCleanerHistoryDetail(@RequestParam(name = "cleanerId") Long cleanerId) {
-        return ResponseEntity.ok(cleanerService.getCleanerHistoryDetail(cleanerId));
+    public ResponseEntity<Object> getCleanerHistoryDetail(@RequestParam(name = "userId") Long userId) {
+        return ResponseEntity.ok(cleanerService.getCleanerHistoryDetail(userId));
     }
 
     @PostMapping(CLEANER)
@@ -77,13 +77,13 @@ public class CleanerController {
     }
 
     @GetMapping(CLEANER_SCHEDULES)
-    public ResponseEntity<Object> getCleanerSchedule(@RequestParam(name = "cleanerId") Long cleanerId,
+    public ResponseEntity<Object> getCleanerSchedule(@RequestParam(name = "userId") Long userId,
                                                      @RequestParam(name = "page") Integer page,
                                                      @RequestParam(name = "size") Integer size,
                                                      HttpServletRequest httpServletRequest) {
-        String userId = (String) httpServletRequest.getAttribute(ClaimEnum.USER_ID.name);
+        String userIdLogin = (String) httpServletRequest.getAttribute(ClaimEnum.USER_ID.name);
         String roleName = (String) httpServletRequest.getAttribute(ClaimEnum.ROLE_NAME.name);
-        return ResponseEntity.ok(cleanerService.getCleanerSchedule(cleanerId, page, size, userId, roleName));
+        return ResponseEntity.ok(cleanerService.getCleanerSchedule(userId, page, size, userIdLogin, roleName));
     }
 
     @GetMapping(CLEANER_AVAILABLE)

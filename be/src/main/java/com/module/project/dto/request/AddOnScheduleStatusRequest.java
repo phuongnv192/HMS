@@ -1,19 +1,16 @@
 package com.module.project.dto.request;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Data
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ServiceAddOnRequest {
+public class AddOnScheduleStatusRequest {
     private Long serviceAddOnId;
-    private String name;
-    private Long parentId;
-    private long price;
-    private int duration;
-    private String status;
+    private Long price;
+    private String note;
 }

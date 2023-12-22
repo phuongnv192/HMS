@@ -43,7 +43,7 @@ public class Booking {
     private String hostDistance;
     private String houseType;
     private int floorNumber;
-    private float floorArea;
+    private String floorArea;
     private String status;
     @Column(name = "note", length = 1000)
     private String note;

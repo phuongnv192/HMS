@@ -8,6 +8,7 @@ import com.module.project.dto.Constant;
 import com.module.project.dto.FloorInfoEnum;
 import com.module.project.dto.RoleEnum;
 import com.module.project.dto.TransactionStatus;
+import com.module.project.dto.request.AddOnScheduleStatusRequest;
 import com.module.project.dto.request.BookingRequest;
 import com.module.project.dto.request.BookingScheduleRequest;
 import com.module.project.dto.request.ScheduleConfirmRequest;
@@ -87,23 +88,23 @@ public class ScheduleService {
         }
 
         List<ServiceAddOn> serviceAddOns = serviceAddOnRepository.findAllByIdInAndStatus(request.getServiceAddOnIds(), Constant.COMMON_STATUS.ACTIVE);
+        Date actualEndTime = calculateActualEndTime(request.getEndTime(), serviceAddOns);
+
         boolean isAutoChoosing = request.getCleanerIds() == null;
-        long totalPriceAddOn = serviceAddOns.stream().mapToLong(ServiceAddOn::getPrice).sum();
         long totalPriceFloorAre = floorInfoEnum.getPrice() * request.getFloorNumber();
         long priceChoosingCleaner = isAutoChoosing ? choosingCleanerPrice : 0;
         long distancePrice = request.getDistancePrice() != null ? request.getDistancePrice() : 0;
         long totalBookingPrice = totalPriceFloorAre + priceChoosingCleaner + distancePrice;
-        long totalSchedulePrice = totalPriceFloorAre + totalPriceAddOn;
 
         BookingSchedule bookingSchedule = BookingSchedule.builder()
                 .bookingTransaction(bookingTransaction)
                 .serviceAddOns(new HashSet<>(serviceAddOns))
                 .workDate(request.getWorkDate())
                 .startTime(request.getStartTime())
-                .endTime(request.getEndTime())
+                .endTime(actualEndTime)
                 .status(ConfirmStatus.RECEIVED.name())
                 .updateBy(userId)
-                .totalSchedulePrice(totalSchedulePrice)
+                .totalSchedulePrice(totalPriceFloorAre)
                 .build();
         bookingScheduleRepository.save(bookingSchedule);
 
@@ -181,11 +182,39 @@ public class ScheduleService {
 //                        throw new HmsException(HmsErrorCode.INVALID_REQUEST, "can't execute this request because the status of schedule is not match");
 //                    }
                     if (!TransactionStatus.DONE.name().equals(bookingSchedule.getStatus())) {
+                        double schedulePriceAddOn = 0;
+                        if (!request.getAddOns().isEmpty()) {
+                            Map<Long, ServiceAddOn> serviceAddOns = serviceAddOnRepository.findAllByStatusEquals(Constant.COMMON_STATUS.ACTIVE)
+                                    .stream().collect(Collectors.toMap(ServiceAddOn::getId, Function.identity()));
+                            StringBuilder addOnNote = new StringBuilder();
+                            for (AddOnScheduleStatusRequest addOn : request.getAddOns()) {
+                                if (serviceAddOns.containsKey(addOn.getServiceAddOnId())) {
+                                    addOnNote.append(serviceAddOns.get(addOn.getServiceAddOnId()).getName())
+                                            .append(" - ")
+                                            .append(addOn.getNote())
+                                            .append(" - ")
+                                            .append(addOn.getPrice())
+                                            .append("\n");
+                                } else {
+                                    addOnNote.append(addOn.getNote())
+                                            .append(" - ")
+                                            .append(addOn.getPrice())
+                                            .append("\n");
+                                }
+                                schedulePriceAddOn += addOn.getPrice();
+                            }
+                            bookingSchedule.setTotalSchedulePrice(bookingSchedule.getTotalSchedulePrice() + schedulePriceAddOn);
+                            bookingSchedule.setAddOnNote(addOnNote.toString());
+                        }
+
                         bookingSchedule.setStatus(request.getStatus().name());
                         bookingSchedule.setPaymentStatus(request.getPaymentStatus().name());
                         bookingSchedule.setUpdateBy(Long.parseLong(userId));
                         bookingSchedule.setPaymentNote(request.getNote());
                         bookingScheduleRepository.save(bookingSchedule);
+
+                        bookingTransaction.setTotalBookingPrice(bookingTransaction.getTotalBookingPrice() + schedulePriceAddOn);
+                        bookingTransactionRepository.save(bookingTransaction);
                     }
 
                     CleanerWorkingDate cleanerWorkingDate = cleanerWorkingDateRepository.findByCleanerIdAndScheduleDateEqualsAndStatusEquals(cleaner.getId(), bookingSchedule.getWorkDate(), Constant.COMMON_STATUS.ACTIVE)
@@ -252,30 +281,34 @@ public class ScheduleService {
         Map<Long, ServiceAddOn> serviceAddOns = serviceAddOnRepository.findAllByStatusEquals(Constant.COMMON_STATUS.ACTIVE)
                 .stream().collect(Collectors.toMap(ServiceAddOn::getId, Function.identity()));
         List<BookingSchedule> bookingSchedules = new ArrayList<>();
+        double totalBookingPrice = 0;
         if (request.getBookingSchedules() != null && !request.getBookingSchedules().isEmpty()) {
             for (BookingScheduleRequest scheduleRequest : request.getBookingSchedules()) {
                 List<ServiceAddOn> addOnList = getAddOnFromAll(serviceAddOns, scheduleRequest.getServiceAddOnIds());
+                Date actualEndTime = calculateActualEndTime(scheduleRequest.getEndTime(), addOnList);
                 long totalSchedulePrice = floorInfoEnum.getPrice() * scheduleRequest.getFloorNumber();
-                totalSchedulePrice += addOnList.stream().mapToLong(ServiceAddOn::getPrice).sum();
+//                totalSchedulePrice += addOnList.stream().mapToLong(ServiceAddOn::getPrice).sum();
                 BookingSchedule item = BookingSchedule.builder()
                         .bookingTransaction(bookingTransaction)
                         .serviceAddOns(new HashSet<>(addOnList))
                         .dayOfTheWeek(dayOfWeek)
                         .workDate(scheduleRequest.getWorkDate())
                         .startTime(scheduleRequest.getStartTime())
-                        .endTime(scheduleRequest.getEndTime())
+                        .endTime(actualEndTime)
                         .status(ConfirmStatus.RECEIVED.name())
                         .updateBy(userId)
                         .totalSchedulePrice(totalSchedulePrice)
                         .build();
                 bookingSchedules.add(item);
                 periodDate.remove(scheduleRequest.getWorkDate());
+                totalBookingPrice += totalSchedulePrice;
             }
         }
 
         List<ServiceAddOn> addOnList = getAddOnFromAll(serviceAddOns, request.getServiceAddOnIds());
+        Date actualEndTime = calculateActualEndTime(request.getEndTime(), addOnList);
         long totalPriceFloorAre = floorInfoEnum.getPrice() * request.getFloorNumber();
-        long totalSchedulePrice = totalPriceFloorAre + addOnList.stream().mapToLong(ServiceAddOn::getPrice).sum();
+//        long totalSchedulePrice = totalPriceFloorAre + addOnList.stream().mapToLong(ServiceAddOn::getPrice).sum();
         for (LocalDate localDate : periodDate) {
             BookingSchedule item = BookingSchedule.builder()
                     .bookingTransaction(bookingTransaction)
@@ -283,17 +316,18 @@ public class ScheduleService {
                     .dayOfTheWeek(dayOfWeek)
                     .workDate(localDate)
                     .startTime(request.getStartTime())
-                    .endTime(request.getEndTime())
+                    .endTime(actualEndTime)
                     .status(ConfirmStatus.RECEIVED.name())
                     .updateBy(userId)
-                    .totalSchedulePrice(totalSchedulePrice)
+//                    .totalSchedulePrice(totalSchedulePrice)
+                    .totalSchedulePrice(totalPriceFloorAre)
                     .build();
             bookingSchedules.add(item);
+            totalBookingPrice += totalPriceFloorAre;
         }
         bookingScheduleRepository.saveAll(bookingSchedules);
 
         bookingTransaction.setTotalBookingDate(periodClone.size());
-        double totalBookingPrice = totalPriceFloorAre * bookingTransaction.getTotalBookingDate();
         boolean isAutoChoosing = request.getCleanerIds() == null;
         totalBookingPrice += isAutoChoosing ? choosingCleanerPrice : 0;
         totalBookingPrice += request.getDistancePrice() != null ? request.getDistancePrice() : 0;
@@ -475,5 +509,13 @@ public class ScheduleService {
             booking.setStatus(TransactionStatus.DONE.name());
             bookingRepository.save(booking);
         }
+    }
+
+    private Date calculateActualEndTime(Date endTime, List<ServiceAddOn> addOnList) {
+        int addOnDuration = addOnList.stream().mapToInt(ServiceAddOn::getDuration).sum();
+        Calendar actualEnd = Calendar.getInstance();
+        actualEnd.setTime(endTime);
+        actualEnd.add(Calendar.HOUR_OF_DAY, addOnDuration);
+        return actualEnd.getTime();
     }
 }

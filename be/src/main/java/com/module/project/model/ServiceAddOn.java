@@ -27,6 +27,7 @@ public class ServiceAddOn {
     private String name;
     private Long parentId;
     private long price;
+    private int duration;
     private String status;
 
     @ManyToOne()

@@ -48,10 +48,11 @@ public class ServiceCommonService {
             List<ServiceAddOn> serviceAddOnList = serviceAddOnRepository.findAllByStatusEquals(Constant.COMMON_STATUS.ACTIVE);
             List<ViewServiceAddOnResponse> response = new ArrayList<>();
             serviceAddOnList.forEach(service -> {
-                List<ServiceAddOn> children = serviceAddOnList.stream()
-                        .filter(e -> service.getId().equals(e.getParentId()))
-                        .toList();
-                if (!children.isEmpty()) {
+                List<ServiceAddOn> children;
+                if (service.getParentId() == null) {
+                    children = serviceAddOnList.stream()
+                            .filter(e -> service.getId().equals(e.getParentId()))
+                            .toList();
                     response.add(ViewServiceAddOnResponse.builder()
                             .parent(service)
                             .children(children)
@@ -71,6 +72,7 @@ public class ServiceCommonService {
         FloorInfoEnum[] floorInfoEnums = FloorInfoEnum.values();
         for (FloorInfoEnum item : floorInfoEnums) {
             responses.add(FloorInfoResponse.builder()
+                    .key(item.name())
                     .floorArea(item.getFloorArea())
                     .cleanerNum(item.getCleanerNum())
                     .duration(item.getDuration())
@@ -91,6 +93,7 @@ public class ServiceCommonService {
         serviceAddOn.setName(request.getName());
         serviceAddOn.setStatus(request.getStatus());
         serviceAddOn.setPrice(request.getPrice());
+        serviceAddOn.setDuration(request.getDuration());
         return HMSUtil.buildResponse(ResponseCode.SUCCESS, serviceAddOnRepository.save(serviceAddOn));
     }
 
@@ -103,6 +106,7 @@ public class ServiceCommonService {
                 .name(request.getName())
                 .status(request.getStatus())
                 .price(request.getPrice())
+                .duration(request.getDuration())
                 .build();
         handleServiceAddOnParent(request, serviceAddOn);
         serviceAddOnRepository.save(serviceAddOn);

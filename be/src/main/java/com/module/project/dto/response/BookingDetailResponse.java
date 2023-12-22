@@ -24,7 +24,7 @@ public class BookingDetailResponse {
     private String hostDistance;
     private String houseType;
     private int floorNumber;
-    private float floorArea;
+    private String floorArea;
 
     private Long bookingTransactionId;
     private String serviceTypeName;
