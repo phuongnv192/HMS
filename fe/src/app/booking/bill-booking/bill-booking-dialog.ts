@@ -33,6 +33,7 @@ export class BillBookingDialog implements OnDestroy, OnInit {
   totalAmount: any;
   billDay = true;
   billSchedule: any;
+  formattedPrice: any;
  
 
   constructor(
@@ -57,6 +58,10 @@ export class BillBookingDialog implements OnDestroy, OnInit {
     this.totalAmount = this.data.totalAmount;
     this.billDay = this.data.billDay;
     this.billSchedule = this.data.billSchedule;
+    this.formattedPrice = this.totalAmount.toLocaleString('vi-VN', {
+      style: 'currency',
+      currency: 'VND',
+    });
   }
 
 
@@ -68,7 +73,7 @@ export class BillBookingDialog implements OnDestroy, OnInit {
     if (this.dialogRef) {
       this.ngZone.run(() => {
         console.log('Đóng dialog');
-        this.dialogRef.close(true);
+        this.dialogRef.close(false);
         
       });
     } else {
@@ -79,9 +84,8 @@ export class BillBookingDialog implements OnDestroy, OnInit {
   Booking(){
     this.bookingServicee.booking(this.billDetail).subscribe({
       next: () => {
-        this.toastr.success('Đơn dịch vụ đã được đặt thành công, vui lòng kiểm tra email thông tin chi tiết', 'Thành công');
+        this.dialogRef.close("closeDialog");
         // Chuyển hướng sang trang Home và truyền thông báo thành công
-        this.router.navigate(["/introduction"], { queryParams: { success: true } });
       },
       error: () => { },
     });;

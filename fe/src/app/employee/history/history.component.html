@@ -58,7 +58,7 @@
     <div class="col">
       <div class="card shadow">
         <div class="card-header border-0">
-          <h3 class="mb-0 font20">Danh sách nhân viên dọn dẹp</h3>
+          <h3 class="mb-0 font20">Danh sách dịch vụ đã thực hiện</h3>
         </div>
         <div class="table-responsive">
           <table class="table align-items-center table-flush">
@@ -69,8 +69,8 @@
                 <th scope="col">Loại nhà</th>
                 <th scope="col">Số tầng</th>
                 <th scope="col">Diện tích</th>
-                <th scope="col">Chất lượng phục vụ</th>
-                <th scope="col">Phản hồi</th>
+                <th scope="col">Loại dịch vụ</th>
+                <th scope="col"></th>
                 <!-- <th scope="col"></th> -->
               </tr>
             </thead>
@@ -82,7 +82,7 @@
                       <img alt="Image placeholder" src="../assets/img/theme/bootstrap.jpg">
                     </a>
                     <div class="media-body">
-                      <span class="mb-0 text-sm">{{service.name}}</span>
+                      <span class="mb-0 text-sm">{{service.bookingId}} - {{service.hostName}}</span>
                     </div>
                   </div>
                 </th>
@@ -99,15 +99,13 @@
                   {{service.floorArea}}
                 </td>
                 <td>
-                  <div class="d-flex align-items-center">
-                    <span class="mr-2">{{service.ratingScore}}</span>
-
-                    <div class="star-rating" [innerHTML]="generateStarRating(service.ratingScore)"></div>
-                  </div>
+                  {{service.serviceTypeName && service.servicePackageName ? 'Gói gọn định kỳ' : 'Gói dọn theo ngày' }} 
                 </td>
-                <td>
-                  {{service.review}}
-                </td>
+                  <td class="text-right">
+                    <button class="btn btn-primary" (click)="showDetail(service.bookingId)">Xem thông tin</button>
+                    <!-- dành cho màn customer -->
+                    <!-- <button class="btn btn-primary" (click)="showDetail(service.bookingId)">Đánh giá</button> -->
+                  </td>
               </tr>
             </tbody>
           </table>

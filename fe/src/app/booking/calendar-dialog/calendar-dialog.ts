@@ -234,7 +234,7 @@ export class CalendarDialog implements OnDestroy, OnInit {
         serviceTypeId: this.selectedServiceTypeId,
         schedule: this.dataPick,
         dateValue: this.dateValue,
-        datePickerShow: this.datePickerShow
+        datePickerShow: this.datePickerShow + this.scheduleDescription
       }];
 
     if (this.dialogRef) {
@@ -376,12 +376,12 @@ export class CalendarDialog implements OnDestroy, OnInit {
       let dateDay = ''
       if (this.pickServiceType == 2) {
         dateDay = this.getDateMonth(this.datePicker);
-        this.scheduleDescription = dateDay + ' hàng tuần'
+        this.scheduleDescription = ' - ' + dateDay + ' hàng tuần'
       } else if (this.pickServiceType == 3) {
         dateDay = this.getDay(this.datePicker)
-        this.scheduleDescription = 'Ngày ' + dateDay + ' hàng tháng'
-      } else {
-        this.scheduleDescription = '- Lịch dọn hàng ngày'
+        this.scheduleDescription = ' - Ngày ' + dateDay + ' hàng tháng'
+      } else if(this.pickServiceType == 1){
+        this.scheduleDescription = ' - Lịch dọn hàng ngày'
       }
     }
   }

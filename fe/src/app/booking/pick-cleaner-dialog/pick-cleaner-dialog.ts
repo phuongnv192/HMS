@@ -40,7 +40,6 @@ export class PickCleanerDialog implements OnDestroy, OnInit {
     private _activated: ActivatedRoute,
     public dialog: MatDialog, private renderer: Renderer2,
     // private dialogService: DialogService,
-    public dialogRef: MatDialogRef<CleanerRateDialog>,
     public dialogRefCleaner: MatDialogRef<CleanerDetailDialog>,
     public cleanerDialogRef: MatDialogRef<PickCleanerDialog>,
     @Inject(MAT_DIALOG_DATA) public data: PickCleanerData) {
@@ -85,24 +84,7 @@ export class PickCleanerDialog implements OnDestroy, OnInit {
     this._subscription.unsubscribe();
   }
 
-  cleanerRateDetail() {
-    // this.dialogService.sendDataDialog(true);
-    this.renderer.addClass(document.body, 'modal-open');
-    this.dialogRef = this.dialog.open(CleanerRateDialog, {
-      width: '400px',
-      maxHeight: '75%',
-      data: {
-        data: this.dataCleaner,
-      },
-      panelClass: ['cleaner-detail']
-    });
-
-    this.dialogRef.afterClosed().subscribe(result => {
-      // console.log('The dialog was closed');
-      this.renderer.removeClass(document.body, 'modal-open');
-      // this.dialogService.sendDataDialog(false);
-    });
-  }
+  
 
   searchCleaner() {
     this.searchResults = [];

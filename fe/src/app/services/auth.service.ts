@@ -8,8 +8,8 @@ import { jwtDecode } from "jwt-decode";
 export class AuthService {
   private baseUrl = environment.apiUrl + "/auth";
   private jwtToken: string;
-  private REGISTER = environment.apiUrl + "/cleaner";
-  private REGISTERCLEANER = this.baseUrl + "/register";
+  private REGISTERCLEANER = environment.apiUrl + "/cleaner";
+  private REGISTER = this.baseUrl + "/register";
   private CHANGE_PASS = this.baseUrl + "/change-password";
   private LOGOUT = this.baseUrl + "/logout";
   private USERINFOR = environment.apiUrl + "/user/info";

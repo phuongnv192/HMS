@@ -1,7 +1,7 @@
 import { Component, ElementRef, Inject, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbDateStruct, NgbDate } from '@ng-bootstrap/ng-bootstrap';
-import { format, isAfter, isBefore, parse, parseISO, subMonths } from 'date-fns';
+import { addHours, format, isAfter, isBefore, parse, parseISO, subMonths } from 'date-fns';
 // import { DialogService } from 'src/app/services/dialog.service';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CalendarDialog } from './calendar-dialog/calendar-dialog';
@@ -10,12 +10,17 @@ import { BookingService } from '../services/booking.service';
 import { PriceListDialog } from './price-list-dialog/price-list-dialog';
 import { ToastrService } from 'ngx-toastr';
 import { BillBookingDialog } from './bill-booking/bill-booking-dialog';
+import { CleanerRateDialog } from './cleaner-rate-dialog/cleaner-rate-dialog';
 
 export interface DialogData {
   data: string;
 }
 
 export interface CleanerData {
+  data: string;
+}
+
+export interface CleanerRateData {
   data: string;
 }
 
@@ -70,36 +75,7 @@ export class BookingComponent implements OnInit {
   houseTypes: string[] = ['Nhà đất', 'Chung cư'];
   serviceTypes: string[] = ['Tổng vệ sinh', 'Theo khu vực/Diện tích'];
   timeTypes: string[] = ['Sử dụng 1 lần', 'Định kỳ'];
-  areaTypes: any[] = [
-    {
-      title: 'dưới 30',
-      value: 30
-    },
-    {
-      title: 'từ 30-60',
-      value: 50
-    },
-    {
-      title: 'từ 60-80',
-      value: 70
-    },
-    {
-      title: 'từ 80 - 100',
-      value: 90
-    },
-    {
-      title: 'từ 100 - 120',
-      value: 100
-    },
-    {
-      title: 'từ 120 - 150',
-      value: 120
-    },
-    {
-      title: 'từ 150 - 200',
-      value: 150
-    },
-  ];
+  areaTypes: any[] = [];
   selectedFloors: number; // Biến lưu trữ số tầng được chọn
   selectedHouseType: string; // Biến lưu trữ loại hình nhà được chọn
   selectedAreaType: string; // Biến lưu trữ loại diện tích sàn ước chừng được chọn
@@ -186,6 +162,12 @@ export class BookingComponent implements OnInit {
   scheduleData: any;
   cleanerList: any;
   cleanerPrice = 500000;
+  isoString: string;
+  isoStringST: string;
+  isoStringET: string;
+  isMorning: boolean;
+  priceClean: any;
+  formattedPrice: any;
   // serviceTypeIdTemp: any;
 
 
@@ -207,12 +189,32 @@ export class BookingComponent implements OnInit {
     public warningDialogRef: MatDialogRef<PickCLeanerWarningDialog>,
     public billDialogRef: MatDialogRef<BillBookingDialog>,
     private toastr: ToastrService,
-    private bookingServicee: BookingService
+    private bookingServicee: BookingService,
+    public ratedialogRef: MatDialogRef<CleanerRateDialog>,
   ) {
     const today = new Date();
     this.minSelectableDate = new NgbDate(today.getFullYear(), today.getMonth() + 1, today.getDate());
     this.maxSelectableDate = new NgbDate(today.getFullYear(), today.getMonth() + 2, today.getDate());
 
+  }
+
+  cleanerRateDetail() {
+    // this.dialogService.sendDataDialog(true);
+    this.renderer.addClass(document.body, 'modal-open');
+    this.ratedialogRef = this.dialog.open(CleanerRateDialog, {
+      width: '500px',
+      maxHeight: '65%',
+      data: {
+        data: this.dataCleaner,
+      },
+      panelClass: ['cleaner-detail']
+    });
+
+    this.ratedialogRef.afterClosed().subscribe(result => {
+      // console.log('The dialog was closed');
+      this.renderer.removeClass(document.body, 'modal-open');
+      // this.dialogService.sendDataDialog(false);
+    });
   }
 
   ngOnInit() {
@@ -225,8 +227,11 @@ export class BookingComponent implements OnInit {
     });
 
     this.bookingServicee.getDataService().subscribe(res => {
-      this.res = res.data;
-      this.selectedAreaType = this.areaTypes[0].value;
+      this.areaTypes = this.convertSquareMeters(res.data);
+      this.selectedAreaType = this.areaTypes[0].key;
+      // this.areaTypes = this.con
+      console.log("Area 1", this.selectedAreaType);
+      console.log("Area 2", this.areaTypes);
       this.onAreaChange(this.selectedAreaType);
     });
     this.selectedPaymentMethod = 'cash';
@@ -234,8 +239,16 @@ export class BookingComponent implements OnInit {
     this.selectedHouseType = this.houseTypes[0];
     this.selectedServiceType = this.serviceTypes[0];
     this.selectedTimeType = this.timeTypes[0];
-
+    this.nameNull = false;
   }
+
+  convertSquareMeters(areaType) {
+  return areaType.map(area => {
+    // Thay thế tất cả "m2" thành "m²" trong giá trị floorArea
+    area.floorArea = area.floorArea.replace(/m2/g, 'm²');
+    return area;
+  });
+}
 
   pickDate() {
     this.showDatePicker = !this.showDatePicker;
@@ -342,6 +355,8 @@ export class BookingComponent implements OnInit {
 
         }
         this.schedule = result[0].schedule;
+        console.log("this.schedule", result[0]);
+
         let servicePackageName = result[0].servicePackageId.split(' - ');
         this.servicePackageId = this.getServicePackageId(servicePackageName[0]);
         this.scheduleData = this.removeIndexFromBookingSchedules(result[0].schedule);
@@ -349,6 +364,8 @@ export class BookingComponent implements OnInit {
         console.log("scheduleData", this.scheduleData);
 
       } else {
+
+        console.log();
 
       }
 
@@ -477,20 +494,22 @@ export class BookingComponent implements OnInit {
   }
 
   onAreaChange(value: any) {
-    console.log("onChange firstLoad");
-
-    let found = false; // Biến kiểm soát vòng lặp
-    this.res.forEach(element => {
-      if (!found && value < element.floorArea) {
+    // let found = false; // Biến kiểm soát vòng lặp
+    this.areaTypes.forEach(element => {
+      if ( value == element.key) {
         // Nếu tìm thấy phần tử thỏa mãn điều kiện, lưu giá trị và thoát vòng lặp
         this.cleanerNum = element.cleanerNum;
         this.duration = element.duration;
-        found = true;
+        this.priceClean = element.price;
+        this.formattedPrice = this.priceClean.toLocaleString('vi-VN', {
+          style: 'currency',
+          currency: 'VND',
+        });
+        
+        // found = true;
       }
     });
   }
-
-
 
   ValidateExpDate(_val: any, event) {
     this.c_time = false;
@@ -609,53 +628,70 @@ export class BookingComponent implements OnInit {
       && (parseInt(value.split(':')[0], 0) < 20) && (parseInt(value.split(':')[1], 0) <= 60)
   }
 
-  removeIndexFromBookingSchedules(body: any[]): void {
-    return body.forEach(schedule => {
-      console.log("schedule", schedule.workDate);
+  // removeIndexFromBookingSchedules(body: any[]): void {
+  //   return body.forEach(schedule => {
+  //     console.log("schedule", schedule.workDate);
 
-      // Use parse with custom format
+  //     // Use parse with custom format
+  //     const parsedDate = parse(schedule.workDate, 'MM-dd-yyyy', new Date());
+  //     console.log("parsedDate", parsedDate);
+
+  //     // Format the date without time
+  //     schedule.workDate = format(parsedDate, 'yyyy-MM-dd');
+  //     console.log("schedule.workDate", schedule.workDate);
+
+  //   });
+  // }
+
+  removeIndexFromBookingSchedules(body: any[]): any[] {
+    return body.map(schedule => {
       const parsedDate = parse(schedule.workDate, 'MM-dd-yyyy', new Date());
-      console.log("parsedDate", parsedDate);
-
-      // Format the date without time
       schedule.workDate = format(parsedDate, 'yyyy-MM-dd');
+      delete schedule.index;
+      return schedule;
     });
   }
 
+  convertTime() {
+    const timeObject = parse(this._inTime, 'HH:mm', new Date());
+
+    // Lấy ngày hiện tại
+    const currentDate = new Date();
+
+    // Thiết lập giờ và phút cho ngày hiện tại
+    currentDate.setHours(timeObject.getHours());
+    currentDate.setMinutes(timeObject.getMinutes());
+
+    // Chuyển định dạng ngày thành ISO 8601
+    this.isoStringST = format(currentDate, "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+
+    // Thêm khoảng thời gian vào ngày hiện tại
+    const newDate = addHours(currentDate, this.duration);
+    this.isMorning = isBefore(newDate, parse('12:00', 'HH:mm', new Date()));
+
+    // Chuyển định dạng ngày mới thành ISO 8601
+    this.isoStringET = format(newDate, "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+  }
 
   Booking() {
+    this.convertTime();
     let body = {
       hostName: this.account_name,
       hostPhone: this.phone_number,
       hostAddress: this.service_address,
       hostDistance: '6km',
       distanceprice: 10000,
-      houseType: 'APARTMENT',  //houseType: this.selectedHouseType,
+      houseType: this.selectedHouseType,  //houseType: this.selectedHouseType,
       floorNumber: this.selectedFloors,
-      floorArea: 'M260',  //'M' + this.selectedAreaType  chưa thống nhất đc BE FE
+      floorArea: this.selectedAreaType,  //'M' + this.selectedAreaType  chưa thống nhất đc BE FE
       cleanerIds: this.cleanerIds,
-      bookingSchedules: [
-        {
-          "floorNumber": 1,
-          "workDate": "2023-12-16",
-          "startTime": null,
-          "endTime": null,
-          "serviceAddOnIds": [1]
-        },
-        {
-          "floorNumber": 1,
-          "workDate": "2023-12-23",
-          "startTime": null,
-          "endTime": null,
-          "serviceAddOnIds": [1]
-        }
-      ],
+      bookingSchedules: this.scheduleData,
       serviceTypeId: this.typeId,
       servicePackageId: this.servicePackageId,
       serviceAddOnIds: this.listAdvanceServiceId,
-      section: "MOR",
-      startTime: "2023-12-03T10:12:27.374+00:00",
-      endTime: "2023-12-03T16:12:27.374+00:00",
+      section: this.isMorning ? "MOR" : "EVE",
+      startTime: this.isoStringST,
+      endTime: this.isoStringET,
       workDate: this.pickDay ? this.pickDay : this.dateValue,
       dayOfTheWeek: null,
       note: this.note ? this.note : ''
@@ -700,7 +736,9 @@ export class BookingComponent implements OnInit {
         panelClass: ['bill-booking']
       });
       this.billDialogRef.afterClosed().subscribe(result => {
-        if (result) {
+        if (result == 'closeDialog') {
+        this.toastr.success('Đơn dịch vụ đã được đặt thành công, vui lòng kiểm tra email thông tin chi tiết', 'Thành công');
+          this.router.navigate(["/introduction"], { queryParams: { success: true } });
         }
         this.renderer.removeClass(document.body, 'modal-open');
         // this.dialogService.sendDataDialog(false);
@@ -710,7 +748,7 @@ export class BookingComponent implements OnInit {
   }
 
   viewBill() {
-    let body ={
+    let body = {
       "hostName": "longtk",
       "hostPhone": "0966069299",
       "hostAddress": "so 8 giai phong",
@@ -718,8 +756,8 @@ export class BookingComponent implements OnInit {
       "distanceprice": 10000,
       "houseType": "APARTMENT",
       "floorNumber": 1,
-      "floorArea": "M260",
-      "cleanerIds": [1,2,3],
+      " ": "M260",
+      "cleanerIds": [1, 2, 3],
       "bookingSchedules": [
         {
           "floorNumber": 1,

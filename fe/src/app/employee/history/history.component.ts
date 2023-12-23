@@ -1,3 +1,4 @@
+import { HttpParams } from "@angular/common/http";
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { AuthService } from "src/app/services/auth.service";
@@ -20,11 +21,29 @@ export class HistoryComponent implements OnInit {
   searchHouseType: string;
   jwtToken: string;
   cleanerId: any;
+  listBooking: any;
+  size: number = 10;
+  page: number = 0;
   constructor(
     private authService: AuthService,
     private bookingService: BookingService,
+    private cleanService: CleanerService,
     private route: ActivatedRoute
   ) {}
+
+  getListCleaner(id: any) {
+    var req = new HttpParams()
+      .set("page", this.page)
+      .set("size", this.size);
+    this.cleanService.getListSchedule(id, req).subscribe({
+      next: (res) => {
+        if (res && res.data) {
+          this.listBooking = res.data;
+        }
+      },
+      error: (error) => {},
+    });
+  }
 
   ngOnInit() {
     // let id = this.route.snapshot.paramMap.get("id");
@@ -33,8 +52,11 @@ export class HistoryComponent implements OnInit {
     this.bookingService.getBookingHistory(this.cleanerId).subscribe((data) => {
       this.data = data;
     });
-  });
+    this.getListCleaner(this.cleanerId);
+    this.history = this.listBooking.filter(booking => booking.status == 'DONE');
     console.log("this.history", this.history);
+
+  });
     this.searchRate = "4 - 5";
     this.searchHouseType = "APARTMENT";
     this.houseType = ["APARTMENT", "NORMAL", "Villa"];
@@ -59,4 +81,8 @@ export class HistoryComponent implements OnInit {
   }
 
   search() {}
+
+  showDetail(id: any){
+    
+  }
 }

@@ -79,14 +79,14 @@
 
         <h6 class="text-primary text-uppercase resize">Ghi chú</h6>
         <div class="note-section">
-          <textarea style="width: 50%; padding-left: 1rem; padding-top: 0.5rem;" [value]="billDetail.note" rows="3"
+          <textarea [disabled]="true" style="width: 50%; padding-left: 1rem; padding-top: 0.5rem;" [value]="billDetail.note" rows="3"
             placeholder="Nhập ghi chú của bạn cho dịch vụ đăng ký"></textarea>
         </div>
       </div>
       <div class="button-payment" style="display: flex; width: 100%;">
         <div style="text-align: end; justify-content: center; margin-right: 1rem; width: 100%; padding-top: 10px;">
           Tổng tiền:
-          {{ totalAmount }}
+          {{ formattedPrice }}
           <button style="height: 35px; font-size: 11px; display: inline; margin-left: 3rem;"
             class="btn btn-primary btn-pay" (click)="Booking()">
             Đặt lịch

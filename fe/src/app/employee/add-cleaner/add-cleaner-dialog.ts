@@ -69,9 +69,6 @@ export class AddCleanerDialog implements OnDestroy, OnInit {
     this._subscription.unsubscribe();
   }
 
-  cleanerRateDetail() {
-
-  }
 
   addCleaner() {
     const body = {

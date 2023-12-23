@@ -58,7 +58,7 @@ export class SignupComponent implements OnInit {
         email: this.account_email,
         password: this.pwd,
         phone_number: this.tel,
-        gender: this.gender,
+        gender: this.gender == "Nam" ? "Male" : "Female",
         role: "CUSTOMER",
       };      
       this.authService.register(reqBody).subscribe({

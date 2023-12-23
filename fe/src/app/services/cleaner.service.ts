@@ -20,7 +20,11 @@ export class CleanerService {
 
   getCleanerHistoryDetail(id: string): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}/cleaner/history/detail/`, {
-      params: { cleanerId: id },
+      params: { userId: id },
     });
+  }
+
+  getListSchedule(id: string, params: HttpParams): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}cleaner/schedules?userId=${id}`, { params });
   }
 }

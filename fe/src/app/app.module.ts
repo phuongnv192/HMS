@@ -56,7 +56,8 @@ import { BillBookingDialog } from "./booking/bill-booking/bill-booking-dialog";
 import { BookingManagementComponent } from "./employee/booking-management/booking-management.component";
 import { SupportHelpComponent } from "./auth/support-help/support.component";
 import { AddServiceManagementDialog } from "./employee/booking-management/add-service/add-service-dialog";
-
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatIconModule } from '@angular/material/icon';
 // import { FormsModule } from '@angular/forms';
 
 @NgModule({
@@ -110,6 +111,8 @@ import { AddServiceManagementDialog } from "./employee/booking-management/add-se
     RouterModule,
     BrowserModule,
     BrowserAnimationsModule,
+    MatTabsModule,
+    MatIconModule,
     ToastrModule.forRoot({
       timeOut: 30000, // 15 seconds
       closeButton: true,

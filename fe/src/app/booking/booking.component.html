@@ -21,7 +21,9 @@
               </h1>
               <p class="lead  text-white">Khách hàng vui lòng điền và kiểm tra lại các thông tin cần thiết để có thể đặt
                 và sử dụng dịch vụ một cách tốt nhất.</p>
+              <p class="" (click)="cleanerRateDetail()">
 
+              </p>
             </div>
           </div>
         </div>
@@ -46,15 +48,20 @@
                     <p>Tên chủ nhà(*): </p>
                     <!-- (keypress)="omit_special_char_email($event)" [(ngModel)]="account_name" -->
                     <!-- (blur)="changeHandler('account')" (focus)="focusAccount()" -->
-                    <input #account id="account" placeholder="Nguyen Van A" type="text" aria-describedby="account-help"
-                      maxlength="50" [(ngModel)]="account_name">
-                    <p class="error" *ngIf="nameNull">Vui lòng ko để trống thông tin tên</p>
+                    <div class="account_input">
+                      <input class="account_" id="account" placeholder="Nguyen Van A" type="text"
+                        aria-describedby="account-help" maxlength="50" [(ngModel)]="account_name">
+                      <p class="error" *ngIf="nameNull">Vui lòng ko để trống thông tin tên</p>
+                    </div>
+
                   </div>
                   <div class="input-group">
                     <p>Số điện thoại(*): </p>
-                    <input #phonenumber id="phonenumber" placeholder="0987654321" type="text"
-                      aria-describedby="phone-help" maxlength="12" [(ngModel)]="phone_number">
-                    <p class="error" *ngIf="phoneNull">Vui lòng ko để trống thông tin điện thoại</p>
+                    <div class="account_input">
+                      <input class="account_" #phonenumber id="phonenumber" placeholder="0987654321" type="text"
+                        aria-describedby="phone-help" maxlength="12" [(ngModel)]="phone_number">
+                      <p class="error" *ngIf="phoneNull">Vui lòng ko để trống thông tin điện thoại</p>
+                    </div>
                   </div>
                   <!-- <div *ngIf="account_name" class="delete" (click)="clearEmail()">
                     <img style="float: right;" src="assets/img/bnpl/Close.svg" />
@@ -63,9 +70,12 @@
                   <h6 class="text-primary text-uppercase">Thông tin nhà/khu vực vệ sinh</h6>
                   <div class="input-group">
                     <p>Nơi làm việc: </p>
-                    <input #address id="address" placeholder="Số 1Kim Mã, Ba Đình, Hà Nội" type="text"
+                    <div class="account_input">
+                      <input class="account_" #address id="address" placeholder="Số 1Kim Mã, Ba Đình, Hà Nội" type="text"
                       aria-describedby="address-help" maxlength="100" [(ngModel)]="service_address">
                     <p class="error" *ngIf="addressNull">Vui lòng ko để trống thông tin địa chỉ</p>
+                  </div>
+
                   </div>
                   <!-- <button type="button" class="btn btn-primary">Nhập địa chỉ</button> -->
 
@@ -97,13 +107,13 @@
                     <p>Diện tích sàn(*): </p>
                     <select (ngModelChange)="onAreaChange($event)" [(ngModel)]="selectedAreaType" id="area"
                       aria-describedby="areaType-help" title="Diện tích sàn">
-                      <option *ngFor="let area of areaTypes" [value]="area.value">{{ area.title + 'm²' }}</option>
+                      <option *ngFor="let area of areaTypes" [value]="area.key">{{ area.floorArea }}</option>
                     </select>
                   </div>
                   <p class="description">Số lượng người dọn và giá (ước tính): <span *ngIf="cleanerNum && duration">
-                    <b>{{cleanerNum}} người dọn dẹp</b> trong
-                    thời gian <b> {{duration}} tiếng </b>
-                  </span> </p>
+                      <b>{{cleanerNum}} người dọn dẹp</b> trong
+                      thời gian <b> {{duration}} tiếng </b> (giá dịch vụ: <b>{{formattedPrice}}</b>)
+                    </span> </p>
                   <h6 class="text-primary text-uppercase">Tiện ích bổ sung</h6>
                   <p class="description">Các loại hình dịch vụ tiện ích bổ sung là bao gồm
                     các khu vực và thiết bị không bao gồm trong dịch vụ dọn dẹp.</p>
@@ -233,10 +243,7 @@
                 <div class="button-payment">
                   <div
                     style="text-align: end; justify-content: center; margin-right: 3rem; width: 80%; padding-top: 10px;">
-                    Tổng tiền:
-                    1,500,000
-                    <!-- {{totalAmount}} -->
-                    VNĐ
+                    *
                   </div>
                   <button class="btn btn-primary btn-pay" (click)="Booking()"
                     [class.disabled]=" !termAndCondition || !account_name || !phone_number || !address || !(pickDay || dateValue)">

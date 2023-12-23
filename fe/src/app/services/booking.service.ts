@@ -11,7 +11,7 @@ export class BookingService {
   private baseUrl = environment.apiUrl;
   private SERVICETYPE = this.baseUrl + "/service-types";
   private CLEANERAVAIBLAE = this.baseUrl + "/cleaner/available";
-  private CLEANERPICKDETAIL = this.baseUrl + "/cleaner/history/detail?cleanerId=";
+  private CLEANERPICKDETAIL = this.baseUrl + "/cleaner/history/detail?userId=";
   private CUSPICKDETAIL = this.baseUrl + "/user/booking";
   private SERVICEADDON = this.baseUrl + "/service-add-ons?addOnId=";
   private AREA = this.baseUrl + "/floor-info";
