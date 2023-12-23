@@ -7,7 +7,7 @@ import { environment } from "src/environments/environment";
   providedIn: "root",
 })
 export class BookingService {
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
   private baseUrl = environment.apiUrl;
   private SERVICETYPE = this.baseUrl + "/service-types";
   private CLEANERAVAIBLAE = this.baseUrl + "/cleaner/available";
@@ -22,10 +22,10 @@ export class BookingService {
   // }
 
   private getHeadersWithToken(): HttpHeaders {
-    const token = sessionStorage.getItem('token');
+    const token = sessionStorage.getItem("token");
     return new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
     });
   }
 
@@ -41,7 +41,18 @@ export class BookingService {
 
   getCleanerAvaiable(date: any, typeId: any, packageId: any): Observable<any> {
     const headers = this.getHeadersWithToken();
-    return this.http.get<any>(`${this.CLEANERAVAIBLAE + '?workDate=' + date + '&serviceTypeId=' + typeId + '&servicePackageId=' + packageId}`, { headers });
+    return this.http.get<any>(
+      `${
+        this.CLEANERAVAIBLAE +
+        "?workDate=" +
+        date +
+        "&serviceTypeId=" +
+        typeId +
+        "&servicePackageId=" +
+        packageId
+      }`,
+      { headers }
+    );
   }
 
   getCleanerHistory(id: any): Observable<any> {
@@ -54,9 +65,10 @@ export class BookingService {
     return this.http.get<any>(`${this.CLEANERPICKDETAIL + id}`, { headers });
   }
 
-  getCustomerBookingHistory(): Observable<any> {
+  getCustomerBookingHistory(page: any, size: any): Observable<any> {
     const headers = this.getHeadersWithToken();
-    return this.http.get<any>(`${this.CUSPICKDETAIL}`, { headers });
+    let params = { page: page, size: size };
+    return this.http.get<any>(`${this.BOOKING}`, { headers, params });
   }
 
   getDataService(): Observable<any> {
@@ -74,30 +86,27 @@ export class BookingService {
     return this.http.post<any>(`${this.ADDSERVICE}`, body, { headers });
   }
 
-
-
   getBookingDetail(id: any): Observable<any> {
     if (id == 1) {
-      return this.http.get<any>('assets/data/booking-detail.json');
+      return this.http.get<any>("assets/data/booking-detail.json");
     } else if (id == 2) {
-      return this.http.get<any>('assets/data/booking-detail2.json');
+      return this.http.get<any>("assets/data/booking-detail2.json");
     } else if (id == 3) {
-      return this.http.get<any>('assets/data/booking-detail3.json');
+      return this.http.get<any>("assets/data/booking-detail3.json");
     } else if (id == 4) {
-      return this.http.get<any>('assets/data/booking-detail4.json');
+      return this.http.get<any>("assets/data/booking-detail4.json");
     } else if (id == 5) {
-      return this.http.get<any>('assets/data/booking-detail5.json');
+      return this.http.get<any>("assets/data/booking-detail5.json");
     } else if (id == 6) {
-      return this.http.get<any>('assets/data/booking-detail6.json');
+      return this.http.get<any>("assets/data/booking-detail6.json");
     } else if (id == 7) {
-      return this.http.get<any>('assets/data/booking-detail7.json');
+      return this.http.get<any>("assets/data/booking-detail7.json");
     } else if (id == 8) {
-      return this.http.get<any>('assets/data/booking-detail8.json');
+      return this.http.get<any>("assets/data/booking-detail8.json");
     }
   }
 
   getListBooking(): Observable<any> {
-    return this.http.get<any>('assets/data/list-booking.json');
+    return this.http.get<any>("assets/data/list-booking.json");
   }
-
 }

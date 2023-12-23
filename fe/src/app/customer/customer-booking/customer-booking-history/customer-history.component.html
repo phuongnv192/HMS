@@ -52,25 +52,21 @@
                 <th scope="col">Loại nhà</th>
                 <th scope="col">Số tầng</th>
                 <th scope="col">Diện tích</th>
-                <th scope="col">Chất lượng phục vụ</th>
-                <th scope="col">Phản hồi</th>
+                <th scope="col">Loại dịch vụ</th>
                 <!-- <th scope="col"></th> -->
               </tr>
             </thead>
-            <tbody>
-              <tr *ngFor="let service of history">
+            <tbody  *ngIf="data.length > 0">
+              <tr *ngFor="let service of data">
                 <th scope="row">
                   <div class="media align-items-center">
-                    <a href="javascript:void(0)" class="avatar rounded-circle mr-3">
-                      <img alt="Image placeholder" src="../assets/img/theme/bootstrap.jpg">
-                    </a>
                     <div class="media-body">
-                      <span class="mb-0 text-sm">{{service.name}}</span>
+                      <span class="mb-0 text-sm">{{service.id}} - {{service.hostName}}</span>
                     </div>
                   </div>
                 </th>
                 <td>
-                  {{service.workDate}}
+                  {{service.createDate}}
                 </td>
                 <td>
                   {{service.houseType}}
@@ -81,7 +77,7 @@
                 <td>
                   {{service.floorArea}}
                 </td>
-                <td>
+                <!-- <td>
                   <div class="d-flex align-items-center">
                     <span class="mr-2">{{service.ratingScore}}</span>
 
@@ -90,12 +86,25 @@
                 </td>
                 <td>
                   {{service.review}}
+                </td> -->
+                <td>
+                  <div class="icon-container">
+                    <div class="icon" (click)="editSchedule(service.id)">
+                      <i class="fas fa-edit"></i>
+                    </div>
+                    <div class="divider">|</div>
+                    <div class="icon" (click)="viewDetailinSchedule(service.id)">
+                      <i class="fas fa-info-circle"></i>
+                    </div>
+                  </div>   
+                  <!-- {{service.serviceTypeName && service.servicePackageName ? 'Định kỳ' : 'Trong ngày' }} -->
                 </td>
               </tr>
             </tbody>
+            <div style="width: 100%; text-align: center; font-size: 18px; font-weight: 700; margin:2rem;"  *ngIf="data.length < 1"> Hiện tại, người dùng đang không có dữ liệu về lịch sử sử dụng dịch vụ </div>
           </table>
         </div>
-        <div class="card-footer py-4">
+        <!-- <div class="card-footer py-4">
           <nav aria-label="...">
             <ul class="pagination justify-content-end mb-0">
               <li class="page-item disabled">
@@ -119,7 +128,7 @@
               </li>
             </ul>
           </nav>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>

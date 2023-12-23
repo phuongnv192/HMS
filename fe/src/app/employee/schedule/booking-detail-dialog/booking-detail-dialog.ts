@@ -1,7 +1,8 @@
 import { Subscription } from 'rxjs';
-import { BookingDetailNoteData } from '../schedule.component';
 import { Component, Inject, OnDestroy, NgZone, Renderer2, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { BookingService } from 'src/app/services/booking.service';
+import { BookingDetailNoteData } from 'src/app/customer/customer-booking/customer-booking-list/customer-schedule.component';
 
 @Component({
   selector: 'app-booking-detail-dialog',
@@ -28,18 +29,34 @@ export class BookingDetailDialog implements OnInit, OnDestroy {
   scheduleAddOns: any;
   namesOfScheduleDay: any;
   scheduleDayList: any;
+  areaTypes: any;
+  cleanerNum: any;
+  duration: any;
+  priceClean: any;
+  formattedPrice: any;
+  infor: any;
 
 
   constructor(
     public dialogRef: MatDialogRef<BookingDetailDialog>,
     @Inject(MAT_DIALOG_DATA) public data: BookingDetailNoteData,
+    private bookingServicee: BookingService,
     private renderer: Renderer2,
     private ngZone: NgZone) {
   }
 
   ngOnInit(): void {
-    this.id = this.data.id;
-    this.detail = this.data.detail;
+    this.data.data.forEach(element => {
+      if(element.id == this.data.id){
+        this.infor = element;
+      }
+    });
+    this.bookingServicee.getDataService().subscribe(res => {
+      this.areaTypes = res.data;
+      this.onAreaChange(this.data.data.floorArea);
+    });
+
+    // this.detail = this.data.detail;
     // }
 
     // this.dateSchedule = [
@@ -84,14 +101,14 @@ export class BookingDetailDialog implements OnInit, OnDestroy {
     ]
 
 
-    this.scheduleDay = this.data.detail.scheduleList[0];
+    // this.scheduleDay = this.data.detail.scheduleList[0];
 
     // .workDate;
     // this.scheduleStartTime = this.data.detail.scheduleList[0].startTime;
     // this.scheduleEndTime = this.data.detail.scheduleList[0].endTime;
     // this.schedulePaymentStatus = this.data.detail.scheduleList[0].paymentStatus;
     // this.schedulePaymentNote = this.data.detail.scheduleList[0].paymentNote;
-    this.scheduleAddOns = this.data.detail.scheduleList[0].serviceAddOns;
+    // this.scheduleAddOns = this.data.detail.scheduleList[0].serviceAddOns;
     this.namesOfScheduleDay = this.scheduleAddOns.map(item => item.name).join(', ');
     this.scheduleDayList = this.detail.scheduleList.map(item => item.workDate);
 
@@ -99,7 +116,25 @@ export class BookingDetailDialog implements OnInit, OnDestroy {
       id: this.id,
       workDate: this.scheduleDayList
     }];
-    this.date = this.dateSchedule.find((item) => item.id == this.data.id);
+    // this.date = this.dateSchedule.find((item) => item.id == this.data.id);
+  }
+
+  onAreaChange(value: any) {
+    // let found = false; // Biến kiểm soát vòng lặp
+    this.areaTypes.forEach(element => {
+      if (value == element.key) {
+        // Nếu tìm thấy phần tử thỏa mãn điều kiện, lưu giá trị và thoát vòng lặp
+        this.cleanerNum = element.cleanerNum;
+        this.duration = element.duration;
+        this.priceClean = element.price;
+        this.formattedPrice = this.priceClean.toLocaleString('vi-VN', {
+          style: 'currency',
+          currency: 'VND',
+        });
+
+        // found = true;
+      }
+    });
   }
 
 

@@ -1593,3 +1593,27 @@
     }
   }
 }
+
+.icon-container {
+  display: flex;
+  align-items: center;
+}
+
+.icon {
+  cursor: pointer;
+  padding: 5px;
+  margin-right: 5px;
+  color: #000; /* Màu chữ có thể điều chỉnh */
+  background: none;
+  border: none;
+}
+
+.edit-icon i,
+.detail-icon i {
+  font-size: 13px; /* Điều chỉnh kích thước icon */
+}
+
+.divider {
+  margin: 0 5px;
+  color: #000; /* Màu dấu phân cách có thể điều chỉnh */
+}

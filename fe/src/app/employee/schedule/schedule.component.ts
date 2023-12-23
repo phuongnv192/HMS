@@ -7,11 +7,8 @@ import { BookingDetailDialog } from './booking-detail-dialog/booking-detail-dial
 import { BookingService } from 'src/app/services/booking.service';
 
 export interface BookingDetailNoteData {
-  id: any;
-  review: any;
-  note: any;
-  name: string;
-  detail: any;
+  id:any;
+  data:any
 }
 
 @Component({
@@ -108,10 +105,7 @@ export class ScheduleComponent implements OnInit {
         maxHeight: '60%',
         data: {
           id: id,
-          review: review,
-          note: note,
-          name: name,
-          detail: detail
+          data: this.data
         },
         panelClass: ['view-detail']
       });
