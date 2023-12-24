@@ -14,7 +14,7 @@
       <!-- listPick.length > 0  -->
       <div class="table-responsive" *ngIf="true">
         <div *ngIf="listPick.length < 1">
-          <div style="margin-top: 2rem; font-size: 14px;">Các nhân viên dọn dẹp đã được chọn:</div>
+          <div style="margin-top: 2rem; font-size: 14px;">Các nhân viên dọn dẹp đã được chọn (vui lòng chọn số lượng tương ứng với số nhân viên được gợi ý):</div>
           <div *ngIf="listPick.length < 1" style="margin-top: 2rem; font-size: 14px;">Hiện người dùng chưa chọn nhân viên. (Hệ thống sẽ mặc định chọn nhân viên phù hợp với tiêu chí)</div>
         </div>
         <div class="showtime-options" *ngIf="listPick.length > 0">
@@ -67,7 +67,7 @@
         
       </div>
       <div class="button-submit">
-        <button mat-button class="btn" (click)="pickCleaner()">Xác nhận</button>
+        <button mat-button class="btn" (click)="pickCleaner()" [disabled]="listPick.length > 0 && listPick.length != cleanerNum">Xác nhận</button>
       </div>
     </div>
   </div>

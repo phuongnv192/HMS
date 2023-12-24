@@ -51,6 +51,7 @@ export class PickCleanerDialog implements OnDestroy, OnInit {
   ngOnInit(): void {
     this.listCleaner = this.data.data;
     this.cleanerNum = this.data.cleanerNum;
+    
     // this.listB = this.listCleaner.slice(5);
     if (this.data.listPick && this.data.listPick.length > 0) {
       this.listPickData = this.data.listPick;
@@ -146,14 +147,17 @@ export class PickCleanerDialog implements OnDestroy, OnInit {
   }
 
   addCleaner(cleaner: any, index: any): void {
-    if(this.listPick.length > this.cleanerNum){
+    console.log("this.listPick.length", this.listPick.length);
+    console.log("this.cleanerNum", this.cleanerNum);
+    
+    if(this.listPick.length < this.cleanerNum){
       this.listPick.push(cleaner);
       this.listPickData = this.listPick.map(cleaner => cleaner.cleanerId);
       this.listPickNameData = this.listPick.map(cleaner => cleaner.name);
       this.listCleaner = this.listCleaner.filter((item, i) => i !== index);
       this.listA = this.listCleaner.slice(0, 10);
     } else {
-      this.toastr.success('Đơn dịch vụ đã được đặt thành công, vui lòng kiểm tra email thông tin chi tiết', 'Thành công');
+      this.toastr.success('Bạn đã chọn đủ số lượng người dọn!');
     }
     
     // this.updateListCleaner(index, 'remove', cleaner);
