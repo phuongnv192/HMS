@@ -122,7 +122,7 @@ export class BookingDetailDialog implements OnInit, OnDestroy {
   onAreaChange(value: any) {
     // let found = false; // Biến kiểm soát vòng lặp
     this.areaTypes.forEach(element => {
-      if (value == element.key) {
+      if (value == element.floorArea) {
         // Nếu tìm thấy phần tử thỏa mãn điều kiện, lưu giá trị và thoát vòng lặp
         this.cleanerNum = element.cleanerNum;
         this.duration = element.duration;

@@ -58,6 +58,7 @@ import { SupportHelpComponent } from "./auth/support-help/support.component";
 import { AddServiceManagementDialog } from "./employee/booking-management/add-service/add-service-dialog";
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
+import { CleanerBookingDetailDialog } from "./employee/schedule/cleaner-booking-detail-dialog/cleaner-booking-detail-dialog";
 // import { FormsModule } from '@angular/forms';
 
 @NgModule({
@@ -98,7 +99,8 @@ import { MatIconModule } from '@angular/material/icon';
     BillBookingDialog,
     BookingManagementComponent,
     SupportHelpComponent,
-    AddServiceManagementDialog
+    AddServiceManagementDialog,
+    CleanerBookingDetailDialog,
   ],
   imports: [
     NgbModule,
@@ -144,7 +146,8 @@ import { MatIconModule } from '@angular/material/icon';
     CleanerDetailDialog,
     CleanerRateDialog,
     AddCleanerDialog,
-    AddServiceDialog
+    AddServiceDialog,
+    CleanerBookingDetailDialog
   ],
   exports: [],
 })
