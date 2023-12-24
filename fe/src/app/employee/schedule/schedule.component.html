@@ -137,7 +137,7 @@
                   {{booking.hostName}}
                 </td>
                 <td>
-                  {{booking.createDate}}
+                  {{booking.createDate | dateFormat}}
                 </td>
                 <td>
                   {{booking.hostPhone}}
@@ -159,7 +159,7 @@
                       <div ngbDropdownMenu class=" dropdown-menu-right dropdown-menu-arrow">
                         <a class="dropdown-item" (click)="showDetail(booking, 'day')">Xem thông tin</a>
                         <a class="dropdown-item" (click)="complete(booking.bookingId)">Hoàn thành</a>
-                        <a *ngIf="booking.status != 'CONFIRMED'" class="dropdown-item" (click)="changeStatus(booking.bookingId)">Xác nhận đơn</a>
+                        <!-- <a *ngIf="booking.status != 'CONFIRMED'" class="dropdown-item" (click)="changeStatus(booking.bookingId)">Xác nhận đơn</a> -->
                         <!-- <a class="dropdown-item" (click)="changeStatus()">Xác nhận đơn</a> -->
                         <a class="dropdown-item" (click)="cancel(booking.bookingId)">Hủy đơn</a>
                       </div>

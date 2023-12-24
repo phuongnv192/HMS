@@ -43,57 +43,69 @@
               <tr>
                 <th scope="col" >Tên đơn dịch vụ</th>
                 <th scope="col">Ngày làm</th>
+                <th scope="col">Địa chỉ</th>
                 <th scope="col">Loại nhà</th>
-                <th scope="col">Số tầng</th>
+                <!-- <th scope="col">Số tầng</th> -->
                 <th scope="col">Diện tích</th>
-                <!-- <th scope="col"></th> -->
+                <th scope="col">Trạng thái</th>
+                <th scope="col"></th>
                 <!-- <th scope="col">Phản hồi</th> -->
               </tr>
             </thead>
-            <tbody>
-              <tr *ngFor="let service of data" style="cursor: pointer;" (click)="viewDetailinSchedule(service.id)">
-                <th scope="row">
+            <tbody *ngIf="data.length > 0">
+              <tr *ngFor="let service of data" style="cursor: pointer;">
+                <th scope="row" (click)="viewDetailinSchedule(service)">
                   <div class="media align-items-center">
                     <div class="media-body">
-                      <span class="mb-0 text-sm">{{service.id}} - {{service.hostName}}</span>
+                      <span class="mb-0 text-sm">{{service.bookingId}} - {{service.hostName}}</span>
                     </div>
                   </div>
                 </th>
                 <td>
-                  {{service.createDate}}
+                  {{service.createDate | dateFormat}}
+                </td>
+                <td>
+                  {{service.hostAddress}}
                 </td>
                 <td>
                   {{service.houseType}}
                 </td>
-                <td>
+                <!-- <td>
                   {{service.floorNumber}}
-                </td>
+                </td> -->
                 <td>
                   {{service.floorArea}}
                 </td>
-                <!-- <td>
-                  <div class="icon-container">
-                    <div class="icon" (click)="editSchedule(service.bookingId)">
-                      <i class="fas fa-edit"></i>
+                <td>
+                  {{service.status}}
+                </td>
+                <td>
+                  <div ngbDropdown placement="bottom-right">
+                    <a class="btn btn-sm btn-icon-only text-light" ngbDropdownToggle>
+                      <i class="fas fa-ellipsis-v"></i>
+                    </a>
+                    <div ngbDropdownMenu class=" dropdown-menu-right dropdown-menu-arrow">
+                      <a class="dropdown-item" (click)="viewDetailinSchedule(service)">Xem thông tin</a>
+                      <!-- <a class="dropdown-item" [disable]="true" (click)="changeStatus(service.bookingId)">Xác nhận đơn</a> -->
+                      <a class="dropdown-item" (click)="cancel(service.bookingId)">Hủy đơn</a>
                     </div>
-                    <div class="divider">|</div>
-                    <div class="icon" (click)="viewDetailinSchedule(service.bookingId)">
-                      <i class="fas fa-info-circle"></i>
+                  </div>  
+                  
+                  <!-- <div ngbDropdown placement="bottom-right" *ngIf="booking.status != 'CONFIRMED'">
+                    <a class="btn btn-sm btn-icon-only text-light" ngbDropdownToggle>
+                      <i class="fas fa-ellipsis-v"></i>
+                    </a>
+                    <div ngbDropdownMenu class=" dropdown-menu-right dropdown-menu-arrow">
+                      <a class="dropdown-item" (click)="viewDetailinSchedule(service)">Xem thông tin</a>
+                      <a class="dropdown-item" (click)="cancel(service.bookingId)">Hủy đơn</a>
                     </div>
-                  </div>                  
-                </td> -->
+                  </div>   -->
+                </td>
               </tr>
             </tbody>
+            <div style="width: 100%; text-align: center; font-size: 18px; font-weight: 700; margin:2rem;"  *ngIf="data.length < 1"> Hiện tại, người dùng đang không có dữ liệu về lịch sử sử dụng dịch vụ </div>
           </table>
         </div>
-        <!-- <div class="table-responsive" style="margin-top: 2rem;">
-          <div class="showtime-bydate" *ngFor="let date of dateList">
-            <span> - {{date.name}}: ({{date.startTime}} - {{date.endTime}}): </span>
-            <span style="font-weight: 700; font-size: 16px"> {{date.workDate}} </span>
-            <u (click)="viewDetailinSchedule(date.id, date.workDate)"> (Xem chi tiết)</u>
-          </div>
-        </div> -->
-       
       </div>
     </div>
   </div>

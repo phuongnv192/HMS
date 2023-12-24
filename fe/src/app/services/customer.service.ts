@@ -22,6 +22,16 @@ export class CustomerService {
     return this.http.get<any>(`${this.baseUrl}/users`, { params });
   }
 
+  getListSchedule(): Observable<any> {
+    const headers = this.getHeadersWithToken();
+    return this.http.get<any>(`${this.baseUrl}/user/booking`, { headers });
+  }
+
+  // booking(body: any): Observable<any> {
+  //   const headers = this.getHeadersWithToken();
+  //   return this.http.post<any>(`${this.BOOKING}`, body, { headers });
+  // }
+
   // getServiceAddOns(id: string): Observable<any> {
   //   const headers = this.getHeadersWithToken();
   //   return this.http.get<any>(`${this.SERVICEADDON + id}`, { headers });

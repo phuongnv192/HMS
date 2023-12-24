@@ -49,8 +49,9 @@
               <tr>
                 <th scope="col">Tên đơn dịch vụ</th>
                 <th scope="col">Ngày làm</th>
+                <th scope="col">Địa chỉ</th>
                 <th scope="col">Loại nhà</th>
-                <th scope="col">Số tầng</th>
+                <!-- <th scope="col">Số tầng</th> -->
                 <th scope="col">Diện tích</th>
                 <th scope="col">Loại dịch vụ</th>
                 <!-- <th scope="col"></th> -->
@@ -58,44 +59,37 @@
             </thead>
             <tbody  *ngIf="data.length > 0">
               <tr *ngFor="let service of data">
-                <th scope="row">
+                <th scope="row" (click)="viewDetailinSchedule(service)">
                   <div class="media align-items-center">
                     <div class="media-body">
-                      <span class="mb-0 text-sm">{{service.id}} - {{service.hostName}}</span>
+                      <span class="mb-0 text-sm">{{service.bookingId}} - {{service.hostName}}</span>
                     </div>
                   </div>
                 </th>
                 <td>
-                  {{service.createDate}}
+                  {{service.createDate | dateFormat}}
+                </td>
+                <td>
+                  {{service.hostAddress}}
                 </td>
                 <td>
                   {{service.houseType}}
                 </td>
-                <td>
+                <!-- <td>
                   {{service.floorNumber}}
-                </td>
+                </td> -->
                 <td>
                   {{service.floorArea}}
                 </td>
-                <!-- <td>
-                  <div class="d-flex align-items-center">
-                    <span class="mr-2">{{service.ratingScore}}</span>
-
-                    <div class="star-rating" [innerHTML]="generateStarRating(service.ratingScore)"></div>
-                  </div>
-                </td>
-                <td>
-                  {{service.review}}
-                </td> -->
-                <td>
+                <td style="min-width: 130px; text-align: center;">
                   <div class="icon-container">
                     <div class="icon" (click)="editSchedule(service.id)">
                       <i class="fas fa-edit"></i>
                     </div>
-                    <div class="divider">|</div>
+                    <!-- <div class="divider">|</div>
                     <div class="icon" (click)="viewDetailinSchedule(service.id)">
                       <i class="fas fa-info-circle"></i>
-                    </div>
+                    </div> -->
                   </div>   
                   <!-- {{service.serviceTypeName && service.servicePackageName ? 'Định kỳ' : 'Trong ngày' }} -->
                 </td>

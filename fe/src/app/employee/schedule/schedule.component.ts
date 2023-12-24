@@ -55,21 +55,15 @@ export class ScheduleComponent implements OnInit {
     this.cleanService.getListSchedule(id, req).subscribe({
       next: (res) => {
         if (res && res.data) {
-          this.listBooking = res.data.filter(a=> a.status != 'DONE');
-          console.log("this.listBooking", this.listBooking);
-          
+          this.listBooking = res.data.filter(a=> a.status != 'DONE');          
           this.listBooking.forEach(booking => {
             if (
                 booking.serviceTypeName == null &&
                 booking.servicePackageName == null
-            ) {
-              console.log("listBookingDay");
-              
+            ) {              
               this.listBookingDay.push(booking);
             } else {
               this.listBookingSchedule.push(booking);
-              console.log("listBookingDaySchedlue", this.listBookingSchedule);
-
             }
         });
         }
@@ -87,60 +81,8 @@ export class ScheduleComponent implements OnInit {
     this.getListCleaner(this.cleanerId);
 
   });
-    // this.bookingService.getListBooking().subscribe((data) => {
-    //   this.bookingList = data.data;
-    // });
-
-
-    // this.data = {
-    //   "ratingOverview": {
-    //     "cleanerId": 1,
-    //     "name": "Nguyen Hoang Anh",
-    //     "idCard": "0123456789",
-    //     "email": "abc@gmail.com",
-    //     "phoneNumber": 84966069299,
-    //     "status": "active",
-    //     "branch": 1,
-    //     "activityYear": 0,
-    //     "averageRating": 5,
-    //     "ratingNumber": 2
-    //   },
-    //   "history": [
-    //     {
-    //       "name": "Booking guest name 1",
-    //       "ratingScore": 5,
-    //       "workDate": "13/11/2023",
-    //       "houseType": "APARTMENT",
-    //       "floorNumber": 12,
-    //       "floorArea": 120.0,
-    //       "review": "Làm việc tích cực, nhanh gọn và sạch sẽ. Thái độ chuyên nghiệp và tỉ mỉ. Rất hài lòng."
-    //     },
-    //     {
-    //       "name": "Booking guest name 2",
-    //       "ratingScore": 4.5,
-    //       "workDate": "13/12/2023",
-    //       "houseType": "VILLA",
-    //       "floorNumber": 12,
-    //       "floorArea": 120.0,
-    //       "review": "Khá là tuyệt. Nhanh nhẹn và thân thiện , dịch vụ chất lượng cao."
-    //     }
-    //   ]
-    // }
-    // this.schedule = this.data.history;
+    
   }
-
-  // onClickButton(id: any) {
-  //   if (!this.apiBookingDetailExecuted) {
-  //     // Gọi API abc ở đây
-  //     this.bookingService.getBookingDetail().subscribe((data) => {
-  //       this.apiBookingDetailExecuted = true;
-  //       this.bookingDetail = data;
-  //     });
-  //   } else {
-  //     // Nếu đã thực hiện API abc, thực hiện các tác vụ khác trực tiếp
-  //     // this.performOtherTasks();
-  //   }
-  // }
 
   showDetail(detail: any, type:any) {
     // this.bookingService.getBookingDetail(detail).subscribe((data) => {

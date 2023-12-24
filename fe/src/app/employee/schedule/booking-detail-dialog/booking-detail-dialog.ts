@@ -35,7 +35,16 @@ export class BookingDetailDialog implements OnInit, OnDestroy {
   priceClean: any;
   formattedPrice: any;
   infor: any;
-
+  type: any;
+  cleanerList = [];
+  dataCleaner = [];
+  idCards: any[];
+  listName: any[];
+  rating = [];
+  ratingAverage = 0;
+  status = 'DONE';
+  page = 0;
+  size = 100;
 
   constructor(
     public dialogRef: MatDialogRef<BookingDetailDialog>,
@@ -46,33 +55,45 @@ export class BookingDetailDialog implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.data.data.forEach(element => {
-      if(element.id == this.data.id){
-        this.infor = element;
+    console.log(1221212);
+    this.infor = this.data.data;
+    console.log(this.infor, 11111111);
+
+    this.bookingServicee.getCustomerBookingHistory(this.page, this.size).subscribe(res => {
+      if (res && res.data) {
+        res.data.forEach(element_res => {
+          if (element_res.id == this.infor.bookingId) {
+            this.dataCleaner = element_res.cleaners;
+            this.idCards = this.dataCleaner.map(cleaner => cleaner.idCard);
+          }
+        });
       }
     });
+    this.status = this.infor.status;
+    if (this.status == "DONE") {
+      this.rating = this.infor.scheduleDayList.map(rate => (rate.ratingScore != null ? rate.ratingScore : 0));
+      console.log("rating", this.rating);
+
+    }
+
+    const totalRating = this.rating.reduce((acc, current) => acc + current, 0);
+    // Tính tổng số phần tử của mảng rating
+    const numberOfElements = this.rating.length;
+    // Tính rating trung bình
+    this.ratingAverage = numberOfElements > 0 ? totalRating / numberOfElements : 0;
+    this.type = this.data.data.servicePackageName != null ? 'schedule' : 'day';
+    this.id = this.data.data.bookingId;
+    this.formattedPrice = this.data.data.totalBookingPrice.toLocaleString('vi-VN', {
+      style: 'currency',
+      currency: 'VND',
+    });
     this.bookingServicee.getDataService().subscribe(res => {
+      console.log(11111111111);
+
       this.areaTypes = res.data;
       this.onAreaChange(this.data.data.floorArea);
     });
 
-    // this.detail = this.data.detail;
-    // }
-
-    // this.dateSchedule = [
-    //   {
-    //     id: '1',
-    //     workDate: ["11/20/2023", "11/27/2023", "12/04/2023", "12/11/2023"],
-    //   },
-    //   {
-    //     id: '2',
-    //     workDate: ["11/20/2023", "11/27/2023", "12/04/2023", "12/11/2023"],
-    //   },
-    //   {
-    //     id: '3',
-    //     workDate: ["11/20/2023", "11/21/2023", "11/22/2023", "11/23/2023", "11/24/2023", "11/25/2023", "11/26/2023", "11/27/2023", "11/28/2023"],
-    //   }
-    // ]
     this.dateList = [
       {
         id: 'd1',
@@ -99,30 +120,46 @@ export class BookingDetailDialog implements OnInit, OnDestroy {
         duration: 3
       },
     ]
-
-
-    // this.scheduleDay = this.data.detail.scheduleList[0];
-
-    // .workDate;
-    // this.scheduleStartTime = this.data.detail.scheduleList[0].startTime;
-    // this.scheduleEndTime = this.data.detail.scheduleList[0].endTime;
-    // this.schedulePaymentStatus = this.data.detail.scheduleList[0].paymentStatus;
-    // this.schedulePaymentNote = this.data.detail.scheduleList[0].paymentNote;
-    // this.scheduleAddOns = this.data.detail.scheduleList[0].serviceAddOns;
     this.namesOfScheduleDay = this.scheduleAddOns.map(item => item.name).join(', ');
-    this.scheduleDayList = this.detail.scheduleList.map(item => item.workDate);
+    this.scheduleDayList = this.data.data.scheduleList.map(item => item.workDate);
 
     this.dateSchedule = [{
       id: this.id,
       workDate: this.scheduleDayList
     }];
-    // this.date = this.dateSchedule.find((item) => item.id == this.data.id);
+  }
+
+  generateStarRating(rating: number): string {
+    const stars: string[] = [];
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 !== 0;
+
+    for (let i = 0; i < fullStars; i++) {
+      stars.push('<i class="fas fa-star"></i>');
+    }
+
+    if (hasHalfStar) {
+      stars.push('<i class="fas fa-star-half-alt"></i>');
+    }
+
+    return stars.join("");
+  }
+
+
+  confirm(id:any){
+    
+  }
+
+  cancel(id:any){
+
   }
 
   onAreaChange(value: any) {
     // let found = false; // Biến kiểm soát vòng lặp
     this.areaTypes.forEach(element => {
       if (value == element.floorArea) {
+        console.log(element);
+
         // Nếu tìm thấy phần tử thỏa mãn điều kiện, lưu giá trị và thoát vòng lặp
         this.cleanerNum = element.cleanerNum;
         this.duration = element.duration;

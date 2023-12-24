@@ -27,4 +27,8 @@ export class CleanerService {
   getListSchedule(id: string, params: HttpParams): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}/cleaner/schedules?userId=${id}`, { params });
   }
+
+  changeStatus(body: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/cleaner/schedule/status`, { body });
+  }
 }

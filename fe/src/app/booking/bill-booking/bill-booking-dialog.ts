@@ -83,8 +83,15 @@ export class BillBookingDialog implements OnDestroy, OnInit {
 
   Booking(){
     this.bookingServicee.booking(this.billDetail).subscribe({
-      next: () => {
-        this.dialogRef.close("closeDialog");
+      next: (res) => {
+        let confirm = {
+          "bookingId": res.data.id
+        }
+        this.bookingServicee.confirmBooking(confirm).subscribe({
+          next: () => {
+            this.dialogRef.close("closeDialog");
+          }
+        })
         // Chuyển hướng sang trang Home và truyền thông báo thành công
       },
       error: () => { },

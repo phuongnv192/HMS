@@ -28,6 +28,7 @@ export interface PickCleanerData {
   data: any;
   date: any;
   listPick: any;
+  cleanerNum: any;
 }
 
 export interface CalendarDialogData {
@@ -404,71 +405,62 @@ export class BookingComponent implements OnInit {
 
   pickCleaner() {
     // this.dialogService.sendDataDialog(true);
-    if (this.selectedTimeType == 'Sử dụng 1 lần' && this.dateValue) {
-      this.bookingServicee.getCleanerAvaiable(this.dateValue, '', '').subscribe(item => {
-        this.dataCleaner = item.data;
-        this.renderer.addClass(document.body, 'modal-open');
-        this.cleanerDialogRef = this.dialog.open(PickCleanerDialog, {
-          width: '1000px',
-          maxHeight: '85%',
-          data: {
-            data: this.dataCleaner,
-            date: this.dateValue,
-            listPick: this.cleanerIds
-          },
-          panelClass: ['pick-cleaner']
-        });
-        this.cleanerDialogRef.afterClosed().subscribe(result => {
-          if (result) {
-            this.cleanerIds = result.listPickData;
-            this.cleanerList = result.listPickDataName.join(', ');
-          }
-          this.renderer.removeClass(document.body, 'modal-open');
-          // this.dialogService.sendDataDialog(false);
-        });
-      })
-    } else if (this.selectedTimeType = 'Định kỳ' && this.pickDay && this.typeId && this.servicePackageId) {
-      this.bookingServicee.getCleanerAvaiable(this.pickDay, this.typeId, this.servicePackageId).subscribe(item => {
-        this.dataCleaner = item.data;
-        this.renderer.addClass(document.body, 'modal-open');
-        this.cleanerDialogRef = this.dialog.open(PickCleanerDialog, {
-          width: '1000px',
-          maxHeight: '85%',
-          data: {
-            data: this.dataCleaner,
-            date: this.pickDay,
-            listPick: this.cleanerIds
-          },
-          panelClass: ['pick-cleaner']
-        });
-        this.cleanerDialogRef.afterClosed().subscribe(result => {
-          if (result) {
-            this.cleanerIds = result.listPickData;
-            this.cleanerList = result.listPickDataName.join(', ');
-          }
-          this.renderer.removeClass(document.body, 'modal-open');
-          // this.dialogService.sendDataDialog(false);
-        });
-      })
+    if(this.cleanerNum < 4){
+      if (this.selectedTimeType == 'Sử dụng 1 lần' && this.dateValue) {
+        this.bookingServicee.getCleanerAvaiable(this.dateValue, '', '').subscribe(item => {
+          this.dataCleaner = item.data;
+          this.renderer.addClass(document.body, 'modal-open');
+          this.cleanerDialogRef = this.dialog.open(PickCleanerDialog, {
+            width: '1000px',
+            maxHeight: '85%',
+            data: {
+              data: this.dataCleaner,
+              date: this.dateValue,
+              listPick: this.cleanerIds,
+              cleanerNum: this.cleanerNum
+            },
+            panelClass: ['pick-cleaner']
+          });
+          this.cleanerDialogRef.afterClosed().subscribe(result => {
+            if (result) {
+              this.cleanerIds = result.listPickData;
+              this.cleanerList = result.listPickDataName.join(', ');
+            }
+            this.renderer.removeClass(document.body, 'modal-open');
+            // this.dialogService.sendDataDialog(false);
+          });
+        })
+      } else if (this.selectedTimeType = 'Định kỳ' && this.pickDay && this.typeId && this.servicePackageId) {
+        this.bookingServicee.getCleanerAvaiable(this.pickDay, this.typeId, this.servicePackageId).subscribe(item => {
+          this.dataCleaner = item.data;
+          this.renderer.addClass(document.body, 'modal-open');
+          this.cleanerDialogRef = this.dialog.open(PickCleanerDialog, {
+            width: '1000px',
+            maxHeight: '85%',
+            data: {
+              data: this.dataCleaner,
+              date: this.pickDay,
+              listPick: this.cleanerIds,
+              cleanerNum: this.cleanerNum
+            },
+            panelClass: ['pick-cleaner']
+          });
+          this.cleanerDialogRef.afterClosed().subscribe(result => {
+            if (result) {
+              this.cleanerIds = result.listPickData;
+              this.cleanerList = result.listPickDataName.join(', ');
+            }
+            this.renderer.removeClass(document.body, 'modal-open');
+            // this.dialogService.sendDataDialog(false);
+          });
+        })
+      } else {
+        this.toastr.error('Thiếu thông tin diện tích/thời gian dọn dẹp');
+      }
     } else {
-      this.toastr.error('Thiếu thông tin diện tích/thời gian dọn dẹp');
-
-      // this.renderer.addClass(document.body, 'modal-open');
-      //     this.warningDialogRef = this.dialog.open(PickCLeanerWarningDialog, {
-      //       width: '500px',
-      //       maxHeight: '20%',
-      //       data: {
-
-      //       },
-      //       panelClass: ['waining-cleaner']
-      //     });
-      //     this.cleanerDialogRef.afterClosed().subscribe(result => {
-      //       if (result) {
-      //       }
-      //       this.renderer.removeClass(document.body, 'modal-open');
-      //       // this.dialogService.sendDataDialog(false);
-      //     });
+      this.toastr.error('Hiện hệ thống không khả dụng chọn số lượng người dọn quá 3.');
     }
+   
   }
 
   Order() {
@@ -682,7 +674,7 @@ export class BookingComponent implements OnInit {
       hostDistance: '6km',
       distanceprice: 10000,
       houseType: this.selectedHouseType,  //houseType: this.selectedHouseType,
-      floorNumber: this.selectedFloors,
+      floorNumber: 1,
       floorArea: this.selectedAreaType,  //'M' + this.selectedAreaType  chưa thống nhất đc BE FE
       cleanerIds: this.cleanerIds,
       bookingSchedules: this.scheduleData,
@@ -737,7 +729,7 @@ export class BookingComponent implements OnInit {
       });
       this.billDialogRef.afterClosed().subscribe(result => {
         if (result == 'closeDialog') {
-        this.toastr.success('Đơn dịch vụ đã được đặt thành công, vui lòng kiểm tra email thông tin chi tiết', 'Thành công');
+          this.toastr.success('Đơn dịch vụ đã được đặt thành công, vui lòng kiểm tra email thông tin chi tiết', 'Thành công');
           this.router.navigate(["/introduction"], { queryParams: { success: true } });
         }
         this.renderer.removeClass(document.body, 'modal-open');

@@ -4,6 +4,7 @@ import { CleanerRateDialog } from "src/app/booking/cleaner-rate-dialog/cleaner-r
 import { BookingDetailDialog } from "src/app/employee/schedule/booking-detail-dialog/booking-detail-dialog";
 import { AuthService } from "src/app/services/auth.service";
 import { BookingService } from "src/app/services/booking.service";
+import { CustomerService } from "src/app/services/customer.service";
 
 @Component({
   selector: "app-customer-history",
@@ -21,56 +22,25 @@ export class CustomerHistoryComponent implements OnInit {
   searchHouseType: string;
   customerId: any;
   page: any = 0
-  size: any = 4
+  size: any = 10
+  dataCleaner = [];
   constructor(
     public dialog: MatDialog, private renderer: Renderer2,
     // private dialogService: DialogService
     public dialogRef: MatDialogRef<BookingDetailDialog>,
     // private bookingService: BookingService
     private bookingService: BookingService,
+    private customerService: CustomerService,
     public ratedialogRef: MatDialogRef<CleanerRateDialog>,
-  ) {}
+  ) { }
 
   ngOnInit() {
-    this.bookingService.getCustomerBookingHistory(this.page, this.size).subscribe(res => {
-      if(res && res.data) {
-        this.data = res.data.filter(a=> a.status == 'DONE')
+    this.customerService.getListSchedule().subscribe(_res => {
+      if (_res && _res.data) {
+        this.data = _res.data.filter(a => a.status == 'DONE');
       }
     })
-    // this.data = {
-    //   "ratingOverview": {
-    //     "cleanerId": 1,
-    //     "name": "Nguyen Hoang Anh",
-    //     "idCard": "0123456789",
-    //     "email": "abc@gmail.com",
-    //     "phoneNumber": 84966069299,
-    //     "status": "active",
-    //     "branch": 1,
-    //     "activityYear": 0,
-    //     "averageRating": 5,
-    //     "ratingNumber": 2
-    //   },
-    //   "history": [
-    //     {
-    //       "name": "Booking guest name 1",
-    //       "ratingScore": 5,
-    //       "workDate": "13/11/2023",
-    //       "houseType": "APARTMENT",
-    //       "floorNumber": 12,
-    //       "floorArea": 120.0,
-    //       "review": "Làm việc tích cực , nhanh gọn và sạch sẽ. Thái độ chuyên nghiệp và tỉ mỉ. Rất hài lòng."
-    //     },
-    //     {
-    //       "name": "Booking guest name 2",
-    //       "ratingScore": 4.5,
-    //       "workDate": "13/12/2023",
-    //       "houseType": "VILLA",
-    //       "floorNumber": 12,
-    //       "floorArea": 120.0,
-    //       "review": "Khá là tuyệt. Nhanh nhẹn và thân thiện, dịch vụ chất lượng cao."
-    //     }
-    //   ]
-    // }
+
     this.history = this.data.history;
     this.searchRate = "4 - 5";
     this.searchHouseType = "APARTMENT";
@@ -95,18 +65,16 @@ export class CustomerHistoryComponent implements OnInit {
     return stars.join("");
   }
 
-  viewDetailinSchedule(id: any, showtime: string) {
+  viewDetailinSchedule(detail: any) {
     // this.dialogService.sendDataDialog(true);
     console.log('document.body:', document.body); // Kiểm tra xem document.body có tồn tại hay không
     // if (this.dialogRef) {
     this.renderer.addClass(document.body, 'modal-open');
     this.dialogRef = this.dialog.open(BookingDetailDialog, {
       width: '820px',
-      // maxHeight: '70%',
-      height: '55%',
+      height: '80%',
       data: {
-        id: id,
-        data: this.data
+        data: detail
       },
       panelClass: ['view-detail']
     });
@@ -141,5 +109,5 @@ export class CustomerHistoryComponent implements OnInit {
     });
   }
 
-  search() {}
+  search() { }
 }

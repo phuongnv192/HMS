@@ -8,6 +8,7 @@ import { ActivatedRoute } from '@angular/router';
 // import { DialogService } from 'src/app/services/dialog.service';
 import { CleanerRateDialog } from '../cleaner-rate-dialog/cleaner-rate-dialog';
 import { CleanerDetailDialog } from './cleaner-detail-dialog/cleaner-detail-dialog';
+import { ToastrService } from 'ngx-toastr';
 
 export interface CleanerDetailDialogData {
   data: any;
@@ -34,6 +35,7 @@ export class PickCleanerDialog implements OnDestroy, OnInit {
   searchResults: any[];
   listPickNameData: any;
   dataPickInfo: { listPickData: any[]; listPickDataName: any; };
+  cleanerNum: any;
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -42,25 +44,21 @@ export class PickCleanerDialog implements OnDestroy, OnInit {
     // private dialogService: DialogService,
     public dialogRefCleaner: MatDialogRef<CleanerDetailDialog>,
     public cleanerDialogRef: MatDialogRef<PickCleanerDialog>,
+    private toastr: ToastrService,
     @Inject(MAT_DIALOG_DATA) public data: PickCleanerData) {
   }
 
   ngOnInit(): void {
     this.listCleaner = this.data.data;
+    this.cleanerNum = this.data.cleanerNum;
     // this.listB = this.listCleaner.slice(5);
     if (this.data.listPick && this.data.listPick.length > 0) {
       this.listPickData = this.data.listPick;
       this.filterCleaners();
-      console.log(1111, this.listPick);
-      console.log(3333, this.listCleaner);
-
       this.listCleaner.forEach(element => {
-
         const index = this.listPick.findIndex(res => res.cleanerId == element.cleanerId);
-        console.log(4444, index);
         if (index !== -1) {
           this.listCleaner = this.listCleaner.filter((item, i) => i !== index);
-          console.log(555, this.listA);
         }
       });
       this.listA = this.listCleaner.slice(0, 10);
@@ -148,11 +146,16 @@ export class PickCleanerDialog implements OnDestroy, OnInit {
   }
 
   addCleaner(cleaner: any, index: any): void {
-    this.listPick.push(cleaner);
-    this.listPickData = this.listPick.map(cleaner => cleaner.cleanerId);
-    this.listPickNameData = this.listPick.map(cleaner => cleaner.name);
-    this.listCleaner = this.listCleaner.filter((item, i) => i !== index);
-    this.listA = this.listCleaner.slice(0, 10);
+    if(this.listPick.length > this.cleanerNum){
+      this.listPick.push(cleaner);
+      this.listPickData = this.listPick.map(cleaner => cleaner.cleanerId);
+      this.listPickNameData = this.listPick.map(cleaner => cleaner.name);
+      this.listCleaner = this.listCleaner.filter((item, i) => i !== index);
+      this.listA = this.listCleaner.slice(0, 10);
+    } else {
+      this.toastr.success('Đơn dịch vụ đã được đặt thành công, vui lòng kiểm tra email thông tin chi tiết', 'Thành công');
+    }
+    
     // this.updateListCleaner(index, 'remove', cleaner);
   }
 

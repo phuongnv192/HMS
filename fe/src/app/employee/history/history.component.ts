@@ -1,9 +1,11 @@
 import { HttpParams } from "@angular/common/http";
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, Renderer2 } from "@angular/core";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { ActivatedRoute } from "@angular/router";
 import { AuthService } from "src/app/services/auth.service";
 import { BookingService } from "src/app/services/booking.service";
 import { CleanerService } from "src/app/services/cleaner.service";
+import { CleanerBookingDetailDialog } from "../schedule/cleaner-booking-detail-dialog/cleaner-booking-detail-dialog";
 
 @Component({
   selector: "app-history",
@@ -28,7 +30,9 @@ export class HistoryComponent implements OnInit {
     private authService: AuthService,
     private bookingService: BookingService,
     private cleanService: CleanerService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    public dialog: MatDialog, private renderer: Renderer2,
+    public dialogRef: MatDialogRef<CleanerBookingDetailDialog>,
   ) {}
 
   getListCleaner(id: any) {
@@ -64,6 +68,28 @@ export class HistoryComponent implements OnInit {
     this.date = "19/11/2023";
   }
 
+  showDetail(detail: any) {
+    // this.bookingService.getBookingDetail(detail).subscribe((data) => {
+      // detail = data.data;
+      let type = 'day';
+      this.renderer.addClass(document.body, 'modal-open');
+      this.dialogRef = this.dialog.open(CleanerBookingDetailDialog, {
+        width: '850px',
+        height: '85%',
+        data: {
+          data: detail,
+          type: type
+        },
+        panelClass: ['view-detail']
+      });
+
+      this.dialogRef.afterClosed().subscribe(result => {
+        console.log('The dialog was closed');
+        this.renderer.removeClass(document.body, 'modal-open');
+      });
+    // });
+  }
+
   generateStarRating(rating: number): string {
     const stars: string[] = [];
     const fullStars = Math.floor(rating);
@@ -82,7 +108,4 @@ export class HistoryComponent implements OnInit {
 
   search() {}
 
-  showDetail(id: any){
-    
-  }
 }

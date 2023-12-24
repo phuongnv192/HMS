@@ -59,6 +59,8 @@ import { AddServiceManagementDialog } from "./employee/booking-management/add-se
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
 import { CleanerBookingDetailDialog } from "./employee/schedule/cleaner-booking-detail-dialog/cleaner-booking-detail-dialog";
+import { DateFormatPipe } from "./pipe/date-format.pipe";
+import { ChangeStatusDialog } from "./employee/schedule/cleaner-booking-detail-dialog/change-status-dialog/change-status-dialog";
 // import { FormsModule } from '@angular/forms';
 
 @NgModule({
@@ -93,6 +95,7 @@ import { CleanerBookingDetailDialog } from "./employee/schedule/cleaner-booking-
     CustomerScheduleComponent,
     PriceListDialog,
     PriceFormatPipe,
+    DateFormatPipe,
     AddServiceDialog,
     CleanerDetailDialog,
     AddCleanerDialog,
@@ -101,6 +104,7 @@ import { CleanerBookingDetailDialog } from "./employee/schedule/cleaner-booking-
     SupportHelpComponent,
     AddServiceManagementDialog,
     CleanerBookingDetailDialog,
+    ChangeStatusDialog
   ],
   imports: [
     NgbModule,
@@ -131,6 +135,7 @@ import { CleanerBookingDetailDialog } from "./employee/schedule/cleaner-booking-
     AuthService,
     CacheService,
     BookingService,
+    DateFormatPipe,
     { provide: MatDialogRef, useValue: {} },
   ],
   bootstrap: [AppComponent],
@@ -147,7 +152,8 @@ import { CleanerBookingDetailDialog } from "./employee/schedule/cleaner-booking-
     CleanerRateDialog,
     AddCleanerDialog,
     AddServiceDialog,
-    CleanerBookingDetailDialog
+    CleanerBookingDetailDialog,
+    ChangeStatusDialog
   ],
   exports: [],
 })

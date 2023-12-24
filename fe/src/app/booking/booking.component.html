@@ -97,14 +97,14 @@
                       <option *ngFor="let service of serviceTypes" [value]="service">{{ service }}</option>
                     </select>
                   </div> -->
-                  <div class="input-group">
+                  <!-- <div class="input-group">
                     <p>Số tầng(*): </p>
                     <select [(ngModel)]="selectedFloors" id="floors" aria-describedby="floors-help" title="Số tầng">
                       <option *ngFor="let floor of floors" [value]="floor">{{ floor }}</option>
                     </select>
-                  </div>
+                  </div> -->
                   <div class="input-group">
-                    <p>Diện tích sàn(*): </p>
+                    <p> Tổng diện tích sàn(*): </p>
                     <select (ngModelChange)="onAreaChange($event)" [(ngModel)]="selectedAreaType" id="area"
                       aria-describedby="areaType-help" title="Diện tích sàn">
                       <option *ngFor="let area of areaTypes" [value]="area.key">{{ area.floorArea }}</option>
