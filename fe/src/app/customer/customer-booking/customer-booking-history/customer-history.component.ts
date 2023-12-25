@@ -35,11 +35,15 @@ export class CustomerHistoryComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.customerService.getListSchedule().subscribe(_res => {
+    // this.customerService.getListSchedule().subscribe(_res => {
+    //   if (_res && _res.data) {
+    //     this.data = _res.data.filter(a => a.status == 'DONE');
+    //   }
+    // });
+    this.bookingService.getCustomerBookingHistory(this.page, this.size).subscribe(_res => {
       if (_res && _res.data) {
         this.data = _res.data.filter(a => a.status == 'DONE');
-      }
-    })
+      }});
 
     this.history = this.data.history;
     this.searchRate = "4 - 5";

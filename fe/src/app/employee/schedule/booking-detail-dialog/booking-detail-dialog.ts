@@ -1,8 +1,9 @@
 import { Subscription } from 'rxjs';
 import { Component, Inject, OnDestroy, NgZone, Renderer2, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { BookingService } from 'src/app/services/booking.service';
 import { BookingDetailNoteData } from 'src/app/customer/customer-booking/customer-booking-list/customer-schedule.component';
+import { ScheduleDialog } from '../cleaner-booking-detail-dialog/schedule-dialog/schedule.dialog';
 
 @Component({
   selector: 'app-booking-detail-dialog',
@@ -50,15 +51,13 @@ export class BookingDetailDialog implements OnInit, OnDestroy {
     public dialogRef: MatDialogRef<BookingDetailDialog>,
     @Inject(MAT_DIALOG_DATA) public data: BookingDetailNoteData,
     private bookingServicee: BookingService,
-    private renderer: Renderer2,
+    private renderer: Renderer2, public dialog: MatDialog,
+    public scheduleDialogRef: MatDialogRef<ScheduleDialog>,
     private ngZone: NgZone) {
   }
 
   ngOnInit(): void {
-    console.log(1221212);
-    this.infor = this.data.data;
-    console.log(this.infor, 11111111);
-
+    this.infor = this.data.data;    
     this.bookingServicee.getCustomerBookingHistory(this.page, this.size).subscribe(res => {
       if (res && res.data) {
         res.data.forEach(element_res => {
@@ -73,7 +72,6 @@ export class BookingDetailDialog implements OnInit, OnDestroy {
     if (this.status == "DONE") {
       this.rating = this.infor.scheduleDayList.map(rate => (rate.ratingScore != null ? rate.ratingScore : 0));
       console.log("rating", this.rating);
-
     }
 
     const totalRating = this.rating.reduce((acc, current) => acc + current, 0);
@@ -88,8 +86,6 @@ export class BookingDetailDialog implements OnInit, OnDestroy {
       currency: 'VND',
     });
     this.bookingServicee.getDataService().subscribe(res => {
-      console.log(11111111111);
-
       this.areaTypes = res.data;
       this.onAreaChange(this.data.data.floorArea);
     });
@@ -147,7 +143,23 @@ export class BookingDetailDialog implements OnInit, OnDestroy {
 
 
   confirm(id:any){
-    
+    this.renderer.addClass(document.body, 'modal-open');
+    this.scheduleDialogRef = this.dialog.open(ScheduleDialog, {
+      width: '800px',
+      maxHeight: '80%',
+      data: {
+        data: this.infor.scheduleList,
+        id: this.infor.bookingId,
+      },
+      panelClass: ['schedule-stauts']
+    });
+
+    this.scheduleDialogRef.afterClosed().subscribe(result => {
+      if(result){
+       
+      }
+      this.renderer.removeClass(document.body, 'modal-open');
+    }); 
   }
 
   cancel(id:any){
