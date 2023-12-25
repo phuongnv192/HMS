@@ -68,15 +68,20 @@
                   </div> -->
 
                   <h6 class="text-primary text-uppercase">Thông tin nhà/khu vực vệ sinh</h6>
+                  <google-map height="400px" width="750px" [center]="center" [zoom]="zoom" (mapClick)="moveMap($event)"
+                    (mapMousemove)="move($event)">
+                  </google-map>
+                  <div>Latitude: {{display?.lat}}</div>
+                  <div>Longitude: {{display?.lng}}</div>
                   <div class="input-group">
                     <p>Nơi làm việc: </p>
                     <div class="account_input">
-                      <input class="account_" #address id="address" placeholder="Số 1Kim Mã, Ba Đình, Hà Nội" type="text"
-                      aria-describedby="address-help" maxlength="100" [(ngModel)]="service_address">
-                    <p class="error" *ngIf="addressNull">Vui lòng ko để trống thông tin địa chỉ</p>
+                      <input class="account_" #address id="address" placeholder="Số 1Kim Mã, Ba Đình, Hà Nội"
+                        type="text" aria-describedby="address-help" maxlength="100" [(ngModel)]="service_address" (change)="calDistance()">
+                      <p class="error" *ngIf="addressNull">Vui lòng ko để trống thông tin địa chỉ</p>
+                    </div>
                   </div>
 
-                  </div>
                   <!-- <button type="button" class="btn btn-primary">Nhập địa chỉ</button> -->
 
 

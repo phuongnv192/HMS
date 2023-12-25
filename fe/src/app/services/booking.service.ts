@@ -86,8 +86,8 @@ export class BookingService {
     const headers = this.getHeadersWithToken();
     return this.http.post<any>(`${this.ADDSERVICE}`, body, { headers });
   }
-  
-  confirmBooking(id:any): Observable<any> {
+
+  confirmBooking(id: any): Observable<any> {
     const headers = this.getHeadersWithToken();
     return this.http.post<any>(`${this.BOOKINGCF}`, id, { headers });
   }
@@ -114,5 +114,11 @@ export class BookingService {
 
   getListBooking(): Observable<any> {
     return this.http.get<any>("assets/data/list-booking.json");
+  }
+
+  getDistance(origins: string, destinations: string): Observable<any> {
+    return this.http.jsonp(
+      `https://maps.googleapis.com/maps/api/distancematrix/json?key=AIzaSyCAajQeNa7v3pLulMcHZ5D2hVm89Q408d8&origins=${origins}&destinations=${destinations}`, 'callback'
+    )
   }
 }

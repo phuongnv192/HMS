@@ -32,7 +32,7 @@ import { ForgotPWComponent } from "./auth/forgot-password/forgot-pw.component";
 import { SignupComponent } from "./auth/signup/signup.component";
 import { ListCleanerComponent } from "./employee/tables.component";
 import { AuthService } from "./services/auth.service";
-import { HTTP_INTERCEPTORS, HttpClientModule } from "@angular/common/http";
+import { HTTP_INTERCEPTORS, HttpClientJsonpModule, HttpClientModule } from "@angular/common/http";
 import { IvyCarouselModule } from "angular-responsive-carousel";
 import { MatDialogModule, MatDialogRef } from "@angular/material/dialog";
 import { ListCustomerComponent } from "./customer/list-customer/list-customer.component";
@@ -62,6 +62,7 @@ import { CleanerBookingDetailDialog } from "./employee/schedule/cleaner-booking-
 import { DateFormatPipe } from "./pipe/date-format.pipe";
 import { ChangeStatusDialog } from "./employee/schedule/cleaner-booking-detail-dialog/change-status-dialog/change-status-dialog";
 import { ScheduleDialog } from "./employee/schedule/cleaner-booking-detail-dialog/schedule-dialog/schedule.dialog";
+import { GoogleMapsModule } from "@angular/google-maps";
 // import { FormsModule } from '@angular/forms';
 
 @NgModule({
@@ -127,6 +128,8 @@ import { ScheduleDialog } from "./employee/schedule/cleaner-booking-detail-dialo
       progressBar: true,
       preventDuplicates: true,
     }),
+    GoogleMapsModule,
+    HttpClientJsonpModule
   ],
   providers: [
     {

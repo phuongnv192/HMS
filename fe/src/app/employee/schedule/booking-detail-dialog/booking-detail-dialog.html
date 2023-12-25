@@ -85,8 +85,9 @@
           <div style="text-align: end; justify-content: center; margin-right: 1rem; width: 100%; padding-top: 10px;">
             Tổng tiền đơn dịch vụ:
             {{ formattedPrice }}
-            <button  *ngIf="type == 'schedule'" style="height: 35px; font-size: 11px; display: inline; margin-left: 3rem;"
-              class="btn btn-primary btn-pay" (click)="confirm(infor.id)">
+            <button *ngIf="type == 'schedule'"
+              style="height: 35px; font-size: 11px; display: inline; margin-left: 3rem;" class="btn btn-primary btn-pay"
+              (click)="confirm(infor.id)">
               Xem chi tiết
             </button>
             <button style="height: 35px; font-size: 11px; display: inline;" class="btn btn-danger btn-pay"
