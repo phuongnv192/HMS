@@ -102,7 +102,7 @@
             <div class="showtime-options">
               <carousel height="87px" cellsToShow="7" *ngIf="date.workDate && date.workDate.length >= 7">
                 <div [ngClass]="{'selected':selectedDate===showtime}" class="carousel-cell"
-                  *ngFor="let showtime of date.workDate" (click)="viewDetailinSchedule(date.id, showtime)">
+                  *ngFor="let showtime of date.workDate" (click)="viewDetailinSchedule(date.bookingId, showtime)">
                   <div class="left">{{getDay(showtime)}}</div>
                   <div class="right"><span>/{{getMonth(showtime)}}
                     </span><span>{{getDateMonth(showtime)}}</span>
@@ -113,7 +113,7 @@
               <div class="select-date-container" height="87px" cellsToShow="7"
                 *ngIf="date.workDate && date.workDate.length < 7">
                 <div [ngClass]="{'selected':selectedDate===showtime}" class="datetimeBtn"
-                  *ngFor="let showtime of date.workDate" (click)="viewDetailinSchedule(date.id, showtime)">
+                  *ngFor="let showtime of date.workDate" (click)="viewDetailinSchedule(date.bookingId, showtime)">
                   <div class="left">{{getDay(showtime)}}</div>
                   <div class="right"><span>/{{getMonth(showtime)}}
                     </span><span>{{getDateMonth(showtime)}}</span>
@@ -126,7 +126,7 @@
           <div class="showtime-bydate" *ngFor="let date of dateList">
             <span> - {{date.name}}: ({{date.startTime}} - {{date.endTime}}): </span>
             <span style="font-weight: 700; font-size: 16px"> {{date.workDate}} </span>
-            <u (click)="viewDetailinSchedule(date.id, date.workDate)"> (Xem chi tiết)</u>
+            <u (click)="viewDetailinSchedule(date.bookingId, date.workDate)"> (Xem chi tiết)</u>
           </div>
         </div> -->
         </div>
@@ -135,15 +135,15 @@
             Tổng tiền đơn dịch vụ:
             {{ formattedPrice }}
             <button *ngIf="type == 'day'" style="height: 35px; font-size: 11px; display: inline; margin-left: 3rem;"
-              class="btn btn-primary btn-pay" (click)="confirm(infor.id)">
+              class="btn btn-primary btn-pay" (click)="confirm(infor.scheduleList[0].scheduleId)">
               {{title_confirm}}
             </button>
             <button *ngIf="type == 'schedule'" style="height: 35px; font-size: 11px; display: inline; margin-left: 3rem;"
-              class="btn btn-primary btn-pay" (click)="viewDetail(infor.id)">
+              class="btn btn-primary btn-pay" (click)="viewDetail(infor.bookingId)">
              Xem chi tiết
             </button>
             <button style="height: 35px; font-size: 11px; display: inline;"
-            class="btn btn-danger btn-pay" (click)="cancel(infor.id)">
+            class="btn btn-danger btn-pay" (click)="cancel(infor.bookingId)">
             Hủy đơn
           </button>
           </div>

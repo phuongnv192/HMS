@@ -70,7 +70,7 @@ export class CleanerBookingDetailDialog implements OnInit, OnDestroy {
       this.onAreaChange(this.data.data.floorArea);
     });
 
-    if(this.type == 'day' && this.infor.status == 'CONFIRM'){
+    if(this.type == 'day' && this.infor.status == 'CONFIRMED'){
       this.title_confirm = '-> Đang di chuyển';
     } else if (this.type == 'day' && this.infor.status == 'ON_MOVING'){
       this.title_confirm = '-> Đang dọn';
@@ -135,8 +135,10 @@ export class CleanerBookingDetailDialog implements OnInit, OnDestroy {
   confirm(id: any) {
     let status = "";
     let body = {};
+    console.log("id", id);
+    
     if (this.type = 'day') {
-      if(this.infor.status != "ON_PROCESS"){
+      if(this.infor.status == "CONFIRMED" || this.infor.status == "ON_MOVING"){
         if (this.infor.status != "DONE" && this.infor.status == "CONFIRMED") {
           status = "ON_MOVING";
           body = {
@@ -159,6 +161,10 @@ export class CleanerBookingDetailDialog implements OnInit, OnDestroy {
             this.toastr.success('Cập nhật trạng thái thành công');
             this.dialogRef.close(true);
           },
+          error: (err) => {
+            this.dialogRef.close(true);
+            console.log(err);
+          }, // errorHandler
         })
       } else {
         let addOns=[];
@@ -188,6 +194,10 @@ export class CleanerBookingDetailDialog implements OnInit, OnDestroy {
                 this.toastr.success('Đơn đã hoàn tất');
                 this.dialogRef.close(true);
               },
+              error: (err) => {
+                this.dialogRef.close(true);
+                console.log(err);
+              }, // errorHandler
             })
           }
           this.renderer.removeClass(document.body, 'modal-open');
@@ -200,6 +210,10 @@ export class CleanerBookingDetailDialog implements OnInit, OnDestroy {
       
     }
 
+
+  }
+
+  viewDetail(id: any){
 
   }
 

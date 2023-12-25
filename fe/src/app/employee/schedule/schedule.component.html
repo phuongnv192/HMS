@@ -78,7 +78,6 @@
                 </td>
                 <td>
                   {{booking.status}}
-                  <!-- {{(booking.serviceTypeName && booking.servicePackageName) ? "Dịch vụ đinh "}} -->
                 </td>
                 <td class="text-center">
                   <div ngbDropdown placement="bottom-right">
@@ -87,24 +86,15 @@
                     </a>
                     <div ngbDropdownMenu class=" dropdown-menu-right dropdown-menu-arrow">
                       <a class="dropdown-item" (click)="showDetail(booking, 'schedule')">Xem thông tin</a>
-                      <!-- <a class="dropdown-item" (click)="changeStatus(booking.bookingId)">Hoàn thành</a> -->
                       <a class="dropdown-item" (click)="changeStatus(booking.bookingId)">Xác nhận đơn</a>
-                      <!-- <a class="dropdown-item" (click)="changeStatus()">Xác nhận đơn</a> -->
                       <a class="dropdown-item" (click)="cancel(booking.bookingId)">Hủy đơn</a>
                     </div>
                   </div>
-                  <!-- <div>
-                    <a class="dropdown-item" (click)="showDetail(booking)">Xem thông
-                      tin</a>
-
-                    <a class="dropdown-item" (click)="showDetail(booking)">Cập nhật đơn</a>
-                  </div> -->
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
-
       </div>
       <div class="card shadow" style="margin-top: 5rem;" *ngIf="listBookingDay.length > 0">
         <div class="card-header border-0">
@@ -115,7 +105,7 @@
             <thead class="thead-light">
               <tr>
                 <th scope="col">Mã đơn</th>
-                <th scope="col">Ngày dọn</th>
+                <th scope="col">Ngày dọn a</th>
                 <th scope="col">Tên người thuê</th>
                 <th scope="col">Số điện thoại</th>
                 <th scope="col">Địa chỉ</th>
@@ -125,31 +115,33 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let booking of bookingListDay">
+              <tr *ngFor="let day of listBookingDay">
                 <th scope="row">
                   <div class="media align-items-center">
                     <div class="media-body">
-                      <span class="mb-0 text-sm">{{booking.id}}</span>
+                      <span class="mb-0 text-sm">{{day.bookingId}}</span>
                     </div>
                   </div>
                 </th>
                 <td>
-                  {{booking.hostName}}
+                  {{day.createDate | dateFormat}}
+
                 </td>
                 <td>
-                  {{booking.createDate | dateFormat}}
+                  {{day.hostName}}
+
                 </td>
                 <td>
-                  {{booking.hostPhone}}
+                  {{day.hostPhone}}
                 </td>
                 <td>
-                  {{booking.hostAddress}}
+                  {{day.hostAddress}}
                 </td>
                 <td>
-                  {{booking.houseType}}
+                  {{day.houseType}}
                 </td>
                 <td>
-                  {{booking.status}}
+                  {{day.status}}
                 </td>
                 <td class="text-center">
                     <div ngbDropdown placement="bottom-right">
@@ -157,11 +149,8 @@
                         <i class="fas fa-ellipsis-v"></i>
                       </a>
                       <div ngbDropdownMenu class=" dropdown-menu-right dropdown-menu-arrow">
-                        <a class="dropdown-item" (click)="showDetail(booking, 'day')">Xem thông tin</a>
-                        <a class="dropdown-item" (click)="complete(booking.bookingId)">Hoàn thành</a>
-                        <!-- <a *ngIf="booking.status != 'CONFIRMED'" class="dropdown-item" (click)="changeStatus(booking.bookingId)">Xác nhận đơn</a> -->
-                        <!-- <a class="dropdown-item" (click)="changeStatus()">Xác nhận đơn</a> -->
-                        <a class="dropdown-item" (click)="cancel(booking.bookingId)">Hủy đơn</a>
+                        <a class="dropdown-item" (click)="showDetail(day, 'day')">Xem thông tin</a>
+                        <a class="dropdown-item" (click)="cancel(dayx.bookingId)">Hủy đơn</a>
                       </div>
                     </div>
                     <!-- <div>

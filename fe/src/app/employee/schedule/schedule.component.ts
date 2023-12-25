@@ -62,8 +62,11 @@ export class ScheduleComponent implements OnInit {
                 booking.servicePackageName == null
             ) {              
               this.listBookingDay.push(booking);
+              console.log("this.listBookingDay", this.listBookingDay);
             } else {
               this.listBookingSchedule.push(booking);
+              console.log("this.listBookingSchedule", this.listBookingSchedule);
+
             }
         });
         }
@@ -87,7 +90,6 @@ export class ScheduleComponent implements OnInit {
   showDetail(detail: any, type:any) {
     // this.bookingService.getBookingDetail(detail).subscribe((data) => {
       // detail = data.data;
-      
       this.renderer.addClass(document.body, 'modal-open');
       this.dialogRef = this.dialog.open(CleanerBookingDetailDialog, {
         width: '850px',
