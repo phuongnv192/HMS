@@ -138,6 +138,10 @@
               class="btn btn-primary btn-pay" (click)="confirm(infor.scheduleList[0].scheduleId)">
               {{title_confirm}}
             </button>
+            <button  *ngIf="type == 'day' && this.infor.status == 'ON_PROCESS' &&  this.infor.scheduleList[0].serviceAddOns.length == 0" style="height: 35px; font-size: 11px; display: inline;"
+            class="btn btn-primary btn-pay" (click)="complete(infor.scheduleList[0].scheduleId)">
+            Hoàn thành đơn
+          </button>
             <button *ngIf="type == 'schedule'" style="height: 35px; font-size: 11px; display: inline; margin-left: 3rem;"
               class="btn btn-primary btn-pay" (click)="viewDetail(infor.bookingId)">
              Xem chi tiết

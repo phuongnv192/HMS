@@ -1,0 +1,57 @@
+<div mat-dialog-actions class="guide_class">
+  <div class="dialog-container">
+    <div class="header">
+      <h6>Xem chi tiết đơn định kỳ và cập nhật thông tin đơn</h6>
+    </div>
+    <div class="content">
+      <div class="content-scroll">
+        <div class="table-responsive"
+          *ngIf="(dateArray && dateArray.length >= 4) || (dateArray && dateArray.length > 0 && dateArray.length < 4)">
+          <div class="showtime-options"
+            *ngIf="(dateArray && dateArray.length >= 4) || (dateArray && dateArray.length > 0 && dateArray.length < 4)">
+            <carousel height="87px" cellsToShow="4" *ngIf="dateArray && dateArray.length >= 4">
+              <div [ngClass]="{'selected':selectedDate===showtime.scheduleId, 'done': isDoneStatus(showtime.status), 'on_moving':isOnMovingOrOnProcess(showtime.status)}" class="carousel-cell"
+                (click)="viewDetailinSchedule(showtime.scheduleId)" *ngFor="let showtime of dateArray; let i = index">
+                <div class="top">{{getDay(showtime.workDate)}} <span>/{{getMonth(showtime.workDate)}}
+                  </span></div>
+                <div class="bottom" [ngStyle]="{'color': isDoneStatus(showtime.status) ? 'white' : 'black'}">{{getDateMonth(showtime.workDate)}}
+                </div>
+                <div class="bottom" style="margin-top: 3px;" [ngStyle]="{'color': isDoneStatus(showtime.status) ? 'white' : 'black'}">{{showtime.listAddOns}}
+                </div>
+                <div class="bottom" style="margin-top: 3px;" [ngStyle]="{'color': isDoneStatus(showtime.status) ? 'white' : 'black'}">Trạng thái: {{showtime.status}}
+                </div>
+                <!-- <i *ngIf="serviceAddOns" class="fas fa-check-square" (click)="removeAddOns()"></i> -->
+              </div>
+            </carousel>
+
+            <div class="select-date-container" height="87px" cellsToShow="4"
+              *ngIf="dateArray && dateArray.length > 0 && dateArray.length < 4">
+              <div [ngClass]="{'selected': selectedDate === showtime.scheduleId, 'done': isDoneStatus(showtime.status), 'on_moving':isOnMovingOrOnProcess(showtime.status)}" class="datetimeBtn"
+                (click)="viewDetailinSchedule(showtime.scheduleId)" *ngFor="let showtime of dateArray; let i = index">
+                <div class="top">{{getDay(showtime.workDate)}} <span>/{{getMonth(showtime.workDate)}}
+                  </span></div>
+                <div class="bottom">{{getDateMonth(showtime.listAddOns)}}
+
+                  <!-- <i *ngIf="serviceAddOns" class="fas fa-check-square" (click)="removeAddOns()"></i> -->
+                </div>
+                <div class="bottom" style="margin-top: 3px;">{{showtime.listAddOns}}
+                </div>
+                <div class="bottom" style="margin-top: 3px;">Trạng thái: {{showtime.status}}
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <!-- <p class="text-primary" style="margin-bottom: 0;">Ghi chú</p>
+        <div class="note-section">
+          <textarea style="width: 80%;" [(ngModel)]="note" rows="4"
+            placeholder=""></textarea>
+        </div> -->
+        </div>
+        <!-- listPick.length > 0  -->
+        <div class="button-submit" style="text-align: right;">
+          <button mat-button class="btn" (click)="submit()">Cập nhật</button>
+        </div>
+      </div>
+    </div>
+  </div>

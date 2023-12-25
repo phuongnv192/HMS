@@ -8,6 +8,7 @@ import { CleanerService } from 'src/app/services/cleaner.service';
 import { ToastrService } from 'ngx-toastr';
 import { CleanerRateDialog } from 'src/app/booking/cleaner-rate-dialog/cleaner-rate-dialog';
 import { ChangeStatusDialog } from './change-status-dialog/change-status-dialog';
+import { ScheduleDialog } from './schedule-dialog/schedule.dialog';
 
 @Component({
   selector: 'app-cleaner-booking-detail-dialog',
@@ -49,6 +50,7 @@ export class CleanerBookingDetailDialog implements OnInit, OnDestroy {
     public dialog: MatDialog,
     public ratedialogRef: MatDialogRef<CleanerRateDialog>,
     public statusdialogRef: MatDialogRef<ChangeStatusDialog>,
+    public scheduleDialogRef: MatDialogRef<ScheduleDialog>,
     @Inject(MAT_DIALOG_DATA) public data: CleanerBookingDetailNoteData,
     private bookingServicee: BookingService,
     private cleanerService: CleanerService,
@@ -70,12 +72,12 @@ export class CleanerBookingDetailDialog implements OnInit, OnDestroy {
       this.onAreaChange(this.data.data.floorArea);
     });
 
-    if(this.type == 'day' && this.infor.status == 'CONFIRMED'){
+    if (this.type == 'day' && this.infor.status == 'CONFIRMED') {
       this.title_confirm = '-> Đang di chuyển';
-    } else if (this.type == 'day' && this.infor.status == 'ON_MOVING'){
+    } else if (this.type == 'day' && this.infor.status == 'ON_MOVING') {
       this.title_confirm = '-> Đang dọn';
-    } else if (this.type == 'day' && this.infor.status == 'ON_PROCESS'){
-      this.title_confirm = 'Hoàn thành';
+    } else if (this.type == 'day' && this.infor.status == 'ON_PROCESS') {
+      this.title_confirm = 'Cập nhật giá dịch vụ';
     }
 
     this.dateList = [
@@ -136,7 +138,40 @@ export class CleanerBookingDetailDialog implements OnInit, OnDestroy {
     let status = "";
     let body = {};
     console.log("id", id);
-    
+    // this.renderer.addClass(document.body, 'modal-open');
+    // this.statusdialogRef = this.dialog.open(ChangeStatusDialog, {
+    //   width: '500px',
+    //   height: '70%',
+    //   data: {
+    //     data: id,
+    //     id: this.infor.bookingId,
+    //     addService: this.infor.scheduleList[0].serviceAddOns,
+    //   },
+    //   panelClass: ['change-status']
+    // });
+    // this.statusdialogRef.afterClosed().subscribe(result => {
+    //   if (result) {
+    //     body = {
+    //       "scheduleId": "58",
+    //       "status": "DONE",
+    //       "paymentStatus": "PAYMENT_SUCCESS",
+    //       "addOns": result.addOns,
+    //       "note": result.note
+    //     }
+    //     this.cleanerService.changeStatus(body).subscribe({
+    //       next: (res) => {
+    //         this.toastr.success('Đơn đã hoàn tất');
+    //         this.dialogRef.close(true);
+    //       },
+    //       error: (err) => {
+    //         this.dialogRef.close(true);
+    //         console.log(err);
+    //       }, // errorHandler
+    //     })
+    //   }
+    //   this.renderer.removeClass(document.body, 'modal-open');      
+    // });
+
     if (this.type = 'day') {
       if(this.infor.status == "CONFIRMED" || this.infor.status == "ON_MOVING"){
         if (this.infor.status != "DONE" && this.infor.status == "CONFIRMED") {
@@ -144,6 +179,7 @@ export class CleanerBookingDetailDialog implements OnInit, OnDestroy {
           body = {
             "scheduleId": id,
             "status": status,
+             "paymentStatus": "PAYMENT_SUCCESS",
             "addOns": [],
             "note": ""
           }
@@ -152,6 +188,7 @@ export class CleanerBookingDetailDialog implements OnInit, OnDestroy {
           body = {
             "scheduleId": id,
             "status": status,
+            "paymentStatus": "PAYMENT_SUCCESS",
             "addOns": [],
             "note": ""
           }
@@ -175,17 +212,21 @@ export class CleanerBookingDetailDialog implements OnInit, OnDestroy {
           maxHeight: '65%',
           data: {
             data: id,
+            id: this.infor.bookingId,
+            addService: this.infor.scheduleList[0].serviceAddOns,
           },
           panelClass: ['change-stauts']
         });
 
-        this.ratedialogRef.afterClosed().subscribe(result => {
+        this.statusdialogRef.afterClosed().subscribe(result => {
           if(result){
             result.addOns = addOns;
             result.note = note;
+            status = "DONE"
             body = {
               "scheduleId": id,
               "status": status,
+              "paymentStatus": "PAYMENT_SUCCESS",
               "addOns": addOns,
               "note": note
             }
@@ -201,20 +242,49 @@ export class CleanerBookingDetailDialog implements OnInit, OnDestroy {
             })
           }
           this.renderer.removeClass(document.body, 'modal-open');
-        });
-
-       
-        
-      }
-
-      
+        });       
+      }  
     }
-
-
   }
 
-  viewDetail(id: any){
+  complete(id: any) {
+    let body = {
+      "scheduleId": id,
+      "status": "DONE",
+      "paymentStatus": "PAYMENT_SUCCESS",
+      "addOns": [],
+      "note": ""
+    }
+    this.cleanerService.changeStatus(body).subscribe({
+      next: (res) => {
+        this.toastr.success('Đơn đã hoàn tất');
+        this.dialogRef.close(true);
+      },
+      error: (err) => {
+        this.dialogRef.close(true);
+        console.log(err);
+      }, // errorHandler
+    })
+  }
 
+  viewDetail(id: any) {
+    this.renderer.addClass(document.body, 'modal-open');
+    this.scheduleDialogRef = this.dialog.open(ScheduleDialog, {
+      width: '800px',
+      maxHeight: '80%',
+      data: {
+        data: this.infor.scheduleList,
+        id: this.infor.bookingId,
+      },
+      panelClass: ['schedule-stauts']
+    });
+
+    this.scheduleDialogRef.afterClosed().subscribe(result => {
+      if(result){
+       
+      }
+      this.renderer.removeClass(document.body, 'modal-open');
+    }); 
   }
 
   cancel(id: any) {

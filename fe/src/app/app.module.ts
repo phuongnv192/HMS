@@ -61,6 +61,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { CleanerBookingDetailDialog } from "./employee/schedule/cleaner-booking-detail-dialog/cleaner-booking-detail-dialog";
 import { DateFormatPipe } from "./pipe/date-format.pipe";
 import { ChangeStatusDialog } from "./employee/schedule/cleaner-booking-detail-dialog/change-status-dialog/change-status-dialog";
+import { ScheduleDialog } from "./employee/schedule/cleaner-booking-detail-dialog/schedule-dialog/schedule.dialog";
 // import { FormsModule } from '@angular/forms';
 
 @NgModule({
@@ -104,7 +105,8 @@ import { ChangeStatusDialog } from "./employee/schedule/cleaner-booking-detail-d
     SupportHelpComponent,
     AddServiceManagementDialog,
     CleanerBookingDetailDialog,
-    ChangeStatusDialog
+    ChangeStatusDialog,
+    ScheduleDialog,
   ],
   imports: [
     NgbModule,
@@ -153,7 +155,8 @@ import { ChangeStatusDialog } from "./employee/schedule/cleaner-booking-detail-d
     AddCleanerDialog,
     AddServiceDialog,
     CleanerBookingDetailDialog,
-    ChangeStatusDialog
+    ChangeStatusDialog,
+    ScheduleDialog
   ],
   exports: [],
 })
