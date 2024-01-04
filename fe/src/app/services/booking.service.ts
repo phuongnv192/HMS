@@ -18,6 +18,7 @@ export class BookingService {
   private BOOKING = this.baseUrl + "/booking";
   private BOOKINGCF = this.baseUrl + "/booking/confirm";
   private ADDSERVICE = this.baseUrl + "/service-add-on";
+  private CANCEL = this.baseUrl + "/booking/cancel";
   // getEmployees(params: HttpParams): Observable<any> {
   //   return this.http.get<any>(`${this.baseUrl}/cleaners`, { params });
   // }
@@ -86,10 +87,15 @@ export class BookingService {
     const headers = this.getHeadersWithToken();
     return this.http.post<any>(`${this.ADDSERVICE}`, body, { headers });
   }
-
-  confirmBooking(id: any): Observable<any> {
+  
+  confirmBooking(id:any): Observable<any> {
     const headers = this.getHeadersWithToken();
     return this.http.post<any>(`${this.BOOKINGCF}`, id, { headers });
+  }
+
+  cancelBooking(id:any): Observable<any> {
+    const headers = this.getHeadersWithToken();
+    return this.http.post<any>(`${this.CANCEL}`, id, { headers });
   }
 
   getBookingDetail(id: any): Observable<any> {
@@ -117,8 +123,7 @@ export class BookingService {
   }
 
   getDistance(origins: string, destinations: string): Observable<any> {
-    return this.http.jsonp(
-      `https://maps.googleapis.com/maps/api/distancematrix/json?key=AIzaSyCAajQeNa7v3pLulMcHZ5D2hVm89Q408d8&origins=${origins}&destinations=${destinations}`, 'callback'
-    )
+    let params = {origins: origins, destinations: destinations, key: "AIzaSyCv5K-xt_Gp0a5XTiP4Ziu1y09GSYcQupM"}
+    return this.http.get<any>("http://localhost:82/maps/api/distancematrix/json", {params});
   }
 }

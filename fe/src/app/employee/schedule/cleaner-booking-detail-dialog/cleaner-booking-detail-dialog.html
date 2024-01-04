@@ -57,7 +57,7 @@
             </p>
           </div>
           <div class="infor-col2">
-            <h6 class="text-primary text-uppercase resize">Thông tin nhà/khu vực vệ sinh</h6>
+            <h6 class="text-primary text-uppercase resize">Thông tin địa chỉ nhà</h6>
             <div class="input-group">
               <p>Loại hình nhà(*): {{infor.houseType}}</p>
             </div>
@@ -70,17 +70,10 @@
                 sàn(*): {{infor.floorArea}}</p>
               <p class="description">Số lượng người dọn và giá (ước tính): <span>
                   <b>{{cleanerNum}} người dọn dẹp</b> trong
-                  thời gian <b> {{duration}} tiếng </b> (giá dịch vụ: <b>{{formattedPrice}}</b>)
+                  thời gian <b> {{duration}} tiếng </b> (giá dịch vụ: <b>{{formattedPriceA}}</b>)
                 </span> </p>
             </div>
-            <!-- <h6 class="text-primary text-uppercase resize">Nhân viên dọn dẹp </h6>
-            <p style="font-size: 1rem;
-              font-weight: 300;
-              line-height: 1.7;
-              color: #000000de;
-              text-transform: lowercase;">
-              {{cleanerList}}
-            </p> -->
+          
            
           </div>
           
@@ -91,62 +84,25 @@
           <textarea [disabled]="true" style="width: 50%; padding-left: 1rem; padding-top: 0.5rem;" [value]="infor.note ? infor.note :'' " rows="3"
             placeholder="Nhập ghi chú của bạn cho dịch vụ đăng ký"></textarea>
         </div>
-          <!-- <hr> -->
-          <!-- <div class="serviceType">
-            - Thông tin định kỳ của ngày <b> {{scheduleDay.workDate}} ( {{scheduleDay.startTime}} -
-              {{scheduleDay.endTime}} )</b> :
-            <p>Trạng thái: {{scheduleDay.status}}</p>
-            <p>Dịch vụ tiện ích bổ sung: {{namesOfScheduleDay}}</p>
-          </div>
-          <div class="table-responsive">
-            <div class="showtime-options">
-              <carousel height="87px" cellsToShow="7" *ngIf="date.workDate && date.workDate.length >= 7">
-                <div [ngClass]="{'selected':selectedDate===showtime}" class="carousel-cell"
-                  *ngFor="let showtime of date.workDate" (click)="viewDetailinSchedule(date.bookingId, showtime)">
-                  <div class="left">{{getDay(showtime)}}</div>
-                  <div class="right"><span>/{{getMonth(showtime)}}
-                    </span><span>{{getDateMonth(showtime)}}</span>
-                  </div>
-                </div>
-              </carousel>
-
-              <div class="select-date-container" height="87px" cellsToShow="7"
-                *ngIf="date.workDate && date.workDate.length < 7">
-                <div [ngClass]="{'selected':selectedDate===showtime}" class="datetimeBtn"
-                  *ngFor="let showtime of date.workDate" (click)="viewDetailinSchedule(date.bookingId, showtime)">
-                  <div class="left">{{getDay(showtime)}}</div>
-                  <div class="right"><span>/{{getMonth(showtime)}}
-                    </span><span>{{getDateMonth(showtime)}}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div> -->
-          <!-- <div class="table-responsive" style="margin-top: 2rem;">
-          <div class="showtime-bydate" *ngFor="let date of dateList">
-            <span> - {{date.name}}: ({{date.startTime}} - {{date.endTime}}): </span>
-            <span style="font-weight: 700; font-size: 16px"> {{date.workDate}} </span>
-            <u (click)="viewDetailinSchedule(date.bookingId, date.workDate)"> (Xem chi tiết)</u>
-          </div>
-        </div> -->
+       
         </div>
         <div class="button-payment" style="display: flex; width: 100%;">
           <div style="text-align: end; justify-content: center; margin-right: 1rem; width: 100%; padding-top: 10px;">
             Tổng tiền đơn dịch vụ:
             {{ formattedPrice }}
-            <button *ngIf="type == 'day'" style="height: 35px; font-size: 11px; display: inline; margin-left: 3rem;"
+            <button *ngIf="type == 'day' && infor.status != 'DONE' && infor.status != 'CANCELLED' && currentDay != infor.scheduleList[0].workDate" style="height: 35px; font-size: 11px; display: inline; margin-left: 3rem;"
               class="btn btn-primary btn-pay" (click)="confirm(infor.scheduleList[0].scheduleId)">
               {{title_confirm}}
             </button>
-            <button  *ngIf="type == 'day' && this.infor.status == 'ON_PROCESS' &&  this.infor.scheduleList[0].serviceAddOns.length == 0" style="height: 35px; font-size: 11px; display: inline;"
+            <!-- <button  *ngIf="type == 'day' && this.infor.scheduleList[0].status == 'ON_PROCESS' &&  this.infor.scheduleList[0].serviceAddOns.length == 0" style="height: 35px; font-size: 11px; display: inline;"
             class="btn btn-primary btn-pay" (click)="complete(infor.scheduleList[0].scheduleId)">
             Hoàn thành đơn
-          </button>
+          </button> -->
             <button *ngIf="type == 'schedule'" style="height: 35px; font-size: 11px; display: inline; margin-left: 3rem;"
               class="btn btn-primary btn-pay" (click)="viewDetail(infor.bookingId)">
              Xem chi tiết
             </button>
-            <button style="height: 35px; font-size: 11px; display: inline;"
+            <button *ngIf="infor.status != 'DONE' && infor.status != 'CANCELLED'" style="height: 35px; font-size: 11px; display: inline;"
             class="btn btn-danger btn-pay" (click)="cancel(infor.bookingId)">
             Hủy đơn
           </button>

@@ -46,3 +46,4 @@ testem.log
 Thumbs.db
 .history/*
 .angular/cache/
+package-lock.json

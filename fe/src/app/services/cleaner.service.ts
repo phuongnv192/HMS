@@ -31,4 +31,8 @@ export class CleanerService {
   changeStatus(body: any): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/cleaner/schedule/status`,  body);
   }
+
+  reject(body: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/cleaner/reject/booking`,  body);
+  }
 }

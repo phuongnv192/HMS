@@ -8,14 +8,8 @@
             <div class="card-body">
               <div class="row">
                 <div class="col search-emp">
-                  <div class="search-rate">
-                    <h5 class="card-title text-uppercase text-muted mb-0 font14">Đánh giá</h5>
-                    <select [(ngModel)]="searchRate" id="rate" aria-describedby="rate-help" title="đánh giá">
-                      <option *ngFor="let rate of rateRange" [value]="rate">{{ rate }}</option>
-                    </select>
-                  </div>
                   <div class="search-date">
-                    <h5 class="card-title text-uppercase text-muted mb-0 font14">Ngày làm</h5>
+                    <h5 class="card-title text-uppercase text-muted mb-0 font14">Tên dịch vụ</h5>
                     <input placeholder="Booking #1" [(ngModel)]="date" type="text"
                       aria-describedby="date-help" maxlength="50">
                   </div>
@@ -62,18 +56,18 @@
                 <th scope="row" (click)="viewDetailinSchedule(service)">
                   <div class="media align-items-center">
                     <div class="media-body">
-                      <span class="mb-0 text-sm">{{service.id}} - {{service.hostName}}</span>
+                      <span class="mb-0 text-sm">{{service.bookingId}} - {{service.hostName}}</span>
                     </div>
                   </div>
                 </th>
                 <td>
-                  {{service.createDate | dateFormat}}
+                  {{service.scheduleList[0].workDate | dateFormat}}
                 </td>
                 <td>
                   {{service.hostAddress}}
                 </td>
                 <td>
-                  {{service.houseType}}
+                  {{service.houseType == "APARTMENT" ? "Chung cư" : "Nhà đất"}}
                 </td>
                 <!-- <td>
                   {{service.floorNumber}}
@@ -98,31 +92,6 @@
             <div style="width: 100%; text-align: center; font-size: 18px; font-weight: 700; margin:2rem;"  *ngIf="data.length < 1"> Hiện tại, người dùng đang không có dữ liệu về lịch sử sử dụng dịch vụ </div>
           </table>
         </div>
-        <!-- <div class="card-footer py-4">
-          <nav aria-label="...">
-            <ul class="pagination justify-content-end mb-0">
-              <li class="page-item disabled">
-                <a class="page-link" href="javascript:void(0)" tabindex="-1">
-                  <i class="fas fa-angle-left"></i>
-                  <span class="sr-only">Previous</span>
-                </a>
-              </li>
-              <li class="page-item active">
-                <a class="page-link" href="javascript:void(0)">1</a>
-              </li>
-              <li class="page-item">
-                <a class="page-link" href="javascript:void(0)">2 <span class="sr-only">(current)</span></a>
-              </li>
-              <li class="page-item"><a class="page-link" href="javascript:void(0)">3</a></li>
-              <li class="page-item">
-                <a class="page-link" href="javascript:void(0)">
-                  <i class="fas fa-angle-right"></i>
-                  <span class="sr-only">Next</span>
-                </a>
-              </li>
-            </ul>
-          </nav>
-        </div> -->
       </div>
     </div>
   </div>

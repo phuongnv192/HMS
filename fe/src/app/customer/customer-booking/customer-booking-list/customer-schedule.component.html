@@ -47,6 +47,7 @@
                 <th scope="col">Loại nhà</th>
                 <!-- <th scope="col">Số tầng</th> -->
                 <th scope="col">Diện tích</th>
+                <th scope="col">Loại dịch vụ</th>
                 <th scope="col">Trạng thái</th>
                 <th scope="col"></th>
                 <!-- <th scope="col">Phản hồi</th> -->
@@ -62,13 +63,13 @@
                   </div>
                 </th>
                 <td>
-                  {{service.createDate | dateFormat}}
+                  {{service.scheduleList[0].workDate | dateFormat}}
                 </td>
                 <td>
                   {{service.hostAddress}}
                 </td>
                 <td>
-                  {{service.houseType}}
+                  {{service.houseType == "APARTMENT" ? "Chung cư" : "Nhà đất"}}
                 </td>
                 <!-- <td>
                   {{service.floorNumber}}
@@ -77,7 +78,10 @@
                   {{service.floorArea}}
                 </td>
                 <td>
-                  {{service.status}}
+                  {{service.serviceTypeName && service.servicePackageName ? 'Gói gọn định kỳ' : 'Gói dọn theo ngày' }} 
+                </td>
+                <td>
+                  {{service.serviceTypeName && service.servicePackageName ? service.status : service.scheduleList[0].status }}
                 </td>
                 <td>
                   <div ngbDropdown placement="bottom-right">

@@ -66,35 +66,15 @@ export class ChangeStatusDialog implements OnDestroy, OnInit {
       if (data) {
         this.priceList = data.data;
         this.priceList.forEach(element => {
-          console.log("element.parent.id", element.parent.id);
-          console.log("this.data.addService", this.data.addService);
           this.data.addService.forEach(res => {
             if (res.id == element.parent.id) {
               this.serviceAddOns.push(element);
               res.isChecked = false;
               // Lặp qua mảng serviceAddOns
             }
-
           })
-          // this.serviceAddOns.forEach(service => {
-          //   // Tăng giá trị của biến đếm để có id duy nhất cho phần tử "Other"
-          //   let otherIdCounter = -1;
-          //   // Tạo một phần tử "Other" với id là otherIdCounter
-          //   const otherItem = {
-          //     id: otherIdCounter--,
-          //     name: 'Other',
-          //     parentId: service.parent.id,
-          //     price: 0,
-          //     duration: 1,
-          //     status: 'ACTIVE'
-          //   };
-          //   // Thêm phần tử "Other" vào mảng children của mảng đầu tiên
-          //     service.children.push(otherItem);                
-          // });
-
         });
         console.log("this.serviceAddOns", this.serviceAddOns);
-
       }
     });
   }

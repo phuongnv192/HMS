@@ -9,6 +9,7 @@ import { ToastrService } from 'ngx-toastr';
 import { CleanerRateDialog } from 'src/app/booking/cleaner-rate-dialog/cleaner-rate-dialog';
 import { ChangeStatusDialog } from './change-status-dialog/change-status-dialog';
 import { ScheduleDialog } from './schedule-dialog/schedule.dialog';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-cleaner-booking-detail-dialog',
@@ -43,40 +44,63 @@ export class CleanerBookingDetailDialog implements OnInit, OnDestroy {
   infor: any;
   type = 'day';
   title_confirm: string;
+  distance: any;
+  priceDistance: number;
+  totalAmount: any;
+  formattedPriceA: any;
+  currentDay: string;
 
 
   constructor(
     public dialogRef: MatDialogRef<CleanerBookingDetailDialog>,
     public dialog: MatDialog,
     public ratedialogRef: MatDialogRef<CleanerRateDialog>,
-    public statusdialogRef: MatDialogRef<ChangeStatusDialog>,
+    public statusDialogRef: MatDialogRef<ChangeStatusDialog>,
     public scheduleDialogRef: MatDialogRef<ScheduleDialog>,
     @Inject(MAT_DIALOG_DATA) public data: CleanerBookingDetailNoteData,
     private bookingServicee: BookingService,
     private cleanerService: CleanerService,
     private renderer: Renderer2,
     private toastr: ToastrService,
+    private router: Router,
     private ngZone: NgZone) {
   }
 
   ngOnInit(): void {
 
     this.infor = this.data.data;
+    console.log("this.infor", this.infor);
+    
     this.type = this.data.type;
     this.id = this.data.data.bookingId;
-    this.formattedPrice = this.data.data.totalBookingPrice.toLocaleString('vi-VN', {
+    this.distance = this.infor.hostDistance;
+    this.priceDistance = this.calculatePrice(this.distance);
+    this.totalAmount = this.priceDistance + this.data.data.totalBookingPrice;
+    this.getCurrentDay();
+    console.log(" this.totalAmount",  this.totalAmount);
+    console.log(" this.priceDistance",  this.priceDistance);
+    
+    this.formattedPrice = this.totalAmount.toLocaleString('vi-VN', {
       style: 'currency',
       currency: 'VND',
-    }); this.bookingServicee.getDataService().subscribe(res => {
+    });
+    this.formattedPriceA = this.data.data.totalBookingPrice.toLocaleString('vi-VN', {
+      style: 'currency',
+      currency: 'VND',
+    });
+    console.log(" this.formattedPrice",  this.formattedPrice);
+    console.log(" this.formattedPriceA",  this.formattedPriceA);
+
+     this.bookingServicee.getDataService().subscribe(res => {
       this.areaTypes = res.data;
       this.onAreaChange(this.data.data.floorArea);
     });
 
-    if (this.type == 'day' && this.infor.status == 'CONFIRMED') {
+    if (this.type == 'day' && (this.infor.scheduleList[0].status == 'CONFIRMED' || this.infor.scheduleList[0].status == 'RECEIVED')) {
       this.title_confirm = '-> Đang di chuyển';
-    } else if (this.type == 'day' && this.infor.status == 'ON_MOVING') {
+    } else if (this.type == 'day' && this.infor.scheduleList[0].status == 'ON_MOVING') {
       this.title_confirm = '-> Đang dọn';
-    } else if (this.type == 'day' && this.infor.status == 'ON_PROCESS') {
+    } else if (this.type == 'day' && this.infor.scheduleList[0].status == 'ON_PROCESS') {
       this.title_confirm = 'Cập nhật giá dịch vụ';
     }
 
@@ -113,7 +137,6 @@ export class CleanerBookingDetailDialog implements OnInit, OnDestroy {
       id: this.id,
       workDate: this.scheduleDayList
     }];
-    // this.date = this.dateSchedule.find((item) => item.id == this.data.id);
   }
 
   onAreaChange(value: any) {
@@ -136,10 +159,10 @@ export class CleanerBookingDetailDialog implements OnInit, OnDestroy {
 
   confirm(id: any) {
     let status = "";
-    let body = {};
+    let body;
     console.log("id", id);
     // this.renderer.addClass(document.body, 'modal-open');
-    // this.statusdialogRef = this.dialog.open(ChangeStatusDialog, {
+    // this.statusDialogRef = this.dialog.open(ChangeStatusDialog, {
     //   width: '500px',
     //   height: '70%',
     //   data: {
@@ -149,10 +172,10 @@ export class CleanerBookingDetailDialog implements OnInit, OnDestroy {
     //   },
     //   panelClass: ['change-status']
     // });
-    // this.statusdialogRef.afterClosed().subscribe(result => {
+    // this.statusDialogRef.afterClosed().subscribe(result => {
     //   if (result) {
     //     body = {
-    //       "scheduleId": "58",
+    //       "scheduleId": id,
     //       "status": "DONE",
     //       "paymentStatus": "PAYMENT_SUCCESS",
     //       "addOns": result.addOns,
@@ -173,17 +196,17 @@ export class CleanerBookingDetailDialog implements OnInit, OnDestroy {
     // });
 
     if (this.type = 'day') {
-      if(this.infor.status == "CONFIRMED" || this.infor.status == "ON_MOVING"){
-        if (this.infor.status != "DONE" && this.infor.status == "CONFIRMED") {
+      if (this.infor.scheduleList[0].status == "CONFIRMED" || this.infor.scheduleList[0].status == "RECEIVED" || this.infor.scheduleList[0].status == "ON_MOVING") {
+        if (this.infor.scheduleList[0].status != "DONE" && (this.infor.scheduleList[0].status == "CONFIRMED"|| this.infor.scheduleList[0].status == "RECEIVED")) {
           status = "ON_MOVING";
           body = {
             "scheduleId": id,
             "status": status,
-             "paymentStatus": "PAYMENT_SUCCESS",
+            "paymentStatus": "PAYMENT_SUCCESS",
             "addOns": [],
             "note": ""
           }
-        } else if (this.infor.status == "ON_MOVING") {
+        } else if (this.infor.scheduleList[0].status == "ON_MOVING") {
           status = "ON_PROCESS";
           body = {
             "scheduleId": id,
@@ -197,6 +220,7 @@ export class CleanerBookingDetailDialog implements OnInit, OnDestroy {
           next: (res) => {
             this.toastr.success('Cập nhật trạng thái thành công');
             this.dialogRef.close(true);
+
           },
           error: (err) => {
             this.dialogRef.close(true);
@@ -204,22 +228,22 @@ export class CleanerBookingDetailDialog implements OnInit, OnDestroy {
           }, // errorHandler
         })
       } else {
-        let addOns=[];
-        let note= "";
+        let addOns = [];
+        let note = "";
         this.renderer.addClass(document.body, 'modal-open');
-        this.statusdialogRef = this.dialog.open(ChangeStatusDialog, {
+        this.statusDialogRef = this.dialog.open(ChangeStatusDialog, {
           width: '500px',
           maxHeight: '65%',
           data: {
             data: id,
             id: this.infor.bookingId,
-            addService: this.infor.scheduleList[0].serviceAddOns,
+            addService: this.infor.scheduleList[0].serviceAddOns
           },
           panelClass: ['change-stauts']
         });
 
-        this.statusdialogRef.afterClosed().subscribe(result => {
-          if(result){
+        this.statusDialogRef.afterClosed().subscribe(result => {
+          if (result) {
             result.addOns = addOns;
             result.note = note;
             status = "DONE"
@@ -242,8 +266,8 @@ export class CleanerBookingDetailDialog implements OnInit, OnDestroy {
             })
           }
           this.renderer.removeClass(document.body, 'modal-open');
-        });       
-      }  
+        });
+      }
     }
   }
 
@@ -275,20 +299,42 @@ export class CleanerBookingDetailDialog implements OnInit, OnDestroy {
       data: {
         data: this.infor.scheduleList,
         id: this.infor.bookingId,
+        status: this.infor.status
       },
       panelClass: ['schedule-stauts']
     });
 
     this.scheduleDialogRef.afterClosed().subscribe(result => {
-      if(result){
-       
+      if (result) {
+        this.dialogRef.close(true);
       }
       this.renderer.removeClass(document.body, 'modal-open');
-    }); 
+    });
   }
 
-  cancel(id: any) {
+  cancel(id: any){
+    let body = {
+      bookingId: id,
+      note: '',
+    }
+    this.cleanerService.reject(body).subscribe({
+      next: (res) => {
+        this.dialogRef.close(true);
+      }
+    });
+  }
 
+  getCurrentDay() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = this.padZero(today.getMonth() + 1);
+    const day = this.padZero(today.getDate());
+
+    this.currentDay = `${day}-${month}-${year}`;
+  }
+
+  padZero(num: number): string {
+    return num < 10 ? `0${num}` : `${num}`;
   }
 
 
@@ -336,6 +382,27 @@ export class CleanerBookingDetailDialog implements OnInit, OnDestroy {
   getYearDateMonth(todayin) {
     let today = new Date(todayin);
     return (today.getMonth() + 1) + '/' + today.getDate() + '/' + today.getFullYear();
+  }
+
+  calculatePrice(distance: string | number): number {
+    const basePrice = 10000;
+
+    // Chuyển đổi distance thành số nếu nó là một chuỗi
+    const numericDistance = typeof distance === 'string' ? parseFloat(distance) : distance;
+
+    if (isNaN(numericDistance)) {
+      // Xử lý trường hợp distance không phải là một số
+      console.error('Distance is not a valid number.');
+      return 0; // hoặc giá trị mặc định tùy thuộc vào yêu cầu của bạn
+    }
+
+    if (numericDistance > 3) {
+      const extraDistance = numericDistance - 3;
+      const extraPrice = extraDistance * basePrice;
+      return extraPrice;
+    } else {
+      return 0;
+    }
   }
 
 }

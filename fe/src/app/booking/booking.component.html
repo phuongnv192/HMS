@@ -51,7 +51,7 @@
                     <div class="account_input">
                       <input class="account_" id="account" placeholder="Nguyen Van A" type="text"
                         aria-describedby="account-help" maxlength="50" [(ngModel)]="account_name">
-                      <p class="error" *ngIf="nameNull">Vui lòng ko để trống thông tin tên</p>
+                      <p style="width: 90%;" class="error" *ngIf="nameNull">Vui lòng ko để trống thông tin tên</p>
                     </div>
 
                   </div>
@@ -67,27 +67,30 @@
                     <img style="float: right;" src="assets/img/bnpl/Close.svg" />
                   </div> -->
 
-                  <h6 class="text-primary text-uppercase">Thông tin nhà/khu vực vệ sinh</h6>
+                  <h6 class="text-primary text-uppercase">Thông tin địa chỉ nhà</h6>
                   <google-map height="400px" width="750px" [center]="center" [zoom]="zoom" (mapClick)="moveMap($event)"
                     (mapMousemove)="move($event)">
                   </google-map>
                   <div>Latitude: {{display?.lat}}</div>
                   <div>Longitude: {{display?.lng}}</div>
-                  <div class="input-group">
+                  <div><p class="takenote">*Free phí di chuyển từ cơ sở gần nhất khi khoảng cách dưới 3km. Trên 3km, phí
+                    dịch vụ và di
+                    chuyển sẽ được tính 10.000đ/km</p></div>
+                  <div class="input-group" style="height: 90px;">
                     <p>Nơi làm việc: </p>
                     <div class="account_input">
                       <input class="account_" #address id="address" placeholder="Số 1Kim Mã, Ba Đình, Hà Nội"
                         type="text" aria-describedby="address-help" maxlength="100" [(ngModel)]="service_address" (change)="calDistance()">
-                      <p class="error" *ngIf="addressNull">Vui lòng ko để trống thông tin địa chỉ</p>
+                        <div class="description" style="width: 100%; margin-bottom: 0.5rem;">Khoảng cách: {{distance}}</div>
+                      <p class="takenote" style="width: 100%;" *ngIf="addressNull">Vui lòng ko để trống thông tin địa chỉ</p>
+                      <p class="takenote" style="width: 100%;" *ngIf="falseDistance">Vui lòng nhập địa chỉ dưới 15km</p>
                     </div>
                   </div>
 
                   <!-- <button type="button" class="btn btn-primary">Nhập địa chỉ</button> -->
 
 
-                  <p class="takenote">*Free phí di chuyển từ cơ sở gần nhất khi khoảng cách dưới 3km. Trên 3km, phí
-                    dịch vụ và di
-                    chuyển sẽ được tính 10.000đ/km</p>
+                  
                   <div class="input-group">
                     <p>Loại hình nhà(*): </p>
                     <select [(ngModel)]="selectedHouseType" id="houseType" aria-describedby="houseType-help"
@@ -251,7 +254,7 @@
                     *
                   </div>
                   <button class="btn btn-primary btn-pay" (click)="Booking()"
-                    [class.disabled]=" !termAndCondition || !account_name || !phone_number || !address || !(pickDay || dateValue)">
+                    [class.disabled]=" !termAndCondition || !account_name || !phone_number || !address || falseDistance || !(pickDay || dateValue)">
                     Đặt lịch
                   </button>
                   <!-- <button class="btn btn-primary btn-pay" (click)="viewBill()"

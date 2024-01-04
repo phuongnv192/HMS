@@ -30,7 +30,7 @@
                   </div> -->
 
                   <div class="search-date">
-                    <h5 class="card-title text-uppercase text-muted mb-0 font14">Ngày làm</h5>
+                    <h5 class="card-title text-uppercase text-muted mb-0 font14">Tên dịch vụ</h5>
                     <input placeholder="Booking #1" [(ngModel)]="date" type="text"
                       aria-describedby="date-help" maxlength="50">
                   </div>
@@ -68,7 +68,7 @@
                 <th scope="col">Ngày làm</th>
                 <th scope="col">Loại nhà</th>
                 <!-- <th scope="col">Số tầng</th> -->
-                <th scope="col">Diện tích</th>
+                <th scope="col">Tổng diện tích</th>
                 <th scope="col">Loại dịch vụ</th>
                 <th scope="col"></th>
                 <!-- <th scope="col"></th> -->
@@ -78,22 +78,19 @@
               <tr *ngFor="let service of history">
                 <th scope="row">
                   <div class="media align-items-center">
-                    <a href="javascript:void(0)" class="avatar rounded-circle mr-3">
-                      <img alt="Image placeholder" src="../assets/img/theme/bootstrap.jpg">
-                    </a>
                     <div class="media-body">
                       <span class="mb-0 text-sm">{{service.bookingId}} - {{service.hostName}}</span>
                     </div>
                   </div>
                 </th>
                 <td>
-                  {{service.workDate}}
+                  {{service.scheduleList[0].workDate}}
                 </td>
                 <td>
-                  {{service.houseType}}
+                  {{service.houseType == "APARTMENT" ? "Chung cư" : "Nhà đất"}}
                 </td>
                 <td>
-                  {{service.floorNumber}}
+                  {{service.floorArea}}
                 </td>
                 <!-- <td>
                   {{service.floorArea}}
@@ -101,39 +98,15 @@
                 <td>
                   {{service.serviceTypeName && service.servicePackageName ? 'Gói gọn định kỳ' : 'Gói dọn theo ngày' }} 
                 </td>
-                  <td class="text-right">
-                    <button class="btn btn-primary" (click)="showDetail(service.bookingId)">Xem thông tin</button>
-                    <!-- dành cho màn customer -->
-                    <!-- <button class="btn btn-primary" (click)="showDetail(service.bookingId)">Đánh giá</button> -->
+                  <td class="text-center">
+                    <button class="btn btn-primary" style="height: 35px;
+                    width: 150px;
+                    font-size: 12px;
+                    padding: 5px;" (click)="showDetail(service, type)">Xem thông tin</button>
                   </td>
               </tr>
             </tbody>
           </table>
-        </div>
-        <div class="card-footer py-4">
-          <nav aria-label="...">
-            <ul class="pagination justify-content-end mb-0">
-              <li class="page-item disabled">
-                <a class="page-link" href="javascript:void(0)" tabindex="-1">
-                  <i class="fas fa-angle-left"></i>
-                  <span class="sr-only">Previous</span>
-                </a>
-              </li>
-              <li class="page-item active">
-                <a class="page-link" href="javascript:void(0)">1</a>
-              </li>
-              <li class="page-item">
-                <a class="page-link" href="javascript:void(0)">2 <span class="sr-only">(current)</span></a>
-              </li>
-              <li class="page-item"><a class="page-link" href="javascript:void(0)">3</a></li>
-              <li class="page-item">
-                <a class="page-link" href="javascript:void(0)">
-                  <i class="fas fa-angle-right"></i>
-                  <span class="sr-only">Next</span>
-                </a>
-              </li>
-            </ul>
-          </nav>
         </div>
       </div>
     </div>

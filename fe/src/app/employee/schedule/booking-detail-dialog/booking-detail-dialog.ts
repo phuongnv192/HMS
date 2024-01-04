@@ -56,6 +56,10 @@ export class BookingDetailDialog implements OnInit, OnDestroy {
   status = "DONE";
   page = 0;
   size = 100;
+  distance: any;
+  priceDistance: any;
+  totalAmount: any;
+  formattedPriceA: any;
 
   constructor(
     public dialogRef: MatDialogRef<BookingDetailDialog>,
@@ -82,28 +86,35 @@ export class BookingDetailDialog implements OnInit, OnDestroy {
         }
       });
     this.status = this.infor.status;
-    if (this.status == "DONE") {
-      this.rating = this.infor.scheduleDayList.map((rate) =>
-        rate.ratingScore != null ? rate.ratingScore : 0
-      );
-      console.log("rating", this.rating);
-    }
+    // if (this.status == "DONE") {
+    //   this.rating = this.infor.scheduleDayList.map((rate) =>
+    //     rate.ratingScore != null ? rate.ratingScore : 0
+    //   );
+    //   console.log("rating", this.rating);
+    // }
 
-    const totalRating = this.rating.reduce((acc, current) => acc + current, 0);
-    // Tính tổng số phần tử của mảng rating
-    const numberOfElements = this.rating.length;
-    // Tính rating trung bình
-    this.ratingAverage =
-      numberOfElements > 0 ? totalRating / numberOfElements : 0;
-    this.type = this.data.data.servicePackageName != null ? "schedule" : "day";
+    // const totalRating = this.rating.reduce((acc, current) => acc + current, 0);
+    // // Tính tổng số phần tử của mảng rating
+    // const numberOfElements = this.rating.length;
+    // // Tính rating trung bình
+    // this.ratingAverage =
+    //   numberOfElements > 0 ? totalRating / numberOfElements : 0;
+    this.type = this.data.type;
     this.id = this.data.data.bookingId;
-    this.formattedPrice = this.data.data.totalBookingPrice.toLocaleString(
-      "vi-VN",
-      {
-        style: "currency",
-        currency: "VND",
-      }
-    );
+    this.distance = this.infor.hostDistance;
+    this.priceDistance = this.calculatePrice(this.distance);
+    this.totalAmount = this.priceDistance + this.data.data.totalBookingPrice;
+    console.log(" this.totalAmount",  this.totalAmount);
+    console.log(" this.priceDistance",  this.priceDistance);
+    
+    this.formattedPrice = this.totalAmount.toLocaleString('vi-VN', {
+      style: 'currency',
+      currency: 'VND',
+    });
+    this.formattedPriceA = this.data.data.totalBookingPrice.toLocaleString('vi-VN', {
+      style: 'currency',
+      currency: 'VND',
+    });
     this.bookingServicee.getDataService().subscribe((res) => {
       this.areaTypes = res.data;
       this.onAreaChange(this.data.data.floorArea);
@@ -150,6 +161,27 @@ export class BookingDetailDialog implements OnInit, OnDestroy {
     ];
   }
 
+  calculatePrice(distance: string | number): number {
+    const basePrice = 10000;
+
+    // Chuyển đổi distance thành số nếu nó là một chuỗi
+    const numericDistance = typeof distance === 'string' ? parseFloat(distance) : distance;
+
+    if (isNaN(numericDistance)) {
+      // Xử lý trường hợp distance không phải là một số
+      console.error('Distance is not a valid number.');
+      return 0; // hoặc giá trị mặc định tùy thuộc vào yêu cầu của bạn
+    }
+
+    if (numericDistance > 3) {
+      const extraDistance = numericDistance - 3;
+      const extraPrice = extraDistance * basePrice;
+      return extraPrice;
+    } else {
+      return 0;
+    }
+  }
+
   generateStarRating(rating: number): string {
     const stars: string[] = [];
     const fullStars = Math.floor(rating);
@@ -174,18 +206,30 @@ export class BookingDetailDialog implements OnInit, OnDestroy {
       data: {
         data: this.infor.scheduleList,
         id: this.infor.bookingId,
+        status: this.infor.status
       },
       panelClass: ["schedule-stauts"],
     });
 
-    this.scheduleDialogRef.afterClosed().subscribe((result) => {
-      if (result) {
+    this.scheduleDialogRef.afterClosed().subscribe(result => {
+      if(result){
+        this.dialogRef.close(true);
+
       }
       this.renderer.removeClass(document.body, "modal-open");
     });
   }
 
-  cancel(id: any) {}
+  cancel(id: any){
+    let body = {
+      bookingId: id
+    }
+    this.bookingServicee.cancelBooking(body).subscribe({
+      next: (res) => {
+        this.dialogRef.close(true);
+      }
+    });
+  }
 
   onAreaChange(value: any) {
     // let found = false; // Biến kiểm soát vòng lặp

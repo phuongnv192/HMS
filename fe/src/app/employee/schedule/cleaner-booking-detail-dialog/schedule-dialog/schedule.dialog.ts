@@ -7,12 +7,15 @@ import { ActivatedRoute } from '@angular/router';
 import { BookingService } from 'src/app/services/booking.service';
 import { ToastrService } from 'ngx-toastr';
 import { addDays, addMonths, addWeeks, format } from 'date-fns';
+import { ChangeStatusDialog } from '../change-status-dialog/change-status-dialog';
+import { CleanerService } from 'src/app/services/cleaner.service';
 // import { DialogService } from 'src/app/services/dialog.service';
 
 export interface ScheduleDialogData {
   data: any;
   id: any,
   addService: any;
+  status: any;
 }
 
 @Component({
@@ -48,9 +51,14 @@ export class ScheduleDialog implements OnDestroy, OnInit {
   selectedParents: { parentId: number, selected: any }[] = [];
   otherAddons = false;
   priceOther = 0;
-  listChecked  = [];
+  listChecked = [];
   dateArray = [];
   selectedDate: any;
+  selectedList: any;
+  title_confirm: string;
+  role = 'CLEANER';
+  selectedData: any;
+  currentDay: string;
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -60,12 +68,14 @@ export class ScheduleDialog implements OnDestroy, OnInit {
     private toastr: ToastrService,
     // private dialogService: DialogService,
     private scheduleDialogRef: MatDialogRef<ScheduleDialog>,
+    public statusdialogRef: MatDialogRef<ChangeStatusDialog>,
+    private cleanerService: CleanerService,
     @Inject(MAT_DIALOG_DATA) public data: ScheduleDialogData) {
   }
 
   ngOnInit(): void {
-    console.log("this.data.data", this.data.data);
-    
+    this.role = sessionStorage.getItem("roleName");
+    console.log(this.data.data, "ABCABC");
     for (const schedule of this.data.data) {
       const dateInfo = {
         workDate: schedule.workDate,
@@ -74,12 +84,44 @@ export class ScheduleDialog implements OnDestroy, OnInit {
         status: schedule.status
       };
       this.dateArray.push(dateInfo);
-      console.log("this.dateArray", this.dateArray);
-      
     }
+    this.getCurrentDay();
+    // let firstNotDoneScheduleId: number | null = null;
+
+    // for (const schedule of this.dateArray) {
+    //   if (schedule.status !== 'DONE') {
+    //     firstNotDoneScheduleId = schedule.scheduleId;
+    //     break; // Break out of the loop after finding the first element
+    //   }
+    // }
+    const firstNotDoneSchedule = this.dateArray.find(schedule => schedule.status !== 'DONE');
+    this.selectedDate = firstNotDoneSchedule.scheduleId ? firstNotDoneSchedule.scheduleId : null;
+    this.selectedList = firstNotDoneSchedule ? firstNotDoneSchedule : null;
+    if (this.selectedList.status == 'CONFIRMED' || this.selectedList.status == 'RECEIVED') {
+      this.title_confirm = '-> Đang di chuyển';
+    } else if (this.selectedList.status == 'ON_MOVING') {
+      this.title_confirm = '-> Đang dọn';
+    } else if (this.selectedList.status == 'ON_PROCESS') {
+      this.title_confirm = 'Cập nhật giá dịch vụ';
+    }
+    console.log("selectedList", this.selectedList);
+
   }
 
-  checkOther(){
+  getCurrentDay() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = this.padZero(today.getMonth() + 1);
+    const day = this.padZero(today.getDate());
+
+    this.currentDay = `${year}-${month}-${day}`;
+  }
+
+  padZero(num: number): string {
+    return num < 10 ? `0${num}` : `${num}`;
+  }
+
+  checkOther() {
     this.otherAddons = !this.otherAddons;
     console.log("otherAddons", this.otherAddons);
   }
@@ -97,7 +139,7 @@ export class ScheduleDialog implements OnDestroy, OnInit {
   ngOnDestroy() {
     this._subscription.unsubscribe();
   }
-  
+
   // Hàm để tìm kiếm vị trí của phần tử trong listChecked dựa trên serviceAddOnId
   findIndexInListChecked(serviceAddOnId: number): number {
     return this.listChecked.findIndex(item => item.serviceAddOnId === serviceAddOnId);
@@ -148,7 +190,7 @@ export class ScheduleDialog implements OnDestroy, OnInit {
 
   getListDay(id: any, month: any, date: string) {
     console.log("id", id, month, date);
-    
+
     this.dateArray = [];
     // Giả sử a là số ngày và b là đơn vị thời gian (tháng, ngày, năm)
     let a = 0;
@@ -203,25 +245,155 @@ export class ScheduleDialog implements OnDestroy, OnInit {
     return result;
   }
 
-  viewDetailinSchedule(id:any){
+  viewDetailinSchedule(id: any, list: any) {
     this.selectedDate = id;
+    this.selectedList = list;
+    if (this.selectedList.status == 'CONFIRMED' || this.selectedList.status == 'RECEIVED') {
+      this.title_confirm = '-> Đang di chuyển';
+    } else if (this.selectedList.status == 'ON_MOVING') {
+      this.title_confirm = '-> Đang dọn';
+    } else if (this.selectedList.status == 'ON_PROCESS') {
+      this.title_confirm = 'Cập nhật giá dịch vụ';
+    }
+
+  }
+
+  isConfirmedStatus(status: string): boolean {
+    return status == 'CONFIRMED' || status == 'RECEIVED';
   }
 
   isDoneStatus(status: string): boolean {
-    return status == 'DONE';
+    return status == 'DONE' || status == 'CANCELLED';
   }
-  
+
   isOnMovingOrOnProcess(status: string): boolean {
     return status == 'ON_MOVING' || status == 'ON_PROCESS';
   }
 
+  confirm(id: any) {
+    let status = "";
+    let body = {};
+    this.selectedData = this.data.data.find(schedule => schedule.scheduleId === id);
+
+
+    if (this.selectedList.status == "CONFIRMED" || this.selectedList.status == "ON_MOVING" || this.selectedList.status == "RECEIVED") {
+      if ((this.selectedList.status != "DONE" && this.selectedList.status == "CONFIRMED") || this.selectedList.status == "RECEIVED") {
+        status = "ON_MOVING";
+        body = {
+          "scheduleId": id,
+          "status": status,
+          "paymentStatus": "PAYMENT_SUCCESS",
+          "addOns": [],
+          "note": ""
+        }
+      } else if (this.selectedList.status == "ON_MOVING") {
+        status = "ON_PROCESS";
+        body = {
+          "scheduleId": id,
+          "status": status,
+          "paymentStatus": "PAYMENT_SUCCESS",
+          "addOns": [],
+          "note": ""
+        }
+      }
+      this.cleanerService.changeStatus(body).subscribe({
+        next: (res) => {
+          this.toastr.success('Cập nhật trạng thái thành công');
+          this.scheduleDialogRef.close(true);
+        },
+        error: (err) => {
+          this.scheduleDialogRef.close(true);
+          this.statusdialogRef.close(true);
+          console.log(err);
+        }, // errorHandler
+      })
+    } else {
+      let addOns = [];
+      let note = "";
+      console.log("this.selectedData 3", this.selectedData);
+
+      this.renderer.addClass(document.body, 'modal-open');
+      this.statusdialogRef = this.dialog.open(ChangeStatusDialog, {
+        width: '500px',
+        maxHeight: '55%',
+        data: {
+          data: id,
+          id: this.selectedData.bookingId,
+          addService: this.selectedData.serviceAddOns,
+        },
+        panelClass: ['change-stauts']
+      });
+    console.log("this.selectedData 2", this.selectedData);
+
+
+      this.statusdialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          result.addOns = addOns;
+          result.note = note;
+          status = "DONE"
+          body = {
+            "scheduleId": id,
+            "status": status,
+            "paymentStatus": "PAYMENT_SUCCESS",
+            "addOns": addOns,
+            "note": note
+          }
+          this.cleanerService.changeStatus(body).subscribe({
+            next: (res) => {
+              this.toastr.success('Đơn đã hoàn tất');
+              this.scheduleDialogRef.close(true);
+            },
+            error: (err) => {
+              this.scheduleDialogRef.close(true);
+              this.statusdialogRef.close(true);
+              console.log(err);
+            }, // errorHandler
+          })
+        }
+        this.renderer.removeClass(document.body, 'modal-open');
+      });
+    }
+  }
+
+  complete(id: any) {
+    let body = {
+      "scheduleId": id,
+      "status": "DONE",
+      "paymentStatus": "PAYMENT_SUCCESS",
+      "addOns": [],
+      "note": ""
+    }
+    this.cleanerService.changeStatus(body).subscribe({
+      next: (res) => {
+        this.toastr.success('Đơn đã hoàn tất');
+        this.scheduleDialogRef.close(true);
+      },
+      error: (err) => {
+        this.scheduleDialogRef.close(true);
+        this.statusdialogRef.close(true);
+        console.log(err);
+      }, // errorHandler
+    })
+  }
+
+  cancel(id: any){
+    let body = {
+      bookingId: id,
+      note: '',
+    }
+    this.cleanerService.reject(body).subscribe({
+      next: (res) => {
+        this.scheduleDialogRef.close(true);
+        this.statusdialogRef.close(true);      }
+    });
+  }
 
   submit() {
-    if(this.otherAddons){
+    if (this.otherAddons) {
       let child = {
-          "serviceAddOnId": -1,
-          "price": this.priceOther,
-          "note": ""
+        "serviceAddOnId": -1,
+        "price": this.priceOther,
+        "note": ""
       }
       this.listChecked.push(child)
     }

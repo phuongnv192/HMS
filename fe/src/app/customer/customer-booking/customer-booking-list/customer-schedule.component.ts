@@ -11,6 +11,7 @@ import { CustomerService } from 'src/app/services/customer.service';
 export interface BookingDetailNoteData {
   data: any;
   dataCleaner: any;
+  type: any;
 }
 
 @Component({
@@ -46,11 +47,6 @@ export class CustomerScheduleComponent implements OnInit {
       this.customerService.getListSchedule().subscribe(_res => {
         if(_res && _res.data) {
           this.data = _res.data.filter(a=> a.status != 'DONE');
-          // this.bookingService.getCustomerBookingHistory(this.page, this.size).subscribe(res => {
-          //   if(res && res.data && res.data.id == _res.data.bookingId) {
-          //     this.dataCleaner = res.data.cleaners;
-          //   }
-          // });
         }
       })
     
@@ -111,7 +107,14 @@ export class CustomerScheduleComponent implements OnInit {
   }
 
   cancel(id: any){
-
+    let body = {
+      bookingId: id
+    }
+    this.bookingService.cancelBooking(body).subscribe({
+      next: (res) => {
+        
+      }
+    });
   }
 
   changeStatus(id: any){

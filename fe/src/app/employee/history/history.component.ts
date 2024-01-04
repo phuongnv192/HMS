@@ -6,6 +6,7 @@ import { AuthService } from "src/app/services/auth.service";
 import { BookingService } from "src/app/services/booking.service";
 import { CleanerService } from "src/app/services/cleaner.service";
 import { CleanerBookingDetailDialog } from "../schedule/cleaner-booking-detail-dialog/cleaner-booking-detail-dialog";
+import { CustomerService } from "src/app/services/customer.service";
 
 @Component({
   selector: "app-history",
@@ -26,14 +27,17 @@ export class HistoryComponent implements OnInit {
   listBooking: any;
   size: number = 10;
   page: number = 0;
+  type = '';
+
   constructor(
     private authService: AuthService,
     private bookingService: BookingService,
     private cleanService: CleanerService,
+    private customerService: CustomerService,
     private route: ActivatedRoute,
     public dialog: MatDialog, private renderer: Renderer2,
     public dialogRef: MatDialogRef<CleanerBookingDetailDialog>,
-  ) {}
+  ) { }
 
   getListCleaner(id: any) {
     var req = new HttpParams()
@@ -41,11 +45,11 @@ export class HistoryComponent implements OnInit {
       .set("size", this.size);
     this.cleanService.getListSchedule(id, req).subscribe({
       next: (res) => {
-        if (res && res.data) {
-          this.listBooking = res.data;
-        }
+        this.history = res.data.filter(a => a.status == 'DONE' || a.status == 'CANCELLED');
+    console.log(this.history, "this.history");
+        
       },
-      error: (error) => {},
+      error: (error) => { },
     });
   }
 
@@ -57,9 +61,7 @@ export class HistoryComponent implements OnInit {
       this.data = data;
     });
     this.getListCleaner(this.cleanerId);
-    this.history = this.listBooking.filter(booking => booking.status == 'DONE');
-    console.log("this.history", this.history);
-
+    
   });
     this.searchRate = "4 - 5";
     this.searchHouseType = "APARTMENT";
@@ -68,25 +70,29 @@ export class HistoryComponent implements OnInit {
     this.date = "19/11/2023";
   }
 
-  showDetail(detail: any) {
+  showDetail(detail: any, type: string) {
     // this.bookingService.getBookingDetail(detail).subscribe((data) => {
-      // detail = data.data;
-      let type = 'day';
-      this.renderer.addClass(document.body, 'modal-open');
-      this.dialogRef = this.dialog.open(CleanerBookingDetailDialog, {
-        width: '850px',
-        height: '85%',
-        data: {
-          data: detail,
-          type: type
-        },
-        panelClass: ['view-detail']
-      });
+    // detail = data.data;
+    if(detail.servicePackageName){
+      type = 'schedule';
+    } else {
+      type = 'day';
+    }
+    this.renderer.addClass(document.body, 'modal-open');
+    this.dialogRef = this.dialog.open(CleanerBookingDetailDialog, {
+      width: '850px',
+      height: '85%',
+      data: {
+        data: detail,
+        type: type
+      },
+      panelClass: ['view-detail']
+    });
 
-      this.dialogRef.afterClosed().subscribe(result => {
-        console.log('The dialog was closed');
-        this.renderer.removeClass(document.body, 'modal-open');
-      });
+    this.dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      this.renderer.removeClass(document.body, 'modal-open');
+    });
     // });
   }
 
@@ -106,6 +112,6 @@ export class HistoryComponent implements OnInit {
     return stars.join("");
   }
 
-  search() {}
+  search() { }
 
 }

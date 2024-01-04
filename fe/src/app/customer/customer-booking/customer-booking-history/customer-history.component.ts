@@ -35,21 +35,13 @@ export class CustomerHistoryComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    // this.customerService.getListSchedule().subscribe(_res => {
-    //   if (_res && _res.data) {
-    //     this.data = _res.data.filter(a => a.status == 'DONE');
-    //   }
-    // });
-    this.bookingService.getCustomerBookingHistory(this.page, this.size).subscribe(_res => {
-      if (_res && _res.data) {
-        this.data = _res.data.filter(a => a.status == 'DONE');
-      }});
+    this.customerService.getListSchedule().subscribe(_res => {
+      if (_res && _res.data) {        
+        this.data = _res.data.filter(a => a.status == 'DONE' || a.status == 'CANCELLED');
+      }
+    });
 
     this.history = this.data.history;
-    this.searchRate = "4 - 5";
-    this.searchHouseType = "APARTMENT";
-    this.houseType = ["APARTMENT", "NORMAL", "Villa"];
-    this.rateRange = ["0 - 1", "1 - 2", "2 - 3", "3 - 4", "4 - 5"];
     this.date = "19/11/2023";
   }
 
@@ -71,14 +63,22 @@ export class CustomerHistoryComponent implements OnInit {
 
   viewDetailinSchedule(detail: any) {
     // this.dialogService.sendDataDialog(true);
-    console.log('document.body:', document.body); // Kiểm tra xem document.body có tồn tại hay không
+    console.log('detail', detail); // Kiểm tra xem document.body có tồn tại hay không
     // if (this.dialogRef) {
+      let type = 'day';
+      if(detail.servicePackageName){
+        type = 'schedule';
+      } else {
+        type = 'day';
+      }
     this.renderer.addClass(document.body, 'modal-open');
     this.dialogRef = this.dialog.open(BookingDetailDialog, {
       width: '820px',
-      height: '80%',
+      height: '85%',
       data: {
-        data: detail
+        data: detail,
+        dataCleaner: detail.cleaners,
+        type: type
       },
       panelClass: ['view-detail']
     });

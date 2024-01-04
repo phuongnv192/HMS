@@ -180,13 +180,16 @@ export class BookingComponent implements OnInit {
   bookingSchedules = [];
   scheduleData: any;
   cleanerList: any;
-  cleanerPrice = 500000;
+  cleanerPrice = 0;
   isoString: string;
   isoStringST: string;
   isoStringET: string;
   isMorning: boolean;
   priceClean: any;
   formattedPrice: any;
+  distance = '';
+  numericDistance: number;
+  falseDistance: boolean;
   // serviceTypeIdTemp: any;
 
   onResize(event) {
@@ -512,7 +515,7 @@ export class BookingComponent implements OnInit {
     }
   }
 
-  Order() {}
+  Order() { }
 
   showPriceList(): void {
     // this.dialogService.sendDataDialog(true);
@@ -733,8 +736,8 @@ export class BookingComponent implements OnInit {
       hostName: this.account_name,
       hostPhone: this.phone_number,
       hostAddress: this.service_address,
-      hostDistance: "6km",
-      distanceprice: 10000,
+      hostDistance: this.distance,
+      distanceprice: this.calculatePrice(this.distance),
       houseType: this.selectedHouseType, //houseType: this.selectedHouseType,
       floorNumber: 1,
       floorArea: this.selectedAreaType, //'M' + this.selectedAreaType  chưa thống nhất đc BE FE
@@ -770,7 +773,11 @@ export class BookingComponent implements OnInit {
       //   },
       //   error: () => { },
       // });
-      this.totalAmount = this.cleanerPrice + body.distanceprice;
+      this.totalAmount = this.priceClean + body.distanceprice;
+      console.log("this.cleanerPrice", this.cleanerPrice);
+      console.log("body.distanceprice", body.distanceprice);
+      console.log("body.totalAmount", this.totalAmount);
+      
       this.renderer.addClass(document.body, "modal-open");
       this.billDialogRef = this.dialog.open(BillBookingDialog, {
         width: "820px",
@@ -810,7 +817,7 @@ export class BookingComponent implements OnInit {
       hostName: "longtk",
       hostPhone: "0966069299",
       hostAddress: "so 8 giai phong",
-      hostDistance: "6km",
+      hostDistance: this.distance,
       distanceprice: 10000,
       houseType: "APARTMENT",
       floorNumber: 1,
@@ -879,14 +886,46 @@ export class BookingComponent implements OnInit {
     if (event.latLng != null) this.display = event.latLng.toJSON();
   }
 
+  calculatePrice(distance: string | number): number {
+    const basePrice = 10000;
+
+    // Chuyển đổi distance thành số nếu nó là một chuỗi
+    const numericDistance = typeof distance === 'string' ? parseFloat(distance) : distance;
+
+    if (isNaN(numericDistance)) {
+      // Xử lý trường hợp distance không phải là một số
+      console.error('Distance is not a valid number.');
+      return 0; // hoặc giá trị mặc định tùy thuộc vào yêu cầu của bạn
+    }
+
+    if (numericDistance > 3) {
+      const extraDistance = numericDistance - 3;
+      const extraPrice = extraDistance * basePrice;
+      return extraPrice;
+    } else {
+      return 0;
+    }
+  }
+
   calDistance() {
     this.bookingServicee
       .getDistance(
-        encodeURIComponent("Đại học FPT Hà Nội"),
-        encodeURIComponent(this.service_address)
+        "Đại học FPT",
+        this.service_address
       )
       .subscribe({
         next: (res) => {
+          this.distance = res.rows[0].elements[0].distance.text;
+          console.log(this.distance, "this.distance");
+          const numericString = this.distance.replace(/[^\d.]/g, '');
+          // Chuyển đổi thành số
+          this.numericDistance = parseFloat(numericString);
+          console.log("numericDistance", this.numericDistance);
+          
+          // chặn trên 15km 
+          if(this.numericDistance > 15){
+            this.falseDistance = true;
+          }
           console.log(res);
         },
         error: (error) => {
@@ -907,7 +946,7 @@ export class TermAndConditionDialog {
   constructor(
     public DialogRef: MatDialogRef<TermAndConditionDialog>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
-  ) {}
+  ) { }
 
   onNoClick(): void {
     this.DialogRef.close();
@@ -925,7 +964,7 @@ export class PickCLeanerWarningDialog {
   constructor(
     public DialogRef: MatDialogRef<PickCLeanerWarningDialog>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
-  ) {}
+  ) { }
 
   onNoClick(): void {
     this.DialogRef.close();
