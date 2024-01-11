@@ -90,7 +90,7 @@ export class CustomerScheduleComponent implements OnInit {
     this.dialogRef = this.dialog.open(BookingDetailDialog, {
       width: '820px',
       // maxHeight: '70%',
-      height: '80%',
+      height: '85%',
       data: {
         data: data,
       },

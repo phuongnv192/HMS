@@ -63,6 +63,8 @@ import { DateFormatPipe } from "./pipe/date-format.pipe";
 import { ChangeStatusDialog } from "./employee/schedule/cleaner-booking-detail-dialog/change-status-dialog/change-status-dialog";
 import { ScheduleDialog } from "./employee/schedule/cleaner-booking-detail-dialog/schedule-dialog/schedule.dialog";
 import { GoogleMapsModule } from "@angular/google-maps";
+import { CancelDialog } from "./booking/cancel-dialog/cancel-dialog";
+import { ManagerScheduleComponent } from "./employee/schedule/leader-booking-management/leader-schedule-management.component";
 // import { FormsModule } from '@angular/forms';
 
 @NgModule({
@@ -108,6 +110,8 @@ import { GoogleMapsModule } from "@angular/google-maps";
     CleanerBookingDetailDialog,
     ChangeStatusDialog,
     ScheduleDialog,
+    CancelDialog,
+    ManagerScheduleComponent,
   ],
   imports: [
     NgbModule,
@@ -159,7 +163,8 @@ import { GoogleMapsModule } from "@angular/google-maps";
     AddServiceDialog,
     CleanerBookingDetailDialog,
     ChangeStatusDialog,
-    ScheduleDialog
+    ScheduleDialog,
+    CancelDialog
   ],
   exports: [],
 })

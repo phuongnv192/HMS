@@ -90,7 +90,7 @@
               (click)="confirm(infor.bookingId)">
               Xem chi tiết
             </button>
-            <button *ngIf="infor.status != 'DONE' && infor.status != 'CANCELLED'" style="height: 35px; font-size: 11px; display: inline;" class="btn btn-danger btn-pay"
+            <button *ngIf="infor.status != 'DONE' && infor.status != 'CANCELLED'" [ngStyle]="{'margin-left': type == 'schedule' ? '0' : '1rem'}" style="height: 35px; font-size: 11px; display: inline;" class="btn btn-danger btn-pay"
               (click)="cancel(infor.bookingId)">
               Hủy đơn
             </button>

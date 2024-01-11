@@ -10,6 +10,7 @@ import { CleanerRateDialog } from 'src/app/booking/cleaner-rate-dialog/cleaner-r
 import { ChangeStatusDialog } from './change-status-dialog/change-status-dialog';
 import { ScheduleDialog } from './schedule-dialog/schedule.dialog';
 import { Router } from '@angular/router';
+import { CancelDialog } from 'src/app/booking/cancel-dialog/cancel-dialog';
 
 @Component({
   selector: 'app-cleaner-booking-detail-dialog',
@@ -57,6 +58,7 @@ export class CleanerBookingDetailDialog implements OnInit, OnDestroy {
     public ratedialogRef: MatDialogRef<CleanerRateDialog>,
     public statusDialogRef: MatDialogRef<ChangeStatusDialog>,
     public scheduleDialogRef: MatDialogRef<ScheduleDialog>,
+    public cancelDialogRef: MatDialogRef<CancelDialog>,
     @Inject(MAT_DIALOG_DATA) public data: CleanerBookingDetailNoteData,
     private bookingServicee: BookingService,
     private cleanerService: CleanerService,
@@ -313,14 +315,30 @@ export class CleanerBookingDetailDialog implements OnInit, OnDestroy {
   }
 
   cancel(id: any){
-    let body = {
-      bookingId: id,
-      note: '',
-    }
-    this.cleanerService.reject(body).subscribe({
-      next: (res) => {
+    // let body = {
+    //   bookingId: id,
+    //   note: '',
+    // }
+    // this.cleanerService.reject(body).subscribe({
+    //   next: (res) => {
+    //     this.dialogRef.close(true);
+    //   }
+    // });
+    this.renderer.addClass(document.body, "modal-open");
+    this.cancelDialogRef = this.dialog.open(CancelDialog, {
+      width: "800px",
+      maxHeight: "50%",
+      data: {
+        id: id
+      },
+      panelClass: ["cancel-dialog"],
+    });
+
+    this.cancelDialogRef.afterClosed().subscribe(result => {
+      if(result){
         this.dialogRef.close(true);
       }
+      this.renderer.removeClass(document.body, "modal-open");
     });
   }
 

@@ -51,6 +51,7 @@ export const ROUTES3: RouteInfoAdmin[] = [
 export const ROUTES4: RouteInfoLead[] = [
   // { path: '/list-cleaner', title: 'Danh sách nhân viên', icon: 'ni-bullet-list-67 text-red', class: '' },
   { path: '/booking-management', title: 'Quản lý dịch vụ', icon: 'ni-bullet-list-67 text-red', class: '' },
+  { path: '/management-schedule', title: 'Danh sách dịch vụ', icon: 'ni-calendar-grid-58', class: '' },
   { path: '/support-help', title: 'Thông báo hỗ trợ', icon: 'people-fill', class: '' },
 ];
 

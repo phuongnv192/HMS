@@ -15,6 +15,7 @@ import {
 import { BookingService } from "src/app/services/booking.service";
 import { BookingDetailNoteData } from "src/app/customer/customer-booking/customer-booking-list/customer-schedule.component";
 import { ScheduleDialog } from "../cleaner-booking-detail-dialog/schedule-dialog/schedule.dialog";
+import { CancelDialog } from "src/app/booking/cancel-dialog/cancel-dialog";
 
 @Component({
   selector: "app-booking-detail-dialog",
@@ -68,6 +69,7 @@ export class BookingDetailDialog implements OnInit, OnDestroy {
     private renderer: Renderer2,
     public dialog: MatDialog,
     public scheduleDialogRef: MatDialogRef<ScheduleDialog>,
+    public cancelDialogRef: MatDialogRef<CancelDialog>,
     private ngZone: NgZone
   ) {}
 
@@ -221,13 +223,29 @@ export class BookingDetailDialog implements OnInit, OnDestroy {
   }
 
   cancel(id: any){
-    let body = {
-      bookingId: id
-    }
-    this.bookingServicee.cancelBooking(body).subscribe({
-      next: (res) => {
+    // let body = {
+    //   bookingId: id
+    // }
+    // this.bookingServicee.cancelBooking(body).subscribe({
+    //   next: (res) => {
+    //     this.dialogRef.close(true);
+    //   }
+    // });
+    this.renderer.addClass(document.body, "modal-open");
+    this.cancelDialogRef = this.dialog.open(CancelDialog, {
+      width: "800px",
+      maxHeight: "50%",
+      data: {
+        id: id
+      },
+      panelClass: ["cancel-dialog"],
+    });
+
+    this.cancelDialogRef.afterClosed().subscribe(result => {
+      if(result){
         this.dialogRef.close(true);
       }
+      this.renderer.removeClass(document.body, "modal-open");
     });
   }
 

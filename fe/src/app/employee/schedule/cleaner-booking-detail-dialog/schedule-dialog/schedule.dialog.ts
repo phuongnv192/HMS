@@ -9,6 +9,7 @@ import { ToastrService } from 'ngx-toastr';
 import { addDays, addMonths, addWeeks, format } from 'date-fns';
 import { ChangeStatusDialog } from '../change-status-dialog/change-status-dialog';
 import { CleanerService } from 'src/app/services/cleaner.service';
+import { CancelDialog } from 'src/app/booking/cancel-dialog/cancel-dialog';
 // import { DialogService } from 'src/app/services/dialog.service';
 
 export interface ScheduleDialogData {
@@ -69,6 +70,7 @@ export class ScheduleDialog implements OnDestroy, OnInit {
     // private dialogService: DialogService,
     private scheduleDialogRef: MatDialogRef<ScheduleDialog>,
     public statusdialogRef: MatDialogRef<ChangeStatusDialog>,
+    public cancelDialogRef: MatDialogRef<CancelDialog>,
     private cleanerService: CleanerService,
     @Inject(MAT_DIALOG_DATA) public data: ScheduleDialogData) {
   }
@@ -377,14 +379,30 @@ export class ScheduleDialog implements OnDestroy, OnInit {
   }
 
   cancel(id: any){
-    let body = {
-      bookingId: id,
-      note: '',
-    }
-    this.cleanerService.reject(body).subscribe({
-      next: (res) => {
+    // let body = {
+    //   bookingId: id,
+    //   note: '',
+    // }
+    // this.cleanerService.reject(body).subscribe({
+    //   next: (res) => {
+    //     this.scheduleDialogRef.close(true);
+    //     this.statusdialogRef.close(true);      }
+    // });
+    this.renderer.addClass(document.body, "modal-open");
+    this.cancelDialogRef = this.dialog.open(CancelDialog, {
+      width: "800px",
+      maxHeight: "50%",
+      data: {
+        id: id
+      },
+      panelClass: ["cancel-dialog"],
+    });
+
+    this.cancelDialogRef.afterClosed().subscribe(result => {
+      if(result){
         this.scheduleDialogRef.close(true);
-        this.statusdialogRef.close(true);      }
+      }
+      this.renderer.removeClass(document.body, "modal-open");
     });
   }
 

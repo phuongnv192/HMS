@@ -1,0 +1,29 @@
+<div mat-dialog-actions class="guide_class">
+  <div class="dialog-container">
+    <div class="header">
+      Xác nhận <button (click)="onNoClick()"><img src="./assets/img/x.png" /></button>
+    </div>
+    <div class="content row">
+      <div class="content-scroll">
+        <div class="note">{{description}} có chắc chắn muốn hủy dịch vụ dọn dẹp mã #{{id}}? </div>
+          <span><b>Vui lòng nhập lý do hủy đơn dịch vụ HMS:</b></span>
+          <div class="row">
+            <div *ngFor="let option of optionList; let i = index" class="col-md-6">
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" [(ngModel)]="option.isChecked"
+                (click)="checkService(option)">
+                <label class="form-check-label">
+                  {{ option.name }}
+                </label>
+              </div>
+            </div>
+            <div *ngIf="showTextArea">
+              <textarea [(ngModel)]="otherReason" placeholder="Nhập lý do khác"></textarea>
+            </div>
+        </div>
+      </div>
+      <button mat-button class="detail_btn" (click)="confirm(id)">Hủy đơn</button>
+      <button mat-button class="detail_btn" (click)="onNoClick()">Thoát</button>
+    </div>
+  </div>
+</div>
