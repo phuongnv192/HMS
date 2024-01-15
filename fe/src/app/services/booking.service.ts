@@ -41,20 +41,12 @@ export class BookingService {
     return this.http.get<any>(`${this.SERVICEADDON + id}`, { headers });
   }
 
-  getCleanerAvaiable(date: any, typeId: any, packageId: any): Observable<any> {
+  getCleanerAvaiable(body: any): Observable<any> {
     const headers = this.getHeadersWithToken();
-    return this.http.get<any>(
-      `${
-        this.CLEANERAVAIBLAE +
-        "?workDate=" +
-        date +
-        "&serviceTypeId=" +
-        typeId +
-        "&servicePackageId=" +
-        packageId
-      }`,
-      { headers }
-    );
+    // return this.http.get<any>(`${this.CLEANERAVAIBLAE}`, body, { headers });
+    const queryParams = new HttpParams({ fromObject: body });
+
+    return this.http.get<any>(`${this.CLEANERAVAIBLAE}`, { headers, params: queryParams });
   }
 
   getCleanerHistory(id: any): Observable<any> {

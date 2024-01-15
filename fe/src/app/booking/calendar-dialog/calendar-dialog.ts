@@ -11,6 +11,8 @@ export interface AddServiceDialogData {
   data: any;
   addonService: any;
   servicePick: any;
+  date: any;
+  time: any;
 }
 
 @Component({
@@ -60,7 +62,7 @@ export class CalendarDialog implements OnDestroy, OnInit {
   dataPick = [];
   dateValue: string;
   typeId: any;
-  dataPickTemp: any[];
+  dataPickTemp: any;
   calendarResult: any;
   workDate: any;
   minSelectableDate: NgbDate;
@@ -72,9 +74,9 @@ export class CalendarDialog implements OnDestroy, OnInit {
     @Inject(MAT_DIALOG_DATA) public data: CalendarDialogData,
     public dialog: MatDialog, private renderer: Renderer2,
     private ngZone: NgZone) {
-      const today = new Date();
-      this.minSelectableDate = new NgbDate(today.getFullYear(), today.getMonth() + 1, today.getDate());
-      this.maxSelectableDate = new NgbDate(today.getFullYear(), today.getMonth() + 2, today.getDate());
+    const today = new Date();
+    this.minSelectableDate = new NgbDate(today.getFullYear(), today.getMonth() + 1, today.getDate());
+    this.maxSelectableDate = new NgbDate(today.getFullYear(), today.getMonth() + 2, today.getDate());
   }
 
   getServiceTypeNames(): string[] {
@@ -99,7 +101,7 @@ export class CalendarDialog implements OnDestroy, OnInit {
       console.log("this.calendarResult", this.calendarResult);
       this.selectedServiceTypeId = this.calendarResult.serviceTypeId;
       this.selectedServicePackageId = this.calendarResult.servicePackageId;
-      this.pickDay = this.calendarResult.dateValue;      
+      this.pickDay = this.calendarResult.dateValue;
       this.selectedDate = this.convertStringToNgbDate(this.pickDay);
       this.loadData();
       this.hideDatePicker();
@@ -118,14 +120,14 @@ export class CalendarDialog implements OnDestroy, OnInit {
     });
   }
 
-  loadData(){
+  loadData() {
     this.data.type.forEach(type => {
       if (this.selectedServiceTypeId == type.serviceTypeName) {
         this.typeId = type.serviceTypeId;
       }
     });
 
-    this.pickServiceType = this.getId(this.data.type, this.selectedServiceTypeId);    
+    this.pickServiceType = this.getId(this.data.type, this.selectedServiceTypeId);
 
     this.data.type.forEach(element => {
       this.serviceTypes.push(element.serviceTypeName);
@@ -139,13 +141,13 @@ export class CalendarDialog implements OnDestroy, OnInit {
   }
 
   private convertStringToNgbDate(dateString: string): NgbDate | null {
-      const dateParts = dateString.split('-');  
-      const year = parseInt(dateParts[0], 10);
-      const month = parseInt(dateParts[1], 10);
-      const day = parseInt(dateParts[2], 10);
-      console.log("new NgbDate(year, month, day)", year, month, day);
-      
-      return new NgbDate(year, month, day);
+    const dateParts = dateString.split('-');
+    const year = parseInt(dateParts[0], 10);
+    const month = parseInt(dateParts[1], 10);
+    const day = parseInt(dateParts[2], 10);
+    console.log("new NgbDate(year, month, day)", year, month, day);
+
+    return new NgbDate(year, month, day);
   }
 
   selectedService(event: any) {
@@ -226,16 +228,44 @@ export class CalendarDialog implements OnDestroy, OnInit {
     this._subscription.unsubscribe();
   }
 
+  convertDateFormat(inputDate) {
+    // Chuyển đổi định dạng ngày: '01-10-2024' => '2024-01-10'
+    const parts = inputDate.split('-');
+    return `${parts[2]}-${parts[0]}-${parts[1]}`;
+  }
+
   pickCalendar() {
-    this.dataPickTemp =
-      [{
+    // const formattedDateList = this.dateArray.map(this.convertDateFormat);
+    let resultDatesSet = new Set();
+    let resultDatesSet2 = new Set();
+    this.dateArray.forEach(date => {
+      this.dataPick.forEach(item => {
+        if (date != item.workDate) {
+          resultDatesSet.add(date);
+        } else {
+          resultDatesSet2.add(date);
+        }
+      });
+    });
+    let resultDates = [...resultDatesSet];
+
+    console.log("formattedDateList AAAAAAAAAAAAAA", this.dateArray);
+    console.log("resultDates AAAAAAAAAAAAAA", resultDates);
+    console.log("dataPick AAAAAAAAAAAAAA", this.dataPick);
+    console.log("resultDatesSet2 CCCCCCCCCC", resultDatesSet2);
+
+    this.dataPickTemp = {
+      'schedule': [{
         servicePackageId: this.selectedServicePackageId,
         typeId: this.typeId,
         serviceTypeId: this.selectedServiceTypeId,
         schedule: this.dataPick,
         dateValue: this.dateValue,
         datePickerShow: this.datePickerShow + this.scheduleDescription
-      }];
+      }],
+      'another': resultDates
+    }
+
 
     if (this.dialogRef) {
       this.ngZone.run(() => {
@@ -290,7 +320,7 @@ export class CalendarDialog implements OnDestroy, OnInit {
 
   getListDay(id: any, month: any, date: string) {
     console.log("id", id, month, date);
-    
+
     this.dateArray = [];
     // Giả sử a là số ngày và b là đơn vị thời gian (tháng, ngày, năm)
     let a = 0;
@@ -327,6 +357,8 @@ export class CalendarDialog implements OnDestroy, OnInit {
         this.dateArray.push(formattedDate);
       }
     }
+    console.log(this.dateArray, "DATEARRAY");
+
   }
 
   convertDateToVietnameseFormat(dateStr) {
@@ -380,7 +412,7 @@ export class CalendarDialog implements OnDestroy, OnInit {
       } else if (this.pickServiceType == 3) {
         dateDay = this.getDay(this.datePicker)
         this.scheduleDescription = ' - Ngày ' + dateDay + ' hàng tháng'
-      } else if(this.pickServiceType == 1){
+      } else if (this.pickServiceType == 1) {
         this.scheduleDescription = ' - Lịch dọn hàng ngày'
       }
     }
@@ -388,7 +420,7 @@ export class CalendarDialog implements OnDestroy, OnInit {
 
   viewDetailinSchedule(showtime: any, index: any) {
     // this.selectedDate = showtime;
-    const existingIndex = this.dataPick.findIndex(item => item.index === index);    
+    const existingIndex = this.dataPick.findIndex(item => item.index === index);
     this.renderer.addClass(document.body, 'modal-open');
     this.dialogRefAddOn = this.dialog.open(AddServiceDialog, {
       width: '500px',
@@ -396,7 +428,9 @@ export class CalendarDialog implements OnDestroy, OnInit {
       data: {
         data: showtime,
         addonService: this.data.addonService,
-        servicePick: this.dataPick[existingIndex] ? this.dataPick[existingIndex] : []
+        servicePick: this.dataPick[existingIndex] ? this.dataPick[existingIndex] : [],
+        date: this.datePicker,
+        time: this.data.time
       },
       panelClass: ['add-service']
     });
@@ -404,30 +438,33 @@ export class CalendarDialog implements OnDestroy, OnInit {
     this.dialogRefAddOn.afterClosed().subscribe(result => {
       if (result) {
         const existingIndex = this.dataPick.findIndex(item => item.index === index);
+        console.log("result lần 1", result);
+        console.log("result lần 2", result.time);
+        console.log("result lần 3", result.service);
 
         if (existingIndex !== -1) {
           // Nếu đã tồn tại, thì cập nhật giá trị của mảng đó
-          if(result.length < 1){
+          if (result.length < 1) {
             this.dataPick.splice(existingIndex, 1);
           } else {
             this.dataPick[existingIndex] = {
               floorNumber: 1,
               workDate: showtime,
-              startTime: null,
+              startTime: result.time,
               endTime: null,
-              serviceAddOnIds: result,
+              serviceAddOnIds: result.service,
               index: index  // Giữ nguyên index để xác định mảng cần cập nhật
             };
           }
-          
+
         } else {
           // Nếu chưa tồn tại, thì thêm mảng mới vào this.dataPick
           this.dataPick.push({
             floorNumber: 1,
             workDate: showtime,
-            startTime: null,
+            startTime: result.time,
             endTime: null,
-            serviceAddOnIds: result,
+            serviceAddOnIds: result.service,
             index: index  // Gán index để xác định mảng
           });
         }
@@ -435,6 +472,8 @@ export class CalendarDialog implements OnDestroy, OnInit {
           this.selectedPick[index] = [...result];
         }
       }
+      console.log("this.dataPick", this.dataPick);
+
       // console.log('The dialog was closed');
       this.renderer.removeClass(document.body, 'modal-open');
       // this.dialogService.sendDataDialog(false);

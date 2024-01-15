@@ -56,6 +56,7 @@ export interface CalendarDialogData {
   pickDay: any;
   addonService: any;
   calendarResult: any;
+  time: any;
 }
 
 export interface PriceListDialogData {
@@ -190,6 +191,8 @@ export class BookingComponent implements OnInit {
   distance = '';
   numericDistance: number;
   falseDistance: boolean;
+  outputArray: any;
+  anotherArray: any;
   // serviceTypeIdTemp: any;
 
   onResize(event) {
@@ -375,7 +378,15 @@ export class BookingComponent implements OnInit {
     this.datePickerShow = "";
   }
 
+  convertDateFormat(inputDate) {
+    // Chuyển đổi định dạng ngày: '01-10-2024' => '2024-01-10'
+    const parts = inputDate.split('-');
+    return `${parts[2]}-${parts[0]}-${parts[1]}`;
+  }
+  
+
   pickCalendar(): void {
+    this.convertTime();
     // this.dialogService.sendDataDialog(true);
     this.renderer.addClass(document.body, "modal-open");
     this.dialogRef = this.dialog.open(CalendarDialog, {
@@ -386,11 +397,16 @@ export class BookingComponent implements OnInit {
         pickDay: this.pickDay,
         addonService: this.priceList,
         calendarResult: this.calendarResult,
+        time: this.isoStringST
       },
       panelClass: ["calendar-pick", "custom-margin"],
     });
 
-    this.dialogRef.afterClosed().subscribe((result) => {
+    this.dialogRef.afterClosed().subscribe((res) => {
+      let result = res.schedule;
+      let resDate = res.another.map(this.convertDateFormat);
+      console.log("RESDATE", resDate);
+      
       if (result) {
         this.calendarResult = result[0];
         if (result[0]) {
@@ -410,6 +426,31 @@ export class BookingComponent implements OnInit {
         );
         this.datePickerShow = result[0].datePickerShow;
         console.log("scheduleData", this.scheduleData);
+
+        this.outputArray = this.scheduleData.map(item => {
+          const startTime = new Date(item.startTime);
+          const endTime = new Date(startTime.getTime() + this.duration * 60 * 60 * 1000); // Thêm giờ
+
+          return {
+            startTime: format(startTime, "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"),
+            endTime: format(endTime, "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+          };
+        });
+
+        this.anotherArray = resDate.map(item => {
+          const startTime = new Date(`${item}T${this.isoStringST.substring(11, 16)}`);
+          const endTime = new Date(startTime.getTime() + this.duration * 60 * 60 * 1000); // Thêm giờ
+
+          return {
+            startTime: format(startTime, "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"),
+            endTime: format(endTime, "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+          };
+        })
+        console.log("outputArray", this.outputArray);
+        console.log("anotherArray", this.anotherArray);
+        this.outputArray.push(...this.anotherArray);
+        console.log("outputArray 2222222222", this.outputArray);
+
       } else {
         console.log();
       }
@@ -448,11 +489,14 @@ export class BookingComponent implements OnInit {
   }
 
   pickCleaner() {
+    let body = {
+      "workingTimes": this.outputArray
+  }
     // this.dialogService.sendDataDialog(true);
     if (this.cleanerNum < 4) {
       if (this.selectedTimeType == "Sử dụng 1 lần" && this.dateValue) {
         this.bookingServicee
-          .getCleanerAvaiable(this.dateValue, "", "")
+          .getCleanerAvaiable(body)
           .subscribe((item) => {
             this.dataCleaner = item.data;
             this.renderer.addClass(document.body, "modal-open");
@@ -481,7 +525,7 @@ export class BookingComponent implements OnInit {
           "Định kỳ" && this.pickDay && this.typeId && this.servicePackageId)
       ) {
         this.bookingServicee
-          .getCleanerAvaiable(this.pickDay, this.typeId, this.servicePackageId)
+          .getCleanerAvaiable(body)
           .subscribe((item) => {
             this.dataCleaner = item.data;
             this.renderer.addClass(document.body, "modal-open");
@@ -777,7 +821,7 @@ export class BookingComponent implements OnInit {
       console.log("this.cleanerPrice", this.cleanerPrice);
       console.log("body.distanceprice", body.distanceprice);
       console.log("body.totalAmount", this.totalAmount);
-      
+
       this.renderer.addClass(document.body, "modal-open");
       this.billDialogRef = this.dialog.open(BillBookingDialog, {
         width: "820px",
@@ -921,9 +965,9 @@ export class BookingComponent implements OnInit {
           // Chuyển đổi thành số
           this.numericDistance = parseFloat(numericString);
           console.log("numericDistance", this.numericDistance);
-          
+
           // chặn trên 15km 
-          if(this.numericDistance > 15){
+          if (this.numericDistance > 15) {
             this.falseDistance = true;
           }
           console.log(res);
