@@ -153,7 +153,7 @@
                       aria-describedby="timeType-help" title="Loại hình thức thời gian">
                       <option *ngFor="let time of timeTypes" [value]="time">{{ time }}</option>
                     </select>
-                    <div class="input-group">
+                    <div class="input-group"  *ngIf="selectedTimeType == 'Sử dụng 1 lần'">
                       <p style="width: 20%;">Giờ bắt đầu(*): </p>
                       <div>
                         <!-- Sử dụng trường input kiểu số -->

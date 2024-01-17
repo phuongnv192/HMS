@@ -48,24 +48,25 @@ export class AddServiceDialog implements OnDestroy, OnInit {
     this.date = this.data.data;
     this.listService = this.data.addonService;
     this.selectedServiceList = this.data.servicePick;
-    this._inTime =  this.data.servicePick.startTime == this.data.time ? this.reverseDateFormat(this.data.servicePick.startTime) : this.reverseDateFormat(this.data.time);
-    console.log(".this.data.servicePick", this.data.servicePick);
-    console.log("this.data.time", this.data.time);
-    console.log("this.data.data", this.data.data);
+    this._inTime = this.data.servicePick.startTime && this.reverseDateFormat(this.data.servicePick.startTime) != this.data.time ? this.reverseDateFormat(this.data.servicePick.startTime) : this.data.time;
+    console.log("COMPARE", this.reverseDateFormat(this.data.servicePick.startTime), this.data.time);
+    console.log("this.data.servicePick.startTime", this.data.servicePick.startTime);
+    console.log("this.reverseDateFormat(this.data.servicePick.startTime)", this.reverseDateFormat(this.data.servicePick.startTime));
 
     if (this.data.servicePick && this.selectedServiceList.serviceAddOnIds) {
-      console.log("this.selectedServiceList", this.selectedServiceList);
-
       this.data.addonService.forEach(val => {
         let checkedValue = false;
         if (this.selectedServiceList && this.selectedServiceList.serviceAddOnIds.includes(val.parent.id)) {
           checkedValue = true;
+          this.checkService(val.parent.name, val.parent.id);
+
         }
         this.parentService.push({
           name: val,
           checked: checkedValue,
         });
       });
+      
 
     } else {
       this.data.addonService.forEach(val => {
@@ -214,29 +215,21 @@ export class AddServiceDialog implements OnDestroy, OnInit {
     );
   }
 
-  convertTime() {
-    console.log(this._inTime, "this._inTime");
-    console.log(this.date, "AAAAAAAAAAA");
-    
+  convertTime() {    
     const combinedDateTimeString = `${this.date} ${this._inTime}`;
   
     // Sử dụng thư viện date-fns để parse chuỗi ngày giờ
     const dateTimeObject = parse(combinedDateTimeString, 'MM-dd-yyyy HH:mm', new Date());
-  
-    console.log(dateTimeObject, "dateTimeObject");
-  
+    
     // Chuyển định dạng ngày thành ISO 8601
     const isoString = format(dateTimeObject, "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-    console.log(isoString, "isoString");
     
     // Gán giá trị cho isoStringST
     this.isoStringST = isoString;
 
   }
 
-  reverseDateFormat(inputDate: string): string {
-    console.log("inputDate",inputDate);
-    
+  reverseDateFormat(inputDate: string): string {    
     const inputDateTime = new Date(inputDate);
 
     // Kiểm tra xem ngày giờ có hợp lệ không

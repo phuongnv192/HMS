@@ -44,13 +44,11 @@ export class BookingService {
   getCleanerAvaiable(body: any): Observable<any> {
     const headers = this.getHeadersWithToken();
     // return this.http.get<any>(`${this.CLEANERAVAIBLAE}`, body, { headers });
-    const queryParams = new HttpParams({ fromObject: body });
-
-    return this.http.get<any>(`${this.CLEANERAVAIBLAE}`, { headers, params: queryParams });
+    return this.http.post<any>(`${this.CLEANERAVAIBLAE}`, body, { headers });
   }
 
   getCleanerHistory(id: any): Observable<any> {
-    const headers = this.getHeadersWithToken();
+    const headers = this.getHeadersWithToken(); 
     return this.http.get<any>(`${this.CLEANERPICKDETAIL + id}`, { headers });
   }
 

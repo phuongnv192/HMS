@@ -6,6 +6,7 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dial
 import { addDays, addWeeks, format, addMonths, isBefore, isAfter, subMonths } from 'date-fns';
 import { NgbDate, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { AddServiceDialog } from './add-service-dialog/add-service-dialog';
+import { ToastrService } from 'ngx-toastr';
 
 export interface AddServiceDialogData {
   data: any;
@@ -67,12 +68,14 @@ export class CalendarDialog implements OnDestroy, OnInit {
   workDate: any;
   minSelectableDate: NgbDate;
   maxSelectableDate: NgbDate;
+  dataPick2: any[];
 
   constructor(
     public dialogRef: MatDialogRef<CalendarDialog>,
     public dialogRefAddOn: MatDialogRef<AddServiceDialog>,
     @Inject(MAT_DIALOG_DATA) public data: CalendarDialogData,
     public dialog: MatDialog, private renderer: Renderer2,
+    private toastr: ToastrService,
     private ngZone: NgZone) {
     const today = new Date();
     this.minSelectableDate = new NgbDate(today.getFullYear(), today.getMonth() + 1, today.getDate());
@@ -98,7 +101,6 @@ export class CalendarDialog implements OnDestroy, OnInit {
   ngOnInit(): void {
     this.calendarResult = this.data.calendarResult;
     if (this.calendarResult) {
-      console.log("this.calendarResult", this.calendarResult);
       this.selectedServiceTypeId = this.calendarResult.serviceTypeId;
       this.selectedServicePackageId = this.calendarResult.servicePackageId;
       this.pickDay = this.calendarResult.dateValue;
@@ -145,7 +147,6 @@ export class CalendarDialog implements OnDestroy, OnInit {
     const year = parseInt(dateParts[0], 10);
     const month = parseInt(dateParts[1], 10);
     const day = parseInt(dateParts[2], 10);
-    console.log("new NgbDate(year, month, day)", year, month, day);
 
     return new NgbDate(year, month, day);
   }
@@ -181,34 +182,6 @@ export class CalendarDialog implements OnDestroy, OnInit {
 
   selectedPackage(event: any) {
     this.dataPick = [];
-    // this.servicePackages = [];
-    // // this.dateArray = [];
-    // // this.selectedDate = null;
-    // // this.showDatePicker = true;
-    // this.datePickerShow = false;
-
-    // this.pickServiceType = this.getId(this.data.type, this.selectedServiceTypeId);
-    // this.packagesTemp = this.data.type[this.pickServiceType - 1].servicePackages;
-
-    // this.packagesTemp.forEach(element => {
-    //   this.servicePackages.push(
-    //     {
-    //       title: element.servicePackageName + ' - ' + element.unit,
-    //       value:  element.servicePackageId
-    //     }
-    // );
-    // });
-
-    // if (this.pickServiceType == 1 || this.pickServiceType == 3) {
-    //   this.selectedTimeType = true;
-    // }
-
-    // this.data.type.forEach(type => {
-    //   if(this.selectedServiceTypeId == type.serviceTypeName){
-    //     this.typeId = type.serviceTypeId;
-    //   }
-    // })
-    // this.hideDatePicker();
 
   }
 
@@ -234,25 +207,18 @@ export class CalendarDialog implements OnDestroy, OnInit {
     return `${parts[2]}-${parts[0]}-${parts[1]}`;
   }
 
-  pickCalendar() {
+  pickCalendar() {    
     // const formattedDateList = this.dateArray.map(this.convertDateFormat);
-    let resultDatesSet = new Set();
-    let resultDatesSet2 = new Set();
+    let resultDates = this.dateArray;
+
     this.dateArray.forEach(date => {
       this.dataPick.forEach(item => {
-        if (date != item.workDate) {
-          resultDatesSet.add(date);
-        } else {
-          resultDatesSet2.add(date);
-        }
+        if (date == item.workDate) {
+          resultDates = resultDates.filter(date => !date);
+        } 
       });
     });
-    let resultDates = [...resultDatesSet];
-
-    console.log("formattedDateList AAAAAAAAAAAAAA", this.dateArray);
-    console.log("resultDates AAAAAAAAAAAAAA", resultDates);
-    console.log("dataPick AAAAAAAAAAAAAA", this.dataPick);
-    console.log("resultDatesSet2 CCCCCCCCCC", resultDatesSet2);
+    resultDates  = this.dateArray.filter(x => !this.dataPick.map(x => x.workDate).includes(x))
 
     this.dataPickTemp = {
       'schedule': [{
@@ -263,7 +229,8 @@ export class CalendarDialog implements OnDestroy, OnInit {
         dateValue: this.dateValue,
         datePickerShow: this.datePickerShow + this.scheduleDescription
       }],
-      'another': resultDates
+      'another': resultDates,
+      'time': this._inTime
     }
 
 
@@ -357,8 +324,6 @@ export class CalendarDialog implements OnDestroy, OnInit {
         this.dateArray.push(formattedDate);
       }
     }
-    console.log(this.dateArray, "DATEARRAY");
-
   }
 
   convertDateToVietnameseFormat(dateStr) {
@@ -396,7 +361,6 @@ export class CalendarDialog implements OnDestroy, OnInit {
 
   hideDatePicker() {
     if (this.selectedDate) {
-      console.log("selectedDate", this.selectedDate);
       const jsDate = new Date(this.selectedDate.year, this.selectedDate.month - 1, this.selectedDate.day);
       const formattedDate = format(jsDate, 'MM/dd/yyyy');
       this.showDatePicker = false; // Ẩn datepicker  }
@@ -420,64 +384,67 @@ export class CalendarDialog implements OnDestroy, OnInit {
 
   viewDetailinSchedule(showtime: any, index: any) {
     // this.selectedDate = showtime;
-    const existingIndex = this.dataPick.findIndex(item => item.index === index);
-    this.renderer.addClass(document.body, 'modal-open');
-    this.dialogRefAddOn = this.dialog.open(AddServiceDialog, {
-      width: '500px',
-      maxHeight: '50%',
-      data: {
-        data: showtime,
-        addonService: this.data.addonService,
-        servicePick: this.dataPick[existingIndex] ? this.dataPick[existingIndex] : [],
-        date: this.datePicker,
-        time: this.data.time
-      },
-      panelClass: ['add-service']
-    });
-
-    this.dialogRefAddOn.afterClosed().subscribe(result => {
-      if (result) {
-        const existingIndex = this.dataPick.findIndex(item => item.index === index);
-        console.log("result lần 1", result);
-        console.log("result lần 2", result.time);
-        console.log("result lần 3", result.service);
-
-        if (existingIndex !== -1) {
-          // Nếu đã tồn tại, thì cập nhật giá trị của mảng đó
-          if (result.length < 1) {
-            this.dataPick.splice(existingIndex, 1);
+    if(this._inTime && !this.c_time){
+      const existingIndex = this.dataPick.findIndex(item => item.index === index);
+      this.renderer.addClass(document.body, 'modal-open');
+      this.dialogRefAddOn = this.dialog.open(AddServiceDialog, {
+        width: '500px',
+        maxHeight: '50%',
+        data: {
+          data: showtime,
+          addonService: this.data.addonService,
+          servicePick: this.dataPick[existingIndex] ? this.dataPick[existingIndex] : [],
+          date: this.datePicker,
+          time: this._inTime
+        },
+        panelClass: ['add-service']
+      });
+  
+      this.dialogRefAddOn.afterClosed().subscribe(result => {
+        if (result) {
+          const existingIndex = this.dataPick.findIndex(item => item.index === index);
+          if (existingIndex !== -1) {
+            // Nếu đã tồn tại, thì cập nhật giá trị của mảng đó
+            if (result.length < 1) {
+              this.dataPick.splice(existingIndex, 1);
+            } else {
+              this.dataPick[existingIndex] = {
+                floorNumber: 1,
+                workDate: showtime,
+                startTime: result.time,
+                endTime: null,
+                serviceAddOnIds: result.service,
+                index: index  // Giữ nguyên index để xác định mảng cần cập nhật
+              };
+            }
+  
           } else {
-            this.dataPick[existingIndex] = {
+            // Nếu chưa tồn tại, thì thêm mảng mới vào this.dataPick
+            this.dataPick.push({
               floorNumber: 1,
               workDate: showtime,
               startTime: result.time,
               endTime: null,
               serviceAddOnIds: result.service,
-              index: index  // Giữ nguyên index để xác định mảng cần cập nhật
-            };
+              index: index  // Gán index để xác định mảng
+            });
           }
-
-        } else {
-          // Nếu chưa tồn tại, thì thêm mảng mới vào this.dataPick
-          this.dataPick.push({
-            floorNumber: 1,
-            workDate: showtime,
-            startTime: result.time,
-            endTime: null,
-            serviceAddOnIds: result.service,
-            index: index  // Gán index để xác định mảng
-          });
+          if (this.selectedPick) {
+            this.selectedPick[index] = [...result];
+          }
         }
-        if (this.selectedPick) {
-          this.selectedPick[index] = [...result];
-        }
-      }
-      console.log("this.dataPick", this.dataPick);
-
-      // console.log('The dialog was closed');
-      this.renderer.removeClass(document.body, 'modal-open');
-      // this.dialogService.sendDataDialog(false);
-    });
+        console.log("this.dataPick", this.dataPick);
+  
+        // console.log('The dialog was closed');
+        this.renderer.removeClass(document.body, 'modal-open');
+        // this.dialogService.sendDataDialog(false);
+      });
+    } else {
+      this.toastr.error(
+        "Vui lòng nhập thông tin thời gian làm việc"
+      );
+    }
+    
   }
 
   ValidateExpDate(_val: any, event) {

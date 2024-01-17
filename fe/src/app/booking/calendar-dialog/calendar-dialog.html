@@ -25,6 +25,18 @@
                     <option *ngFor="let package of servicePackages" [value]="package">{{ package }}</option>
                   </select>
                 </div>
+                <div class="input-group">
+                  <p>Giờ bắt đầu(*): </p>
+                  <div>
+                    <!-- Sử dụng trường input kiểu số -->
+                    <input type="tel" name="time" id="time" [class.red_border]="c_time"
+                      [class.red_border_no_background]="c_time && (_inTime.length === 0 || _inTime.trim().length === 0)"
+                      (blur)="blurExpDate(time)" pattern="\d*" placeholder="08:30" [(ngModel)]="_inTime" #time
+                      maxlength="5" (input)="ValidateExpDate(time, $event)" style="padding: 0.5rem !important" />
+                  </div>
+                  <div *ngIf="c_time" style="width: 100%;" class="error">Vui lòng nhập thời gian trong khoảng 8h
+                    sáng tới trước 8h tối.</div>
+                </div>
                 <!-- <div class="input-group">
                   <p>Giờ bắt đầu(*): </p>
                   <div>
