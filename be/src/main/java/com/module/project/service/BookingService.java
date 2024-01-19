@@ -220,6 +220,7 @@ public class BookingService {
                 .totalBookingPrice(bookingTransaction.getTotalBookingPrice())
                 .totalBookingCleaner(bookingTransaction.getTotalBookingCleaner())
                 .totalBookingDate(bookingTransaction.getTotalBookingDate())
+                .cleaners(booking.getCleaners().stream().toList())
                 .createDate(booking.getCreateDate())
                 .updateDate(booking.getUpdateDate())
                 .status(bookingTransaction.getStatus())

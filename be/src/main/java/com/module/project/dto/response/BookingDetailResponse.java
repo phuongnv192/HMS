@@ -2,6 +2,7 @@ package com.module.project.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.module.project.model.BookingSchedule;
+import com.module.project.model.Cleaner;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -32,6 +33,7 @@ public class BookingDetailResponse {
     private double totalBookingPrice;
     private int totalBookingCleaner;
     private float totalBookingDate;
+    private List<Cleaner> cleaners;
     private Date createDate;
     private Date updateDate;
     private String status;
