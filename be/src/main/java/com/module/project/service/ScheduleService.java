@@ -88,7 +88,10 @@ public class ScheduleService {
         }
 
         List<ServiceAddOn> serviceAddOns = serviceAddOnRepository.findAllByIdInAndStatus(request.getServiceAddOnIds(), Constant.COMMON_STATUS.ACTIVE);
-        Date actualEndTime = calculateActualEndTime(request.getEndTime(), serviceAddOns);
+        Calendar endTime = Calendar.getInstance();
+        endTime.setTime(request.getStartTime());
+        endTime.add(Calendar.HOUR_OF_DAY, floorInfoEnum.getDuration());
+        Date actualEndTime = calculateActualEndTime(endTime.getTime(), serviceAddOns);
 
         boolean isAutoChoosing = request.getCleanerIds() == null;
         long totalPriceFloorAre = floorInfoEnum.getPrice() * request.getFloorNumber();
@@ -282,10 +285,13 @@ public class ScheduleService {
                 .stream().collect(Collectors.toMap(ServiceAddOn::getId, Function.identity()));
         List<BookingSchedule> bookingSchedules = new ArrayList<>();
         double totalBookingPrice = 0;
+        Calendar endTime = Calendar.getInstance();
+        endTime.setTime(request.getStartTime());
+        endTime.add(Calendar.HOUR_OF_DAY, floorInfoEnum.getDuration());
         if (request.getBookingSchedules() != null && !request.getBookingSchedules().isEmpty()) {
             for (BookingScheduleRequest scheduleRequest : request.getBookingSchedules()) {
                 List<ServiceAddOn> addOnList = getAddOnFromAll(serviceAddOns, scheduleRequest.getServiceAddOnIds());
-                Date actualEndTime = calculateActualEndTime(scheduleRequest.getEndTime(), addOnList);
+                Date actualEndTime = calculateActualEndTime(endTime.getTime(), addOnList);
                 long totalSchedulePrice = floorInfoEnum.getPrice() * scheduleRequest.getFloorNumber();
 //                totalSchedulePrice += addOnList.stream().mapToLong(ServiceAddOn::getPrice).sum();
                 BookingSchedule item = BookingSchedule.builder()
@@ -306,7 +312,7 @@ public class ScheduleService {
         }
 
         List<ServiceAddOn> addOnList = getAddOnFromAll(serviceAddOns, request.getServiceAddOnIds());
-        Date actualEndTime = calculateActualEndTime(request.getEndTime(), addOnList);
+        Date actualEndTime = calculateActualEndTime(endTime.getTime(), addOnList);
         long totalPriceFloorAre = floorInfoEnum.getPrice() * request.getFloorNumber();
 //        long totalSchedulePrice = totalPriceFloorAre + addOnList.stream().mapToLong(ServiceAddOn::getPrice).sum();
         for (LocalDate localDate : periodDate) {
