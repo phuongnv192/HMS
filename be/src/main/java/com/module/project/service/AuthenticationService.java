@@ -89,6 +89,7 @@ public class AuthenticationService {
         saveUserToken(user, jwtToken);
         return HMSUtil.buildResponse(ResponseCode.SUCCESS, AuthenticationResponse.builder()
                 .token(jwtToken)
+                .userId(user.getId())
                 .build());
     }
 
