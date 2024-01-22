@@ -2,6 +2,7 @@ import { Component, OnInit, Renderer2 } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { BookingDetailDialog } from 'src/app/employee/schedule/booking-detail-dialog/booking-detail-dialog';
 import { BookingService } from 'src/app/services/booking.service';
+import { CleanerService } from 'src/app/services/cleaner.service';
 import { CustomerService } from 'src/app/services/customer.service';
 
 export interface BookingDetailNoteData {
@@ -30,26 +31,43 @@ export class ManagerScheduleComponent implements OnInit {
   page: any = 0
   size: any = 10
   dataCleaner: any;
+  bookingName: any;
+  bookingPhone:any;
+  status:any;
+  
   constructor(
     public dialog: MatDialog, private renderer: Renderer2,
     // private dialogService: DialogService
     public dialogRef: MatDialogRef<BookingDetailDialog>,
     private bookingService: BookingService,
     private customerService: CustomerService,
+    private cleanerService: CleanerService
   ) { }
 
   ngOnInit() {
       
-      this.customerService.getListSchedule().subscribe(_res => {
-        if(_res && _res.data) {
-          this.data = _res.data.filter(a=> a.status != 'DONE');
-        }
-      })
+    this.cleanerService
+    .getListBooking(this.page, this.size)
+    .subscribe((res) => {
+      if (res && res.data) {
+        console.log("Thông tin danh sách booking", res);
+        console.log("Thông tin danh sách booking data", res.data);
+        this.data = res.data;
+      }
+    });
     
   }
 
-  search() {
-
+  search(bookingName:any, bookingPhone: any, status:any) {
+    this.cleanerService
+    .getListBooking(this.page, this.size, bookingName, bookingPhone, status)
+    .subscribe((res) => {
+      if (res && res.data) {
+        console.log("Thông tin danh sách booking", res);
+        console.log("Thông tin danh sách booking data", res.data);
+        this.data = res.data;
+      }
+    });
   }
 
   pickCleaner(bookingId: any) {

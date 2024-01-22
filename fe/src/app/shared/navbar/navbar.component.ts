@@ -45,9 +45,7 @@ export class NavbarComponent implements OnInit {
     } else if (this.managerNavbar) {
       this.listTitles = ROUTES2.filter((listTitle) => listTitle);
     } else if (this.leadNavbar) {
-      this.listTitles = ROUTES4.filter((listTitle) => listTitle);
-      console.log("this.listTitles", this.listTitles);
-      
+      this.listTitles = ROUTES4.filter((listTitle) => listTitle);      
     } else if (this.adminNavbar) {
       this.listTitles = ROUTES3.filter((listTitle) => listTitle);
     }

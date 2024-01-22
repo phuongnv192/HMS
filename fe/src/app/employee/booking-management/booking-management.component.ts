@@ -5,6 +5,7 @@ import { ToastrService } from "ngx-toastr";
 import { AuthService } from "src/app/services/auth.service";
 import { BookingService } from "src/app/services/booking.service";
 import { AddServiceManagementDialog } from "./add-service/add-service-dialog";
+import { CleanerService } from "src/app/services/cleaner.service";
 
 export interface addOnServiceData {
   data: any;
@@ -29,9 +30,12 @@ export class BookingManagementComponent implements OnInit {
   priceList = [];
   parentService: any;
   childrenService: any;
+  page = 0;
+  size = 20;
   constructor(
     private authService: AuthService,
     private bookingService: BookingService,
+    private cleanerService: CleanerService,
     private route: ActivatedRoute,
     private router: Router,
     public dialog: MatDialog, private renderer: Renderer2,
@@ -41,6 +45,16 @@ export class BookingManagementComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+
+    this.cleanerService
+    .getListBooking(this.page, this.size)
+    .subscribe((res) => {
+      if (res && res.data) {
+        console.log("Thông tin danh sách booking", res);
+        console.log("Thông tin danh sách booking data", res.data);
+        
+      }
+    });
     // let id = this.route.snapshot.paramMap.get("id");
     this.authService.getUserInfor().subscribe(data => {
       this.leadId = data.data.id;
