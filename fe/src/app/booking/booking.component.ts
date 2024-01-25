@@ -15,6 +15,7 @@ import {
   isBefore,
   parse,
   parseISO,
+  set,
   subMonths,
 } from "date-fns";
 // import { DialogService } from 'src/app/services/dialog.service';
@@ -31,6 +32,7 @@ import { ToastrService } from "ngx-toastr";
 import { BillBookingDialog } from "./bill-booking/bill-booking-dialog";
 import { CleanerRateDialog } from "./cleaner-rate-dialog/cleaner-rate-dialog";
 import { MapGeocoder } from "@angular/google-maps";
+import { DatePipe } from "@angular/common";
 
 export interface DialogData {
   data: string;
@@ -298,15 +300,12 @@ export class BookingComponent implements OnInit {
       this.showDatePicker = false; // Ẩn datepicker  }
       this.datePicker = formattedDate;
       this.datePickerShow = this.convertDateToVietnameseFormat(formattedDate);
-      console.log("selectedDate", this.selectedDate);
       const dateObject = parse(`${formattedDate2} ${this._inTime}`, 'yyyy-MM-dd HH:mm', new Date());
 
       // Định dạng lại theo "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
       const startTime = format(dateObject, "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
       const endTime = format(addHours(dateObject, this.duration), "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 
-      // const startTime = new Date(startTime);
-      // const endTime = new Date(startTime.getTime() + this.duration * 60 * 60 * 1000); // Thêm giờ
       this.outputArray = [
         {
           from: startTime,
@@ -436,9 +435,9 @@ export class BookingComponent implements OnInit {
           result[0].schedule
         );
         this.datePickerShow = result[0].datePickerShow;
-        console.log("scheduleData", this.scheduleData);
 
         this.outputArray = this.scheduleData.map(item => {
+          
           const startTime = new Date(item.startTime);
           const endTime = new Date(startTime.getTime() + this.duration * 60 * 60 * 1000); // Thêm giờ
 
@@ -448,8 +447,19 @@ export class BookingComponent implements OnInit {
           };
         });
 
+        // Gán giá trị cho isoStringST
         this.anotherArray = resDate.map(item => {
-          const startTime = new Date(`${item}T${this.isoStringST.substring(11, 16)}`);
+          const date = new DatePipe('en-US').transform(item, 'MM-dd-yyyy')!;
+          
+          const combinedDateTimeString = `${date} ${res.time}`;
+  
+          // Sử dụng thư viện date-fns để parse chuỗi ngày giờ
+          const dateTimeObject = parse(combinedDateTimeString, 'MM-dd-yyyy HH:mm', new Date());
+          
+          // Chuyển định dạng ngày thành ISO 8601
+          const isoString = format(dateTimeObject, "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+          
+          const startTime = new Date(isoString);
           const endTime = new Date(startTime.getTime() + this.duration * 60 * 60 * 1000); // Thêm giờ
 
           return {
@@ -552,7 +562,6 @@ export class BookingComponent implements OnInit {
                 this.cleanerList = result.listPickDataName.join(", ");
               }
               this.renderer.removeClass(document.body, "modal-open");
-              // this.dialogService.sendDataDialog(false);
             });
           });
       } else {
@@ -760,28 +769,37 @@ export class BookingComponent implements OnInit {
   }
 
   convertTime() {
-    const timeObject = parse(this._inTime, "HH:mm", new Date());
-
-    // Lấy ngày hiện tại
-    const currentDate = new Date();
-
-    // Thiết lập giờ và phút cho ngày hiện tại
-    currentDate.setHours(timeObject.getHours());
-    currentDate.setMinutes(timeObject.getMinutes());
-
+    const jsDate = new Date(this.selectedDate.year, this.selectedDate.month - 1, this.selectedDate.day);
+    const formattedDate = format(jsDate, 'MM/dd/yyyy');
+    const combinedDateTimeString = `${formattedDate} ${this._inTime}`;    
+    // Sử dụng thư viện date-fns để parse chuỗi ngày giờ
+    const dateTimeObject = parse(combinedDateTimeString, 'MM-dd-yyyy HH:mm', new Date());
     // Chuyển định dạng ngày thành ISO 8601
-    this.isoStringST = format(currentDate, "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-
-    // Thêm khoảng thời gian vào ngày hiện tại
-    const newDate = addHours(currentDate, this.duration);
-    this.isMorning = isBefore(newDate, parse("12:00", "HH:mm", new Date()));
-
-    // Chuyển định dạng ngày mới thành ISO 8601
-    this.isoStringET = format(newDate, "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+    const isoString = format(dateTimeObject, "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+    // Gán giá trị cho isoStringST
+    this.isoStringST = isoString;
+    const fromDateString = "2024-01-27T08:00:00.000Z"; // Đổi thành giá trị từ biến "from"
+    const fromDate = parse(fromDateString, "yyyy-MM-dd'T'HH:mm:ss.SSSXXX", new Date());
+    // Xác định nếu thời gian là sáng hay tối
+    const startOfDay = set(fromDate, { hours: 12, minutes: 0, seconds: 0, milliseconds: 0 });
+    const endOfDay = set(fromDate, { hours: 11, minutes: 59, seconds: 59, milliseconds: 999 });
+    
+    if (isBefore(fromDate, startOfDay)) {
+      console.log("Thời gian trước 12h trưa");
+      this.isMorning = true;
+    } else if (isAfter(fromDate, endOfDay)) {
+      console.log("Thời gian sau 12h trưa");
+      this.isMorning = false;
+    }
   }
 
   Booking() {
-    this.convertTime();
+    // this.convertTime();
+    console.log("Thời gian sau 12h trưa", this.outputArray[0].from);
+
+    if(!this.cleanerIds && this.cleanerIds.length < 1){
+      this.cleanerIds = null;
+    }
     let body = {
       hostName: this.account_name,
       hostPhone: this.phone_number,
@@ -797,8 +815,8 @@ export class BookingComponent implements OnInit {
       servicePackageId: this.servicePackageId,
       serviceAddOnIds: this.listAdvanceServiceId,
       section: this.isMorning ? "MOR" : "EVE",
-      startTime: this.isoStringST,
-      endTime: this.isoStringET,
+      startTime: this.outputArray[0].from,
+      endTime: this.outputArray[0].to,
       workDate: this.pickDay ? this.pickDay : this.dateValue,
       dayOfTheWeek: null,
       note: this.note ? this.note : "",

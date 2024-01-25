@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input, OnInit, Renderer2 } from "@angular/core";
 import { Router, NavigationEnd, NavigationStart } from "@angular/router";
 import { Location, PopStateEvent } from "@angular/common";
 import { ROUTES1 } from "../sidebar/sidebar.component";
@@ -7,6 +7,8 @@ import { ROUTES3 } from "../sidebar/sidebar.component";
 import { ROUTES4 } from "../sidebar/sidebar.component";
 import { AuthService } from "src/app/services/auth.service";
 import { CacheService } from "src/app/services/cache.service";
+import { CleanerRateDialog } from "src/app/booking/cleaner-rate-dialog/cleaner-rate-dialog";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 
 @Component({
   selector: "app-navbar-customer",
@@ -33,7 +35,10 @@ export class NavbarCustomerComponent implements OnInit {
     public location: Location,
     private router: Router,
     private authService: AuthService,
-    private cacheService: CacheService
+    private cacheService: CacheService,
+    public dialog: MatDialog, private renderer: Renderer2,
+    // private dialogService: DialogService
+    public ratedialogRef: MatDialogRef<CleanerRateDialog>,
   ) { }
 
   ngOnInit() {
@@ -113,5 +118,24 @@ export class NavbarCustomerComponent implements OnInit {
     this.customerNavbar = false;
     this.leadNavbar = false;
     this.guestNavbar = true;
+  }
+
+
+  review(id: any){
+    this.renderer.addClass(document.body, 'modal-open');
+    this.ratedialogRef = this.dialog.open(CleanerRateDialog, {
+      width: '500px',
+      maxHeight: '65%',
+      data: {
+        data: id,
+      },
+      panelClass: ['cleaner-review']
+    });
+
+    this.ratedialogRef.afterClosed().subscribe(result => {
+      // console.log('The dialog was closed');
+      this.renderer.removeClass(document.body, 'modal-open');
+      // this.dialogService.sendDataDialog(false);
+    });
   }
 }

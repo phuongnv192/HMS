@@ -102,7 +102,7 @@
               class="btn btn-primary btn-pay" (click)="viewDetail(infor.bookingId)">
              Xem chi tiết
             </button>
-            <button *ngIf="infor.status != 'DONE' && infor.status != 'CANCELLED'" style="height: 35px; font-size: 11px; display: inline;"
+            <button *ngIf="infor.status == 'CONFIRMED' || infor.status == 'RECEIVED'" style="height: 35px; font-size: 11px; display: inline;"
             class="btn btn-danger btn-pay" (click)="cancel(infor.bookingId)">
             Hủy đơn
           </button>

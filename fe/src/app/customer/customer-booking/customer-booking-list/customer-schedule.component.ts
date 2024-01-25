@@ -86,6 +86,12 @@ export class CustomerScheduleComponent implements OnInit {
   }
 
   viewDetailinSchedule(data: any) {
+    let type = 'day';
+    if(data.servicePackageName){
+      type = 'schedule';
+    } else {
+      type = 'day';
+    }
     this.renderer.addClass(document.body, 'modal-open');
     this.dialogRef = this.dialog.open(BookingDetailDialog, {
       width: '820px',
@@ -93,6 +99,8 @@ export class CustomerScheduleComponent implements OnInit {
       height: '85%',
       data: {
         data: data,
+        dataCleaner: data.cleaners,
+        type: type
       },
       panelClass: ['view-detail']
     });

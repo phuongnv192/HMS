@@ -62,9 +62,6 @@ export class CustomerHistoryComponent implements OnInit {
   }
 
   viewDetailinSchedule(detail: any) {
-    // this.dialogService.sendDataDialog(true);
-    console.log('detail', detail); // Kiểm tra xem document.body có tồn tại hay không
-    // if (this.dialogRef) {
       let type = 'day';
       if(detail.servicePackageName){
         type = 'schedule';

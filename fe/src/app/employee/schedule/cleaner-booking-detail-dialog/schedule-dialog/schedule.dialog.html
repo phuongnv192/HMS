@@ -61,7 +61,7 @@
             class="btn btn-primary btn-pay" (click)="complete(selectedList.scheduleId)">
             Hoàn thành đơn
           </button> -->
-            <button style="height: 35px; font-size: 11px; display: inline;"
+            <button *ngIf="data.status == 'CONFIRMED' || data.status == 'RECEIVED'" style="height: 35px; font-size: 11px; display: inline;"
             class="btn btn-danger btn-pay" (click)="cancel(selectedList.scheduleId)">
             Hủy đơn
           </button>

@@ -1,4 +1,4 @@
-::ng-deep .pick-cleaner mat-dialog-container {
+::ng-deep .cleaner-review mat-dialog-container {
   padding: 0 !important;
   overflow-x: visible !important;
   overflow-y: visible !important;
@@ -10,7 +10,7 @@
 
 
 
-::ng-deep .pick-cleaner .mat-dialog-actions {
+::ng-deep .cleaner-review .mat-dialog-actions {
   padding: 0;
 }
 
@@ -198,7 +198,7 @@ h6 {
   ::ng-deep .modal-open .cdk-overlay-container {
     display: block;
   } */
-  ::ng-deep .pick-cleaner mat-dialog-container {
+  ::ng-deep .cleaner-review mat-dialog-container {
     min-height: auto !important;
   }
 
