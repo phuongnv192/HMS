@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.util.Date;
 
 @Data
 @Builder
@@ -19,7 +19,8 @@ public class CleanerWorkingDate {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long cleanerId;
-    @Temporal(TemporalType.DATE)
-    private LocalDate scheduleDate;
+    private Long scheduleId;
+    private Date startTime;
+    private Date endTime;
     private String status;
 }

@@ -4,5 +4,6 @@ public enum ConfirmStatus {
     RECEIVED,
     CONFIRMED,
     CONFIRM_FAIL,
-    CANCELLED
+    CANCELLED,
+    DONE
 }

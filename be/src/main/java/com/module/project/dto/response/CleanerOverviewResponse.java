@@ -14,6 +14,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class CleanerOverviewResponse {
     private Long cleanerId;
+    private Long userId;
     private String name;
     private String gender;
     private String idCard;

@@ -6,8 +6,8 @@ import com.module.project.dto.CleanerReviewInfo;
 import com.module.project.dto.ConfirmStatus;
 import com.module.project.dto.Constant;
 import com.module.project.dto.ResponseCode;
-import com.module.project.dto.TransactionStatus;
 import com.module.project.dto.request.BookingStatusRequest;
+import com.module.project.dto.request.CleanerAvailableRequest;
 import com.module.project.dto.request.CleanerInfoRequest;
 import com.module.project.dto.request.CleanerUpdateRequest;
 import com.module.project.dto.request.ScheduleConfirmRequest;
@@ -41,6 +41,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -235,19 +236,18 @@ public class CleanerService {
         List<Booking> bookingList = bookingRepository.findAllByCleanersIn(Set.of(cleaner), pageable).getContent();
         List<BookingDetailResponse> responses = new ArrayList<>();
         for (Booking booking : bookingList) {
-            if (!TransactionStatus.DONE.name().equals(booking.getStatus())) {
-                responses.add(bookingService.getBookingDetail(booking.getId(), cleaner.getId().toString(), roleName, true));
-            }
+            responses.add(bookingService.getBookingDetail(booking.getId(), cleaner.getId().toString(), roleName, true));
         }
         return HMSUtil.buildResponse(ResponseCode.SUCCESS, responses);
     }
 
-    public HmsResponse<List<CleanerOverviewResponse>> getListCleanerAvailable(LocalDate workDate, Long serviceTypeId, Long servicePackageId) {
-        List<Cleaner> cleaners = scheduleService.getListCleanerAvailable(workDate, serviceTypeId, servicePackageId);
+    public HmsResponse<List<CleanerOverviewResponse>> getListCleanerAvailable(CleanerAvailableRequest request) {
+        List<Cleaner> cleaners = scheduleService.getListCleanerAvailable(request);
         List<CleanerOverviewResponse> response = new ArrayList<>();
         for (Cleaner cleaner : cleaners) {
             response.add(getCleanerOverview(cleaner));
         }
+        response.sort(Comparator.comparing(CleanerOverviewResponse::getCleanerId));
         return HMSUtil.buildResponse(ResponseCode.SUCCESS, response);
     }
 
@@ -281,6 +281,7 @@ public class CleanerService {
         });
         CleanerOverviewResponse history = CleanerOverviewResponse.builder()
                 .cleanerId(cleaner.getId())
+                .userId(cleaner.getUser().getId())
                 .name(HMSUtil.convertToFullName(cleaner.getUser().getFirstName(), cleaner.getUser().getLastName()))
                 .gender(cleaner.getUser().getGender())
                 .idCard(cleaner.getIdCard())

@@ -3,12 +3,14 @@ package com.module.project.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.module.project.dto.ConfirmStatus;
 import com.module.project.dto.FloorInfoEnum;
+import com.module.project.dto.NumberUserByMonth;
 import com.module.project.dto.PaymentStatus;
 import com.module.project.dto.ResponseCode;
 import com.module.project.dto.RoleEnum;
 import com.module.project.dto.request.BookingRequest;
 import com.module.project.dto.request.BookingStatusRequest;
 import com.module.project.dto.response.BookingDetailResponse;
+import com.module.project.dto.response.DashboardInfoResponse;
 import com.module.project.exception.HmsErrorCode;
 import com.module.project.exception.HmsException;
 import com.module.project.exception.HmsResponse;
@@ -31,9 +33,18 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -101,6 +112,7 @@ public class BookingService {
                         "can't find any user by ".concat(userId.toString())));
         List<String> acceptRole = List.of(RoleEnum.LEADER.name());
         if (booking.getUser().getId().equals(userId) || acceptRole.contains(user.getRole().getName())) {
+            booking.setRejectedReason(request.getRejectedReason());
             scheduleService.cancelBooking(booking, user);
 
             String mailTo = getListMailCleanerFromBooking(booking);
@@ -178,7 +190,7 @@ public class BookingService {
     }
 
     public BookingDetailResponse getBookingDetail(Long bookingId, String userId, String roleName,
-            boolean isShowSchedule) {
+                                                  boolean isShowSchedule) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST,
                         "relevant booking is not existed on system"));
@@ -204,6 +216,7 @@ public class BookingService {
         List<BookingSchedule> scheduleList = null;
         if (isShowSchedule) {
             scheduleList = bookingScheduleRepository.findAllByBookingTransaction(bookingTransaction);
+            scheduleList.sort(Comparator.comparing(BookingSchedule::getWorkDate));
         }
         return BookingDetailResponse.builder()
                 .bookingId(bookingId)
@@ -230,7 +243,7 @@ public class BookingService {
                 .build();
     }
 
-    public HmsResponse<Object> getBookingList(Integer page, Integer size, String roleName) {
+    public HmsResponse<Object> getBookingList(Integer page, Integer size, String roleName, String userId, String bookingName, String bookingPhone, String status) {
         List<String> acceptRole = Arrays.asList(RoleEnum.MANAGER.name(), RoleEnum.LEADER.name(),
                 RoleEnum.CUSTOMER.name());
         if (!acceptRole.contains(roleName)) {
@@ -238,7 +251,153 @@ public class BookingService {
         }
         Pageable pageable = PageRequest.of(page, size);
         List<Booking> bookingList = bookingRepository.findAll(pageable).getContent();
-        return HMSUtil.buildResponse(ResponseCode.SUCCESS, bookingList);
+        bookingList = filter(bookingList, bookingName, bookingPhone, status);
+        List<BookingDetailResponse> responses = new ArrayList<>();
+        for (Booking booking : bookingList) {
+            responses.add(getBookingDetail(booking.getId(), userId, roleName, true));
+        }
+        return HMSUtil.buildResponse(ResponseCode.SUCCESS, responses);
+    }
+
+    public HmsResponse<DashboardInfoResponse> getDashboardInfo(String roleName, LocalDate startDate) {
+        List<String> acceptRole = Arrays.asList(RoleEnum.MANAGER.name(), RoleEnum.LEADER.name());
+        if (!acceptRole.contains(roleName)) {
+            throw new HmsException(HmsErrorCode.INVALID_REQUEST, "privileges access denied");
+        }
+        Calendar calendar = HMSUtil.setLocalDateToCalendar(Calendar.getInstance(), startDate);
+        calendar.add(Calendar.YEAR, 1);
+        Date scanDate = calendar.getTime();
+        List<Booking> bookings = bookingRepository.findAllByCreateDateAfterAndCreateDateBefore(Date.from(startDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()), scanDate);
+//        Map<String, NumberUserByMonth> userByMonths = userRepository.getNumberUserByMonth(Date.from(startDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()), scanDate)
+//                .stream()
+//                .collect(Collectors.toMap(NumberUserByMonth::getMonth, Function.identity()));
+        List<Object> us = userRepository.getNumberUserByMonth(Date.from(startDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()), scanDate);
+        long totalUser = 0;
+        Map<String, NumberUserByMonth> userByMonths = new HashMap<>();
+        if (us != null) {
+            for (Object object : us) {
+                List<Object> userByMonth = JsonService.toObject(object, new TypeReference<>() {
+                });
+                if (userByMonth != null) {
+                    userByMonths.put((String) userByMonth.get(0),
+                            NumberUserByMonth.builder()
+                                    .month((String) userByMonth.get(0))
+                                    .times((Long) userByMonth.get(1))
+                                    .build());
+                    totalUser += (Long) userByMonth.get(1);
+                }
+            }
+        }
+        Map<String, Integer> numberByBookingStatus = initNumberByBookingStatus();
+        Map<String, DashboardInfoResponse.ItemDetail> months = new HashMap<>();
+        BigDecimal totalProfit = new BigDecimal(0);
+        BigDecimal totalProfitWithdraw = new BigDecimal(0);
+        int bookingNumberHaveReview = 0;
+        List<Long> averageRating = new ArrayList<>();
+        for (Booking booking : bookings) {
+            BookingTransaction bookingTransaction = bookingTransactionRepository.findByBooking(booking)
+                    .orElseThrow(() -> new HmsException(HmsErrorCode.INTERNAL_SERVER_ERROR, "relevant transaction is not existed on system"));
+            totalProfit = totalProfit.add(BigDecimal.valueOf(bookingTransaction.getTotalBookingPrice()));
+            List<BookingSchedule> bookingSchedules = bookingScheduleRepository.findAllByBookingTransaction(bookingTransaction);
+            BigDecimal totalPrice = new BigDecimal(0);
+            for (BookingSchedule schedule : bookingSchedules) {
+                if (PaymentStatus.WITHDRAW.name().equals(schedule.getPaymentStatus())) {
+                    totalPrice = totalPrice.add(BigDecimal.valueOf(schedule.getTotalSchedulePrice()));
+                }
+                if (schedule.getRatingScore() != null) {
+                    averageRating.add(Long.valueOf(schedule.getRatingScore()));
+                }
+            }
+            totalProfitWithdraw = totalProfitWithdraw.add(totalPrice);
+            bookingNumberHaveReview += booking.getReview() != null ? 1 : 0;
+            Integer times = numberByBookingStatus.get(booking.getStatus());
+            if (times == null) {
+                numberByBookingStatus.put(booking.getStatus(), 1);
+            } else {
+                numberByBookingStatus.put(booking.getStatus(), ++times);
+            }
+            Map<String, Integer> monthNumber = initNumberByBookingStatus();
+            monthNumber.put(booking.getStatus(), 1);
+            NumberUserByMonth userByMonth = userByMonths.get(HMSUtil.formatDate(booking.getCreateDate(), HMSUtil.MMYYYY_FORMAT));
+            long numberUserByMonth = 0;
+            if (userByMonth != null) {
+                numberUserByMonth = userByMonth.getTimes().intValue();
+            }
+            DashboardInfoResponse.ItemDetail month = DashboardInfoResponse.ItemDetail.builder()
+                    .bookingNumber(1)
+                    .bookingNumberHaveReview(booking.getReview() != null ? 1 : 0)
+                    .totalProfit(BigDecimal.valueOf(bookingTransaction.getTotalBookingPrice()))
+                    .totalProfitWithdraw(totalPrice)
+                    .numberByBookingStatus(monthNumber)
+                    .newUserNumber(numberUserByMonth)
+                    .build();
+            DashboardInfoResponse.ItemDetail item = months.get(HMSUtil.formatDate(booking.getCreateDate(), HMSUtil.MMYYYY_FORMAT));
+            if (item == null) {
+                months.put(HMSUtil.formatDate(booking.getCreateDate(), HMSUtil.MMYYYY_FORMAT), month);
+            } else {
+                item = DashboardInfoResponse.ItemDetail.builder()
+                        .bookingNumber(item.getBookingNumber() + month.getBookingNumber())
+                        .bookingNumberHaveReview(item.getBookingNumberHaveReview() + month.getBookingNumberHaveReview())
+                        .totalProfit(item.getTotalProfit().add(month.getTotalProfit()))
+                        .totalProfitWithdraw(item.getTotalProfitWithdraw().add(month.getTotalProfitWithdraw()))
+                        .numberByBookingStatus(combineTwoMap(item.getNumberByBookingStatus(), month.getNumberByBookingStatus()))
+                        .newUserNumber(numberUserByMonth)
+                        .build();
+                months.put(HMSUtil.formatDate(booking.getCreateDate(), HMSUtil.MMYYYY_FORMAT), item);
+            }
+        }
+        DashboardInfoResponse.ItemDetail summary = DashboardInfoResponse.ItemDetail.builder()
+                .bookingNumber(bookings.size())
+                .bookingNumberHaveReview(bookingNumberHaveReview)
+                .totalProfit(totalProfit)
+                .totalProfitWithdraw(totalProfitWithdraw)
+                .numberByBookingStatus(numberByBookingStatus)
+                .averageRating(averageRating.stream().mapToDouble(Long::doubleValue).sum() / averageRating.size())
+                .newUserNumber(totalUser)
+                .build();
+        DashboardInfoResponse response = DashboardInfoResponse.builder()
+                .summary(summary)
+                .months(fulfillMonth(userByMonths, months))
+                .build();
+        return HMSUtil.buildResponse(ResponseCode.SUCCESS, response);
+    }
+
+    private Map<String, DashboardInfoResponse.ItemDetail> fulfillMonth(Map<String, NumberUserByMonth> userByMonths,
+                                                                       Map<String, DashboardInfoResponse.ItemDetail> months) {
+        for(String key : userByMonths.keySet()) {
+            if (months.get(key) == null) {
+                DashboardInfoResponse.ItemDetail item = DashboardInfoResponse.ItemDetail.builder()
+                        .bookingNumber(0)
+                        .bookingNumberHaveReview(0)
+                        .totalProfit(new BigDecimal(0))
+                        .totalProfitWithdraw(new BigDecimal(0))
+                        .numberByBookingStatus(initNumberByBookingStatus())
+                        .newUserNumber(userByMonths.get(key).getTimes())
+                        .build();
+                months.put(key, item);
+            }
+        }
+        return months;
+    }
+
+    private Map<String, Integer> combineTwoMap(Map<String, Integer> root, Map<String, Integer> map) {
+        for (String key : map.keySet()) {
+            Integer times = root.get(key);
+            if (times == null) {
+                root.put(key, map.get(key));
+            } else {
+                root.put(key, times + map.get(key));
+            }
+        }
+        return root;
+    }
+
+    private Map<String, Integer> initNumberByBookingStatus() {
+        Map<String, Integer> numberByBookingStatus = new HashMap<>();
+        for (ConfirmStatus value : ConfirmStatus.values()) {
+            numberByBookingStatus.put(value.name(), 0);
+        }
+        return numberByBookingStatus;
     }
 
     private String getListMailCleanerFromBooking(Booking booking) {
@@ -246,6 +405,17 @@ public class BookingService {
             User u = e.getUser();
             return u.getEmail();
         }).collect(Collectors.joining(","));
+    }
+
+    private List<Booking> filter(List<Booking> bookings, String bookingName, String bookingPhone, String status) {
+        if (bookingName == null && bookingPhone == null && status == null) {
+            return bookings;
+        }
+        return bookings.stream()
+                .filter(booking -> (bookingName != null && booking.getHostName().contains(bookingName)
+                        || (bookingPhone != null && booking.getHostPhone().contains(bookingPhone)))
+                        || (status != null && booking.getStatus().equalsIgnoreCase(status)))
+                .toList();
     }
 
     public boolean checkBookingToBeUpdated(BookingTransaction bookingTransaction, List<String> status) {

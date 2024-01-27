@@ -2,6 +2,7 @@ package com.module.project.controller;
 
 import com.module.project.dto.ClaimEnum;
 import com.module.project.dto.request.BookingStatusRequest;
+import com.module.project.dto.request.CleanerAvailableRequest;
 import com.module.project.dto.request.CleanerInfoRequest;
 import com.module.project.dto.request.CleanerUpdateRequest;
 import com.module.project.dto.request.ScheduleConfirmRequest;
@@ -86,11 +87,9 @@ public class CleanerController {
         return ResponseEntity.ok(cleanerService.getCleanerSchedule(userId, page, size, userIdLogin, roleName));
     }
 
-    @GetMapping(CLEANER_AVAILABLE)
-    public ResponseEntity<Object> getListCleanerAvailable(@RequestParam(name = "workDate") LocalDate workDate,
-                                                          @RequestParam(name = "serviceTypeId", required = false) Long serviceTypeId,
-                                                          @RequestParam(name = "servicePackageId", required = false) Long servicePackageId) {
-        return ResponseEntity.ok(cleanerService.getListCleanerAvailable(workDate, serviceTypeId, servicePackageId));
+    @PostMapping(CLEANER_AVAILABLE)
+    public ResponseEntity<Object> getListCleanerAvailable(@RequestBody CleanerAvailableRequest request) {
+        return ResponseEntity.ok(cleanerService.getListCleanerAvailable(request));
     }
 
     @PostMapping(CLEANER_REJECT_BOOKING)

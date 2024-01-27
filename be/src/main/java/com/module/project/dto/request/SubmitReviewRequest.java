@@ -16,5 +16,6 @@ public class SubmitReviewRequest {
     private Long scheduleId;
     private Boolean reviewBooking;
     private List<CleanerReviewRequest> cleaners;
+    private Integer ratingSchedule;
     private String review;
 }

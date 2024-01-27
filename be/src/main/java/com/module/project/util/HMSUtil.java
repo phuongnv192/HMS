@@ -2,13 +2,11 @@ package com.module.project.util;
 
 import com.module.project.dto.ResponseCode;
 import com.module.project.exception.HmsResponse;
-import com.module.project.model.Cleaner;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.util.CollectionUtils;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -26,9 +24,10 @@ public class HMSUtil {
     public static final String SPACE = " ";
     public static final String DDMMYYYY_FORMAT = "dd/MM/yyyy";
     public static final String DDMMYYYYHHMMSS_FORMAT = "dd/MM/yyyy HH:mm:ss";
+    public static final String MMYYYY_FORMAT = "MM/yyyy";
 
     public static String convertToFullName(String firstName, String lastName) {
-        return firstName + SPACE + lastName;
+        return firstName.trim() + SPACE + lastName.trim();
     }
 
     public static String formatDate(Date date, String format) {
@@ -88,6 +87,18 @@ public class HMSUtil {
             daysOfMonth.add(day);
         }
         return daysOfMonth;
+    }
+
+    public static Date convertLocalDateToDate(LocalDate localDate, Date date) {
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+        return Date.from(localDate.atTime(localDateTime.toLocalTime()).atZone(ZoneId.systemDefault()).toInstant());
+    }
+
+    public static Calendar setLocalDateToCalendar(Calendar calendar, LocalDate localDate) {
+        calendar.set(Calendar.YEAR, localDate.getYear());
+        calendar.set(Calendar.MONTH, localDate.getMonthValue() - 1);
+        calendar.set(Calendar.DATE, localDate.getDayOfMonth());
+        return calendar;
     }
 
     private static boolean stillInCalendar(LocalDate month, LocalDate day) {

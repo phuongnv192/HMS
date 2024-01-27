@@ -17,11 +17,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
+
 import static com.module.project.dto.Constant.API_V1;
 import static com.module.project.dto.Constant.BOOKING;
 import static com.module.project.dto.Constant.BOOKING_CANCEL;
 import static com.module.project.dto.Constant.BOOKING_CONFIRM;
 import static com.module.project.dto.Constant.BOOKING_DETAIL;
+import static com.module.project.dto.Constant.DASHBOARD_INFO;
 import static com.module.project.dto.Constant.UPDATE_WITHDRAW;
 
 @RestController
@@ -34,9 +37,13 @@ public class BookingController {
     @GetMapping(BOOKING)
     public ResponseEntity<Object> getBookings(@RequestParam(name = "page") Integer page,
                                               @RequestParam(name = "size") Integer size,
+                                              @RequestParam(name = "bookingName", required = false) String bookingName,
+                                              @RequestParam(name = "bookingPhone", required = false) String bookingPhone,
+                                              @RequestParam(name = "status", required = false) String status,
                                               HttpServletRequest httpServletRequest) {
         String roleName = (String) httpServletRequest.getAttribute(ClaimEnum.ROLE_NAME.name);
-        return ResponseEntity.ok(bookingService.getBookingList(page, size, roleName));
+        String userId = (String) httpServletRequest.getAttribute(ClaimEnum.USER_ID.name);
+        return ResponseEntity.ok(bookingService.getBookingList(page, size, roleName, userId, bookingName, bookingPhone, status));
     }
 
     @PostMapping(BOOKING)
@@ -75,5 +82,11 @@ public class BookingController {
         String userId = (String) httpServletRequest.getAttribute(ClaimEnum.USER_ID.name);
         String roleName = (String) httpServletRequest.getAttribute(ClaimEnum.ROLE_NAME.name);
         return ResponseEntity.ok(HMSUtil.buildResponse(ResponseCode.SUCCESS, bookingService.getBookingDetail(bookingId, userId, roleName, true)));
+    }
+
+    @GetMapping(DASHBOARD_INFO)
+    public ResponseEntity<Object> getDashboardInfo(@RequestParam(name = "startDate") LocalDate startDate, HttpServletRequest httpServletRequest) {
+        String roleName = (String) httpServletRequest.getAttribute(ClaimEnum.ROLE_NAME.name);
+        return ResponseEntity.ok(bookingService.getDashboardInfo(roleName, startDate));
     }
 }

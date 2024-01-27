@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -16,4 +17,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findAllByUser(User user);
 
     Page<Booking> findAllByCleanersIn(Set<Cleaner> cleaners, Pageable pageable);
+
+    List<Booking> findAllByCreateDateAfterAndCreateDateBefore(Date createDateAfter, Date createDateBefore);
 }

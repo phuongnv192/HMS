@@ -32,6 +32,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -129,6 +130,8 @@ public class UserService {
                             .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "can't find any cleaner by ".concat(request.getBookingId().toString())));
                     scheduleService.updateReviewOfCleaner(cleaner, booking, bookingSchedule,
                             Long.valueOf(reviewRequest.getRatingScore()), reviewRequest.getReview());
+                    bookingSchedule.setRatingScore(request.getRatingSchedule().toString());
+                    bookingScheduleRepository.save(bookingSchedule);
                 } catch (Exception e) {
                     log.error("error when save review for cleaner");
                 }
@@ -152,9 +155,15 @@ public class UserService {
         List<Booking> bookings = bookingRepository.findAllByUser(user);
         List<BookingDetailResponse> responses = new ArrayList<>();
         for (Booking booking : bookings) {
-            if (!TransactionStatus.DONE.name().equals(booking.getStatus())) {
-                responses.add(bookingService.getBookingDetail(booking.getId(), userId, RoleEnum.CUSTOMER.name(), true));
+            responses.add(bookingService.getBookingDetail(booking.getId(), userId, RoleEnum.CUSTOMER.name(), true));
+            Set<Cleaner> cleaners = booking.getCleaners();
+            for (Cleaner cleaner : cleaners) {
+                String name = HMSUtil.convertToFullName(cleaner.getUser().getFirstName(), cleaner.getUser().getLastName());
+                String gender = cleaner.getUser().getGender();
+                String idCard = cleaner.getIdCard();
+                cleaner.setIdCard(String.format("%s$%s$%s", idCard, name, gender));
             }
+            booking.setCleaners(cleaners);
         }
         return HMSUtil.buildResponse(ResponseCode.SUCCESS, responses);
     }

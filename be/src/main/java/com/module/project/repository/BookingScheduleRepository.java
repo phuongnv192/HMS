@@ -18,8 +18,8 @@ public interface BookingScheduleRepository extends JpaRepository<BookingSchedule
             "set status = :status " +
             "where bookingTransaction = :bookingTransaction and status not in :notStatus")
     void updateCancelBooking(@Param(value = "bookingTransaction") BookingTransaction bookingTransaction,
-                            @Param(value = "status") String status,
-                            @Param(value = "notStatus") List<String> notStatus);
+                             @Param(value = "status") String status,
+                             @Param(value = "notStatus") List<String> notStatus);
 
     List<BookingSchedule> findAllByBookingTransaction(BookingTransaction bookingTransaction);
 
@@ -31,5 +31,9 @@ public interface BookingScheduleRepository extends JpaRepository<BookingSchedule
     @Query(value = "select count(1) from BookingSchedule " +
             "where bookingTransaction = :bookingTransaction and status in :status")
     int getScheduleStatusByTransactionIdAndStatusContain(@Param(value = "bookingTransaction") BookingTransaction bookingTransaction,
-                                         @Param(value = "status") List<String> status);
+                                                         @Param(value = "status") List<String> status);
+
+    @Query(value = "select bs from BookingSchedule bs " +
+            "where bs.bookingTransaction = :bookingTransaction and bs.paymentStatus = 'WITHDRAW'")
+    List<BookingSchedule> getTotalPrice(@Param(value = "bookingTransaction") BookingTransaction bookingTransaction);
 }
