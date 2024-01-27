@@ -1,0 +1,222 @@
+{
+    "code": "00",
+    "message": "Success",
+    "data": [
+        {
+            "id": 1,
+            "hostName": "duongpl",
+            "hostPhone": "0929192292",
+            "hostAddress": "hostAddress",
+            "hostDistance": "12",
+            "houseType": "APARTMENT",
+            "floorNumber": 2,
+            "floorArea": 60.0,
+            "status": "CONFIRMED",
+            "note": "noting",
+            "review": null,
+            "rejectedReason": null,
+            "createDate": "2023-11-28T12:05:30.562+00:00",
+            "updateDate": "2023-11-28T12:05:34.731+00:00",
+            "cleaners": [
+                {
+                    "id": 3,
+                    "address": null,
+                    "idCard": "2",
+                    "status": "ACTIVE",
+                    "branch": {
+                        "id": 1,
+                        "branchName": "Ha Noi",
+                        "branchAddress": null,
+                        "user": null,
+                        "description": null,
+                        "status": "ACTIVE",
+                        "createDate": "2023-11-28T12:04:56.418+00:00",
+                        "updateDate": "2023-11-28T12:04:56.418+00:00"
+                    },
+                    "review": null,
+                    "createDate": "2023-11-28T12:04:56.753+00:00"
+                },
+                {
+                    "id": 2,
+                    "address": null,
+                    "idCard": "2",
+                    "status": "ACTIVE",
+                    "branch": {
+                        "id": 1,
+                        "branchName": "Ha Noi",
+                        "branchAddress": null,
+                        "user": null,
+                        "description": null,
+                        "status": "ACTIVE",
+                        "createDate": "2023-11-28T12:04:56.418+00:00",
+                        "updateDate": "2023-11-28T12:04:56.418+00:00"
+                    },
+                    "review": null,
+                    "createDate": "2023-11-28T12:04:56.752+00:00"
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "hostName": "duongpl",
+            "hostPhone": "0929192292",
+            "hostAddress": "hostAddress",
+            "hostDistance": "2",
+            "houseType": "APARTMENT",
+            "floorNumber": 2,
+            "floorArea": 90.0,
+            "status": "CONFIRMED",
+            "note": "noting",
+            "review": null,
+            "rejectedReason": null,
+            "createDate": "2023-11-29T12:05:30.562+00:00",
+            "updateDate": "2023-11-29T12:05:34.731+00:00",
+            "cleaners": [
+                {
+                    "id": 1,
+                    "address": null,
+                    "idCard": "2",
+                    "status": "ACTIVE",
+                    "branch": {
+                        "id": 1,
+                        "branchName": "Ha Noi",
+                        "branchAddress": null,
+                        "user": null,
+                        "description": null,
+                        "status": "ACTIVE",
+                        "createDate": "2023-11-29T12:04:56.418+00:00",
+                        "updateDate": "2023-11-29T12:04:56.418+00:00"
+                    },
+                    "review": null,
+                    "createDate": "2023-11-29T12:04:56.753+00:00"
+                },
+                {
+                    "id": 2,
+                    "address": null,
+                    "idCard": "2",
+                    "status": "ACTIVE",
+                    "branch": {
+                        "id": 1,
+                        "branchName": "Ha Noi",
+                        "branchAddress": null,
+                        "user": null,
+                        "description": null,
+                        "status": "ACTIVE",
+                        "createDate": "2023-11-29T12:04:56.418+00:00",
+                        "updateDate": "2023-11-29T12:04:56.418+00:00"
+                    },
+                    "review": null,
+                    "createDate": "2023-11-29T12:04:56.752+00:00"
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "hostName": "nguyenhoanganh",
+            "hostPhone": "0123456789",
+            "hostAddress": "hostAddress",
+            "hostDistance": "2",
+            "houseType": "APARTMENT",
+            "floorNumber": 2,
+            "floorArea": 90.0,
+            "status": "CONFIRMED",
+            "note": "noting",
+            "review": null,
+            "rejectedReason": null,
+            "createDate": "2023-11-29T12:05:30.562+00:00",
+            "updateDate": "2023-11-29T12:05:34.731+00:00",
+            "cleaners": [
+                {
+                    "id": 1,
+                    "address": null,
+                    "idCard": "2",
+                    "status": "ACTIVE",
+                    "branch": {
+                        "id": 1,
+                        "branchName": "Ha Noi",
+                        "branchAddress": null,
+                        "user": null,
+                        "description": null,
+                        "status": "ACTIVE",
+                        "createDate": "2023-11-29T12:04:56.418+00:00",
+                        "updateDate": "2023-11-29T12:04:56.418+00:00"
+                    },
+                    "review": null,
+                    "createDate": "2023-11-29T12:04:56.753+00:00"
+                },
+                {
+                    "id": 2,
+                    "address": null,
+                    "idCard": "2",
+                    "status": "ACTIVE",
+                    "branch": {
+                        "id": 1,
+                        "branchName": "Ha Noi",
+                        "branchAddress": null,
+                        "user": null,
+                        "description": null,
+                        "status": "ACTIVE",
+                        "createDate": "2023-11-29T12:04:56.418+00:00",
+                        "updateDate": "2023-11-29T12:04:56.418+00:00"
+                    },
+                    "review": null,
+                    "createDate": "2023-11-29T12:04:56.752+00:00"
+                }
+            ]
+        },
+        {
+            "id": 4,
+            "hostName": "nguyenhanhnguyen",
+            "hostPhone": "0987654312",
+            "hostAddress": "hostAddress",
+            "hostDistance": "2",
+            "houseType": "APARTMENT",
+            "floorNumber": 2,
+            "floorArea": 90.0,
+            "status": "CONFIRMED",
+            "note": "noting",
+            "review": null,
+            "rejectedReason": null,
+            "createDate": "2023-11-29T12:05:30.562+00:00",
+            "updateDate": "2023-11-29T12:05:34.731+00:00",
+            "cleaners": [
+                {
+                    "id": 1,
+                    "address": null,
+                    "idCard": "2",
+                    "status": "ACTIVE",
+                    "branch": {
+                        "id": 1,
+                        "branchName": "Ha Noi",
+                        "branchAddress": null,
+                        "user": null,
+                        "description": null,
+                        "status": "ACTIVE",
+                        "createDate": "2023-11-29T12:04:56.418+00:00",
+                        "updateDate": "2023-11-29T12:04:56.418+00:00"
+                    },
+                    "review": null,
+                    "createDate": "2023-11-29T12:04:56.753+00:00"
+                },
+                {
+                    "id": 2,
+                    "address": null,
+                    "idCard": "2",
+                    "status": "ACTIVE",
+                    "branch": {
+                        "id": 1,
+                        "branchName": "Ha Noi",
+                        "branchAddress": null,
+                        "user": null,
+                        "description": null,
+                        "status": "ACTIVE",
+                        "createDate": "2023-11-29T12:04:56.418+00:00",
+                        "updateDate": "2023-11-29T12:04:56.418+00:00"
+                    },
+                    "review": null,
+                    "createDate": "2023-11-29T12:04:56.752+00:00"
+                }
+            ]
+        }
+    ]
+}

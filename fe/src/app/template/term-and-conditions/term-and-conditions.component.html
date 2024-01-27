@@ -1,0 +1,116 @@
+<style>
+  ol {
+    counter-reset: item;
+  }
+  li {
+    display: block;
+  }
+  li:before {
+    content: counters(item, ".") " ";
+    counter-increment: item;
+  }
+  .ol-1 {
+    margin-left: 4%;
+  }
+  .ol-2 {
+    line-height: 25px;
+    margin-left: 5%;
+  }
+  p {
+    margin-bottom: 0 !important;
+  }
+  .p-1 {
+    margin-left: 2%;
+    padding: 0 !important;
+  }
+  li:before {
+    font-weight: bold;
+  }
+  .dvt {
+    line-height: 20px;
+    font-family: 'Arial'
+  }
+</style>
+<!-- *ngIf="_translate.getCurrentLange() == 'vi'" -->
+<div class="dvt">
+  <p>
+    Khách hàng vui lòng đọc kỹ những qui định được trình bày trong bảng
+    này nhằm đảm bảo đã được thông tin đầy đủ khi đăng ký dịch vụ dọn dẹp của HMS
+    áp dụng những qui định này để tối ưu hóa tính năng, tài chính và đảm bảo
+    chất lượng của dịch vụ.
+  </p>
+  <ol style="margin-bottom: 0">
+    <li>
+      <strong>Điều kiện chung</strong>
+      <ol class="ol-1">
+        <li>
+          Các thông tin người dùng phải được xác thực và cập nhật tới thời điểm hiện tại
+        </li>
+        <li>
+          HMS được phép sử dụng hình ảnh nhà/nơi dọn cũng như là của người sử dụng dịch vụ.
+        </li>
+      </ol>
+    </li>
+    <li>
+      <strong>Điều kiện sử dụng dịch vụ</strong>
+      <ol class="ol-1">
+        <li>
+          Khoảng cách giữa nơi dọn dẹp và trụ sở không vượt quá giới hạn cho phép.
+           Các đơn dịch vụ có khoảng cách > 3 km, tính phí 10.000đ/1km
+        </li>
+        <li>
+          Diện tích dọn dẹp được giới hạn theo tiêu chuẩn của HMS.
+        </li>
+        <li>
+          Dịch vụ tiện ích không bao gồm trong hóa đơn khi đăng ký dịch vụ
+        </li>
+        <li>
+          HMS cung cấp 2 gói dịch vụ bao gồm: Gói trong ngày và Gói định kỳ với 
+          các gói thời gian cố định, không vượt quá giới hạn cho phép chọn.
+        </li>
+        <li>
+          Chọn nhân viên chỉ được khi số lượng nhân viên phục vụ dưới 3 người.
+        </li>
+        <li>
+          Phương thức thanh toán: Tiền mặt 
+        </li>
+        
+      </ol>
+    </li>
+    <li>
+      <strong>Nhân viên</strong>
+      <ol class="ol-1">
+        <li>100% nhân viên có bằng cấp hoặc được đào tạo khóa đào tạo chuyên nghiệp</li>
+        <li>
+          Nhân viên được phép xác thực đơn dịch vụ và hủy theo điều khoản của công ty bao gồm sai lệch khi đăng ký dịch vụ của HMS
+        </li>
+      </ol>
+    </li>
+    <li>
+      <strong>Đổi và chỉnh sửa dịch vụ đã đặt</strong>
+      <ol class="ol-1">
+        <li>
+          Không thay đổi khi trạng thái đơn đã sang 'Đang di chuyển'
+        </li>
+      </ol>
+    </li>
+    <li>
+      <strong>Giá dịch vụ</strong>
+      <ol class="ol-1">
+        <li>
+          Giá dịch vụ có thể thay đổi theo khu vực, thời gian. ( Giá chỉ mang tính chất tham khảo tại thời điểm hiện tại)
+        </li>
+        <li>
+          Giá dịch vụ dọn thêm sẽ được đối chiếu theo bảng giá đã đưa ra, 
+          các dịch vụ ngoài không bao gồm trong bảng giá sẽ được tính theo tính chất và thời gian làm
+        </li>
+      </ol>
+    </li>
+    <li>
+      <strong>Thắc mắc - Khiếu nại </strong>
+      <p class="ol-1">
+        Người dùng/Khách hàng có thắc mắc/khiếu nại vui lòng liên hệ hotline: 0123456789 để được giải đáp/hỗ trợ.
+      </p>
+    </li>
+  </ol>
+</div>

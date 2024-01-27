@@ -1,0 +1,129 @@
+<div class="header pb-8 pt-5 pt-lg-8 d-flex align-items-center" style="min-height: 100px;">
+  <!-- background-image: url(assets/img/theme/profile-cover.jpg); background-size: cover; background-position: center top; -->
+  <!-- Mask -->
+  <span class="mask bg-gradient-danger opacity-8" style="height: 100px;"></span>
+  <!-- Header container -->
+</div>
+<div class="container-fluid" style="margin-top: 0rem !important; margin-bottom: 0.75rem !important;">
+  <div class="row">
+    <div class="col-xl-4 order-xl-2 mb-5 mb-xl-0">
+      <div class="card card-profile shadow">
+        <div class="row justify-content-center">
+          <div class="col-lg-3 order-lg-2">
+            <div class="card-profile-image">
+              <a href="">
+                <img src="assets/img/theme/team-4-800x800.jpg" class="rounded-circle">
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
+          <div class="d-flex justify-content-between">
+          </div>
+        </div>
+        <div class="card-body pt-0 pt-md-4">
+          <div class="row">
+            <div class="col">
+              <div class="card-profile-stats d-flex justify-content-center">
+                <div>
+                  <span class="heading">{{ activityYear }}</span>
+                  <span class="description">Năm tham gia</span>
+                </div>
+                <div>
+                  <span class="heading">{{ totalBooking }}</span>
+                  <span class="description">Số đơn đã đặt</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="text-center">
+
+            <div class="col-12 text-right">
+              <a [routerLink]="['/change-password']" class="btn btn-sm btn-primary">Đổi mật khẩu</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-8 order-xl-1">
+      <div class="card bg-secondary shadow">
+        <div class="card-header bg-white border-0" style="padding-top: 1rem; padding-bottom: 1rem;">
+          <div class="row align-items-center">
+            <div class="col-8">
+              <h3 class="mb-0">{{firstName}} {{lastName}}</h3>
+            </div>
+            <div class="col-2 text-right" style="margin-right: -2rem;">
+              <a [routerLink]="['/customer-history']" class="btn btn-sm btn-primary">Lịch sử</a>
+            </div>
+            <div class="col-2 text-right">
+              <a [routerLink]="['/customer-schedule']" class="btn btn-sm btn-primary">Đơn đã đặt</a>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <form>
+            <h6 class="heading-small text-muted mb-4">Thông tin người dùng</h6>
+            <div class="pl-lg-4">
+              <div class="row">
+                <div class="col-lg-3">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-username">Tên</label>
+                    <input type="text" id="input-firstname" class="form-control form-control-alternative"
+                      placeholder="Nguyen Van A" [value]="firstName">
+                  </div>
+                </div>
+                <div class="col-lg-3">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-username">Họ</label>
+                    <input type="text" id="input-lastname" class="form-control form-control-alternative"
+                      placeholder="Nguyen Van A" [value]="lastName">
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-email">Email</label>
+                    <input type="email" id="input-email" class="form-control form-control-alternative"
+                      placeholder="abc@example.com" [value]="email">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-3">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-last-name">Giới tính</label>
+                    <input type="text" id="gender" class="form-control form-control-alternative" placeholder="Nam/Nữ"
+                     [value]="gender">
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            <hr class="my-3" />
+            <!-- Address -->
+            <h6 class="heading-small text-muted mb-4">Thông tin liên hệ</h6>
+            <div class="pl-lg-4">
+              <div class="row">
+                <div class="col-md-9">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-address">Địa chỉ</label>
+                    <input id="input-address" class="form-control form-control-alternative"
+                      placeholder="Số 1 Kim Mã, Hà Nội" [value]="address" type="text">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-4">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-country">Số điện thoại</label>
+                    <input type="text" id="input-phone" class="form-control form-control-alternative"
+                      placeholder="0987654321" [value]="phoneNumber">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

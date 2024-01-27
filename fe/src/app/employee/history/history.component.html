@@ -1,0 +1,114 @@
+<div class="header bg-gradient-danger design-table pb-8 pt-md-8">
+  <div class="container-fluid">
+    <div class="header-body">
+      <!-- Card stats -->
+      <div class="row">
+        <div class="col-xl-6 col-lg-6">
+          <div class="card card-stats mb-4 mb-xl-0">
+            <div class="card-body">
+              <div class="row">
+                <div class="col search-emp">
+                  <!-- <div class="search-name">
+                    <h5 class="card-title text-uppercase text-muted mb-0 font14">Tên đơn dịch vụ</h5>
+                    <input #serviceName id="serviceName" placeholder="Booking #1" [(ngModel)]="name" type="text"
+                      aria-describedby="serviceName-help" maxlength="50">
+                  </div> -->
+
+                  <div class="search-rate">
+                    <h5 class="card-title text-uppercase text-muted mb-0 font14">Đánh giá</h5>
+                    <select [(ngModel)]="searchRate" id="rate" aria-describedby="rate-help" title="đánh giá">
+                      <option *ngFor="let rate of rateRange" [value]="rate">{{ rate }}</option>
+                    </select>
+                  </div>
+
+                  <!-- <div class="search-rate">
+                    <h5 class="card-title text-uppercase text-muted mb-0 font14">Loại nhà</h5>
+                    <select [(ngModel)]="searchHouseType" id="houseType" aria-describedby="houseType-help"
+                      title="Loại nhà">
+                      <option *ngFor="let type of houseType" [value]="type">{{ type }}</option>
+                    </select>
+                  </div> -->
+
+                  <div class="search-date">
+                    <h5 class="card-title text-uppercase text-muted mb-0 font14">Tên dịch vụ</h5>
+                    <input placeholder="Booking #1" [(ngModel)]="date" type="text"
+                      aria-describedby="date-help" maxlength="50">
+                  </div>
+
+                </div>
+
+                <div class="col-auto">
+                  <div class="icon icon-shape bg-danger text-white rounded-circle shadow" style="cursor: pointer;"
+                    (click)="search()">
+                    <i class="fas fa-search"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Page content -->
+<div class="container-fluid mt--7">
+  <!-- Table -->
+  <div class="row">
+    <div class="col">
+      <div class="card shadow">
+        <div class="card-header border-0">
+          <h3 class="mb-0 font20">Danh sách dịch vụ đã thực hiện</h3>
+        </div>
+        <div class="table-responsive">
+          <table class="table align-items-center table-flush">
+            <thead class="thead-light">
+              <tr>
+                <th scope="col">Tên đơn dịch vụ</th>
+                <th scope="col">Ngày làm</th>
+                <th scope="col">Loại nhà</th>
+                <!-- <th scope="col">Số tầng</th> -->
+                <th scope="col">Tổng diện tích</th>
+                <th scope="col">Loại dịch vụ</th>
+                <th scope="col"></th>
+                <!-- <th scope="col"></th> -->
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let service of history">
+                <th scope="row">
+                  <div class="media align-items-center">
+                    <div class="media-body">
+                      <span class="mb-0 text-sm">{{service.bookingId}} - {{service.hostName}}</span>
+                    </div>
+                  </div>
+                </th>
+                <td>
+                  {{service.scheduleList[0].workDate}}
+                </td>
+                <td>
+                  {{service.houseType == "APARTMENT" ? "Chung cư" : "Nhà đất"}}
+                </td>
+                <td>
+                  {{service.floorArea}}
+                </td>
+                <!-- <td>
+                  {{service.floorArea}}
+                </td> -->
+                <td>
+                  {{service.serviceTypeName && service.servicePackageName ? 'Gói gọn định kỳ' : 'Gói dọn theo ngày' }} 
+                </td>
+                  <td class="text-center">
+                    <button class="btn btn-primary" style="height: 35px;
+                    width: 150px;
+                    font-size: 12px;
+                    padding: 5px;" (click)="showDetail(service, type)">Xem thông tin</button>
+                  </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,275 @@
+<main>
+  <div class="position-relative">
+    <!-- shape Hero -->
+    <section class="section section-lg section-shaped pb-250">
+      <div class="shape shape-style-1 shape-default">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <div class="container d-flex">
+        <div class="col px-0">
+          <div class="row">
+            <div class="col-lg-6">
+              <h1 class="display-3  text-white">Đặt dịch vụ
+              </h1>
+              <p class="lead  text-white">Khách hàng vui lòng điền và kiểm tra lại các thông tin cần thiết để có thể đặt
+                và sử dụng dịch vụ một cách tốt nhất.</p>
+              <p class="" (click)="cleanerRateDetail()">
+
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- 1st Hero Variation -->
+  </div>
+  <section class="section section-lg pt-lg-0 mt--200">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-12">
+          <div class="row row-grid">
+            <div class="col-lg-12">
+              <div class="card shadow border-0">
+                <div class="card-body py-5">
+                  <div class="icon icon-shape icon-shape-primary rounded-circle mb-4">
+                    <i class="ni ni-check-bold"></i>
+                  </div>
+                  <h6 class="text-primary text-uppercase">Thông tin cá nhân</h6>
+
+                  <div class="input-group">
+                    <p>Tên chủ nhà(*): </p>
+                    <!-- (keypress)="omit_special_char_email($event)" [(ngModel)]="account_name" -->
+                    <!-- (blur)="changeHandler('account')" (focus)="focusAccount()" -->
+                    <div class="account_input">
+                      <input class="account_" id="account" placeholder="Nguyen Van A" type="text"
+                        aria-describedby="account-help" maxlength="50" [(ngModel)]="account_name">
+                      <p style="width: 90%;" class="error" *ngIf="nameNull">Vui lòng ko để trống thông tin tên</p>
+                    </div>
+
+                  </div>
+                  <div class="input-group">
+                    <p>Số điện thoại(*): </p>
+                    <div class="account_input">
+                      <input class="account_" #phonenumber id="phonenumber" placeholder="0987654321" type="text"
+                        aria-describedby="phone-help" maxlength="12" [(ngModel)]="phone_number">
+                      <p class="error" *ngIf="phoneNull">Vui lòng ko để trống thông tin điện thoại</p>
+                    </div>
+                  </div>
+                  <!-- <div *ngIf="account_name" class="delete" (click)="clearEmail()">
+                    <img style="float: right;" src="assets/img/bnpl/Close.svg" />
+                  </div> -->
+
+                  <h6 class="text-primary text-uppercase">Thông tin địa chỉ nhà</h6>
+                  <google-map height="400px" width="750px" [center]="center" [zoom]="zoom" (mapClick)="moveMap($event)"
+                    (mapMousemove)="move($event)">
+                  </google-map>
+                  <div>Latitude: {{display?.lat}}</div>
+                  <div>Longitude: {{display?.lng}}</div>
+                  <div><p class="takenote">*Free phí di chuyển từ cơ sở gần nhất khi khoảng cách dưới 3km. Trên 3km, phí
+                    dịch vụ và di
+                    chuyển sẽ được tính 10.000đ/km</p></div>
+                  <div class="input-group" style="height: 90px;">
+                    <p>Nơi làm việc: </p>
+                    <div class="account_input">
+                      <input class="account_" #address id="address" placeholder="Số 1Kim Mã, Ba Đình, Hà Nội"
+                        type="text" aria-describedby="address-help" maxlength="100" [(ngModel)]="service_address" (change)="calDistance()">
+                        <div class="description" style="width: 100%; margin-bottom: 0.5rem;">Khoảng cách: {{distance}}</div>
+                      <p class="takenote" style="width: 100%;" *ngIf="addressNull">Vui lòng ko để trống thông tin địa chỉ</p>
+                      <p class="takenote" style="width: 100%;" *ngIf="falseDistance">Vui lòng nhập địa chỉ dưới 15km</p>
+                    </div>
+                  </div>
+
+                  <!-- <button type="button" class="btn btn-primary">Nhập địa chỉ</button> -->
+
+
+                  
+                  <div class="input-group">
+                    <p>Loại hình nhà(*): </p>
+                    <select [(ngModel)]="selectedHouseType" id="houseType" aria-describedby="houseType-help"
+                      title="Loại hình nhà">
+                      <option *ngFor="let type of houseTypes" [value]="type">{{ type }}</option>
+                    </select>
+                  </div>
+                  <!-- <div class="input-group">
+                    <p>Loại dịch vụ(*): </p>
+                    <select [(ngModel)]="selectedServiceType" id="serviceType" aria-describedby="serviceType-help"
+                      title="Loại dịch vụ">
+                      <option *ngFor="let service of serviceTypes" [value]="service">{{ service }}</option>
+                    </select>
+                  </div> -->
+                  <!-- <div class="input-group">
+                    <p>Số tầng(*): </p>
+                    <select [(ngModel)]="selectedFloors" id="floors" aria-describedby="floors-help" title="Số tầng">
+                      <option *ngFor="let floor of floors" [value]="floor">{{ floor }}</option>
+                    </select>
+                  </div> -->
+                  <div class="input-group">
+                    <p> Tổng diện tích sàn(*): </p>
+                    <select (ngModelChange)="onAreaChange($event)" [(ngModel)]="selectedAreaType" id="area"
+                      aria-describedby="areaType-help" title="Diện tích sàn">
+                      <option *ngFor="let area of areaTypes" [value]="area.key">{{ area.floorArea }}</option>
+                    </select>
+                  </div>
+                  <p class="description">Số lượng người dọn và giá (ước tính): <span *ngIf="cleanerNum && duration">
+                      <b>{{cleanerNum}} người dọn dẹp</b> trong
+                      thời gian <b> {{duration}} tiếng </b> (giá dịch vụ: <b>{{formattedPrice}}</b>)
+                    </span> </p>
+                  <h6 class="text-primary text-uppercase">Tiện ích bổ sung</h6>
+                  <p class="description">Các loại hình dịch vụ tiện ích bổ sung là bao gồm
+                    các khu vực và thiết bị không bao gồm trong dịch vụ dọn dẹp.</p>
+                  <p class="description">Sau đây là <u (click)="showPriceList()"
+                      style="font-size: 14px; font-weight: 600; cursor: pointer;">Bảng giá</u> các loại
+                    hình dịch vụ tiện
+                    ích HMS cũng cấp:</p>
+                  <div class="extension-service">
+                    <span *ngFor="let extends of priceList" class="badge badge-pill badge-primary"
+                      [ngClass]="{'active': activeBadges[extends.parent.name]}" style="cursor: pointer;"
+                      (click)="extendsDialog(extends.parent.name, extends.parent.id)">{{extends.parent.name}}
+                      <i class="fas"
+                        [ngClass]="{'fa-plus': !activeBadges[extends.parent.name], 'fa-minus': activeBadges[extends.parent.name]}"></i>
+                    </span>
+                    <p class="listAdvanceService" style="padding-top: 1rem;" *ngIf="true">* Danh sách tiện ích đã đăng
+                      ký: <span style="font-weight: 700; font-size: 15px; color: darkred;">{{
+                        textListAdvanceService
+                        }}</span></p>
+                  </div>
+
+                  <h6 class="text-primary text-uppercase">Thời gian</h6>
+                  <p class="description" style="margin-bottom: 5px;">Có 2 sự lựa chọn cho khách hàng khi sử dụng dịch vụ
+                    dọn dẹp đó là: <b>Sử dụng duy nhất</b> và <b>định kỳ</b></p>
+                  <p class="description" style="margin-bottom: 5px;">Khoảng thời gian sử dụng dịch vụ trong ngày bắt đầu
+                    từ: <b>8h sáng</b> cho tới trước <b>8h tối</b></p>
+                  <div class="input-group">
+                    <p style="width: 20%;">Hình thức sử dụng: </p>
+                    <select [(ngModel)]="selectedTimeType" (ngModelChange)="changeTimeType()" id="timeType"
+                      aria-describedby="timeType-help" title="Loại hình thức thời gian">
+                      <option *ngFor="let time of timeTypes" [value]="time">{{ time }}</option>
+                    </select>
+                    <div class="input-group"  *ngIf="selectedTimeType == 'Sử dụng 1 lần'">
+                      <p style="width: 20%;">Giờ bắt đầu(*): </p>
+                      <div>
+                        <!-- Sử dụng trường input kiểu số -->
+                        <input type="tel" name="time" id="time" [class.red_border]="c_time"
+                          [class.red_border_no_background]="c_time && (_inTime.length === 0 || _inTime.trim().length === 0)"
+                          (blur)="blurExpDate(time)" pattern="\d*" placeholder="08:30" [(ngModel)]="_inTime" #time
+                          maxlength="5" (input)="ValidateExpDate(time, $event)" style="padding: 0.5rem !important" />
+                      </div>
+                      <div *ngIf="c_time" style="width: 100%;" class="error">Vui lòng nhập thời gian trong khoảng 8h
+                        sáng tới trước 8h tối.</div>
+                    </div>
+                  </div>
+
+                  <div class="date-pickertime" *ngIf="selectedTimeType == 'Sử dụng 1 lần'">
+
+                    <button type="button" class="btn btn-primary pickday" (click)="pickDate()">Chọn ngày
+                      <i></i></button>
+                    <p class="error" *ngIf="dateNull">Vui lòng ko để trống thông tin ngày dọn</p>
+
+                    <ngb-datepicker class="calendar" *ngIf="showDatePicker" #dp [(ngModel)]="selectedDate"
+                      (dateSelect)="hideDatePicker()" (navigate)="datePickerNavigate($event)"
+                      [minDate]="minSelectableDate" [maxDate]="maxSelectableDate"></ngb-datepicker>
+                    <p class="showTime" *ngIf="(!showDatePicker && datePickerShow)">*
+                      Lịch ngày dọn: <span>{{
+                        datePickerShow
+                        }}</span></p>
+                  </div>
+                  <div class="date-pickertime" *ngIf="selectedTimeType != 'Sử dụng 1 lần'">
+                    <button type="button" class="btn btn-primary pickday" (click)="pickCalendar()">Chọn lịch
+                      <i></i></button>
+                    <p class="error" *ngIf="dateNull">Vui lòng ko để trống thông tin ngày dọn</p>
+                    <p class="showTime" *ngIf="(servicePackageId && typeId)">*
+                      Lịch ngày dọn: <span>{{
+                        datePickerShow
+                        }}</span></p>
+                  </div>
+                  <p *ngIf="selectedTimeType != 'Sử dụng 1 lần'" class="takenote">*Đối với dịch vụ định kỳ, khách hàng
+                    nên lưu ý về thời gian đặt lịch
+                    cũng như các tiện ích đính kèm trong đơn đăng ký</p>
+                  <h6 class="text-primary text-uppercase">Nhân viên dọn dẹp</h6>
+                  <p class="description mt-3">Dịch vụ được lựa chọn theo các tiêu chí liên quan tới diện tích, khu vực
+                    dọn dẹp, HMS sẽ cung cấp những người dọn dẹp thích hợp và tốt nhất tới khách hàng.<span>Người dùng
+                      cũng có thể </span><span class="action-cleaner" (click)="pickCleaner()"> <u><b>chọn người dọn
+                          dẹp</b></u>
+                    </span></p>
+
+                  <h6 class="text-primary text-uppercase">Phương thức thanh toán</h6>
+                  <div class="payment-method">
+                    <label>
+                      <input type="radio" [(ngModel)]="selectedPaymentMethod" value="cash">
+                      Thanh toán bằng tiền mặt
+                    </label>
+                  </div>
+                  <div class="payment-method">
+                    <label>
+                      <input type="radio" [disabled]="true" [(ngModel)]="selectedPaymentMethod" value="bankTransfer">
+                      Chuyển khoản ngân hàng (Hiện chức năng chưa được triển khai)
+                    </label>
+                  </div>
+                  <h6 class="text-primary text-uppercase">Ghi chú</h6>
+                  <div class="note-section">
+                    <textarea style="width: 80%;" [(ngModel)]="note" rows="4"
+                      placeholder="Nhập ghi chú của bạn cho dịch vụ đăng ký"></textarea>
+                  </div>
+                  <div class="term-and-conditions">
+                    <h6>Điều kiện thanh toán</h6>
+                    <p (click)="openTermAndConditions()" #termsDiv class="term">
+                      Mở rộng
+                    </p>
+                    <div class="payment_review">
+                      <div class="payment-form-iframe">
+                        <term-and-conditions></term-and-conditions>
+                      </div>
+                      <div class="note-term">
+                        <div class="m_row">
+                          <div class="col-xs-12">
+                            <p class="box_title2">
+                              Lưu ý: Vui lòng đồng ý với Điều khoản trước khi thanh toán
+                            </p>
+                          </div>
+                        </div>
+                        <div class="term-payment">
+                          <div class="term-payment-box">
+                            <label class="fontsize14">
+                              Tôi đồng ý với Điều khoản thanh toán <input type="checkbox" id="cbagree"
+                                autocomplete="off" (change)="FieldsChangeTermAndCondition($event)" />
+                              <span class="checkmark"></span>
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="button-payment">
+                  <div
+                    style="text-align: end; justify-content: center; margin-right: 3rem; width: 80%; padding-top: 10px;">
+                    *
+                  </div>
+                  <button class="btn btn-primary btn-pay" (click)="Booking()"
+                    [class.disabled]=" !termAndCondition || !account_name || !phone_number || !address || falseDistance || !(pickDay || dateValue)">
+                    Đặt lịch
+                  </button>
+                  <!-- <button class="btn btn-primary btn-pay" (click)="viewBill()"
+                    >
+                    Bill Draft
+                  </button> -->
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>

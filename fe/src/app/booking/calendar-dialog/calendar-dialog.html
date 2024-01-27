@@ -1,0 +1,121 @@
+<div mat-dialog-actions class="guide_class">
+  <div class="dialog-container">
+    <div class="header-background"></div>
+    <div class="header">
+      <h6>Chọn định kỳ cho dịch vụ</h6>
+    </div>
+    <div class="content">
+      <div class="content-scroll">
+        <div class="content-calendar">
+          <div class="input-information">
+            <div class="booking-detail-information">
+              <div class="title_note"> * Vui lòng chọn các loại định kỳ:</div>
+              <div class="host-information">
+                <div class="input-group">
+                  <p>Loại định kỳ(*): </p>
+                  <select [(ngModel)]="selectedServiceTypeId" id="serviceType" aria-describedby="serviceType-help"
+                    (ngModelChange)="selectedService($event)" title="Loại định kỳ">
+                    <option *ngFor="let service of serviceTypes" [value]="service">{{ service }}</option>
+                  </select>
+                </div>
+                <div class="input-group">
+                  <p>Thời gian định kỳ(*): </p>
+                  <select [(ngModel)]="selectedServicePackageId" (ngModelChange)="selectedPackage($event)"
+                    id="serviceType" aria-describedby="serviceType-help" title="Thời gian định kỳ">
+                    <option *ngFor="let package of servicePackages" [value]="package">{{ package }}</option>
+                  </select>
+                </div>
+                <div class="input-group">
+                  <p>Giờ bắt đầu(*): </p>
+                  <div>
+                    <!-- Sử dụng trường input kiểu số -->
+                    <input type="tel" name="time" id="time" [class.red_border]="c_time"
+                      [class.red_border_no_background]="c_time && (_inTime.length === 0 || _inTime.trim().length === 0)"
+                      (blur)="blurExpDate(time)" pattern="\d*" placeholder="08:30" [(ngModel)]="_inTime" #time
+                      maxlength="5" (input)="ValidateExpDate(time, $event)" style="padding: 0.5rem !important" />
+                  </div>
+                  <div *ngIf="c_time" style="width: 100%;" class="error">Vui lòng nhập thời gian trong khoảng 8h
+                    sáng tới trước 8h tối.</div>
+                </div>
+                <!-- <div class="input-group">
+                  <p>Giờ bắt đầu(*): </p>
+                  <div>
+                    <input type="tel" name="time" id="time" [class.red_border]="c_time"
+                      [class.red_border_no_background]="c_time && (_inTime.length === 0 || _inTime.trim().length === 0)"
+                      (blur)="blurExpDate(time)" pattern="\d*" placeholder="08:30" [(ngModel)]="_inTime" #time
+                      maxlength="5" (input)="ValidateExpDate(time, $event)" />
+                  </div>
+                  <div *ngIf="c_time" style="width: 100%;" class="error">Vui lòng nhập thời gian trong khoảng 8h sáng
+                    tới trước 8h tối.</div>
+
+                </div> -->
+              </div>
+            </div>
+            <div class="calender-pick-info" *ngIf="dateArray && dateArray.length > 0">
+              <p class="showTime title_note" *ngIf="true">* Thông tin lịch định kỳ (ngày bắt đầu dịch vụ):</p>
+              <div>{{
+                datePickerShow
+                }}<span *ngIf="true"> {{scheduleDescription}}</span> </div>
+              <div *ngIf="scheduleTimeDescription">{{
+                scheduleTimeDescription
+                }}</div>
+            </div>
+          </div>
+          <div class="pickTime">
+            <div class="showTime" *ngIf="true">* Chọn ngày bắt đầu <i class="fas fa-calendar-alt customer-icon"></i>:
+            </div>
+            <div class="date-pickertime" *ngIf="true">
+              <ngb-datepicker class="calendar" style="top: -1rem; padding: 10px !important;" *ngIf="true" #dp
+                [(ngModel)]="selectedDate" (dateSelect)="hideDatePicker()" (navigate)="datePickerNavigate($event)"
+                [minDate]="minSelectableDate" [maxDate]="maxSelectableDate"></ngb-datepicker>
+            </div>
+          </div>
+
+        </div>
+        <hr style="margin-top: 1rem;">
+        <div class="serviceType">
+          - Danh sách ngày dọn theo định kỳ:
+          <div style="margin: 1rem 0 2rem; font-size: 12.5px; font-style: italic;" *ngIf="(dateArray && dateArray.length < 1)">*Vui lòng chọn ngày và các gói dịch vụ tương ứng để tạo ra <b>Lịch dọn định kỳ</b> tương ứng</div>
+        </div>
+        
+        <div class="table-responsive" *ngIf="(dateArray && dateArray.length >= 7) || (dateArray && dateArray.length > 0 && dateArray.length < 7)">
+          <div class="showtime-options" *ngIf="(dateArray && dateArray.length >= 7) || (dateArray && dateArray.length > 0 && dateArray.length < 7)">
+            <carousel height="87px" cellsToShow="7" *ngIf="dateArray && dateArray.length >= 7">
+              <div [ngClass]="{'selected':selectedDate===showtime}" class="carousel-cell"
+                (click)="viewDetailinSchedule(showtime, i)" *ngFor="let showtime of dateArray; let i = index">
+                <div class="top">{{getDay(showtime)}} <span>/{{getMonth(showtime)}}
+                  </span></div>
+                <div class="bottom">{{getDateMonth(showtime)}}
+                </div>
+                <i *ngIf="serviceAddOns" class="fas fa-check-square" (click)="removeAddOns()"></i>
+              </div>
+            </carousel>
+
+            <div class="select-date-container" height="87px" cellsToShow="7" *ngIf="dateArray && dateArray.length > 0 && dateArray.length < 7">
+              <div [ngClass]="{'selected':selectedDate===showtime}" class="datetimeBtn"
+                (click)="viewDetailinSchedule(showtime, i)" *ngFor="let showtime of dateArray; let i = index">
+                <div class="top">{{getDay(showtime)}} <span>/{{getMonth(showtime)}}
+                  </span></div>
+                <div class="bottom">{{getDateMonth(showtime)}}
+                </div>
+                <i *ngIf="serviceAddOns" class="fas fa-check-square" (click)="removeAddOns()"></i>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="button-submit">
+          <button mat-button class="btn" (click)="pickCalendar()">Thêm lịch định kỳ</button>
+        </div>
+        <!-- <div class="table-responsive" style="margin-top: 2rem;">
+          <div class="showtime-bydate" *ngFor="let date of dateList">
+            <span> - {{date.name}}: ({{date.startTime}} - {{date.endTime}}): </span>
+            <span style="font-weight: 700; font-size: 16px"> {{date.workDate}} </span>
+            <u (click)="viewDetailinSchedule(date.id, date.workDate)"> (Xem chi tiết)</u>
+          </div>
+        </div> -->
+      </div>
+    </div>
+    <button mat-button class="button" (click)="onNoClick()"><img src="./assets/img/x-dialog.svg" /></button>
+  </div>
+</div>

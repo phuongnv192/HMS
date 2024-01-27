@@ -21,7 +21,19 @@
   }
 }
 
-.carousel-item {
+.abc .carousel-item {
+  position: relative;
+  display: none;
+  align-items: center;
+  width: 100%;
+  backface-visibility: hidden;
+  perspective: 1000px;
+  height: 240px;
+  padding-left: 100px;
+  padding-right: 100px;
+}
+
+.edf .carousel-item {
   position: relative;
   display: none;
   align-items: center;
@@ -245,4 +257,8 @@
 }
 .bootstrap-slider{
   height: 400px;
+}
+
+.bootstrap-slider-price{
+  height: 200px;
 }

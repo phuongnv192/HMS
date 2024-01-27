@@ -1,0 +1,40 @@
+<div mat-dialog-actions class="guide_class">
+  <div class="dialog-container">
+    <div class="header-background"></div>
+    <div class="header">
+      <h6>Nhận xét & đánh giá dịch vụ </h6>
+    </div>
+
+    <div class="content row">
+      <div class="content-scroll">
+        <div class="title_note"> </div>
+        <div class="note">Đánh giá chất lượng dịch vụ HMS</div>
+        <mat-tab-group>
+          <mat-tab *ngFor="let cleanerGroup of groupedCleaners; let i = index">
+            <ng-template mat-tab-label>
+              Nhân viên {{ i + 1 }}
+            </ng-template>
+        
+            <div class="cleaner" *ngFor="let item of cleanerGroup; let j = index">
+              <div class="cleaner_title"><img src="assets/img/cleaner/{{item.image}}"></div>
+              <div>
+                <p>{{item.name}}</p>
+                <p>{{item.gender}}</p>
+                <p>{{item.age}}</p>
+              </div>
+              <div class="cleaner_rating"> {{item.rate}} </div>
+              <div class="totle_rate"> ({{ item.total_rate }})
+              </div>
+              <div class="totle_pick"> Lượt được chọn: {{ item.total_pick }}
+              </div>
+              <hr class="hr_select_info_dialog">
+              <!-- Thêm textarea và các thành phần khác mà bạn muốn -->
+            </div>
+          </mat-tab>
+        </mat-tab-group>
+      </div>
+      <button mat-button class="detail_btn" (click)="submitReview()"></button>
+    </div>
+    <button mat-button class="button" (click)="onNoClick()"><img src="./assets/img/x-dialog.svg" /></button>
+  </div>
+</div>

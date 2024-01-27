@@ -1,0 +1,35 @@
+<div mat-dialog-actions class="guide_class">
+  <div class="dialog-container">
+    <div class="header">
+      <h6>Bổ sung dịch vụ tiện ích</h6>
+    </div>
+    <div class="content">
+      <div class="content-scroll">
+        <div class="title_note"> Đơn dịch vụ định kỳ ngày {{ date }} </div>
+        <div class="title_note rednoti"> *Dịch vụ tiện ích được thêm theo ngày đối với lựa chọn "Dịch vụ định kỳ":</div>
+        <div class="table-responsive" *ngFor="let list of parentService">
+          <input type="checkbox" [(ngModel)]="list.checked "
+            (click)="checkService(list.name.parent.name, list.name.parent.id)"> {{ list.name.parent.name }}
+        </div>
+        <div class="listAdvanceService"> Các dịch vụ tiện ích đăng ký: {{ textListAdvanceService }} </div>
+        <div class="input-group">
+          <p style="width: 28%;">Giờ bắt đầu(*): </p>
+          <div>
+            <!-- Sử dụng trường input kiểu số -->
+            <input type="tel" name="time" id="time" [class.red_border]="c_time"
+              [class.red_border_no_background]="c_time && (_inTime.length === 0 || _inTime.trim().length === 0)"
+              (blur)="blurExpDate(time)" pattern="\d*" placeholder="08:30" [(ngModel)]="_inTime" #time maxlength="5"
+              (input)="ValidateExpDate(time, $event)" style="padding: 0.5rem !important; width: 30% !important;" />
+          </div>
+          <div *ngIf="c_time" style="width: 100%;" class="error">Vui lòng nhập thời gian trong khoảng 8h
+            sáng tới trước 8h tối.</div>
+        </div>
+      </div>
+
+
+    </div>
+    <div class="button-submit">
+      <button mat-button class="btn" (click)="confirm()">Bổ sung</button>
+      <button mat-button class="btn" (click)="cancel()">Hủy</button>
+    </div>
+  </div>

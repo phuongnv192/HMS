@@ -677,6 +677,21 @@ $navbar-light-toggler-icon-bg:      str-replace(url("data:image/svg+xml !default
 $navbar-light-toggler-border-color: transparent !default;
 
 
+// Vertical navbar
+$navbar-vertical-box-shadow: 0 0 2rem 0 rgba(136, 152, 170, .15) !important;
+$navbar-vertical-width: 250px !default;
+$navbar-vertical-padding-x: 1.5rem !default;
+$navbar-vertical-nav-link-padding-x:  1.5rem !default;
+$navbar-vertical-nav-link-padding-y:  .65rem !default;
+
+$navbar-icon-min-width: 2.25rem !default;
+
+$navbar-breadcrumb-padding-y: $nav-link-padding-y !default;
+$navbar-breadcrumb-padding-x: 0 !default;
+
+$navbar-light-bg: $white !default;
+$navbar-light-border-color: $border-color !default;
+
 // Alerts
 
 $alert-padding-y: 1rem !default;
@@ -686,6 +701,40 @@ $alert-border-radius: $border-radius !default;
 $alert-bg-level: -2 !default;
 $alert-border-level: -2 !default;
 $alert-color-level: 0 !default;
+
+
+// Tables
+
+$table-cell-padding:          1rem !default;
+$table-cell-padding-sm:       .5rem !default;
+
+$table-bg:                    transparent !default;
+$table-accent-bg:             rgba($black, .05) !default;
+$table-hover-bg:              $gray-100 !default;
+$table-active-bg:             $table-hover-bg !default;
+
+$table-border-width:          $border-width !default;
+$table-border-color:          $gray-200 !default;
+
+$table-head-bg:               $gray-100 !default;
+$table-head-color:            $gray-600 !default;
+$table-head-spacer-y:         .75rem !default;
+
+$table-head-font-size:        .65rem !default;
+$table-head-font-weight:      $font-weight-bold !default;
+$table-head-text-transform:   uppercase !default;
+$table-head-letter-spacing:   1px !default;
+
+$table-body-font-size:        .8125rem !default;
+
+$table-dark-bg:               theme-color("default") !default;
+$table-dark-accent-bg:        rgba($white, .05) !default;
+$table-dark-hover-bg:         rgba($white, .075) !default;
+$table-dark-border-color:     lighten(theme-color("default"), 7%) !default;
+$table-dark-color:            $body-bg !default;
+
+$table-dark-head-bg:          lighten(theme-color("default"), 4%) !default;
+$table-dark-head-color:       lighten(theme-color("default"), 35%) !default;
 
 
 // List group
@@ -875,6 +924,32 @@ $datepicker-dropdown-border: lighten($gray-400, 40%);
 $datepicker-dropdown-bg: $white !default;
 $datepicker-highlighted-bg: $datepicker-active-background !default;
 
+$line-height-base:            1.5 !default;
+
+// Main content
+
+$main-content-padding-y: 40px !default;
+$main-content-padding-x: 24px !default; // in px to combine with $grid-gutter-width
+
+
+// Alerts
+
+$alert-padding-y: 1rem !default;
+$alert-padding-x: 1.5rem !default;
+$alert-border-radius: $border-radius !default;
+
+$alert-bg-level: -2 !default;
+$alert-border-level: -2 !default;
+$alert-color-level: 0 !default;
+
+// chart
+$chart-height: 350px !default;
+$chart-height-sm: 230px !default;
+
+$chart-legend-margin-top: 2.5rem !default;
+$chart-legend-font-size: $font-size-sm !default;
+$chart-legend-color: $text-muted !default;
+$chart-legend-height: $chart-legend-margin-top + $chart-legend-font-size * $line-height-base !default;
 
 // Footer
 
@@ -885,3 +960,9 @@ $footer-link-color: $gray-600 !default;
 $footer-link-hover-color: $gray-700 !default;
 $footer-heading-color: $gray-600 !default;
 $footer-heading-font-size: $font-size-sm !default;
+
+
+
+
+
+// Import Bootstrap variable defaults

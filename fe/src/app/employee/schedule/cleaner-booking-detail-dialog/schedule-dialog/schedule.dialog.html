@@ -1,0 +1,71 @@
+<div mat-dialog-actions class="guide_class">
+  <div class="dialog-container">
+    <div class="header">
+      <h6>Xem chi tiết đơn định kỳ và cập nhật thông tin đơn</h6>
+    </div>
+    <div class="content">
+      <div class="content-scroll">
+        <div class="table-responsive">
+          <div class="showtime-options">
+            <carousel height="87px" cellsToShow="4">
+              <div [ngClass]="{'selected':selectedDate===showtime.scheduleId, 'confirmed': (isConfirmedStatus(showtime.status) && selectedDate!==showtime.scheduleId),
+               'on_moving':(isOnMovingOrOnProcess(showtime.status)  && selectedDate!==showtime.scheduleId), 'done': (isDoneStatus(showtime.status)  && selectedDate!==showtime.scheduleId)}" class="carousel-cell" 
+               (click)="viewDetailinSchedule(showtime.scheduleId, showtime)" *ngFor="let showtime of dateArray; let i = index">
+                <div class="top">{{getDay(showtime.workDate)}} <span>/{{getMonth(showtime.workDate)}}
+                  </span></div>
+                <div class="bottom">{{getDateMonth(showtime.workDate)}}
+                </div>
+                <div class="bottom">{{showtime.listAddOns}}
+                </div>
+                <div class="bottom">Trạng thái: {{showtime.status}}
+                </div>
+                <!-- <i *ngIf="serviceAddOns" class="fas fa-check-square" (click)="removeAddOns()"></i> -->
+              </div>
+            </carousel>
+
+            <!-- <div class="select-date-container" height="87px" cellsToShow="4"
+              *ngIf="dateArray && dateArray.length > 0 && dateArray.length < 4">
+              <div [ngClass]="{'selected': selectedDate === showtime.scheduleId, 'confirmed': (isConfirmedStatus(showtime.status) && selectedDate!==showtime.scheduleId),
+               'on_moving':(isOnMovingOrOnProcess(showtime.status)  && selectedDate!==showtime.scheduleId), 'done': (isDoneStatus(showtime.status)  && selectedDate!==showtime.scheduleId)}"
+                 class="datetimeBtn"
+                (click)="viewDetailinSchedule(showtime.scheduleId, showtime)" *ngFor="let showtime of dateArray; let i = index">
+                <div class="top">{{getDay(showtime.workDate)}} <span>/{{getMonth(showtime.workDate)}}
+                  </span></div>
+                <div class="bottom" [ngClass]="{'selected':selectedDate===showtime.scheduleId, 'confirmed': (isConfirmedStatus(showtime.status) && selectedDate!==showtime.scheduleId),
+               'on_moving':(isOnMovingOrOnProcess(showtime.status)  && selectedDate!==showtime.scheduleId), 'done': (isDoneStatus(showtime.status)  && selectedDate!==showtime.scheduleId)}">{{getDateMonth(showtime.listAddOns)}}
+
+                </div>
+                <div class="bottom" style="margin-top: 3px;" [ngClass]="{'selected':selectedDate===showtime.scheduleId, 'confirmed': (isConfirmedStatus(showtime.status) && selectedDate!==showtime.scheduleId),
+               'on_moving':(isOnMovingOrOnProcess(showtime.status)  && selectedDate!==showtime.scheduleId), 'done': (isDoneStatus(showtime.status)  && selectedDate!==showtime.scheduleId)}">{{showtime.listAddOns}}
+                </div>
+                <div class="bottom" style="margin-top: 3px;" [ngClass]="{'selected':selectedDate===showtime.scheduleId, 'confirmed': (isConfirmedStatus(showtime.status) && selectedDate!==showtime.scheduleId),
+               'on_moving':(isOnMovingOrOnProcess(showtime.status)  && selectedDate!==showtime.scheduleId), 'done': (isDoneStatus(showtime.status)  && selectedDate!==showtime.scheduleId)}">Trạng thái: {{showtime.status}}
+                </div>
+              </div>
+            </div> -->
+
+          </div>
+          <!-- <p class="text-primary" style="margin-bottom: 0;">Ghi chú</p>
+        <div class="note-section">
+          <textarea style="width: 80%;" [(ngModel)]="note" rows="4"
+            placeholder=""></textarea>
+        </div> -->
+        </div>
+        <!-- listPick.length > 0  -->
+        <div *ngIf="data.status != 'DONE'" class="button-submit" style="text-align: right;">
+          <button *ngIf="role != 'CUSTOMER' && currentDay == selectedList.workDate" style="height: 35px; font-size: 11px; display: inline; margin-left: 3rem;"
+              class="btn btn-primary btn-pay" (click)="confirm(selectedList.scheduleId)">
+              {{title_confirm}}
+            </button>
+            <!-- <button  *ngIf="this.selectedList.status == 'ON_PROCESS' &&  this.selectedList.serviceAddOns.length == 0 && role != 'CUSTOMER'" style="height: 35px; font-size: 11px; display: inline;"
+            class="btn btn-primary btn-pay" (click)="complete(selectedList.scheduleId)">
+            Hoàn thành đơn
+          </button> -->
+            <button *ngIf="data.status == 'CONFIRMED' || data.status == 'RECEIVED'" style="height: 35px; font-size: 11px; display: inline;"
+            class="btn btn-danger btn-pay" (click)="cancel(selectedList.scheduleId)">
+            Hủy đơn
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>

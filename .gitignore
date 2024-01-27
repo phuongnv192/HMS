@@ -1,24 +1,49 @@
-# Compiled class file
-*.class
+```
 
-# Log file
-*.log
+# See http://help.github.com/ignore-files/ for more about ignoring files.
 
-# BlueJ files
-*.ctxt
+# compiled output
+/dist
+/dist-server
+/tmp
+/out-tsc
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+# dependencies
+/node_modules
 
-# Package Files #
-*.jar
-*.war
-*.nar
-*.ear
-*.zip
-*.tar.gz
-*.rar
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
-replay_pid*
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# misc
+/.sass-cache
+/.angular/cache
+/connect.lock
+/coverage
+/libpeerconnection.log
+npm-debug.log
+testem.log
+/typings
+
+# e2e
+/e2e/*.js
+/e2e/*.map
+
+# System Files
+.DS_Store
+Thumbs.db
+.history/*
+.angular/cache/
+package-lock.json

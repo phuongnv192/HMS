@@ -1,0 +1,257 @@
+::ng-deep .cleaner-review mat-dialog-container {
+  padding: 0 !important;
+  overflow-x: visible !important;
+  overflow-y: visible !important;
+  min-height: 385px !important;
+  background: none !important;
+  box-shadow: none !important;
+  top: 50px;
+}
+
+
+
+::ng-deep .cleaner-review .mat-dialog-actions {
+  padding: 0;
+}
+
+h6 {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  padding: 10px 16px;
+  margin-bottom: 0;
+  text-align: left;
+}
+
+.dialog-container .header {
+  border-bottom: 1px solid #DDDDDD;
+  border-radius: 3px 3px 0 0;
+  background: #fff;
+}
+
+.content {
+  margin: 0;
+  background: #fff;
+  border-radius: 0 0 3px 3px;
+  padding: 15px 10px;
+/* height: calc(100vh - 225px); */;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  min-height: 325px !important;
+
+}
+
+.content-item {
+  float: left;  
+  width: 33.33%;
+  padding: 0 15px;
+  height: 280px;
+}
+
+.content-item .item {
+  margin-bottom: 10px;
+}
+
+.content-text {
+  height: 130px;
+  text-align: left;
+}
+
+.content-item .item p {
+  font-size: 12px;
+  margin-bottom: 0;
+}
+
+.content-item .image {
+  text-align: center;
+}
+
+.content-item .image img {
+  width: 240px;
+}
+
+.content-item .item .title {
+  font-weight: bold;
+}
+
+.content-item .item .italic {
+  font-style: italic;
+}
+
+.dialog-container {
+  position: relative;
+  width: 100%;
+}
+
+.dialog-container .button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: none;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.dialog-container .button fa-icon {
+  font-size: 25px;
+  color: #1688C9;
+}
+
+.header-background {
+  height: 30px;
+  margin-bottom: 15px;
+}
+
+.border-right {
+  border-right: 1px solid #ddd;
+}
+
+/* ::ng-deep .cdk-overlay-backdrop {
+  background: rgba(0, 0, 0, 0.51);
+}
+
+::ng-deep .cdk-overlay-pane {
+  height: auto !important;
+} */
+
+@media (max-width: 992px) {
+  ::ng-deep .cleaner {
+    top: 50px;
+  }
+
+  .hr_select_info_dialog {
+    border-bottom: solid 1px #888888;
+    border-bottom-style: solid;
+    margin-top: 10px;
+    margin-bottom: 0;
+    border-top: none;
+  }
+
+  .content-item {
+    width: 100%;
+    height: auto;
+  }
+
+  .dialog-container .button {
+    position: absolute;
+    top: -40px;
+    /* right: 10%; */
+  }
+
+  /* ::ng-deep .cdk-overlay-pane {
+    width: calc(100% - 30px) !important;
+    max-width: 100% !important;
+    height: 90% !important;
+  } */
+
+  .header-background {
+    display: none;
+  }
+
+  .dialog-container .header {
+    /* position: absolute; */
+    top: -15px;
+    width: 100%;
+  }
+
+  .content {
+    /* position: absolute; */
+    width: 100%;
+    /* height: auto; */
+    overflow-y: scroll;
+    overflow-x: hidden;
+    top: 30px;
+  }
+
+  h6 {
+    padding: 15px 10px;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .content-item .image {
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .content-item:last-child .image {
+    padding-bottom: 0;
+    margin-bottom: 20px;
+    border-bottom: none;
+  }
+
+  .border-right {
+    border-right: none;
+  }
+
+  .content-text {
+    height: auto;
+  }
+
+  /* ::ng-deep .cdk-overlay-container {
+    display: none;
+  }
+
+  ::ng-deep .modal-open .cdk-overlay-container {
+    display: block;
+  } */
+  ::ng-deep .cleaner-review mat-dialog-container {
+    min-height: auto !important;
+  }
+
+}
+
+.cleaner {
+  padding: 0 10px;
+  text-align: initial;
+}
+
+.cleaner_title {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 16px;
+  margin-bottom: 0;
+}
+
+.cleaner_title img {
+  width: 48px;
+  height: 20px;
+  margin: 13px 16px 13px 0;
+}
+
+.cleaner_rating {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+}
+
+.content-scroll {
+  overflow: auto;
+}
+
+.title_note {
+  text-align: left;
+  font-size: 12px;
+  font-weight: 400;
+  padding: 0 10px;
+}
+
+.note {
+  padding: 0px 10px;
+  font-weight: 700;
+  text-align: left;
+  font-size: 13px;
+  margin-top: 10px;
+}
+
+
+.hr_select_info_dialog {
+  border-bottom: solid 1px #ddd;
+  border-bottom-style: solid;
+  border-top: none;
+  margin-top: 10px;
+  margin-bottom: 5px;
+}

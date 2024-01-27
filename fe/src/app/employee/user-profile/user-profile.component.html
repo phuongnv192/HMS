@@ -1,0 +1,152 @@
+<div class="header pb-8 pt-5 pt-lg-8 d-flex align-items-center" style="min-height: 100px;">
+  <!-- background-image: url(assets/img/theme/profile-cover.jpg); background-size: cover; background-position: center top; -->
+  <!-- Mask -->
+  <span class="mask bg-gradient-danger opacity-8" style="height: 100px;"></span>
+  <!-- Header container -->
+</div>
+<div class="container-fluid" style="margin-top: 0rem !important">
+  <div class="row">
+    <div class="col-xl-4 order-xl-2 mb-5 mb-xl-0">
+      <div class="card card-profile shadow">
+        <div class="row justify-content-center">
+          <div class="col-lg-3 order-lg-2">
+            <div class="card-profile-image">
+              <a href="">
+                <img src="assets/img/theme/team-4-800x800.jpg" class="rounded-circle">
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
+          <div class="d-flex justify-content-between">
+          </div>
+        </div>
+        <div class="card-body pt-0 pt-md-4">
+          <div class="row">
+            <div class="col">
+              <div class="card-profile-stats d-flex justify-content-center">
+                <div>
+                  <span class="heading">{{ activityYear }}</span>
+                  <span class="description">Năm làm</span>
+                </div>
+                <div>
+                  <span class="heading">{{ ratingNumber }}</span>
+                  <span class="description">Số dịch vụ</span>
+                </div>
+                <div>
+                  <span class="heading">{{ averageRating }}</span>
+                  <span class="description">Đánh giá</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="text-center">
+            <h3>
+              Các bài đánh giá và phản hồi <span class="font-weight-light">({{ ratingNumber }})</span>
+            </h3>
+            <hr class="my-4" />
+            <div class="star-rating" [innerHTML]="generateStarRating(averageRating)"></div>
+            <p>{{review}}</p>
+            <a style="text-decoration: none; color: #5e72e4; background-color: transparent; cursor: pointer;"
+              (click)="showMore(cleanerId)">Xem thêm</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-8 order-xl-1">
+      <div class="card bg-secondary shadow">
+        <div class="card-header bg-white border-0">
+          <div class="row align-items-center">
+            <div class="col-8">
+              <h3 class="mb-0">{{name}}</h3>
+            </div>
+            <div class="col-2 text-right">
+              <a href="/schedule" class="btn btn-sm btn-primary">Lịch công việc</a>
+            </div>
+            <div class="col-2 text-right">
+              <a href="/history" class="btn btn-sm btn-primary">Lịch sử dịch vụ</a>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <form>
+            <h6 class="heading-small text-muted mb-4">Thông tin người dùng</h6>
+            <div class="pl-lg-4">
+              <div class="row">
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-username">Họ và tên</label>
+                    <input type="text" id="input-username" class="form-control form-control-alternative"
+                      placeholder="Nguyen Van A" value="{{name}}" [(ngModel)]="name">
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-email">Email</label>
+                    <input type="email" id="input-email" class="form-control form-control-alternative"
+                      placeholder="abc@example.com" value="{{email}}" [(ngModel)]="email">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-4">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-first-name">Ngày sinh</label>
+                    <input type="text" id="dob" class="form-control form-control-alternative" placeholder="01/01/2020"
+                      value="{{dob}}" [(ngModel)]="dob">
+                  </div>
+                </div>
+                <div class="col-lg-3">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-last-name">Giới tính</label>
+                    <input type="text" id="gender" class="form-control form-control-alternative" placeholder="Last name"
+                      value="Jesse">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <hr class="my-4" />
+            <!-- Address -->
+            <h6 class="heading-small text-muted mb-4">Thông tin liên hệ</h6>
+            <div class="pl-lg-4">
+              <div class="row">
+                <div class="col-md-9">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-address">Địa chỉ</label>
+                    <input id="input-address" class="form-control form-control-alternative"
+                      placeholder="Số 1 Kim Mã, Hà Nội" value="{{address}}" [(ngModel)]="address" type="text">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-4">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-country">Chi nhánh làm việc</label>
+                    <input type="text" id="input-branch" class="form-control form-control-alternative"
+                      placeholder="Ha Noi">
+                  </div>
+                </div>
+                <div class="col-lg-4">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-country">Số điện thoại</label>
+                    <input type="number" id="input-phone" class="form-control form-control-alternative"
+                      placeholder="0987654321" value="{{phoneNumber}}" [(ngModel)]="phoneNumber">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- <hr class="my-4" />
+            <h6 class="heading-small text-muted mb-4">Giới thiệu</h6>
+            <div class="pl-lg-4">
+              <div class="form-group">
+                <label>Sở thích</label>
+                <textarea rows="4" class="form-control form-control-alternative"
+                  placeholder="A few words about you ..."></textarea>
+              </div>
+            </div> -->
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

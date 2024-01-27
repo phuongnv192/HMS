@@ -1,0 +1,107 @@
+<div class="header bg-gradient-danger design-table pb-8 pt-md-8">
+  <div class="container-fluid">
+    <div class="header-body">
+      <!-- Card stats -->
+      <div class="row" style="padding: 0 5rem;">
+        <div class="col-xl-4 col-lg-6">
+          <div class="card card-stats" style="height: 85px !important; padding: 0 !important;">
+            <div class="card-body">
+              <div class="row">
+                <div class="col search-emp">
+                  <div class="search-name">
+                    <h5 class="card-title text-uppercase text-muted mb-0 font14">Mã đơn dịch vụ</h5>
+                    <input #serviceName id="serviceName" placeholder="Booking #1" [(ngModel)]="name" type="text"
+                      aria-describedby="serviceName-help" maxlength="50">
+                  </div>
+                </div>
+                <div class="col-auto">
+                  <div class="icon icon-shape bg-danger text-white rounded-circle shadow" style="cursor: pointer;"
+                    (click)="search(bookingName, bookingPhone, status)">
+                    <i class="fas fa-search"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Page content -->
+<div class="container-fluid mt--7" style="min-height: 440px !important;">
+  <!-- Table -->
+  <div class="row" style="padding: 0 5rem;">
+    <div class="col">
+      <div class="card shadow">
+        <div class="card-header border-0">
+          <h3 class="mb-0 font20">Danh sách đơn dịch vụ:</h3>
+        </div>
+        <div class="table-responsive">
+          <table class="table align-items-center table-flush">
+            <thead class="thead-light">
+              <tr>
+                <th scope="col" >Tên đơn dịch vụ</th>
+                <th scope="col">Ngày làm</th>
+                <th scope="col">Địa chỉ</th>
+                <th scope="col">Loại nhà</th>
+                <!-- <th scope="col">Số tầng</th> -->
+                <th scope="col">Diện tích</th>
+                <th scope="col">Loại dịch vụ</th>
+                <th scope="col">Trạng thái</th>
+                <th scope="col"></th>
+                <!-- <th scope="col">Phản hồi</th> -->
+              </tr>
+            </thead>
+            <tbody *ngIf="data.length > 0">
+              <tr *ngFor="let service of data" style="cursor: pointer;">
+                <th scope="row" (click)="viewDetailinSchedule(service)">
+                  <div class="media align-items-center">
+                    <div class="media-body">
+                      <span class="mb-0 text-sm">{{service.bookingId}} - {{service.hostName}}</span>
+                    </div>
+                  </div>
+                </th>
+                <td>
+                  {{service.scheduleList[0].workDate | dateFormat}}
+                </td>
+                <td>
+                  {{service.hostAddress}}
+                </td>
+                <td>
+                  {{service.houseType == "APARTMENT" ? "Chung cư" : "Nhà đất"}}
+                </td>
+                <!-- <td>
+                  {{service.floorNumber}}
+                </td> -->
+                <td>
+                  {{service.floorArea}}
+                </td>
+                <td>
+                  {{service.serviceTypeName && service.servicePackageName ? 'Gói gọn định kỳ' : 'Gói dọn theo ngày' }} 
+                </td>
+                <td>
+                  {{service.serviceTypeName && service.servicePackageName ? service.status : service.scheduleList[0].status }}
+                </td>
+                <td>
+                  <div ngbDropdown placement="bottom-right">
+                    <a class="btn btn-sm btn-icon-only text-light" ngbDropdownToggle>
+                      <i class="fas fa-ellipsis-v"></i>
+                    </a>
+                    <div ngbDropdownMenu class=" dropdown-menu-right dropdown-menu-arrow">
+                      <a class="dropdown-item" (click)="viewDetailinSchedule(service)">Xem thông tin</a>
+                      <a class="dropdown-item" (click)="pickCleaner(service.bookingId)">Đổi người dọn</a>
+                      <!-- <a class="dropdown-item" [disable]="true" (click)="changeStatus(service.bookingId)">Xác nhận đơn</a> -->
+                      <!-- <a class="dropdown-item" (click)="cancel(service.bookingId)">Hủy đơn</a> -->
+                    </div>
+                  </div>  
+                </td>
+              </tr>
+            </tbody>
+            <div style="width: 100%; text-align: center; font-size: 18px; font-weight: 700; margin:2rem;"  *ngIf="data.length < 1"> Hiện tại, người dùng đang không có dữ liệu về lịch sử sử dụng dịch vụ </div>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

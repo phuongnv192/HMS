@@ -1,0 +1,52 @@
+<div mat-dialog-actions class="guide_class">
+  <div class="dialog-container">
+    <div class="header-background"></div>
+    <div class="header">
+      <h6>{{title_addon_service}}</h6>
+    </div>
+    <div class="content">
+      <div class="content-scroll">
+        <form role="form">
+          <div class="form-group">
+            <div class="input-group " style="display: flex; width: 90%;">
+              <div class="input-title">
+                Tên dịch vụ: 
+              </div>
+              <input class="" placeholder="Tên dịch vụ" [maxLength]="50" [value]="name" type="text">
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="input-group ">
+              <div *ngIf="idParent" class="input-title">
+                Mã ID nhóm dịch vụ: {{idParent}}
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="input-group " style="display: flex; width: 90%;">
+              <div class="input-title">
+                Giá dịch vụ: 
+              </div>
+              <input class="" placeholder="Giá dịch vụ" [maxLength]="10" [value]="price" type="text">
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="input-group " style="display: flex; width: 90%;">
+              <div class="input-title">
+                Ghi chú: 
+                <div>(mô tả dịch vụ) </div>
+              </div>
+              <textarea style="width: 80%;" [value]="note" rows="4"
+                      placeholder="Nhập ghi chú của bạn cho dịch vụ đăng ký"></textarea>
+            </div>
+          </div>
+
+          <div class="text-center">
+            <button type="button" class="btn btn-primary mt-4" (click)="addService()">Thêm dịch vụ tiện ích</button>
+          </div>
+        </form>
+      </div>
+      <button mat-button class="button" (click)="onNoClick()"><img src="./assets/img/x-dialog.svg" /></button>
+    </div>
+  </div>
+</div>

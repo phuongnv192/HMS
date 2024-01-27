@@ -1,3 +1,25 @@
-<app-navbar></app-navbar>
-<router-outlet></router-outlet>
-<app-footer></app-footer>
+<!-- Màn hình guest/customer -->
+<div *ngIf="(customerNavbar)">
+    <app-navbar-customer [customerNavbar]="customerNavbar" [guestNavbar]="guestNavbar" [username]="username"></app-navbar-customer>
+    <!-- Sidenav -->
+    <router-outlet *ngIf="customerNavbar"></router-outlet>
+    <app-footer *ngIf="customerNavbar"></app-footer>
+</div>
+
+<!-- Màn hình quản lý -->
+<div *ngIf="(cleanerNavbar || adminNavbar || managerNavbar || leadNavbar)">
+    <app-sidebar [cleanerNavbar]="cleanerNavbar" [leadNavbar]="leadNavbar" [adminNavbar]="adminNavbar" [managerNavbar]="managerNavbar" [username]="username"></app-sidebar>
+    <div class="main-content">
+        <!-- Top navbar -->
+        <app-navbar [cleanerNavbar]="cleanerNavbar" [leadNavbar]="leadNavbar" [managerNavbar]="managerNavbar" [adminNavbar]="adminNavbar" [username]="username"></app-navbar>
+        <!-- Pages -->
+        <router-outlet></router-outlet>
+    </div>
+</div>
+
+<div #guestCustomerTemplate *ngIf="guestNavbar">
+    <app-navbar-customer [customerNavbar]="customerNavbar" [guestNavbar]="guestNavbar" [username]="username"></app-navbar-customer>
+    <!-- Sidenav -->
+    <router-outlet></router-outlet>
+    <app-footer *ngIf="customerNavbar"></app-footer>
+</div>

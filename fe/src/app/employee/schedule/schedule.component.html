@@ -1,0 +1,170 @@
+<div class="header bg-gradient-danger design-table pb-8 pt-md-8">
+  <div class="container-fluid">
+    <div class="header-body">
+      <!-- Card stats -->
+      <div class="row">
+        <div class="col-xl-4 col-lg-6">
+          <div class="card-search card-stats mb-4 mb-xl-0" style="margin-bottom: 2.75rem !important;">
+            <div class="card-body">
+              <div class="row">
+                <div class="col search-emp">
+                  <div class="search-name">
+                    <h5 class="card-title text-uppercase text-muted mb-0 font14">Mã đơn dịch vụ</h5>
+                    <input #serviceName id="serviceName" placeholder="Booking #1" [(ngModel)]="name" type="text"
+                      aria-describedby="serviceName-help" maxlength="50">
+                  </div>
+                </div>
+
+                <div class="col-auto">
+                  <div class="icon icon-shape bg-danger text-white rounded-circle shadow" style="cursor: pointer;"
+                    (click)="search()">
+                    <i class="fas fa-search"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Page content -->
+<div class="container-fluid mt--7">
+  <!-- Table -->
+  <div class="row">
+    <div class="col">
+      <div class="card shadow" *ngIf="listBookingSchedule.length > 0 ">
+        <div class="card-header border-0">
+          <h3 class="mb-0 font20">Danh sách đơn dịch vụ định kỳ:</h3>
+        </div>
+        <div class="table-responsive" style="min-height: 300px;">
+          <table class="table align-items-center table-flush">
+            <thead class="thead-light">
+              <tr>
+                <th scope="col">Mã đơn</th>
+                <th scope="col">Ngày dọn đầu</th>
+                <th scope="col">Tên người thuê</th>
+                <th scope="col">Số điện thoại</th>
+                <th scope="col">Địa chỉ</th>
+                <th scope="col">Loại nhà</th>
+                <th scope="col">Trạng thái</th>
+                <th scope="col"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let booking of listBookingSchedule">
+                <th scope="row">
+                  <div class="media align-items-center">
+                    <div class="media-body">
+                      <span class="mb-0 text-sm">{{booking.bookingId}}</span>
+                    </div>
+                  </div>
+                </th>
+                <td>
+                  {{booking.scheduleList[0].workDate}}
+                </td>
+                <td>
+                  {{booking.hostName}}
+                </td>
+                <td>
+                  {{booking.hostPhone}}
+                </td>
+                <td>
+                  {{booking.hostAddress}}
+                </td>
+                <td>
+                  {{booking.houseType}}
+                </td>
+                <td>
+                  {{booking.status}}
+                </td>
+                <td class="text-center">
+                  <div ngbDropdown placement="bottom-right">
+                    <a class="btn btn-sm btn-icon-only text-light" ngbDropdownToggle>
+                      <i class="fas fa-ellipsis-v"></i>
+                    </a>
+                    <div ngbDropdownMenu class=" dropdown-menu-right dropdown-menu-arrow">
+                      <a class="dropdown-item" (click)="showDetail(booking, 'schedule')">Xem thông tin</a>
+                      <a class="dropdown-item" (click)="changeStatus(booking.bookingId)">Xác nhận đơn</a>
+                      <a class="dropdown-item" (click)="cancel(booking.bookingId)">Hủy đơn</a>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card shadow" style="margin-top: 5rem;" *ngIf="listBookingDay.length > 0">
+        <div class="card-header border-0">
+          <h3 class="mb-0 font20">Danh sách đơn dịch vụ theo ngày:</h3>
+        </div>
+        <div class="table-responsive" style="min-height: 300px;">
+          <table class="table align-items-center table-flush">
+            <thead class="thead-light">
+              <tr>
+                <th scope="col">Mã đơn</th>
+                <th scope="col">Ngày dọn a</th>
+                <th scope="col">Tên người thuê</th>
+                <th scope="col">Số điện thoại</th>
+                <th scope="col">Địa chỉ</th>
+                <th scope="col">Loại nhà</th>
+                <th scope="col">Trạng thái</th>
+                <th scope="col"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let day of listBookingDay">
+                <th scope="row">
+                  <div class="media align-items-center">
+                    <div class="media-body">
+                      <span class="mb-0 text-sm">{{day.bookingId}}</span>
+                    </div>
+                  </div>
+                </th>
+                <td>
+                  {{day.scheduleList[0].workDate | dateFormat}}
+
+                </td>
+                <td>
+                  {{day.hostName}}
+
+                </td>
+                <td>
+                  {{day.hostPhone}}
+                </td>
+                <td>
+                  {{day.hostAddress}}
+                </td>
+                <td>
+                  {{day.houseType}}
+                </td>
+                <td>
+                  {{day.scheduleList[0].status == 'RECEIVED' ? 'CONFIRMED' : day.scheduleList[0].status}}
+                </td>
+                <td class="text-center">
+                    <div ngbDropdown placement="bottom-right">
+                      <a class="btn btn-sm btn-icon-only text-light" ngbDropdownToggle>
+                        <i class="fas fa-ellipsis-v"></i>
+                      </a>
+                      <div ngbDropdownMenu class=" dropdown-menu-right dropdown-menu-arrow">
+                        <a class="dropdown-item" (click)="showDetail(day, 'day')">Xem thông tin</a>
+                        <!-- <a class="dropdown-item" (click)="cancel(day.bookingId)">Hủy đơn</a> -->
+                      </div>
+                    </div>
+                    <!-- <div>
+                      <a class="dropdown-item" (click)="showDetail(booking)">Xem thông
+                        tin</a>
+
+                      <a class="dropdown-item" (click)="showDetail(booking)">Cập nhật đơn</a>
+                    </div> -->
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
