@@ -14,8 +14,8 @@ import java.util.List;
 public class SubmitReviewRequest {
     private Long bookingId;
     private Long scheduleId;
-    private Boolean reviewBooking;
+    private Boolean reviewBooking = true;
     private List<CleanerReviewRequest> cleaners;
-    private Integer ratingSchedule;
+    private Integer ratingScore;
     private String review;
 }

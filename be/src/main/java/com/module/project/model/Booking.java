@@ -49,8 +49,7 @@ public class Booking {
     private String status;
     @Column(name = "note", length = 1000)
     private String note;
-    @Column(name = "review", length = 1000)
-    private String review;
+    private String ratingScore;
     private String rejectedReason;
 
     @JsonIgnore

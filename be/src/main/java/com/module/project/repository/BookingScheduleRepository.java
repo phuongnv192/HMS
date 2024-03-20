@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface BookingScheduleRepository extends JpaRepository<BookingSchedule, Long> {
@@ -22,6 +23,8 @@ public interface BookingScheduleRepository extends JpaRepository<BookingSchedule
                              @Param(value = "notStatus") List<String> notStatus);
 
     List<BookingSchedule> findAllByBookingTransaction(BookingTransaction bookingTransaction);
+
+    Optional<BookingSchedule> findFirstByBookingTransaction(BookingTransaction bookingTransaction);
 
     @Query(value = "select count(1) from BookingSchedule " +
             "where bookingTransaction = :bookingTransaction and status not in :notStatus")

@@ -14,7 +14,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"username\": \"username\",\r\n    \"first_name\": \"first name\",\r\n    \"last_name\": \"last name\",\r\n    \"email\": \"<your email>@gmail.com\",\r\n    \"password\": \"1\",\r\n    \"phone_number\": \"phoneNumber\",\r\n    \"gender\": \"M\",\r\n    \"role\": \"CUSTOMER\"\r\n}",
+					"raw": "{\r\n    \"firstName\": \"first name\",\r\n    \"lastName\": \"last name\",\r\n    \"email\": \"shidoundie@gmail.com\",\r\n    \"password\": \"1\",\r\n    \"phoneNumber\": \"phoneNumber\",\r\n    \"gender\": \"M\",\r\n    \"role\": \"CLEANER\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -46,9 +46,7 @@
 					"script": {
 						"exec": [
 							"var jsonData = pm.response.json();\r",
-							"console.log(jsonData[\"token\"])\r",
 							"pm.environment.set(\"accessToken\", jsonData[\"data\"][\"token\"]);\r",
-							"console.log(pm.environment.get(\"accessToken\"));\r",
 							""
 						],
 						"type": "text/javascript"
@@ -60,7 +58,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"username\": \"username\",\r\n    \"password\": \"1\"\r\n}",
+					"raw": "{\r\n    \"email\": \"leader@gmail.com\",\r\n    \"password\": \"1\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -166,6 +164,11 @@
 						{
 							"key": "size",
 							"value": "4"
+						},
+						{
+							"key": "averageRating",
+							"value": "1",
+							"disabled": true
 						}
 					]
 				}
@@ -199,7 +202,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8888/api/v1/cleaner/history/detail?cleanerId=4",
+					"raw": "http://localhost:8888/api/v1/cleaner/history/detail?userId=4",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -214,7 +217,7 @@
 					],
 					"query": [
 						{
-							"key": "cleanerId",
+							"key": "userId",
 							"value": "4"
 						}
 					]
@@ -235,15 +238,24 @@
 						}
 					]
 				},
-				"method": "GET",
+				"method": "POST",
 				"header": [
 					{
 						"key": "Content-Type",
 						"value": "application/json"
 					}
 				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"workingTimes\": \r\n    [\r\n        {\r\n            \"from\": \"2024-01-11T10:12:27+07:00\",\r\n            \"to\": \"2024-01-11T10:12:27+07:00\"\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
-					"raw": "http://localhost:8888/api/v1/cleaner/available?workDate=2023-11-30&serviceTypeId=3&servicePackageId=3",
+					"raw": "http://localhost:8888/api/v1/cleaner/available",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -254,20 +266,6 @@
 						"v1",
 						"cleaner",
 						"available"
-					],
-					"query": [
-						{
-							"key": "workDate",
-							"value": "2023-11-30"
-						},
-						{
-							"key": "serviceTypeId",
-							"value": "3"
-						},
-						{
-							"key": "servicePackageId",
-							"value": "3"
-						}
 					]
 				}
 			},
@@ -294,7 +292,7 @@
 					}
 				],
 				"url": {
-					"raw": "http://localhost:8888/api/v1/cleaner/schedules?cleanerId=2&page=0&size=4",
+					"raw": "http://localhost:8888/api/v1/cleaner/schedules?userId=2&page=0&size=4",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -308,7 +306,7 @@
 					],
 					"query": [
 						{
-							"key": "cleanerId",
+							"key": "userId",
 							"value": "2"
 						},
 						{
@@ -352,7 +350,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"address\": \"address\",\r\n    \"idCard\": \"idCard\",\r\n    \"userId\": \"userId\",\r\n    \"branchId\": \"1\",\r\n    \"serviceIds\": [1, 2, 3]\r\n}",
+					"raw": "{\r\n    \"address\": \"address\",\r\n    \"idCard\": \"idCard\",\r\n    \"dob\": \"1985-01-01\",\r\n    \"userId\": \"userId\",\r\n    \"branchId\": \"1\",\r\n    \"serviceIds\": [1, 2, 3]\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -517,6 +515,48 @@
 			"response": []
 		},
 		{
+			"name": "Cleaner update schedule status",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzM4NCJ9.eyJyb2xlSWQiOiI0Iiwicm9sZU5hbWUiOiJDTEVBTkVSIiwidXNlcklkIjoiMyIsInN1YiI6ImNsZWFuZXIxIiwiaWF0IjoxNzAzNDc4MTcxLCJleHAiOjE3MDM0Nzk5NzF9.GLRyUPY1LS6toZaqW-wo7s00MtH9ejxuLVXIDPlKSOOjDyl1pwjnJkWQyU2s6__C",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"scheduleId\": \"58\",\n    \"status\": \"DONE\",\n    \"paymentStatus\": \"PAYMENT_SUCCESS\",\n    \"addOns\": [\n        {\n            \"serviceAddOnId\": -1,\n            \"price\": 1000,\n            \"note\": \"\"\n        }\n    ],\n    \"note\": \"\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8888/api/v1/cleaner/schedule/status",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8888",
+					"path": [
+						"api",
+						"v1",
+						"cleaner",
+						"schedule",
+						"status"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Get user Info by ID",
 			"event": [
 				{
@@ -566,6 +606,61 @@
 						"v1",
 						"user",
 						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get user booking",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8888/api/v1/user/booking",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8888",
+					"path": [
+						"api",
+						"v1",
+						"user",
+						"booking"
 					]
 				}
 			},
@@ -690,6 +785,52 @@
 			"response": []
 		},
 		{
+			"name": "Update floor info",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"floorKey\": \"M230\",\r\n    \"cleanerNumber\": 1,\r\n    \"duration\": 3,\r\n    \"price\": \"500000\",\r\n    \"priceType\": \"PACKAGE\",\r\n    \"description\": \"Dưới 30m2\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8888/api/v1/floor-info/update",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8888",
+					"path": [
+						"api",
+						"v1",
+						"floor-info",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Customer booking",
 			"request": {
 				"auth": {
@@ -711,7 +852,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"hostName\": \"hms system\",\n    \"hostPhone\": \"0369156413\",\n    \"hostAddress\": \"số 6, Minh Khai, Hà Nội\",\n    \"hostDistance\": \"6km\",\n    \"houseType\": \"APARTMENT\",\n    \"floorNumber\": 2,\n    \"floorArea\": \"M260\",\n    \"cleanerIds\": null,\n    \"bookingSchedules\": [\n        {\n            \"floorNumber\": 4,\n            \"workDate\": \"2023-12-03\",\n            \"startTime\": null,\n            \"endTime\": null,\n            \"serviceAddOnIds\": []\n        }\n    ],\n    \"serviceTypeId\": 3,\n    \"servicePackageId\": 3,\n    \"serviceAddOnIds\": [3],\n    \"startTime\": \"2023-12-03T10:12:27.374+00:00\",\n    \"endTime\": \"2023-12-03T16:12:27.374+00:00\",\n    \"workDate\": \"2023-12-03\",\n    \"dayOfTheWeek\": null,\n    \"note\": \"không có gì\"\n}"
+					"raw": "{\n  \"hostName\": \"monthly booking\",\n  \"hostPhone\": \"0641224211\",\n  \"hostAddress\": \"số 122 đống đa thanh xuân hà nội\",\n  \"hostDistance\": \"11km\",\n  \"distancePrice\": 10000,\n  \"houseType\": \"APARTMENT\",\n  \"floorNumber\": 78,\n  \"expectCompletedIn\": 1,\n  \"cleanerIds\": null,\n//   \"bookingSchedules\": [\n//     {\n//       \"floorNumber\": 2,\n//       \"workDate\": \"2024-02-15\",\n//       \"startTime\": null,\n//       \"endTime\": null,\n//       \"serviceAddOnIds\": [\n//         1\n//       ]\n//     }\n//   ],\n//   \"serviceTypeId\": 3,\n//   \"servicePackageId\": 3,\n  \"serviceAddOnIds\": [\n    1\n  ],\n//   \"section\": \"MOR\",\n  \"startTime\": \"2024-02-15T10:12:27.374+07:00\",\n  \"workDate\": \"2024-02-15\",\n  \"note\": \"\"\n}"
 				},
 				"url": {
 					"raw": "http://localhost:8888/api/v1/booking",
@@ -730,7 +871,7 @@
 			"response": []
 		},
 		{
-			"name": "Customer confirm booking",
+			"name": "Leader confirm booking",
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -751,7 +892,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"bookingId\": 4\n}"
+					"raw": "{\n    \"bookingId\": 4,\n    \"cleanerIds\": [\n        1,\n        2,\n        3\n    ]\n}"
 				},
 				"url": {
 					"raw": "http://localhost:8888/api/v1/booking/confirm",
@@ -811,6 +952,48 @@
 			"response": []
 		},
 		{
+			"name": "Cleaner reject booking",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"bookingId\": 1,\n    \"rejectedReason\": \"not like\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8888/api/v1/cleaner/reject/booking",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8888",
+					"path": [
+						"api",
+						"v1",
+						"cleaner",
+						"reject",
+						"booking"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Customer cancel booking",
 			"request": {
 				"auth": {
@@ -832,7 +1015,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"bookingId\": 4\n}"
+					"raw": "{\n    \"bookingId\": 4,\n    \"rejectedReason\": \"not like\"\n}"
 				},
 				"url": {
 					"raw": "http://localhost:8888/api/v1/booking/cancel",
@@ -846,48 +1029,6 @@
 						"v1",
 						"booking",
 						"cancel"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Cleaner update schedule status",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{accessToken}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"scheduleId\": \"1\",\n    \"status\": \"DONE\",\n    \"paymentStatus\": \"PAYMENT_SUCCESS\",\n    \"note\": \"\"\n}"
-				},
-				"url": {
-					"raw": "http://localhost:8888/api/v1/cleaner/schedule/status",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8888",
-					"path": [
-						"api",
-						"v1",
-						"cleaner",
-						"schedule",
-						"status"
 					]
 				}
 			},
@@ -956,7 +1097,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"bookingId\": 1,\n    \"scheduleId\": 1,\n    \"cleanerId\": 3,\n    \"reviewBooking\": false,\n    \"ratingScore\": 5,\n    \"review\": \"very good\"\n}"
+					"raw": "{\n    \"bookingId\": 5,\n    \"reviewBooking\": false,\n    \"scheduleId\": 53,\n    \"cleaners\": [\n        {\n            \"cleanerId\": 6,\n            \"ratingScore\": 7,\n            \"review\": \"the service was good, the cleaner was nice too\"\n        }\n    ],\n    \"ratingSchedule\": 5,\n    \"review\": \"dich vu tot\"\n}"
 				},
 				"url": {
 					"raw": "http://localhost:8888/api/v1/user/submit/review",
@@ -1025,6 +1166,64 @@
 			"response": []
 		},
 		{
+			"name": "Get change history of service add-on",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8888/api/v1/service-add-on/history",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8888",
+					"path": [
+						"api",
+						"v1",
+						"service-add-on",
+						"history"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": null,
+							"description": "optional -> default 0",
+							"disabled": true
+						},
+						{
+							"key": "size",
+							"value": null,
+							"description": "optional -> default 10",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Insert service add on",
 			"request": {
 				"auth": {
@@ -1046,7 +1245,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"name\": \"new service for loser child\",\n    \"parentId\": 4,\n    \"price\": 999999,\n    \"status\": \"ACTIVE\"\n}"
+					"raw": "{\n    \"name\": \"new service for child\",\n    \"parentId\": 10,\n    \"price\": 999999,\n    \"duration\": 2,\n    \"status\": \"ACTIVE\"\n}"
 				},
 				"url": {
 					"raw": "http://localhost:8888/api/v1/service-add-on",
@@ -1086,7 +1285,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"serviceAddOnId\": 5,\n    \"name\": \"new service for loser\",\n    \"parentId\": 1,\n    \"price\": 1,\n    \"status\": \"INACTIVE\"\n}"
+					"raw": "{\n    \"serviceAddOnId\": 12,\n    \"name\": \"new service for loser\",\n    \"parentId\": null,\n    \"price\": 1111,\n    \"duration\": 3,\n    \"status\": \"INACTIVE\"\n}"
 				},
 				"url": {
 					"raw": "http://localhost:8888/api/v1/service-add-on",
@@ -1125,7 +1324,7 @@
 					}
 				],
 				"url": {
-					"raw": "http://localhost:8888/api/v1/booking?page=0&size=2",
+					"raw": "http://localhost:8888/api/v1/booking?page=0&size=4&floorKey=M250",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -1143,7 +1342,26 @@
 						},
 						{
 							"key": "size",
-							"value": "2"
+							"value": "4"
+						},
+						{
+							"key": "bookingName",
+							"value": "anh",
+							"disabled": true
+						},
+						{
+							"key": "bookingPhone",
+							"value": "321",
+							"disabled": true
+						},
+						{
+							"key": "status",
+							"value": "DONE",
+							"disabled": true
+						},
+						{
+							"key": "floorKey",
+							"value": "M250"
 						}
 					]
 				}
@@ -1187,6 +1405,85 @@
 						{
 							"key": "bookingId",
 							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get dashboard info",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzM4NCJ9.eyJyb2xlSWQiOiIyIiwicm9sZU5hbWUiOiJNQU5BR0VSIiwidXNlcklkIjoiMSIsInN1YiI6Im1hbmFnZXIiLCJpYXQiOjE3MDYxNzQ5MzIsImV4cCI6MTcwNjE3NjczMn0.Eb1JzvWg8uywesYrKu27NetVomKZCiF5haLrxyTAO_MEBszzvkVh-aFGwHQ6CFEx",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8888/api/v1/dashboard?startDate=2023-01-01",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8888",
+					"path": [
+						"api",
+						"v1",
+						"dashboard"
+					],
+					"query": [
+						{
+							"key": "startDate",
+							"value": "2023-01-01"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://maps.googleapis.com/maps/api/distancematrix/json?origins=194%20Tr%E1%BA%A7n%20Quang%20Kh%E1%BA%A3i&destinations=Nh%C3%A0+th%E1%BB%9D+%C4%90%E1%BB%A9c+B%C3%A0,+C%C3%B4ng+x%C3%A3+Paris,+B%E1%BA%BFn+Ngh%C3%A9,+District+1,+Ho+Chi+Minh+City&key=AIzaSyCv5K-xt_Gp0a5XTiP4Ziu1y09GSYcQupM",
+					"protocol": "https",
+					"host": [
+						"maps",
+						"googleapis",
+						"com"
+					],
+					"path": [
+						"maps",
+						"api",
+						"distancematrix",
+						"json"
+					],
+					"query": [
+						{
+							"key": "origins",
+							"value": "194%20Tr%E1%BA%A7n%20Quang%20Kh%E1%BA%A3i"
+						},
+						{
+							"key": "destinations",
+							"value": "Nh%C3%A0+th%E1%BB%9D+%C4%90%E1%BB%A9c+B%C3%A0,+C%C3%B4ng+x%C3%A3+Paris,+B%E1%BA%BFn+Ngh%C3%A9,+District+1,+Ho+Chi+Minh+City"
+						},
+						{
+							"key": "key",
+							"value": "AIzaSyCv5K-xt_Gp0a5XTiP4Ziu1y09GSYcQupM"
 						}
 					]
 				}

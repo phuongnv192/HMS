@@ -20,6 +20,7 @@ import static com.module.project.dto.Constant.API_V1;
 import static com.module.project.dto.Constant.USERS;
 import static com.module.project.dto.Constant.USER_BOOKING;
 import static com.module.project.dto.Constant.USER_CHANGE_PASSWORD;
+import static com.module.project.dto.Constant.USER_CHANGE_STATUS;
 import static com.module.project.dto.Constant.USER_INFO;
 import static com.module.project.dto.Constant.USER_INFO_BY_ID;
 import static com.module.project.dto.Constant.USER_SUBMIT_REVIEW;
@@ -68,6 +69,14 @@ public class UserController {
         String userId = (String) httpServletRequest.getAttribute(ClaimEnum.USER_ID.name);
         String roleName = (String) httpServletRequest.getAttribute(ClaimEnum.ROLE_NAME.name);
         return ResponseEntity.ok(userService.changePassword(request, userId, roleName));
+    }
+
+    @PostMapping(USER_CHANGE_STATUS)
+    public ResponseEntity<Object> changeStatus(@RequestBody UserInfoRequest request,
+                                                 HttpServletRequest httpServletRequest) {
+        String userId = (String) httpServletRequest.getAttribute(ClaimEnum.USER_ID.name);
+        String roleName = (String) httpServletRequest.getAttribute(ClaimEnum.ROLE_NAME.name);
+        return ResponseEntity.ok(userService.changeStatus(request, userId, roleName));
     }
 
     @GetMapping(USER_BOOKING)

@@ -38,6 +38,7 @@ public class BookingDetailResponse {
     private Date createDate;
     private Date updateDate;
     private String status;
+    private Long ratingScore;
     private String review;
     private String rejectedReason;
 

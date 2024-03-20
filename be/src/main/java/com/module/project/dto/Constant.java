@@ -10,6 +10,7 @@ public interface Constant {
     String USERS = "/users";
     String USER_SUBMIT_REVIEW = "/user/submit/review";
     String USER_CHANGE_PASSWORD = "/user/change-password";
+    String USER_CHANGE_STATUS = "/user/change-status";
     String USER_BOOKING = "/user/booking";
     String VERIFY = "/verify";
     String BOOKING = "/booking";

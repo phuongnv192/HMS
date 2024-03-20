@@ -15,11 +15,13 @@ import com.module.project.exception.HmsException;
 import com.module.project.exception.HmsResponse;
 import com.module.project.model.Booking;
 import com.module.project.model.BookingSchedule;
+import com.module.project.model.BookingTransaction;
 import com.module.project.model.Cleaner;
 import com.module.project.model.Role;
 import com.module.project.model.User;
 import com.module.project.repository.BookingRepository;
 import com.module.project.repository.BookingScheduleRepository;
+import com.module.project.repository.BookingTransactionRepository;
 import com.module.project.repository.CleanerRepository;
 import com.module.project.repository.RoleRepository;
 import com.module.project.repository.UserRepository;
@@ -46,6 +48,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
     private final BookingService bookingService;
+    private final BookingTransactionRepository bookingTransactionRepository;
 
     public HmsResponse<User> getUserInfo(String userId) {
         User user = userRepository.findById(Long.parseLong(userId)).orElseThrow(
@@ -111,33 +114,38 @@ public class UserService {
         if (!userId.equals(booking.getUser().getId().toString())) {
             throw new HmsException(HmsErrorCode.INVALID_REQUEST, "user dont have permission to execute");
         }
-        if (request.getReviewBooking()) {
-            if (!TransactionStatus.DONE.name().equals(booking.getStatus())) {
-                throw new HmsException(HmsErrorCode.INTERNAL_SERVER_ERROR, "can't submit review because booking is not done yet");
-            }
-            booking.setReview(request.getReview());
-            bookingRepository.save(booking);
-        } else {
-            BookingSchedule bookingSchedule = bookingScheduleRepository.findById(request.getScheduleId())
-                    .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "can't find any schedule by ".concat(request.getBookingId().toString())));
-            if (!TransactionStatus.DONE.name().equals(bookingSchedule.getStatus())) {
-                throw new HmsException(HmsErrorCode.INTERNAL_SERVER_ERROR, "can't submit review because schedule is not done yet");
-            }
-//            bookingSchedule.setRatingScore(request.getRatingScore().toString());
-//            bookingScheduleRepository.save(bookingSchedule);
-            for (CleanerReviewRequest reviewRequest : request.getCleaners()) {
-                try {
-                    Cleaner cleaner = cleanerRepository.findById(reviewRequest.getCleanerId())
-                            .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "can't find any cleaner by ".concat(request.getBookingId().toString())));
-                    scheduleService.updateReviewOfCleaner(cleaner, booking, bookingSchedule,
-                            Long.valueOf(reviewRequest.getRatingScore()), reviewRequest.getReview());
-                    bookingSchedule.setRatingScore(request.getRatingSchedule().toString());
-                    bookingScheduleRepository.save(bookingSchedule);
-                } catch (Exception e) {
-                    log.error("error when save review for cleaner");
-                }
+//        if (request.getReviewBooking()) {
+        if (!TransactionStatus.DONE.name().equals(booking.getStatus())) {
+            throw new HmsException(HmsErrorCode.INTERNAL_SERVER_ERROR, "can't submit review because booking is not done yet");
+        }
+        booking.setRatingScore(request.getRatingScore().toString());
+        bookingRepository.save(booking);
+
+        BookingTransaction bookingTransaction = bookingTransactionRepository.findByBooking(booking)
+                .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "can't find any booking transaction by ".concat(request.getBookingId().toString())));
+        BookingSchedule bookingSchedule = bookingScheduleRepository.findFirstByBookingTransaction(bookingTransaction)
+                .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "can't find any schedule by ".concat(request.getBookingId().toString())));
+        for (CleanerReviewRequest reviewRequest : request.getCleaners()) {
+            try {
+                Cleaner cleaner = cleanerRepository.findById(reviewRequest.getCleanerId())
+                        .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "can't find any cleaner by ".concat(request.getBookingId().toString())));
+                scheduleService.updateReviewOfCleaner(cleaner, booking, bookingSchedule,
+                        Long.valueOf(reviewRequest.getRatingScore()), reviewRequest.getReview());
+                bookingScheduleRepository.save(bookingSchedule);
+            } catch (Exception e) {
+                log.error("error when save review for cleaner");
             }
         }
+
+        //TODO: save comment with bookingId and review
+//        }
+
+        //            if (!TransactionStatus.DONE.name().equals(bookingSchedule.getStatus())) {
+        //                throw new HmsException(HmsErrorCode.INTERNAL_SERVER_ERROR, "can't submit review because schedule is not done yet");
+        //            }
+        //            bookingSchedule.setRatingScore(request.getRatingScore().toString());
+        //            bookingScheduleRepository.save(bookingSchedule);
+
         return HMSUtil.buildResponse(ResponseCode.SUCCESS, null);
     }
 
@@ -148,6 +156,15 @@ public class UserService {
             throw new HmsException(HmsErrorCode.INTERNAL_SERVER_ERROR, "the current password you input not match with itself on system");
         }
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        return HMSUtil.buildResponse(ResponseCode.SUCCESS, userRepository.save(user));
+    }
+
+    public HmsResponse<Object> changeStatus(UserInfoRequest request, String userId, String roleName) {
+        User user = validateUpdateUser(userId, roleName, request.getUserId());
+        user.setStatus(Constant.COMMON_STATUS.ACTIVE.equals(request.getStatus())
+                ? Constant.COMMON_STATUS.ACTIVE
+                : Constant.COMMON_STATUS.INACTIVE);
+        user.setUpdateBy(Long.parseLong(userId));
         return HMSUtil.buildResponse(ResponseCode.SUCCESS, userRepository.save(user));
     }
 

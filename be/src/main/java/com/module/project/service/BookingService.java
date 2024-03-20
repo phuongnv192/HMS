@@ -241,7 +241,7 @@ public class BookingService {
                 .createDate(booking.getCreateDate())
                 .updateDate(booking.getUpdateDate())
                 .status(bookingTransaction.getStatus())
-                .review(booking.getReview())
+                .ratingScore(booking.getRatingScore() != null ? Long.parseLong(booking.getRatingScore()) : null)
                 .rejectedReason(booking.getRejectedReason())
                 .scheduleList(scheduleList)
                 .build();
@@ -313,7 +313,7 @@ public class BookingService {
                 }
             }
             totalProfitWithdraw = totalProfitWithdraw.add(totalPrice);
-            bookingNumberHaveReview += booking.getReview() != null ? 1 : 0;
+            bookingNumberHaveReview += booking.getRatingScore() != null ? 1 : 0;
             Integer times = numberByBookingStatus.get(booking.getStatus());
             if (times == null) {
                 numberByBookingStatus.put(booking.getStatus(), 1);
@@ -329,7 +329,7 @@ public class BookingService {
             }
             DashboardInfoResponse.ItemDetail month = DashboardInfoResponse.ItemDetail.builder()
                     .bookingNumber(1)
-                    .bookingNumberHaveReview(booking.getReview() != null ? 1 : 0)
+                    .bookingNumberHaveReview(booking.getRatingScore() != null ? 1 : 0)
                     .totalProfit(BigDecimal.valueOf(bookingTransaction.getTotalBookingPrice()))
                     .totalProfitWithdraw(totalPrice)
                     .numberByBookingStatus(monthNumber)
