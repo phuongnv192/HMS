@@ -37,4 +37,12 @@ public enum FloorInfoEnum {
             return FloorInfoEnum.M2U200;
         }
     }
+
+    public static FloorInfoEnum lookUpByName(String name) throws IllegalArgumentException {
+        for (FloorInfoEnum val : values()) {
+            if (val.name().equalsIgnoreCase(name))
+                return val;
+        }
+        return null;
+    }
 }

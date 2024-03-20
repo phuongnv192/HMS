@@ -40,8 +40,9 @@ public class CleanerController {
 
     @GetMapping(CLEANERS)
     public ResponseEntity<Object> getListCleaner(@RequestParam(name = "page") Integer page,
-                                                 @RequestParam(name = "size") Integer size) {
-        return ResponseEntity.ok(cleanerService.getCleaners(page, size));
+                                                 @RequestParam(name = "size") Integer size,
+                                                 @RequestParam(name = "averageRating", required = false) Integer averageRating) {
+        return ResponseEntity.ok(cleanerService.getCleaners(page, size, averageRating));
     }
 
 //    @GetMapping(CLEANER_HISTORY)

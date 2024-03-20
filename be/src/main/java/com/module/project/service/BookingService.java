@@ -243,7 +243,7 @@ public class BookingService {
                 .build();
     }
 
-    public HmsResponse<Object> getBookingList(Integer page, Integer size, String roleName, String userId, String bookingName, String bookingPhone, String status) {
+    public HmsResponse<Object> getBookingList(Integer page, Integer size, String roleName, String userId, String bookingName, String bookingPhone, String status, Date workingDate, String floorArea) {
         List<String> acceptRole = Arrays.asList(RoleEnum.MANAGER.name(), RoleEnum.LEADER.name(),
                 RoleEnum.CUSTOMER.name());
         if (!acceptRole.contains(roleName)) {
@@ -251,7 +251,7 @@ public class BookingService {
         }
         Pageable pageable = PageRequest.of(page, size);
         List<Booking> bookingList = bookingRepository.findAll(pageable).getContent();
-        bookingList = filter(bookingList, bookingName, bookingPhone, status);
+        bookingList = filter(bookingList, bookingName, bookingPhone, status, floorArea);
         List<BookingDetailResponse> responses = new ArrayList<>();
         for (Booking booking : bookingList) {
             responses.add(getBookingDetail(booking.getId(), userId, roleName, true));
@@ -364,7 +364,7 @@ public class BookingService {
 
     private Map<String, DashboardInfoResponse.ItemDetail> fulfillMonth(Map<String, NumberUserByMonth> userByMonths,
                                                                        Map<String, DashboardInfoResponse.ItemDetail> months) {
-        for(String key : userByMonths.keySet()) {
+        for (String key : userByMonths.keySet()) {
             if (months.get(key) == null) {
                 DashboardInfoResponse.ItemDetail item = DashboardInfoResponse.ItemDetail.builder()
                         .bookingNumber(0)
@@ -407,14 +407,16 @@ public class BookingService {
         }).collect(Collectors.joining(","));
     }
 
-    private List<Booking> filter(List<Booking> bookings, String bookingName, String bookingPhone, String status) {
-        if (bookingName == null && bookingPhone == null && status == null) {
+    private List<Booking> filter(List<Booking> bookings, String bookingName, String bookingPhone, String status, String floorArea) {
+        if (bookingName == null && bookingPhone == null && status == null && floorArea == null) {
             return bookings;
         }
+        FloorInfoEnum floorInfoEnum = FloorInfoEnum.lookUpByName(floorArea);
         return bookings.stream()
-                .filter(booking -> (bookingName != null && booking.getHostName().contains(bookingName)
-                        || (bookingPhone != null && booking.getHostPhone().contains(bookingPhone)))
-                        || (status != null && booking.getStatus().equalsIgnoreCase(status)))
+                .filter(booking -> (bookingName != null && booking.getHostName().contains(bookingName))
+                        || (bookingPhone != null && booking.getHostPhone().contains(bookingPhone))
+                        || (booking.getStatus().equalsIgnoreCase(status))
+                        || (floorInfoEnum != null && booking.getFloorArea().equalsIgnoreCase(floorInfoEnum.getFloorArea())))
                 .toList();
     }
 

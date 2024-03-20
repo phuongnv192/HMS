@@ -64,12 +64,20 @@ public class CleanerService {
     private final MailService mailService;
     private final BookingTransactionRepository bookingTransactionRepository;
 
-    public HmsResponse<List<CleanerOverviewResponse>> getCleaners(Integer page, Integer size) {
+    public HmsResponse<List<CleanerOverviewResponse>> getCleaners(Integer page, Integer size, Integer averageRating) {
         Pageable pageable = PageRequest.of(page, size);
         List<Cleaner> cleaners = cleanerRepository.findAll(pageable).getContent();
         List<CleanerOverviewResponse> response = new ArrayList<>();
         for (Cleaner cleaner : cleaners) {
-            response.add(getCleanerOverview(cleaner));
+            CleanerOverviewResponse item = getCleanerOverview(cleaner);
+            if (averageRating != null) {
+                int averageRatingItem = Math.round(item.getAverageRating());
+                if (averageRating == averageRatingItem) {
+                    response.add(item);
+                }
+            } else {
+                response.add(item);
+            }
         }
         return HMSUtil.buildResponse(ResponseCode.SUCCESS, response);
     }

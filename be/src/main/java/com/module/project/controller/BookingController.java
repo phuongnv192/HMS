@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 import static com.module.project.dto.Constant.API_V1;
 import static com.module.project.dto.Constant.BOOKING;
@@ -40,10 +41,12 @@ public class BookingController {
                                               @RequestParam(name = "bookingName", required = false) String bookingName,
                                               @RequestParam(name = "bookingPhone", required = false) String bookingPhone,
                                               @RequestParam(name = "status", required = false) String status,
+                                              @RequestParam(name = "workingDate", required = false) Date workingDate,
+                                              @RequestParam(name = "floorArea", required = false) String floorArea,
                                               HttpServletRequest httpServletRequest) {
         String roleName = (String) httpServletRequest.getAttribute(ClaimEnum.ROLE_NAME.name);
         String userId = (String) httpServletRequest.getAttribute(ClaimEnum.USER_ID.name);
-        return ResponseEntity.ok(bookingService.getBookingList(page, size, roleName, userId, bookingName, bookingPhone, status));
+        return ResponseEntity.ok(bookingService.getBookingList(page, size, roleName, userId, bookingName, bookingPhone, status, workingDate, floorArea));
     }
 
     @PostMapping(BOOKING)
