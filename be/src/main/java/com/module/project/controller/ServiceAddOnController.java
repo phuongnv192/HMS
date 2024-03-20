@@ -20,6 +20,7 @@ import static com.module.project.dto.Constant.FLOOR_INFO;
 import static com.module.project.dto.Constant.SERVICE;
 import static com.module.project.dto.Constant.SERVICE_ADD_ON;
 import static com.module.project.dto.Constant.SERVICE_ADD_ONS;
+import static com.module.project.dto.Constant.SERVICE_ADD_ON_HISTORY;
 import static com.module.project.dto.Constant.SERVICE_TYPE;
 
 @RestController
@@ -53,7 +54,8 @@ public class ServiceAddOnController {
     @PutMapping(SERVICE_ADD_ON)
     public ResponseEntity<Object> updateServiceAddOn(@RequestBody ServiceAddOnRequest request, HttpServletRequest httpServletRequest) {
         String roleName = (String) httpServletRequest.getAttribute(ClaimEnum.ROLE_NAME.name);
-        return ResponseEntity.ok(serviceCommonService.updateServiceAddOn(request, roleName));
+        String userId = (String) httpServletRequest.getAttribute(ClaimEnum.USER_ID.name);
+        return ResponseEntity.ok(serviceCommonService.updateServiceAddOn(request, roleName, userId));
     }
 
     @GetMapping(SERVICE)
@@ -71,5 +73,11 @@ public class ServiceAddOnController {
     public ResponseEntity<Object> updateService(@RequestBody ServiceRequest request, HttpServletRequest httpServletRequest) {
         String roleName = (String) httpServletRequest.getAttribute(ClaimEnum.ROLE_NAME.name);
         return ResponseEntity.ok(serviceCommonService.updateService(request, roleName));
+    }
+
+    @GetMapping(SERVICE_ADD_ON_HISTORY)
+    public ResponseEntity<Object> getServiceAddOnHistory(@RequestParam(name = "page", defaultValue = "0") Integer page,
+                                                         @RequestParam(name = "size", defaultValue = "10") Integer size) {
+        return ResponseEntity.ok(serviceCommonService.getServiceAddOnHistory(page, size));
     }
 }

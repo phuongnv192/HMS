@@ -7,25 +7,35 @@ import com.module.project.dto.RoleEnum;
 import com.module.project.dto.request.ServiceAddOnRequest;
 import com.module.project.dto.request.ServiceRequest;
 import com.module.project.dto.response.FloorInfoResponse;
+import com.module.project.dto.response.ServiceAddOnHistoryResponse;
 import com.module.project.dto.response.ViewServiceAddOnResponse;
 import com.module.project.exception.HmsErrorCode;
 import com.module.project.exception.HmsException;
 import com.module.project.exception.HmsResponse;
 import com.module.project.model.ServiceAddOn;
+import com.module.project.model.ServiceAddOnHistory;
 import com.module.project.model.ServiceType;
+import com.module.project.model.User;
+import com.module.project.repository.ServiceAddOnHistoryRepository;
 import com.module.project.repository.ServiceAddOnRepository;
 import com.module.project.repository.ServiceRepository;
 import com.module.project.repository.ServiceTypeRepository;
+import com.module.project.repository.UserRepository;
 import com.module.project.util.HMSUtil;
+import com.module.project.util.JsonService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +44,8 @@ public class ServiceCommonService {
     private final ServiceAddOnRepository serviceAddOnRepository;
     private final ServiceTypeRepository serviceTypeRepository;
     private final ServiceRepository serviceRepository;
+    private final ServiceAddOnHistoryRepository serviceAddOnHistoryRepository;
+    private final UserRepository userRepository;
 
     public HmsResponse<List<ViewServiceAddOnResponse>> getAllServiceAddOn(Long addOnId) {
         if (addOnId != -1) {
@@ -82,18 +94,27 @@ public class ServiceCommonService {
         return HMSUtil.buildResponse(ResponseCode.SUCCESS, responses);
     }
 
-    public HmsResponse<ServiceAddOn> updateServiceAddOn(ServiceAddOnRequest request, String roleName) {
+    public HmsResponse<ServiceAddOn> updateServiceAddOn(ServiceAddOnRequest request, String roleName, String userId) {
         List<String> acceptRole = List.of(RoleEnum.LEADER.name());
         if (!acceptRole.contains(roleName)) {
             throw new HmsException(HmsErrorCode.INVALID_REQUEST, "privileges access denied");
         }
+
         ServiceAddOn serviceAddOn = serviceAddOnRepository.findById(request.getServiceAddOnId())
                 .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "can't find any add on by ".concat(request.getServiceAddOnId().toString())));
+        String requestBefore = JsonService.writeStringSkipError(serviceAddOn);
         handleServiceAddOnParent(request, serviceAddOn);
         serviceAddOn.setName(request.getName());
         serviceAddOn.setStatus(request.getStatus());
         serviceAddOn.setPrice(request.getPrice());
         serviceAddOn.setDuration(request.getDuration());
+        String requestAfter = JsonService.writeStringSkipError(serviceAddOn);
+        ServiceAddOnHistory serviceAddOnHistory = ServiceAddOnHistory.builder()
+                .requestBefore(requestBefore)
+                .requestAfter(requestAfter)
+                .changedBy(userId)
+                .build();
+        serviceAddOnHistoryRepository.save(serviceAddOnHistory);
         return HMSUtil.buildResponse(ResponseCode.SUCCESS, serviceAddOnRepository.save(serviceAddOn));
     }
 
@@ -157,6 +178,23 @@ public class ServiceCommonService {
         service.setServiceType(serviceType);
         service.setServiceAddOnSet(serviceAddOnSet);
         return HMSUtil.buildResponse(ResponseCode.SUCCESS, serviceRepository.save(service));
+    }
+
+    public HmsResponse<List<ServiceAddOnHistoryResponse>> getServiceAddOnHistory(Integer page, Integer size) {
+        List<ServiceAddOnHistoryResponse> responses = new ArrayList<>();
+        List<ServiceAddOnHistory> serviceAddOnHistoryList = serviceAddOnHistoryRepository.findAll(PageRequest.of(page, size)).getContent();
+        List<Long> userIds = serviceAddOnHistoryList.stream().map(object -> Long.parseLong(object.getChangedBy())).toList();
+        Map<Long, User> userList = userRepository.findAllById(userIds).stream().collect(Collectors.toMap(User::getId, Function.identity()));
+        for (ServiceAddOnHistory serviceAddOnHistory : serviceAddOnHistoryList) {
+            User user = userList.get(Long.parseLong(serviceAddOnHistory.getChangedBy()));
+            responses.add(ServiceAddOnHistoryResponse.builder()
+                    .requestAfter(serviceAddOnHistory.getRequestAfter())
+                    .requestBefore(serviceAddOnHistory.getRequestBefore())
+                    .changeDated(serviceAddOnHistory.getChangeDated())
+                    .changedBy(HMSUtil.convertToFullName(user.getFirstName(), user.getLastName()))
+                    .build());
+        }
+        return HMSUtil.buildResponse(ResponseCode.SUCCESS, responses);
     }
 
     private void handleServiceAddOnParent(ServiceAddOnRequest request, ServiceAddOn serviceAddOn) {

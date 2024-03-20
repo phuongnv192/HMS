@@ -45,4 +45,12 @@ public enum FloorInfoEnum {
         }
         return null;
     }
+
+    public static FloorInfoEnum lookUpByFloorArea(String name) throws IllegalArgumentException {
+        for (FloorInfoEnum val : values()) {
+            if (val.floorArea.equalsIgnoreCase(name))
+                return val;
+        }
+        return null;
+    }
 }

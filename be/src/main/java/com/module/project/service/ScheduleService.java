@@ -85,7 +85,7 @@ public class ScheduleService {
                                       BookingRequest request,
                                       BookingTransaction bookingTransaction,
                                       Long userId) {
-        FloorInfoEnum floorInfoEnum = FloorInfoEnum.lookUp(request.getFloorNumber());
+        FloorInfoEnum floorInfoEnum = FloorInfoEnum.lookUpByFloorArea(booking.getFloorArea());
 //        if (floorInfoEnum == null) {
 //            throw new HmsException(HmsErrorCode.INVALID_REQUEST, "error when look up floor info: ".concat(request.getFloorArea()));
 //        }
@@ -96,7 +96,13 @@ public class ScheduleService {
         Calendar actualEndTime = calculateActualEndTime(endTime.getTime(), serviceAddOns, floorInfoEnum.getDuration());
 
         boolean isAutoChoosing = request.getCleanerIds() == null;
-        long totalPriceFloorAre = floorInfoEnum.getPrice() * request.getFloorNumber();
+        long totalPriceFloorAre = 0;
+        if (FloorInfoEnum.M230 == floorInfoEnum) {
+            totalPriceFloorAre = floorInfoEnum.getPrice();
+        } else {
+            totalPriceFloorAre = floorInfoEnum.getPrice() * request.getFloorNumber();;
+        }
+
         long priceChoosingCleaner = isAutoChoosing ? choosingCleanerPrice : 0;
         long distancePrice = request.getDistancePrice() != null ? request.getDistancePrice() : 0;
         long totalBookingPrice = totalPriceFloorAre + priceChoosingCleaner + distancePrice;

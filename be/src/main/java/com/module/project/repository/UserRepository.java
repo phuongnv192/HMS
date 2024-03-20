@@ -23,4 +23,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<Object> getNumberUserByMonth(@Param(value = "from") Date from,
                                                  @Param(value = "to") Date to);
 
+    List<User> findAllByIdIn(List<Long> ids);
+
 }

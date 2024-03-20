@@ -27,6 +27,7 @@ public interface Constant {
     String SERVICE_TYPE = "/service-types";
     String SERVICE_ADD_ONS = "/service-add-ons";
     String SERVICE_ADD_ON = "/service-add-on";
+    String SERVICE_ADD_ON_HISTORY = "/service-add-on/history";
     String FLOOR_INFO = "/floor-info";
     String UPDATE_WITHDRAW = "/schedule/withdraw";
     String SERVICE = "/service";

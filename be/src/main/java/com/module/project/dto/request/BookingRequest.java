@@ -4,12 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,7 +24,6 @@ public class BookingRequest {
     private Long distancePrice;
     private String houseType;
     private int floorNumber;
-    private String floorArea;
     private List<Long> cleanerIds;
     private List<BookingScheduleRequest> bookingSchedules;
     private Long serviceTypeId;

@@ -94,7 +94,7 @@ public class BookingService {
                     "can't execute this request because status of schedule is not match");
         }
         booking.setStatus(ConfirmStatus.CONFIRMED.name());
-        processBookingSchedule(booking, userId);
+        processBookingSchedule(booking, userId, request.getCleanerIds());
 
         String mailTo = getListMailCleanerFromBooking(booking);
         mailService.sendMailForCleaners(mailTo, booking.getHostName(), booking.getHostAddress(), booking.getHostPhone(),
@@ -142,7 +142,7 @@ public class BookingService {
         }
     }
 
-    private void processBookingSchedule(Booking booking, Long userId) {
+    private void processBookingSchedule(Booking booking, Long userId, List<Long> cleanerIds) {
         BookingRequest request = JsonService.strToObject(booking.getRawRequest(), new TypeReference<>() {
         });
         if (request == null) {
@@ -153,6 +153,7 @@ public class BookingService {
                 .booking(booking)
                 .status(ConfirmStatus.CONFIRMED.name())
                 .build();
+        request.setCleanerIds(cleanerIds);
         if (request.getServiceTypeId() == null) {
             scheduleService.processBookingRegular(booking, request, bookingTransaction, userId);
         } else {
