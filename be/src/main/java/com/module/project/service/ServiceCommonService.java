@@ -2,20 +2,25 @@ package com.module.project.service;
 
 import com.module.project.dto.Constant;
 import com.module.project.dto.FloorInfoEnum;
+import com.module.project.dto.PriceTypeEnum;
 import com.module.project.dto.ResponseCode;
 import com.module.project.dto.RoleEnum;
 import com.module.project.dto.request.ServiceAddOnRequest;
 import com.module.project.dto.request.ServiceRequest;
+import com.module.project.dto.request.UpdateFloorPrice;
 import com.module.project.dto.response.FloorInfoResponse;
 import com.module.project.dto.response.ServiceAddOnHistoryResponse;
 import com.module.project.dto.response.ViewServiceAddOnResponse;
 import com.module.project.exception.HmsErrorCode;
 import com.module.project.exception.HmsException;
 import com.module.project.exception.HmsResponse;
+import com.module.project.model.BookingSchedule;
+import com.module.project.model.FloorInfo;
 import com.module.project.model.ServiceAddOn;
 import com.module.project.model.ServiceAddOnHistory;
 import com.module.project.model.ServiceType;
 import com.module.project.model.User;
+import com.module.project.repository.FloorTypeRepository;
 import com.module.project.repository.ServiceAddOnHistoryRepository;
 import com.module.project.repository.ServiceAddOnRepository;
 import com.module.project.repository.ServiceRepository;
@@ -29,6 +34,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +52,7 @@ public class ServiceCommonService {
     private final ServiceRepository serviceRepository;
     private final ServiceAddOnHistoryRepository serviceAddOnHistoryRepository;
     private final UserRepository userRepository;
+    private final FloorTypeRepository floorTypeRepository;
 
     public HmsResponse<List<ViewServiceAddOnResponse>> getAllServiceAddOn(Long addOnId) {
         if (addOnId != -1) {
@@ -81,14 +88,17 @@ public class ServiceCommonService {
 
     public HmsResponse<List<FloorInfoResponse>> getFloorInfo() {
         List<FloorInfoResponse> responses = new ArrayList<>();
-        FloorInfoEnum[] floorInfoEnums = FloorInfoEnum.values();
-        for (FloorInfoEnum item : floorInfoEnums) {
+        List<FloorInfo> floorInfoList = floorTypeRepository.findAll();
+        floorInfoList.sort(Comparator.comparing(FloorInfo::getPrice).reversed());
+        for (FloorInfo item : floorInfoList) {
+            PriceTypeEnum priceTypeEnum = PriceTypeEnum.lookUp(item.getPriceType());
             responses.add(FloorInfoResponse.builder()
-                    .key(item.name())
-                    .floorArea(item.getFloorArea())
-                    .cleanerNum(item.getCleanerNum())
+                    .key(item.getFloorKey())
+                    .floorArea(item.getDescription())
+                    .cleanerNum(item.getCleanerNumber())
                     .duration(item.getDuration())
                     .price(item.getPrice())
+                    .priceType(priceTypeEnum != null ? priceTypeEnum.getDescription() : item.getPriceType())
                     .build());
         }
         return HMSUtil.buildResponse(ResponseCode.SUCCESS, responses);
@@ -110,6 +120,7 @@ public class ServiceCommonService {
         serviceAddOn.setDuration(request.getDuration());
         String requestAfter = JsonService.writeStringSkipError(serviceAddOn);
         ServiceAddOnHistory serviceAddOnHistory = ServiceAddOnHistory.builder()
+                .type(Constant.ACTION_TYPE.UPDATE)
                 .requestBefore(requestBefore)
                 .requestAfter(requestAfter)
                 .changedBy(userId)
@@ -118,7 +129,7 @@ public class ServiceCommonService {
         return HMSUtil.buildResponse(ResponseCode.SUCCESS, serviceAddOnRepository.save(serviceAddOn));
     }
 
-    public HmsResponse<Objects> insertServiceAddOn(ServiceAddOnRequest request, String roleName) {
+    public HmsResponse<Objects> insertServiceAddOn(ServiceAddOnRequest request, String roleName, String userId) {
         List<String> acceptRole = List.of(RoleEnum.LEADER.name());
         if (!acceptRole.contains(roleName)) {
             throw new HmsException(HmsErrorCode.INVALID_REQUEST, "privileges access denied");
@@ -130,6 +141,12 @@ public class ServiceCommonService {
                 .duration(request.getDuration())
                 .build();
         handleServiceAddOnParent(request, serviceAddOn);
+        ServiceAddOnHistory serviceAddOnHistory = ServiceAddOnHistory.builder()
+                .type(Constant.ACTION_TYPE.CREATE)
+                .requestAfter(JsonService.writeStringSkipError(serviceAddOn))
+                .changedBy(userId)
+                .build();
+        serviceAddOnHistoryRepository.save(serviceAddOnHistory);
         serviceAddOnRepository.save(serviceAddOn);
         return HMSUtil.buildResponse(ResponseCode.SUCCESS, null);
     }
@@ -188,6 +205,7 @@ public class ServiceCommonService {
         for (ServiceAddOnHistory serviceAddOnHistory : serviceAddOnHistoryList) {
             User user = userList.get(Long.parseLong(serviceAddOnHistory.getChangedBy()));
             responses.add(ServiceAddOnHistoryResponse.builder()
+                    .actionType(serviceAddOnHistory.getType())
                     .requestAfter(serviceAddOnHistory.getRequestAfter())
                     .requestBefore(serviceAddOnHistory.getRequestBefore())
                     .changeDated(serviceAddOnHistory.getChangeDated())
@@ -195,6 +213,21 @@ public class ServiceCommonService {
                     .build());
         }
         return HMSUtil.buildResponse(ResponseCode.SUCCESS, responses);
+    }
+
+    public HmsResponse<FloorInfo> updateFloorPrice(UpdateFloorPrice request, String roleName, String userId) {
+        List<String> acceptRole = List.of(RoleEnum.LEADER.name(), RoleEnum.MANAGER.name());
+        if (!acceptRole.contains(roleName)) {
+            throw new HmsException(HmsErrorCode.INVALID_REQUEST, "privileges access denied");
+        }
+        FloorInfo floorInfo = floorTypeRepository.findByFloorKey(request.getFloorKey())
+                .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "can't find any floor type by ".concat(request.getFloorKey())));
+        floorInfo.setPrice(request.getPrice());
+        floorInfo.setPriceType(request.getPriceType().name());
+        floorInfo.setDescription(request.getDescription());
+        floorInfo.setCleanerNumber(request.getCleanerNumber());
+        floorInfo.setDuration(request.getDuration());
+        return HMSUtil.buildResponse(ResponseCode.SUCCESS, floorTypeRepository.save(floorInfo));
     }
 
     private void handleServiceAddOnParent(ServiceAddOnRequest request, ServiceAddOn serviceAddOn) {

@@ -44,6 +44,8 @@ public class Booking {
     private String houseType;
     private int floorNumber;
     private String floorArea;
+    private String floorKey;
+    private int expectCompletedIn;
     private String status;
     @Column(name = "note", length = 1000)
     private String note;

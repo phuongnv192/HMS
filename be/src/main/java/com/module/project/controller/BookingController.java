@@ -42,11 +42,11 @@ public class BookingController {
                                               @RequestParam(name = "bookingPhone", required = false) String bookingPhone,
                                               @RequestParam(name = "status", required = false) String status,
                                               @RequestParam(name = "workingDate", required = false) Date workingDate,
-                                              @RequestParam(name = "floorArea", required = false) String floorArea,
+                                              @RequestParam(name = "floorKey", required = false) String floorKey,
                                               HttpServletRequest httpServletRequest) {
         String roleName = (String) httpServletRequest.getAttribute(ClaimEnum.ROLE_NAME.name);
         String userId = (String) httpServletRequest.getAttribute(ClaimEnum.USER_ID.name);
-        return ResponseEntity.ok(bookingService.getBookingList(page, size, roleName, userId, bookingName, bookingPhone, status, workingDate, floorArea));
+        return ResponseEntity.ok(bookingService.getBookingList(page, size, roleName, userId, bookingName, bookingPhone, status, workingDate, floorKey));
     }
 
     @PostMapping(BOOKING)

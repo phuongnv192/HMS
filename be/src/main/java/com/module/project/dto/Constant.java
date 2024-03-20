@@ -29,6 +29,7 @@ public interface Constant {
     String SERVICE_ADD_ON = "/service-add-on";
     String SERVICE_ADD_ON_HISTORY = "/service-add-on/history";
     String FLOOR_INFO = "/floor-info";
+    String FLOOR_INFO_UPDATE = "/floor-info/update";
     String UPDATE_WITHDRAW = "/schedule/withdraw";
     String SERVICE = "/service";
     String DASHBOARD_INFO = "/dashboard";
@@ -54,5 +55,11 @@ public interface Constant {
     interface GENDER {
         String MALE = "Male";
         String FEMALE = "Female";
+    }
+
+    interface ACTION_TYPE {
+        String CREATE = "CREATE";
+        String UPDATE = "UPDATE";
+        String DELETE = "DELETE";
     }
 }

@@ -18,12 +18,14 @@ import com.module.project.model.Booking;
 import com.module.project.model.BookingSchedule;
 import com.module.project.model.BookingTransaction;
 import com.module.project.model.Cleaner;
+import com.module.project.model.FloorInfo;
 import com.module.project.model.ServicePackage;
 import com.module.project.model.ServiceType;
 import com.module.project.model.User;
 import com.module.project.repository.BookingRepository;
 import com.module.project.repository.BookingScheduleRepository;
 import com.module.project.repository.BookingTransactionRepository;
+import com.module.project.repository.FloorTypeRepository;
 import com.module.project.repository.UserRepository;
 import com.module.project.util.HMSUtil;
 import com.module.project.util.JsonService;
@@ -39,7 +41,6 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -57,16 +58,15 @@ public class BookingService {
     private final BookingScheduleRepository bookingScheduleRepository;
     private final BookingTransactionRepository bookingTransactionRepository;
     private final MailService mailService;
+    private final FloorTypeRepository floorTypeRepository;
 
     public HmsResponse<Booking> booking(BookingRequest request, String userId) {
         User customer = userRepository.findById(Long.parseLong(userId))
                 .orElseThrow(
                         () -> new HmsException(HmsErrorCode.INVALID_REQUEST, "relevant user is not existed on system"));
         FloorInfoEnum floorInfoEnum = FloorInfoEnum.lookUp(request.getFloorNumber());
-//        if (floorInfoEnum == null) {
-//            throw new HmsException(HmsErrorCode.INVALID_REQUEST,
-//                    "error when look up floor info: ".concat(request.getFloorArea()));
-//        }
+        FloorInfo floorInfo = floorTypeRepository.findByFloorKey(floorInfoEnum.name())
+                .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "can't find any floor type by ".concat(floorInfoEnum.name())));;
         Booking booking = Booking.builder()
                 .hostName(request.getHostName())
                 .hostPhone(request.getHostPhone())
@@ -74,7 +74,9 @@ public class BookingService {
                 .hostDistance(request.getHostDistance())
                 .houseType(request.getHouseType())
                 .floorNumber(request.getFloorNumber())
-                .floorArea(floorInfoEnum.getFloorArea())
+                .floorArea(floorInfo.getDescription())
+                .floorKey(floorInfo.getFloorKey())
+                .expectCompletedIn(request.getExpectCompletedIn())
                 .user(customer)
                 .userUpdate(customer)
                 .note(request.getNote())
@@ -228,6 +230,7 @@ public class BookingService {
                 .houseType(booking.getHouseType())
                 .floorNumber(booking.getFloorNumber())
                 .floorArea(booking.getFloorArea())
+                .expectCompletedIn(booking.getExpectCompletedIn())
                 .bookingTransactionId(bookingTransaction.getTransactionId())
                 .serviceTypeName(serviceTypeName)
                 .servicePackageName(servicePackageName)
@@ -244,7 +247,7 @@ public class BookingService {
                 .build();
     }
 
-    public HmsResponse<Object> getBookingList(Integer page, Integer size, String roleName, String userId, String bookingName, String bookingPhone, String status, Date workingDate, String floorArea) {
+    public HmsResponse<Object> getBookingList(Integer page, Integer size, String roleName, String userId, String bookingName, String bookingPhone, String status, Date workingDate, String floorKey) {
         List<String> acceptRole = Arrays.asList(RoleEnum.MANAGER.name(), RoleEnum.LEADER.name(),
                 RoleEnum.CUSTOMER.name());
         if (!acceptRole.contains(roleName)) {
@@ -252,7 +255,7 @@ public class BookingService {
         }
         Pageable pageable = PageRequest.of(page, size);
         List<Booking> bookingList = bookingRepository.findAll(pageable).getContent();
-        bookingList = filter(bookingList, bookingName, bookingPhone, status, floorArea);
+        bookingList = filter(bookingList, bookingName, bookingPhone, status, floorKey);
         List<BookingDetailResponse> responses = new ArrayList<>();
         for (Booking booking : bookingList) {
             responses.add(getBookingDetail(booking.getId(), userId, roleName, true));
@@ -408,16 +411,15 @@ public class BookingService {
         }).collect(Collectors.joining(","));
     }
 
-    private List<Booking> filter(List<Booking> bookings, String bookingName, String bookingPhone, String status, String floorArea) {
-        if (bookingName == null && bookingPhone == null && status == null && floorArea == null) {
+    private List<Booking> filter(List<Booking> bookings, String bookingName, String bookingPhone, String status, String floorKey) {
+        if (bookingName == null && bookingPhone == null && status == null && floorKey == null) {
             return bookings;
         }
-        FloorInfoEnum floorInfoEnum = FloorInfoEnum.lookUpByName(floorArea);
         return bookings.stream()
                 .filter(booking -> (bookingName != null && booking.getHostName().contains(bookingName))
                         || (bookingPhone != null && booking.getHostPhone().contains(bookingPhone))
                         || (booking.getStatus().equalsIgnoreCase(status))
-                        || (floorInfoEnum != null && booking.getFloorArea().equalsIgnoreCase(floorInfoEnum.getFloorArea())))
+                        || (booking.getFloorKey().equalsIgnoreCase(floorKey)))
                 .toList();
     }
 

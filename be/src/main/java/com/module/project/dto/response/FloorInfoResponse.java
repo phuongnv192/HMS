@@ -15,4 +15,5 @@ public class FloorInfoResponse {
     private int cleanerNum;
     private int duration;
     private long price;
+    private String priceType;
 }

@@ -13,6 +13,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class ServiceAddOnHistoryResponse {
 
+    private String actionType;
     private String requestBefore;
     private String requestAfter;
     private String changedBy;

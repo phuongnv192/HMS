@@ -6,6 +6,7 @@ import com.module.project.dto.CleanerReviewInfo;
 import com.module.project.dto.ConfirmStatus;
 import com.module.project.dto.Constant;
 import com.module.project.dto.FloorInfoEnum;
+import com.module.project.dto.PriceTypeEnum;
 import com.module.project.dto.RoleEnum;
 import com.module.project.dto.TransactionStatus;
 import com.module.project.dto.WorkingTime;
@@ -21,6 +22,7 @@ import com.module.project.model.BookingSchedule;
 import com.module.project.model.BookingTransaction;
 import com.module.project.model.Cleaner;
 import com.module.project.model.CleanerWorkingDate;
+import com.module.project.model.FloorInfo;
 import com.module.project.model.ServiceAddOn;
 import com.module.project.model.ServicePackage;
 import com.module.project.model.User;
@@ -29,6 +31,7 @@ import com.module.project.repository.BookingScheduleRepository;
 import com.module.project.repository.BookingTransactionRepository;
 import com.module.project.repository.CleanerRepository;
 import com.module.project.repository.CleanerWorkingDateRepository;
+import com.module.project.repository.FloorTypeRepository;
 import com.module.project.repository.ServiceAddOnRepository;
 import com.module.project.repository.ServicePackageRepository;
 import com.module.project.repository.ServiceTypeRepository;
@@ -69,7 +72,7 @@ public class ScheduleService {
     private final ServicePackageRepository servicePackageRepository;
     private final CleanerRepository cleanerRepository;
     private final UserRepository userRepository;
-    private final ServiceTypeRepository serviceTypeRepository;
+    private final FloorTypeRepository floorTypeRepository;
     private final MailService mailService;
 
     @Value("${application.choosing-cleaner-price:0}")
@@ -85,22 +88,20 @@ public class ScheduleService {
                                       BookingRequest request,
                                       BookingTransaction bookingTransaction,
                                       Long userId) {
-        FloorInfoEnum floorInfoEnum = FloorInfoEnum.lookUpByFloorArea(booking.getFloorArea());
-//        if (floorInfoEnum == null) {
-//            throw new HmsException(HmsErrorCode.INVALID_REQUEST, "error when look up floor info: ".concat(request.getFloorArea()));
-//        }
+        FloorInfo floorInfo = floorTypeRepository.findByFloorKey(booking.getFloorKey())
+                .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "can't find any floor type by ".concat(booking.getFloorKey())));;
 
         List<ServiceAddOn> serviceAddOns = serviceAddOnRepository.findAllByIdInAndStatus(request.getServiceAddOnIds(), Constant.COMMON_STATUS.ACTIVE);
         Calendar endTime = Calendar.getInstance();
         endTime.setTime(request.getStartTime());
-        Calendar actualEndTime = calculateActualEndTime(endTime.getTime(), serviceAddOns, floorInfoEnum.getDuration());
+        Calendar actualEndTime = calculateActualEndTime(endTime.getTime(), serviceAddOns, floorInfo.getDuration());
 
         boolean isAutoChoosing = request.getCleanerIds() == null;
         long totalPriceFloorAre = 0;
-        if (FloorInfoEnum.M230 == floorInfoEnum) {
-            totalPriceFloorAre = floorInfoEnum.getPrice();
+        if (PriceTypeEnum.PACKAGE.name().equalsIgnoreCase(floorInfo.getPriceType())) {
+            totalPriceFloorAre = floorInfo.getPrice();
         } else {
-            totalPriceFloorAre = floorInfoEnum.getPrice() * request.getFloorNumber();;
+            totalPriceFloorAre = floorInfo.getPrice() * request.getFloorNumber();;
         }
 
         long priceChoosingCleaner = isAutoChoosing ? choosingCleanerPrice : 0;
@@ -124,7 +125,7 @@ public class ScheduleService {
         bookingTransactionRepository.save(bookingTransaction);
 
         WorkingTime workingTime = addingGapToWorkingTime(bookingSchedule.getScheduleId(), request.getStartTime(), actualEndTime.getTime());
-        bookingTransaction.setTotalBookingCleaner(processWorkingDateForCleaner(floorInfoEnum, booking, List.of(workingTime), request, isAutoChoosing));
+        bookingTransaction.setTotalBookingCleaner(processWorkingDateForCleaner(floorInfo.getCleanerNumber(), booking, List.of(workingTime), request, isAutoChoosing));
         bookingTransactionRepository.save(bookingTransaction);
     }
 
@@ -360,7 +361,7 @@ public class ScheduleService {
         bookingTransactionRepository.save(bookingTransaction);
 
         // picking cleaner and save the number of cleaner to transaction
-        bookingTransaction.setTotalBookingCleaner(processWorkingDateForCleaner(floorInfoEnum, booking, workingTimes, request, isAutoChoosing));
+        bookingTransaction.setTotalBookingCleaner(processWorkingDateForCleaner(floorInfoEnum.getCleanerNum(), booking, workingTimes, request, isAutoChoosing));
         bookingTransactionRepository.save(bookingTransaction);
     }
 
@@ -373,7 +374,7 @@ public class ScheduleService {
         }
     }
 
-    private int processWorkingDateForCleaner(FloorInfoEnum floorInfoEnum,
+    private int processWorkingDateForCleaner(int cleanerNum,
                                              Booking booking,
                                              List<WorkingTime> workDate,
                                              BookingRequest request,
@@ -381,7 +382,7 @@ public class ScheduleService {
         List<CleanerWorkingDate> saveList = new ArrayList<>();
         List<Cleaner> cleaners;
         if (isAutoChoosing) {
-            cleaners = autoChooseCleaner(floorInfoEnum.getCleanerNum(), workDate);
+            cleaners = autoChooseCleaner(cleanerNum, workDate);
             if (cleaners.isEmpty()) {
                 booking.setStatus(TransactionStatus.CANCELLED.name());
                 booking.setRejectedReason("There is no available cleaner right now on the system");

@@ -3,6 +3,7 @@ package com.module.project.controller;
 import com.module.project.dto.ClaimEnum;
 import com.module.project.dto.request.ServiceAddOnRequest;
 import com.module.project.dto.request.ServiceRequest;
+import com.module.project.dto.request.UpdateFloorPrice;
 import com.module.project.service.ServiceCommonService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static com.module.project.dto.Constant.API_V1;
 import static com.module.project.dto.Constant.FLOOR_INFO;
+import static com.module.project.dto.Constant.FLOOR_INFO_UPDATE;
 import static com.module.project.dto.Constant.SERVICE;
 import static com.module.project.dto.Constant.SERVICE_ADD_ON;
 import static com.module.project.dto.Constant.SERVICE_ADD_ONS;
@@ -48,7 +50,8 @@ public class ServiceAddOnController {
     @PostMapping(SERVICE_ADD_ON)
     public ResponseEntity<Object> insertServiceAddOn(@RequestBody ServiceAddOnRequest request, HttpServletRequest httpServletRequest) {
         String roleName = (String) httpServletRequest.getAttribute(ClaimEnum.ROLE_NAME.name);
-        return ResponseEntity.ok(serviceCommonService.insertServiceAddOn(request, roleName));
+        String userId = (String) httpServletRequest.getAttribute(ClaimEnum.USER_ID.name);
+        return ResponseEntity.ok(serviceCommonService.insertServiceAddOn(request, roleName, userId));
     }
 
     @PutMapping(SERVICE_ADD_ON)
@@ -79,5 +82,12 @@ public class ServiceAddOnController {
     public ResponseEntity<Object> getServiceAddOnHistory(@RequestParam(name = "page", defaultValue = "0") Integer page,
                                                          @RequestParam(name = "size", defaultValue = "10") Integer size) {
         return ResponseEntity.ok(serviceCommonService.getServiceAddOnHistory(page, size));
+    }
+
+    @PostMapping(FLOOR_INFO_UPDATE)
+    public ResponseEntity<Object> updateFloorInfo(@RequestBody UpdateFloorPrice request, HttpServletRequest httpServletRequest) {
+        String roleName = (String) httpServletRequest.getAttribute(ClaimEnum.ROLE_NAME.name);
+        String userId = (String) httpServletRequest.getAttribute(ClaimEnum.USER_ID.name);
+        return ResponseEntity.ok(serviceCommonService.updateFloorPrice(request, roleName, userId));
     }
 }

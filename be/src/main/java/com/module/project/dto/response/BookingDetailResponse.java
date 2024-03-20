@@ -26,6 +26,7 @@ public class BookingDetailResponse {
     private String houseType;
     private int floorNumber;
     private String floorArea;
+    private Integer expectCompletedIn;
 
     private Long bookingTransactionId;
     private String serviceTypeName;

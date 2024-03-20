@@ -25,6 +25,7 @@ public class ServiceAddOnHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String type;
     private String requestBefore;
     private String requestAfter;
     private String changedBy;
