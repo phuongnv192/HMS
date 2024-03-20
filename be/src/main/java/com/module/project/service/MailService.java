@@ -24,13 +24,13 @@ public class MailService {
     @Value("${application.mail.password}")
     private String senderPassword;
 
-    public void sendMailVerifyEmail(String recipientEmail, String username) {
+    public void sendMailVerifyEmail(String recipientEmail) {
         String subject = "Verify email for HMS";
         StringBuilder content = new StringBuilder();
         content.append("Click this link for verify your account:\n");
         content.append("http://localhost:8888/api/v1/auth/verify")
-                .append("?username=")
-                .append(username);
+                .append("?email=")
+                .append(recipientEmail);
         send(recipientEmail, subject, content.toString(), false);
     }
 

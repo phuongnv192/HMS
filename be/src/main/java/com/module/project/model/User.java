@@ -39,7 +39,6 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String username;
     @Column(name = "first_name")
     private String firstName;
     @Column(name = "last_name")
@@ -50,6 +49,7 @@ public class User implements UserDetails {
     @JsonIgnore
     private String password;
     private String status;
+    private String address;
     @CreationTimestamp
     private Date createDate;
     @UpdateTimestamp
@@ -70,7 +70,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username;
+        return email;
     }
 
     @Override

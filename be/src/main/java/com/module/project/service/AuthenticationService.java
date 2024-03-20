@@ -35,18 +35,15 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     public HmsResponse<AuthenticationResponse> register(RegisterRequest request) {
-        if (userRepository.existsByUsername(request.getUsername())) {
-            throw new HmsException(HmsErrorCode.INVALID_REQUEST, "Username already exists");
-        }
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new HmsException(HmsErrorCode.INVALID_REQUEST, "Email already exists. Please use another email to register");
         }
         User user = User.builder()
-                .username(request.getUsername())
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .phoneNumber(request.getPhoneNumber())
+                .address(request.getAddress())
                 .email(request.getEmail())
                 .gender(Constant.GENDER.MALE.equals(request.getGender()) ? Constant.GENDER.MALE : Constant.GENDER.FEMALE)
                 .role(roleRepository.findByName(request.getRole()))
@@ -54,18 +51,18 @@ public class AuthenticationService {
                 .build();
         userRepository.save(user);
         try {
-            mailService.sendMailVerifyEmail(request.getEmail(), user.getUsername());
+            mailService.sendMailVerifyEmail(request.getEmail());
         } catch (Exception e) {
-            log.error("error when send email verify account {}", request.getUsername());
+            log.error("error when send email verify account {}", request.getEmail());
         }
         return HMSUtil.buildResponse(ResponseCode.SUCCESS, AuthenticationResponse.builder()
                 .message("Please check your mail to verify your account")
                 .build());
     }
 
-    public HmsResponse<AuthenticationResponse> verify(String username) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "Invalid username"));
+    public HmsResponse<AuthenticationResponse> verify(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "Invalid email"));
         user.setStatus(Constant.COMMON_STATUS.ACTIVE);
         userRepository.save(user);
         return HMSUtil.buildResponse(ResponseCode.SUCCESS, AuthenticationResponse.builder()
@@ -78,9 +75,8 @@ public class AuthenticationService {
                 new UsernamePasswordAuthenticationToken(request.getUsernameOrEmail(),
                         request.getPassword()));
 
-        var user = userRepository.findByUsername(request.getUsernameOrEmail())
-                .orElseGet(() -> userRepository.findByEmail(request.getUsernameOrEmail())
-                        .orElseThrow());
+        var user = userRepository.findByEmail(request.getUsernameOrEmail())
+                        .orElseThrow();
         if (Constant.COMMON_STATUS.INACTIVE.equals(user.getStatus())) {
             throw new HmsException(HmsErrorCode.INTERNAL_SERVER_ERROR, "user has not been active yet");
         }

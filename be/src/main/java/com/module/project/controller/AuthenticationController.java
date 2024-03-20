@@ -38,11 +38,11 @@ public class AuthenticationController {
     }
 
     @GetMapping(VERIFY)
-    public ResponseEntity<Object> verify(@RequestParam(value = "username") String username) {
+    public ResponseEntity<Object> verify(@RequestParam(value = "email") String email) {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(URI.create("http://localhost/hms/login"));
-        service.verify(username);
+        service.verify(email);
         // Create a ResponseEntity with status code 302 and headers
         return new ResponseEntity<>(headers, HttpStatus.FOUND);
     }
