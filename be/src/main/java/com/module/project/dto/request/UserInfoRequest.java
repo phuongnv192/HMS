@@ -17,5 +17,6 @@ public class UserInfoRequest {
     private String email;
     private String phoneNumber;
     private String status;
+    private String address;
     private Long roleId;
 }

@@ -4,20 +4,12 @@ import lombok.Getter;
 
 @Getter
 public enum FloorInfoEnum {
-//    M260(60, 2, 3, 480000),
-//    M280(80, 2, 4, 680000),
-//    M2100(100, 3, 3, 780000),
-//    M2150(150, 3, 4, 1000000),
-//    M2200(200, 4, 4, 1400000),
-//    M2400(400, 4, 8, 3000000),
 
-    M230("Dưới 30m2", 1, 3, 240000),
-    M23060("30m2 - 60m2", 2, 3, 480000),
-    M26080("60m2 - 80m2", 2, 4, 640000),
-    M280100("80m2 - 100m2", 3, 3, 720000),
-    M2100120("100m2 - 120m2", 3, 4, 960000),
-    M2120150("120m2 - 150m2", 4, 3, 1060000),
-    M2150200("150m2 - 200m2", 4, 4, 1280000),
+    M230("Dưới 30m2", 1, 3, 550000),
+    M250("Dưới 50m2", 2, 3, 18000),
+    M2100("Dưới 100m2", 2, 4, 15000),
+    M2200("Dưới 200m2", 3, 3, 12000),
+    M2U200("Trên 200m2", 3, 4, 10000),
     ;
 
     private final String floorArea; //m2
@@ -32,11 +24,17 @@ public enum FloorInfoEnum {
         this.price = price;
     }
 
-    public static FloorInfoEnum lookUp(String name) throws IllegalArgumentException {
-        for (FloorInfoEnum val : values()) {
-            if (val.name().equalsIgnoreCase(name))
-                return val;
+    public static FloorInfoEnum lookUp(int floorNumber) throws IllegalArgumentException {
+        if (floorNumber < 30) {
+            return FloorInfoEnum.M230;
+        } else if (floorNumber < 50) {
+            return FloorInfoEnum.M250;
+        } else if (floorNumber < 100) {
+            return FloorInfoEnum.M2100;
+        } else if (floorNumber < 200) {
+            return FloorInfoEnum.M2200;
+        } else {
+            return FloorInfoEnum.M2U200;
         }
-        return null;
     }
 }

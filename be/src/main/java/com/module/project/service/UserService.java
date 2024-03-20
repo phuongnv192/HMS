@@ -91,6 +91,7 @@ public class UserService {
         user.setGender(request.getGender());
         user.setEmail(request.getEmail());
         user.setPhoneNumber(request.getPhoneNumber());
+        user.setAddress(request.getAddress());
         user.setStatus(Constant.COMMON_STATUS.ACTIVE.equals(request.getStatus())
                 ? Constant.COMMON_STATUS.ACTIVE
                 : Constant.COMMON_STATUS.INACTIVE);
@@ -142,7 +143,8 @@ public class UserService {
 
     public HmsResponse<User> changePassword(ChangePasswordRequest request, String userId, String roleName) {
         User user = validateUpdateUser(userId, roleName, request.getUserId());
-        if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
+        String encodeOldPassword = passwordEncoder.encode(request.getOldPassword());
+        if (!passwordEncoder.matches(encodeOldPassword, user.getPassword())) {
             throw new HmsException(HmsErrorCode.INTERNAL_SERVER_ERROR, "the current password you input not match with itself on system");
         }
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
@@ -176,6 +178,6 @@ public class UserService {
             }
         }
         return userRepository.findById(userUpdateId)
-                .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "can't find any schedule by ".concat(userUpdateId.toString())));
+                .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "can't find any user by ".concat(userUpdateId.toString())));
     }
 }

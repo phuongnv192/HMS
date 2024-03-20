@@ -85,10 +85,10 @@ public class ScheduleService {
                                       BookingRequest request,
                                       BookingTransaction bookingTransaction,
                                       Long userId) {
-        FloorInfoEnum floorInfoEnum = FloorInfoEnum.lookUp(request.getFloorArea());
-        if (floorInfoEnum == null) {
-            throw new HmsException(HmsErrorCode.INVALID_REQUEST, "error when look up floor info: ".concat(request.getFloorArea()));
-        }
+        FloorInfoEnum floorInfoEnum = FloorInfoEnum.lookUp(request.getFloorNumber());
+//        if (floorInfoEnum == null) {
+//            throw new HmsException(HmsErrorCode.INVALID_REQUEST, "error when look up floor info: ".concat(request.getFloorArea()));
+//        }
 
         List<ServiceAddOn> serviceAddOns = serviceAddOnRepository.findAllByIdInAndStatus(request.getServiceAddOnIds(), Constant.COMMON_STATUS.ACTIVE);
         Calendar endTime = Calendar.getInstance();
@@ -127,10 +127,10 @@ public class ScheduleService {
                                      BookingRequest request,
                                      BookingTransaction bookingTransaction,
                                      Long userId) {
-        FloorInfoEnum floorInfoEnum = FloorInfoEnum.lookUp(request.getFloorArea());
-        if (floorInfoEnum == null) {
-            throw new HmsException(HmsErrorCode.INVALID_REQUEST, "error when look up floor info: ".concat(request.getFloorArea()));
-        }
+        FloorInfoEnum floorInfoEnum = FloorInfoEnum.lookUp(request.getFloorNumber());
+//        if (floorInfoEnum == null) {
+//            throw new HmsException(HmsErrorCode.INVALID_REQUEST, "error when look up floor info: ".concat(request.getFloorArea()));
+//        }
         ServicePackage servicePackage = servicePackageRepository.findById(request.getServicePackageId())
                 .orElseThrow(() -> new HmsException(HmsErrorCode.INVALID_REQUEST, "can't find any service package by ".concat(request.getServicePackageId().toString())));
         bookingTransaction.setServicePackage(servicePackage);

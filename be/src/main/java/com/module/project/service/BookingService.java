@@ -62,11 +62,11 @@ public class BookingService {
         User customer = userRepository.findById(Long.parseLong(userId))
                 .orElseThrow(
                         () -> new HmsException(HmsErrorCode.INVALID_REQUEST, "relevant user is not existed on system"));
-        FloorInfoEnum floorInfoEnum = FloorInfoEnum.lookUp(request.getFloorArea());
-        if (floorInfoEnum == null) {
-            throw new HmsException(HmsErrorCode.INVALID_REQUEST,
-                    "error when look up floor info: ".concat(request.getFloorArea()));
-        }
+        FloorInfoEnum floorInfoEnum = FloorInfoEnum.lookUp(request.getFloorNumber());
+//        if (floorInfoEnum == null) {
+//            throw new HmsException(HmsErrorCode.INVALID_REQUEST,
+//                    "error when look up floor info: ".concat(request.getFloorArea()));
+//        }
         Booking booking = Booking.builder()
                 .hostName(request.getHostName())
                 .hostPhone(request.getHostPhone())

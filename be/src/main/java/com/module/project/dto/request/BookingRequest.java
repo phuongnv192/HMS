@@ -29,6 +29,7 @@ public class BookingRequest {
     private Long servicePackageId;
     private List<Long> serviceAddOnIds;
     private Date startTime;
+    private Date expectedEndTime;
     private Date endTime;
     private LocalDate workDate;
     private String note;
